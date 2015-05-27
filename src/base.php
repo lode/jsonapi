@@ -130,6 +130,35 @@ public function fill_included_resources($resources) {
 }
 
 /**
+ * adds some meta data
+ * this will end up in response.meta.{$key}
+ * 
+ * @param  string  $key
+ * @param  mixed   $meta_data objects are converted in arrays using their public properties
+ * @return void
+ */
+public function add_meta($key, $meta_data) {
+	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
+		$meta_data = parent::convert_to_array($meta_data);
+	}
+	
+	$this->meta_data[$key] = $meta_data;
+}
+
+/**
+ * fills the meta data
+ * this will end up in response.meta
+ * 
+ * @param  array   $meta_data
+ * @return void
+ */
+public function fill_meta($meta_data) {
+	foreach ($meta_data as $key => $single_meta_data) {
+		$this->add_meta($key, $single_meta_data);
+	}
+}
+
+/**
  * converting a non-array to an array
  * 
  * @param  mixed $mixed by default, it is type casted to an array

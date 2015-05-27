@@ -265,15 +265,15 @@ public function set_self_link($link) {
  * @return void
  */
 public function add_meta($key, $meta_data, $data_level=false) {
+	if ($data_level == false) {
+		return parent::add_meta($key, $meta_data);
+	}
+	
 	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
 		$meta_data = parent::convert_to_array($meta_data);
 	}
 	
-	if ($data_level == true) {
-		$this->primary_meta_data[$key] = $meta_data;
-	}
-	
-	$this->meta_data[$key] = $meta_data;
+	$this->primary_meta_data[$key] = $meta_data;
 }
 
 /**
