@@ -182,8 +182,8 @@ public function add_relation($key, $relation, $skip_include=false) {
 		
 		$relation = array(
 			'links' => array(
-				'self'    => $relation_array['links']['self'].'/relationships/'.$key,
-				'related' => $relation_array['links']['self'].'/'.$key,
+				'self'    => $this->links['self'].'/relationships/'.$key,
+				'related' => $this->links['self'].'/'.$key,
 			),
 			'data'  => array(
 				'type' => $relation_array['data']['type'],
