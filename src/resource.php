@@ -78,7 +78,7 @@ public function get_array() {
 	
 	// included resources
 	if ($this->included_resources) {
-		$response['included'] = $this->included_resources;
+		$response['included'] = array_values($this->included_resources);
 	}
 	
 	// meta data
@@ -165,7 +165,7 @@ public function add_relation($key, $relation, $skip_include=false) {
 		
 		// add whole resources as included resource, while keeping the relationship
 		if (!empty($relation_array['data']['attributes']) && $skip_include == false) {
-			$this->add_included_resource($key, $relation);
+			$this->add_included_resource($relation);
 		}
 		
 		$relation = array(
@@ -269,14 +269,20 @@ public function set_self_link($link) {
  * adds an included resource
  * this will end up in response.included.{$key}
  * 
- * @param string                       $key
+ * a $resource should have its 'id' set
+ * 
  * @param \alsvanzelf\jsonapi\resource $resource
  */
-public function add_included_resource($key, \alsvanzelf\jsonapi\resource $resource) {
+public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 	$resource_array = $resource->get_array();
-	$resource_array = $resource_array['data'];
+	if (empty($resource_array['data']['id'])) {
+		return;
+	}
 	
+	$resource_array = $resource_array['data'];
 	unset($resource_array['relationships'], $resource_array['meta']);
+	
+	$key = $resource_array['type'].'/'.$resource_array['id'];
 	
 	$this->included_resources[$key] = $resource_array;
 }
@@ -289,8 +295,8 @@ public function add_included_resource($key, \alsvanzelf\jsonapi\resource $resour
  * @return void
  */
 public function fill_included_resources($resources) {
-	foreach ($resources as $key => $resource) {
-		$this->add_included_resource($key, $resource);
+	foreach ($resources as $resource) {
+		$this->add_included_resource($resource);
 	}
 }
 
