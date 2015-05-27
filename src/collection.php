@@ -22,6 +22,7 @@ class collection extends base {
  */
 protected $primary_type       = null;
 protected $primary_collection = array();
+protected $included_data = array();
 
 /**
  * creates a new collection
@@ -57,6 +58,11 @@ public function get_array() {
 	// primary data
 	$response['data'] = $this->primary_collection;
 	
+	// included resources
+	if ($this->included_data) {
+		$response['included'] = array_values($this->included_data);
+	}
+	
 	// meta data
 	if ($this->meta_data) {
 		$response['meta'] = $this->meta_data;
@@ -81,6 +87,11 @@ public function get_array() {
  */
 public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 	$resource_array = $resource->get_array();
+	
+	$included_resources = $resource->get_included_resources();
+	if (!empty($included_resources)) {
+		$this->fill_included_resources($included_resources);
+	}
 	
 	$this->primary_collection[] = $resource_array['data'];
 }
