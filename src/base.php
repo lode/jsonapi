@@ -11,6 +11,12 @@ const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG = 'application/json';
 
 /**
+ * internal data containers
+ */
+protected $links     = array();
+protected $meta_data = array();
+
+/**
  * sets the self link using $_SERVER variables
  * 
  * @see ->set_self_link() to override this default behavior
@@ -85,7 +91,7 @@ public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode
  * @return void
  */
 public function set_self_link($link) {
-	$this->add_link($key='self', $link, $data_level=false);
+	$this->links['self'] = $link;
 }
 
 /**

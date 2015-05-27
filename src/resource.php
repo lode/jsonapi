@@ -7,7 +7,6 @@ class resource extends base {
 /**
  * internal data containers
  */
-protected $links                 = array();
 protected $primary_type          = null;
 protected $primary_id            = null;
 protected $primary_attributes    = array();
@@ -15,7 +14,6 @@ protected $primary_relationships = array();
 protected $primary_links         = array();
 protected $primary_meta_data     = array();
 protected $included_resources    = array();
-protected $meta_data             = array();
 
 /**
  * creates a new resource
@@ -253,7 +251,7 @@ public function fill_links($links) {
 public function set_self_link($link) {
 	parent::set_self_link($link);
 	
-	$this->add_link($key='self', $link, $data_level=true);
+	$this->add_link($key='self', $link);
 }
 
 /**
