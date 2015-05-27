@@ -64,6 +64,22 @@ use alsvanzelf\jsonapi;
 ```
 
 
+## To Do
+
+Right now, this library handles:
+
+- generating single resources
+- generating resource collections
+- sending out a json response
+
+Plans for the future include:
+
+- error responses
+- sending out status codes
+- accept a collection as to-many relation in a resource
+- handle creating, updating and deleting resources
+
+
 ## Contributing
 
 Pull Requests or issues are welcome!
