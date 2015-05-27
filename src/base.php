@@ -100,9 +100,15 @@ public function set_self_link($link) {
  * 
  * a $resource should have its 'id' set
  * 
+ * @note this can only be used by resource and collection, not by errors
+ * 
  * @param \alsvanzelf\jsonapi\resource $resource
  */
 public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
+	if (property_exists($this, 'included_resources') == false) {
+		throw new \Exception(get_class($this).' can not contain included resources');
+	}
+	
 	$resource_array = $resource->get_array();
 	if (empty($resource_array['data']['id'])) {
 		return;
