@@ -132,8 +132,7 @@ public function fill_included_resources($resources) {
  * @return array
  */
 protected static function convert_to_array($mixed) {
-	$resource_class_name = '\alsvanzelf\jsonapi\resource';
-	if ($mixed instanceof $resource_class_name) {
+	if ($mixed instanceof \alsvanzelf\jsonapi\resource) {
 		return $mixed->get_array();
 	}
 	

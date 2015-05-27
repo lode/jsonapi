@@ -159,8 +159,7 @@ public function fill_data($values) {
  * @todo allow to add collections as well
  */
 public function add_relation($key, $relation, $skip_include=false) {
-	$resource_class_name = get_class();
-	if ($relation instanceof $resource_class_name) {
+	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		$relation_array = $relation->get_array();
 		
 		// add whole resources as included resource, while keeping the relationship
