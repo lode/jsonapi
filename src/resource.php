@@ -28,7 +28,7 @@ protected $primary_attributes    = array();
 protected $primary_relationships = array();
 protected $primary_links         = array();
 protected $primary_meta_data     = array();
-protected $included_resources    = array();
+protected $included_data         = array();
 
 /**
  * creates a new resource
@@ -90,8 +90,8 @@ public function get_array() {
 	}
 	
 	// included resources
-	if ($this->included_resources) {
-		$response['included'] = array_values($this->included_resources);
+	if ($this->included_data) {
+		$response['included'] = array_values($this->included_data);
 	}
 	
 	// meta data

@@ -13,8 +13,9 @@ const CONTENT_TYPE_DEBUG = 'application/json';
 /**
  * internal data containers
  */
-protected $links     = array();
-protected $meta_data = array();
+protected $links              = array();
+protected $meta_data          = array();
+protected $included_resources = array();
 
 /**
  * sets the self link using $_SERVER variables
@@ -79,6 +80,16 @@ public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode
 }
 
 /**
+ * returns the included resource objects
+ * this is used by a collection to work with the actual objects
+ * 
+ * @return array
+ */
+public function get_included_resources() {
+	return $this->included_resources;
+}
+
+/**
  * sets the link to the request used to give this response
  * this will end up in response.links.self ..
  * and in response.data.links.self for single resource objects
@@ -119,7 +130,10 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 	
 	$key = $resource_array['type'].'/'.$resource_array['id'];
 	
-	$this->included_resources[$key] = $resource_array;
+	$this->included_data[$key] = $resource_array;
+	
+	// make a backup of the actual resource, to pass on to a collection
+	$this->included_resources[$key] = $resource;
 }
 
 /**
