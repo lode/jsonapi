@@ -6,25 +6,6 @@ It generates json output according to the [jsonapi.org](http://jsonapi.org/) sta
 but aims to be easy to understand for people without knowledge of the jsonapi standard.
 
 
-## Installation
-
-[Use Composer](http://getcomposer.org/). Add `alsvanzelf/jsonapi` to your project's `composer.json`:
-
-```json
-{
-	"require": {
-		"alsvanzelf/jsonapi": "dev-master"
-	}
-}
-```
-
-Start your files with
-
-```php
-use alsvanzelf\jsonapi;
-```
-
-
 ## Getting started
 
 A small example:
@@ -64,6 +45,25 @@ Which will result in:
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 
+## Installation
+
+[Use Composer](http://getcomposer.org/). Add `alsvanzelf/jsonapi` to your project's `composer.json`:
+
+```json
+{
+    "require": {
+        "alsvanzelf/jsonapi": "dev-master"
+    }
+}
+```
+
+Start your files with
+
+```php
+use alsvanzelf\jsonapi;
+```
+
+
 ## Contributing
 
 Pull Requests or issues are welcome!
@@ -71,4 +71,4 @@ Pull Requests or issues are welcome!
 
 ## Licence
 
-MIT
+[MIT](/LICENSE)
