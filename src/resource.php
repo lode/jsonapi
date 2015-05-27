@@ -205,23 +205,17 @@ public function fill_relations($relations, $skip_include=false) {
 
 /**
  * adds a link
- * this will end up in response.data.links.{$key} or response.links.{$key} ..
- * .. depending on $data_level
+ * this will end up in response.data.links.{$key}
  * 
  * useful for links which can not be added as relation, @see ->add_relation()
  * 
  * @param  string  $key
  * @param  mixed   $link
- * @param  boolean $data_level optional, defaults to true
  * @return void
  */
-public function add_link($key, $link, $data_level=true) {
+public function add_link($key, $link) {
 	if (is_string($link) == false && is_array($link) == false) {
 		$link = parent::convert_to_array($link);
-	}
-	
-	if ($data_level == false) {
-		$this->links[$key] = $link;
 	}
 	
 	$this->primary_links[$key] = $link;
@@ -229,18 +223,16 @@ public function add_link($key, $link, $data_level=true) {
 
 /**
  * fills the set of links
- * this will end up in response.data.links or response.links ..
- * .. depending on $data_level
+ * this will end up in response.data.links
  * 
  * @see ->add_link()
  * 
  * @param  array   $links
- * @param  boolean $data_level optional, defaults to true
  * @return void
  */
-public function fill_links($links, $data_level=true) {
+public function fill_links($links) {
 	foreach ($links as $key => $link) {
-		$this->add_link($key, $link, $data_level);
+		$this->add_link($key, $link);
 	}
 }
 
