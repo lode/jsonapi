@@ -11,6 +11,8 @@ but aims to be easy to understand for people without knowledge of the jsonapi st
 A small example:
 
 ```php
+use alsvanzelf\jsonapi;
+
 $user = new stdClass();
 $user->id = 42;
 $user->name = 'Zaphod Beeblebrox';
@@ -55,12 +57,6 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
         "alsvanzelf/jsonapi": "dev-master"
     }
 }
-```
-
-Start your files with
-
-```php
-use alsvanzelf\jsonapi;
 ```
 
 
