@@ -89,6 +89,41 @@ public function set_self_link($link) {
 }
 
 /**
+ * adds an included resource
+ * this will end up in response.included.{$key}
+ * 
+ * a $resource should have its 'id' set
+ * 
+ * @param \alsvanzelf\jsonapi\resource $resource
+ */
+public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
+	$resource_array = $resource->get_array();
+	if (empty($resource_array['data']['id'])) {
+		return;
+	}
+	
+	$resource_array = $resource_array['data'];
+	unset($resource_array['relationships'], $resource_array['meta']);
+	
+	$key = $resource_array['type'].'/'.$resource_array['id'];
+	
+	$this->included_resources[$key] = $resource_array;
+}
+
+/**
+ * fills the included resources
+ * this will end up in response.included
+ * 
+ * @param  array $resources of \alsvanzelf\jsonapi\resource objects
+ * @return void
+ */
+public function fill_included_resources($resources) {
+	foreach ($resources as $resource) {
+		$this->add_included_resource($resource);
+	}
+}
+
+/**
  * converting a non-array to an array
  * 
  * @param  mixed $mixed by default, it is type casted to an array

@@ -7,15 +7,15 @@ class resource extends base {
 /**
  * internal data containers
  */
-private $links                 = array();
-private $primary_type          = null;
-private $primary_id            = null;
-private $primary_attributes    = array();
-private $primary_relationships = array();
-private $primary_links         = array();
-private $primary_meta_data     = array();
-private $included_resources    = array();
-private $meta_data             = array();
+protected $links                 = array();
+protected $primary_type          = null;
+protected $primary_id            = null;
+protected $primary_attributes    = array();
+protected $primary_relationships = array();
+protected $primary_links         = array();
+protected $primary_meta_data     = array();
+protected $included_resources    = array();
+protected $meta_data             = array();
 
 /**
  * creates a new resource
@@ -263,41 +263,6 @@ public function set_self_link($link) {
 	parent::set_self_link($link);
 	
 	$this->add_link($key='self', $link, $data_level=true);
-}
-
-/**
- * adds an included resource
- * this will end up in response.included.{$key}
- * 
- * a $resource should have its 'id' set
- * 
- * @param \alsvanzelf\jsonapi\resource $resource
- */
-public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
-	$resource_array = $resource->get_array();
-	if (empty($resource_array['data']['id'])) {
-		return;
-	}
-	
-	$resource_array = $resource_array['data'];
-	unset($resource_array['relationships'], $resource_array['meta']);
-	
-	$key = $resource_array['type'].'/'.$resource_array['id'];
-	
-	$this->included_resources[$key] = $resource_array;
-}
-
-/**
- * fills the included resources
- * this will end up in response.included
- * 
- * @param  array $resources of \alsvanzelf\jsonapi\resource objects
- * @return void
- */
-public function fill_included_resources($resources) {
-	foreach ($resources as $resource) {
-		$this->add_included_resource($resource);
-	}
 }
 
 /**
