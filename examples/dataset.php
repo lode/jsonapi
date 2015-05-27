@@ -2,11 +2,15 @@
 
 class user {
 
-public $id    = 42;
-public $name  = 'Zaphod Beeblebrox';
-public $heads = 2;
-
 private static $dataset = array(
+	1 => array(
+		'name'  => 'Ford Prefect',
+		'heads' => 1,
+	),
+	2 => array(
+		'name' => 'Arthur Dent',
+		'heads' => '1, but not always there',
+	),
 	42 => array(
 		'name'  => 'Zaphod Beeblebrox',
 		'heads' => 2,

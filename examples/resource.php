@@ -35,6 +35,6 @@ $jsonapi->add_data('location', $user->get_current_location());
  * however it can be handy for debugging
  */
 
-$content_type = \alsvanzelf\jsonapi\resource::CONTENT_TYPE_DEBUG;
+$content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
 
 $jsonapi->send_response($content_type);

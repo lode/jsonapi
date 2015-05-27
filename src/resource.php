@@ -2,6 +2,21 @@
 
 namespace alsvanzelf\jsonapi;
 
+/**
+ * single resource object
+ * 
+ * main actions
+ * - primary data @see ->add_data() or ->fill_data()
+ * - self link    @see ->set_self_link()
+ * - output       @see ->send_response() or ->get_json()
+ * 
+ * extra elements
+ * - relations @see ->add_relation() or ->fill_relations()
+ * - links     @see ->add_link() or ->fill_links()
+ * - meta data @see ->add_meta() or ->fill_meta()
+ * - included  @see ->add_included_resource() or ->fill_included_resources()
+ */
+
 class resource extends base {
 
 /**
