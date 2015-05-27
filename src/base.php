@@ -107,7 +107,9 @@ public function set_self_link($link) {
 
 /**
  * adds an included resource
- * this will end up in response.included.{$key}
+ * this will end up in response.included[]
+ * 
+ * prefer using ->add_relation() instead
  * 
  * a $resource should have its 'id' set
  * 
@@ -138,7 +140,9 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 
 /**
  * fills the included resources
- * this will end up in response.included
+ * this will end up in response.included[]
+ * 
+ * prefer using ->fill_relations() instead
  * 
  * @param  array $resources of \alsvanzelf\jsonapi\resource objects
  * @return void
