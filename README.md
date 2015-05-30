@@ -66,8 +66,8 @@ Right now, this library handles:
 
 - generating single resources
 - generating resource collections
-- sending out a json response
 - error responses ([work in progress](https://github.com/lode/jsonapi/pull/1))
+- sending out the json response with correct http headers
 
 Plans for the future include:
 
