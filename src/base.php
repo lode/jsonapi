@@ -163,7 +163,7 @@ public function fill_included_resources($resources) {
  */
 public function add_meta($key, $meta_data) {
 	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
-		$meta_data = parent::convert_to_array($meta_data);
+		$meta_data = self::convert_to_array($meta_data);
 	}
 	
 	$this->meta_data[$key] = $meta_data;
