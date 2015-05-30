@@ -67,11 +67,11 @@ Right now, this library handles:
 - generating single resources
 - generating resource collections
 - sending out a json response
+- error responses ([work in progress](https://github.com/lode/jsonapi/pull/1))
 
 Plans for the future include:
 
-- error responses
-- sending out status codes
+- sending out status codes for non-error responses
 - accept a collection as to-many relation in a resource
 - handle creating, updating and deleting resources
 
