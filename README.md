@@ -62,17 +62,18 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
 
 ## To Do
 
-Right now, this library handles:
+Right now, this library handles all the basics:
 
 - generating single resources
 - generating resource collections
-- error responses ([work in progress](https://github.com/lode/jsonapi/pull/1))
+- handling error responses
 - sending out the json response with correct http headers
 
 Plans for the future include:
 
-- sending out status codes for non-error responses
+- import a database array as a collection response
 - accept a collection as to-many relation in a resource
+- sending out redirect locations and status codes for non-error responses
 - handle creating, updating and deleting resources
 
 
