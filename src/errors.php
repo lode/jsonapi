@@ -155,11 +155,11 @@ public function set_http_status($http_status) {
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
  */
 public function add_error($error_message=null, $friendly_message=null, $about_link=null) {
-	if ($error instanceof error == false) {
-		$error = new error($error_message, $friendly_message, $about_link);
+	if ($error_message instanceof error == false) {
+		$error_message = new error($error_message, $friendly_message, $about_link);
 	}
 	
-	$this->add_error_object($error);
+	$this->add_error_object($error_message);
 }
 
 /**
