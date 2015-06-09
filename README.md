@@ -71,10 +71,10 @@ Right now, this library handles all the basics:
 
 Plans for the future include:
 
-- import a database array as a collection response (#2)
-- accept a collection as to-many relation in a resource (#3)
-- sending out redirect locations and status codes for non-error responses (#4)
-- handle creating, updating and deleting resources (#5)
+- import a database array as a collection response ([#2](https://github.com/lode/jsonapi/issues/2))
+- accept a collection as to-many relation in a resource ([#3](https://github.com/lode/jsonapi/issues/3))
+- sending out redirect locations and status codes for non-error responses ([#4](https://github.com/lode/jsonapi/issues/4))
+- handle creating, updating and deleting resources ([#5](https://github.com/lode/jsonapi/issues/5))
 
 
 ## Contributing
