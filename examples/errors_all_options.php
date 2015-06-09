@@ -39,18 +39,24 @@ $error->set_about_link($about_link='www.example.com/options.html');
  * prepare multiple error objects for the errors response
  */
 
-$another_error = new \alsvanzelf\jsonapi\error('kiss', 'Error objects can be small and simple as well.');
+$another_error  = new \alsvanzelf\jsonapi\error('kiss', 'Error objects can be small and simple as well.');
+$some_exception = new Exception('please don\'t throw things', 500);
 
 /**
  * building up the json response
  * 
  * you can pass the $error object to the constructor ..
- * .. or add multiple errors via ->add_error()
+ * .. or add multiple errors via ->add_error() or ->add_exception()
+ * 
+ * further you can force another http status code than what's in the errors
  */
 
 $jsonapi = new \alsvanzelf\jsonapi\errors($error);
 
 $jsonapi->add_error($another_error);
+$jsonapi->add_exception($some_exception);
+
+$jsonapi->set_http_status(400);
 
 /**
  * sending the response
