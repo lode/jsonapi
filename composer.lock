@@ -4,14 +4,12 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "931cb5d9f4a10ecea39ee9365d89140a",
+    "hash": "5525d501f9f8e54986929a5da0a8eff3",
     "packages": [],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "alsvanzelf/jsonapi": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
