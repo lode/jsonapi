@@ -73,7 +73,8 @@ public function get_json($encode_options=448) {
  * this will fetch the response from ->get_json() if not given via $response
  * 
  * @param  string $content_type   optional, defaults to the official IANA registered one
- *                                or to a debug version when ::$debug is set to true
+ *                                defaults to a debug version when ::$debug is set to true ..
+ *                                .. or when requested as human developer (accept header w/o json)
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
  * @param  json   $response       optional, defaults to ::get_json()
@@ -88,6 +89,9 @@ public function send_response($content_type=null, $encode_options=448, $response
 		$content_type = self::CONTENT_TYPE_OFFICIAL;
 	}
 	if (self::$debug) {
+		$content_type = self::CONTENT_TYPE_DEBUG;
+	}
+	if (strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
