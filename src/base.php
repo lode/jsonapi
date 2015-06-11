@@ -11,6 +11,13 @@ const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG = 'application/json';
 
 /**
+ * debug modus for non-production environments:
+ * - outputs exception details for errors
+ * - makes browser display json instead of offering a file
+ */
+public static $debug = false;
+
+/**
  * internal data containers
  */
 protected $links              = array();
@@ -66,13 +73,21 @@ public function get_json($encode_options=448) {
  * this will fetch the response from ->get_json() if not given via $response
  * 
  * @param  string $content_type   optional, defaults to the official IANA registered one
+ *                                or to a debug version when ::$debug is set to true
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
  * @return void                   however, a string will be echo'd to the browser
  */
-public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode_options=448, $response=null) {
+public function send_response($content_type=null, $encode_options=448, $response=null) {
 	if (is_null($response)) {
 		$response = $this->get_json($encode_options);
+	}
+	
+	if (empty($content_type)) {
+		$content_type = self::CONTENT_TYPE_OFFICIAL;
+	}
+	if (self::$debug) {
+		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
 	header('Content-Type: '.$content_type);

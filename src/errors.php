@@ -118,12 +118,13 @@ public function get_array() {
  * @note it will also terminate script execution afterwards
  * 
  * @param  string $content_type   optional, defaults to the official IANA registered one
+ *                                or to a debug version when ::$debug is set to true
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode_options=448) {
+public function send_response($content_type=null, $encode_options=448, $response=null) {
 	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
 	$status_message = self::get_http_status_message($this->http_status);
 	header($http_protocol.' '.$status_message);
@@ -198,19 +199,21 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	$new_error->set_http_status($error_status);
 	
 	// meta data
-	$trace = $exception->getTrace();
-	if ($trace) {
-		$new_error->add_meta('trace', $trace);
-	}
-	
-	$file = $exception->getFile();
-	if ($file) {
-		$new_error->add_meta('file',  $file);
-	}
-	
-	$line = $exception->getLine();
-	if ($line) {
-		$new_error->add_meta('line',  $line);
+	if (base::$debug) {
+		$trace = $exception->getTrace();
+		if ($trace) {
+			$new_error->add_meta('trace', $trace);
+		}
+		
+		$file = $exception->getFile();
+		if ($file) {
+			$new_error->add_meta('file',  $file);
+		}
+		
+		$line = $exception->getLine();
+		if ($line) {
+			$new_error->add_meta('line',  $line);
+		}
 	}
 	
 	$this->add_error_object($new_error);

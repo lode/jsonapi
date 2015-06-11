@@ -69,7 +69,9 @@ public function get_array() {
 		$status_message = errors::get_http_status_message($this->http_status);
 		$response_part['status'] = $status_message;
 	}
-	$response_part['code'] = $this->error_message;
+	if (base::$debug) {
+		$response_part['code'] = $this->error_message;
+	}
 	
 	// user guidance
 	if ($this->friendly_message) {
