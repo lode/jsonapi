@@ -121,6 +121,7 @@ public function get_array() {
  *                                or to a debug version when ::$debug is set to true
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */

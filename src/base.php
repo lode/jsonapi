@@ -76,6 +76,7 @@ public function get_json($encode_options=448) {
  *                                or to a debug version when ::$debug is set to true
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   however, a string will be echo'd to the browser
  */
 public function send_response($content_type=null, $encode_options=448, $response=null) {
