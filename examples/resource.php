@@ -1,9 +1,10 @@
 <?php
 
+require '../vendor/autoload.php';
+
 ini_set('display_errors', 1);
 error_reporting(-1);
-
-require '../vendor/autoload.php';
+\alsvanzelf\jsonapi\base::$debug = true;
 
 /**
  * the resource you want to send out
@@ -30,11 +31,6 @@ $jsonapi->add_data('location', $user->get_current_location());
 
 /**
  * sending the response
- * 
- * normally you don't need to set a content type
- * however it can be handy for debugging
  */
 
-$content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
-
-$jsonapi->send_response($content_type);
+$jsonapi->send_response();

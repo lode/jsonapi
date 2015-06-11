@@ -1,21 +1,16 @@
 <?php
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
 require '../vendor/autoload.php';
 
-/**
- * normally you don't need to set a content type
- * however it can be handy for debugging
- */
-
-$content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
+ini_set('display_errors', 1);
+error_reporting(-1);
+\alsvanzelf\jsonapi\base::$debug = true;
 
 /**
  * via an exception
  * 
  * @note previous exceptions will be added as well
+ * @note exceptions only output file, line, trace if base::$debug is set to true
  */
 
 try {
@@ -23,5 +18,5 @@ try {
 }
 catch (Exception $e) {
 	$jsonapi = new \alsvanzelf\jsonapi\errors($e);
-	$jsonapi->send_response($content_type);
+	$jsonapi->send_response();
 }
