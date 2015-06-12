@@ -195,6 +195,7 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	// meta data
 	$file = $exception->getFile();
 	if ($file) {
+		$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
 		$new_error->add_meta('file',  $file);
 	}
 	
@@ -205,6 +206,9 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	
 	$trace = $exception->getTrace();
 	if ($trace) {
+		foreach ($trace as &$place) {
+			$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+		}
 		$new_error->add_meta('trace', $trace);
 	}
 	
