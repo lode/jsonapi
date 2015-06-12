@@ -49,14 +49,10 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
 
 ## Installation
 
-[Use Composer](http://getcomposer.org/). Add `alsvanzelf/jsonapi` to your project's `composer.json`:
+[Use Composer](http://getcomposer.org/). And use require to get the latest stable version:
 
-```json
-{
-    "require": {
-        "alsvanzelf/jsonapi": "dev-master"
-    }
-}
+```
+composer require alsvanzelf/jsonapi
 ```
 
 
