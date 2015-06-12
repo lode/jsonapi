@@ -186,11 +186,6 @@ public function fill_errors($errors) {
  * @todo hide exception meta data on production environments
  */
 public function add_exception($exception=null, $friendly_message=null, $about_link=null) {
-	$previous_exception = $exception->getPrevious();
-	if ($previous_exception) {
-		$this->add_exception($previous_exception);
-	}
-	
 	$error_message = $exception->getMessage();
 	$error_status  = $exception->getCode();
 	
@@ -198,11 +193,6 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	$new_error->set_http_status($error_status);
 	
 	// meta data
-	$trace = $exception->getTrace();
-	if ($trace) {
-		$new_error->add_meta('trace', $trace);
-	}
-	
 	$file = $exception->getFile();
 	if ($file) {
 		$new_error->add_meta('file',  $file);
@@ -213,7 +203,17 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 		$new_error->add_meta('line',  $line);
 	}
 	
+	$trace = $exception->getTrace();
+	if ($trace) {
+		$new_error->add_meta('trace', $trace);
+	}
+	
 	$this->add_error_object($new_error);
+	
+	$previous_exception = $exception->getPrevious();
+	if ($previous_exception) {
+		$this->add_exception($previous_exception);
+	}
 }
 
 /**
