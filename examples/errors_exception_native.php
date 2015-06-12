@@ -24,4 +24,5 @@ try {
 catch (Exception $e) {
 	$jsonapi = new \alsvanzelf\jsonapi\errors($e);
 	$jsonapi->send_response($content_type);
+	exit;
 }
