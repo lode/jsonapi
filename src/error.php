@@ -65,10 +65,8 @@ public function get_array() {
 	$response_part = array();
 	
 	// the basics
-	if ($this->http_status) {
-		$status_message = errors::get_http_status_message($this->http_status);
-		$response_part['status'] = $status_message;
-	}
+	$status_message = errors::get_http_status_message($this->http_status);
+	$response_part['status'] = $status_message;
 	$response_part['code'] = $this->error_message;
 	
 	// user guidance
