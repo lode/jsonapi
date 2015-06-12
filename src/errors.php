@@ -189,7 +189,7 @@ public function fill_errors($errors) {
  * 
  * @todo hide exception meta data on production environments
  */
-public function add_exception($exception=null, $friendly_message=null, $about_link=null) {
+public function add_exception($exception, $friendly_message=null, $about_link=null) {
 	$previous_exception = $exception->getPrevious();
 	if ($previous_exception) {
 		$this->add_exception($previous_exception);
