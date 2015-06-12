@@ -11,9 +11,22 @@ const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG = 'application/json';
 
 /**
- * debug modus for non-production environments:
- * - outputs exception details for errors
+ * json encode options
+ * default is JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ * debug adds JSON_PRETTY_PRINT
+ */
+const ENCODE_DEFAULT = 320;
+const ENCODE_DEBUG   = 448;
+
+/**
+ * debug modus for non-production environments
+ * 
+ * most debug effects are automatically turned on
+ * when requested by a human developer (accept header w/o json)
+ * 
+ * - encodes json with in pretty print
  * - makes browser display json instead of offering a file
+ * - outputs exception details for errors (only with ::$debug set to true)
  */
 public static $debug = false;
 
@@ -57,10 +70,17 @@ public function __toString() {
  * @see json_encode() options
  * 
  * @param  int  $encode_options optional, $options for json_encode()
- *                              defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                              defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @return json
  */
-public function get_json($encode_options=448) {
+public function get_json($encode_options=null) {
+	if (is_int($encode_options) == false) {
+		$encode_options = self::ENCODE_DEFAULT;
+	}
+	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+		$encode_options = self::ENCODE_DEBUG;
+	}
+	
 	$response = $this->get_array();
 	
 	$json = json_encode($response, $encode_options);
@@ -72,15 +92,14 @@ public function get_json($encode_options=448) {
  * sends out the json response to the browser
  * this will fetch the response from ->get_json() if not given via $response
  * 
- * @param  string $content_type   optional, defaults to the official IANA registered one
- *                                defaults to a debug version when ::$debug is set to true ..
- *                                .. or when requested as human developer (accept header w/o json)
+ * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
+ *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
- *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   however, a string will be echo'd to the browser
  */
-public function send_response($content_type=null, $encode_options=448, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null) {
 	if (is_null($response)) {
 		$response = $this->get_json($encode_options);
 	}
@@ -88,10 +107,7 @@ public function send_response($content_type=null, $encode_options=448, $response
 	if (empty($content_type)) {
 		$content_type = self::CONTENT_TYPE_OFFICIAL;
 	}
-	if (self::$debug) {
-		$content_type = self::CONTENT_TYPE_DEBUG;
-	}
-	if (strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
