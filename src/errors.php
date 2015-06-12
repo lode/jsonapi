@@ -31,7 +31,7 @@ namespace alsvanzelf\jsonapi;
 class errors extends base {
 
 /**
- * advised http status codes
+ * http status messages used for string output
  */
 public static $http_status_messages = array(
 	400 => 'Bad Request',

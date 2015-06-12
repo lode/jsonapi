@@ -11,6 +11,18 @@ const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG = 'application/json';
 
 /**
+ * advised http status codes
+ */
+const STATUS_BAD_REQUEST           = 400;
+const STATUS_UNAUTHORIZED          = 401;
+const STATUS_FORBIDDEN             = 403;
+const STATUS_NOT_FOUND             = 404;
+const STATUS_METHOD_NOT_ALLOWED    = 405;
+const STATUS_UNPROCESSABLE_ENTITY  = 422;
+const STATUS_INTERNAL_SERVER_ERROR = 500;
+const STATUS_SERVICE_UNAVAILABLE   = 503;
+
+/**
  * internal data containers
  */
 protected $links              = array();
