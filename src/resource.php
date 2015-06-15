@@ -111,12 +111,12 @@ public function get_array() {
  * @see ->fill_data() for adding a whole array directly
  * 
  * @param  string $key
- * @param  mixed  $value
+ * @param  mixed  $value objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function add_data($key, $value) {
-	if (is_scalar($value) == false && is_array($value) == false) {
-		$value = parent::convert_to_array($value);
+	if (is_object($value)) {
+		$value = parent::convert_object_to_array($value);
 	}
 	
 	$this->primary_attributes[$key] = $value;
@@ -127,18 +127,22 @@ public function add_data($key, $value) {
  * this will end up in response.data.attributes
  * 
  * this is meant for adding an array as the primary data
- * other types (int, string, object) will be converted to arrays first
  * objects will be converted using their public keys
  * 
  * @note skips an 'id'-key inside $values if identical to the $id given during construction
  * 
  * @see ->add_data()
  * 
- * @param  mixed $values
+ * @param  mixed $values objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function fill_data($values) {
-	$values = parent::convert_to_array($values);
+	if (is_object($values)) {
+		$values = parent::convert_object_to_array($values);
+	}
+	if (is_array($values) == false) {
+		throw new \Exception('use add_data() for adding scalar values');
+	}
 	
 	if (isset($values['id']) && $values['id'] == $this->primary_id) {
 		unset($values['id']);
@@ -222,13 +226,16 @@ public function fill_relations($relations, $skip_include=false) {
  * 
  * useful for links which can not be added as relation, @see ->add_relation()
  * 
- * @param  string  $key
- * @param  mixed   $link
+ * @param  string $key
+ * @param  mixed  $link objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function add_link($key, $link) {
+	if (is_object($link)) {
+		$link = parent::convert_object_to_array($link);
+	}
 	if (is_string($link) == false && is_array($link) == false) {
-		$link = parent::convert_to_array($link);
+		throw new \Exception('link should be a string or an array');
 	}
 	
 	$this->primary_links[$key] = $link;
@@ -275,7 +282,7 @@ public function set_self_link($link) {
  * .. depending on $data_level
  * 
  * @param  string  $key
- * @param  mixed   $meta_data  this is not converted in any way
+ * @param  mixed   $meta_data  objects are converted in arrays, @see base::convert_object_to_array()
  * @param  boolean $data_level optional, defaults to false
  * @return void
  */
@@ -284,8 +291,8 @@ public function add_meta($key, $meta_data, $data_level=false) {
 		return parent::add_meta($key, $meta_data);
 	}
 	
-	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
-		$meta_data = parent::convert_to_array($meta_data);
+	if (is_object($meta_data)) {
+		$meta_data = parent::convert_object_to_array($meta_data);
 	}
 	
 	$this->primary_meta_data[$key] = $meta_data;
