@@ -4,13 +4,13 @@ require '../vendor/autoload.php';
 
 ini_set('display_errors', 1);
 error_reporting(-1);
-\alsvanzelf\jsonapi\base::$debug = true;
 
 /**
  * via an exception
  * 
  * @note previous exceptions will be added as well
- * @note exceptions only output file, line, trace if base::$debug is set to true
+ * @note exceptions only output file, line, trace if the display_errors directive is true
+ *       you can tune it with that, or by setting jsonapi\base::$debug to false
  */
 
 try {

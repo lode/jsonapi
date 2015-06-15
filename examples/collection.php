@@ -4,7 +4,6 @@ require '../vendor/autoload.php';
 
 ini_set('display_errors', 1);
 error_reporting(-1);
-\alsvanzelf\jsonapi\base::$debug = true;
 
 /**
  * the collection you want to send out

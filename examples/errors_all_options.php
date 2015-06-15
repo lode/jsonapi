@@ -4,7 +4,6 @@ require '../vendor/autoload.php';
 
 ini_set('display_errors', 1);
 error_reporting(-1);
-\alsvanzelf\jsonapi\base::$debug = true;
 
 /**
  * setting all options
@@ -61,6 +60,9 @@ $jsonapi->set_http_status(400);
 
 /**
  * sending the response
+ * 
+ * @note the response includes debug information based on the display_errors directive
+ *       you can tune it with that, or by setting jsonapi\base::$debug to false
  */
 
 $jsonapi->send_response();

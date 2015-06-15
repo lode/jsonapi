@@ -21,6 +21,8 @@ const ENCODE_DEBUG   = 448;
 /**
  * debug modus for non-production environments
  * 
+ * if not set to a boolean value, the display_errors directive determines its value
+ * 
  * most debug effects are automatically turned on
  * when requested by a human developer (accept header w/o json)
  * 
@@ -28,7 +30,7 @@ const ENCODE_DEBUG   = 448;
  * - makes browser display json instead of offering a file
  * - outputs exception details for errors (only with ::$debug set to true)
  */
-public static $debug = false;
+public static $debug = null;
 
 /**
  * internal data containers
@@ -38,11 +40,21 @@ protected $meta_data          = array();
 protected $included_resources = array();
 
 /**
- * sets the self link using $_SERVER variables
+ * base constructor for all response objects (resource, collection, errors)
+ * 
+ * a few things are arranged here:
+ * - determines ::$debug based on the display_errors directive
+ * - sets the self link using $_SERVER variables
  * 
  * @see ->set_self_link() to override this default behavior
  */
 public function __construct() {
+	// set debug mode based on display_errors
+	if (is_null(self::$debug)) {
+		self::$debug = (bool)ini_get('display_errors');
+	}
+	
+	// auto-fill the self link based on the current request
 	$self_link = $_SERVER['REQUEST_URI'];
 	if (isset($_SERVER['PATH_INFO'])) {
 		$self_link = $_SERVER['PATH_INFO'];
