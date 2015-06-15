@@ -211,12 +211,12 @@ public function set_identifier($identifier) {
  * this will end up in response.errors[].meta.{$key}
  * 
  * @param  string  $key
- * @param  mixed   $meta_data objects are converted in arrays using their public properties
+ * @param  mixed   $meta_data objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function add_meta($key, $meta_data) {
-	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
-		$meta_data = base::convert_to_array($meta_data);
+	if (is_object($meta_data)) {
+		$meta_data = base::convert_object_to_array($meta_data);
 	}
 	
 	$this->meta_data[$key] = $meta_data;
