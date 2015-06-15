@@ -13,7 +13,7 @@ const CONTENT_TYPE_DEBUG = 'application/json';
 /**
  * json encode options
  * default is JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
- * debug adds JSON_PRETTY_PRINT
+ * in debug mode (@see ::$debug) JSON_PRETTY_PRINT is added
  */
 const ENCODE_DEFAULT = 320;
 const ENCODE_DEBUG   = 448;
@@ -21,14 +21,16 @@ const ENCODE_DEBUG   = 448;
 /**
  * debug modus for non-production environments
  * 
- * if not set to a boolean value, the display_errors directive determines its value
+ * this is automatically set based on the display_errors directive
+ * it can be overridden by setting it to a boolean value
  * 
- * most debug effects are automatically turned on
- * when requested by a human developer (accept header w/o json)
+ * - encodes json with in pretty print (@see ::ENCODE_DEBUG) (*)
+ * - makes browser display json instead of offering a file (@see ::CONTENT_TYPE_DEBUG) (*)
+ * - outputs the error message for errors (@see error->get_array())
+ * - outputs exception details for errors (@see errors->add_exception())
  * 
- * - encodes json with in pretty print
- * - makes browser display json instead of offering a file
- * - outputs exception details for errors (only with ::$debug set to true)
+ * @note the effects marked with an asterisk (*) are automatically turned on ..
+ *       .. when requested by a human developer (request with an accept header w/o json)
  */
 public static $debug = null;
 
