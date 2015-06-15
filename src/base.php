@@ -125,7 +125,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
-	header('Content-Type: '.$content_type);
+	header('Content-Type: '.$content_type.'; charset=utf-8');
 	echo $response;
 }
 
