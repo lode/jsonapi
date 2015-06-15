@@ -61,10 +61,8 @@ $jsonapi->set_http_status(400);
 /**
  * sending the response
  * 
- * normally you don't need to set a content type
- * however it can be handy for debugging
+ * @note the response includes debug information based on the display_errors directive
+ *       you can tune it with that, or by setting jsonapi\base::$debug to false
  */
 
-$content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
-
-$jsonapi->send_response($content_type);
+$jsonapi->send_response();

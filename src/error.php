@@ -27,6 +27,8 @@ private $meta_data;
 /**
  * creates a new error for inclusion in the errors collection
  * 
+ * @note error message is only shown when debug mode is on (@see base::$debug)
+ * 
  * @param string $error_message
  * @param string $friendly_message optional, @see ->set_friendly_message()
  * @param string $about_link       optional, @see ->set_about_link()
@@ -45,6 +47,8 @@ public function __construct($error_message, $friendly_message=null, $about_link=
 
 /**
  * generates an array for inclusion in the whole response body of an errors collection
+ * 
+ * @note error message (`code`) is only shown when debug mode is on (@see base::$debug)
  * 
  * @see jsonapi.org/format
  * 
@@ -69,7 +73,9 @@ public function get_array() {
 		$status_message = errors::get_http_status_message($this->http_status);
 		$response_part['status'] = $status_message;
 	}
-	$response_part['code'] = $this->error_message;
+	if (base::$debug) {
+		$response_part['code'] = $this->error_message;
+	}
 	
 	// user guidance
 	if ($this->friendly_message) {
@@ -136,6 +142,8 @@ public function set_http_status($http_status) {
 /**
  * sets the main error message, aimed at developers
  * this will end up in response.errors[].code
+ * 
+ * @note error message is only shown when debug mode is on (@see base::$debug)
  * 
  * @param string $error_message
  */
