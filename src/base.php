@@ -75,7 +75,6 @@ public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode
 		$response = $this->get_json($encode_options);
 	}
 	
-	header('Content-Type: '.$content_type);
 	header('Content-Type: '.$content_type.'; charset=utf-8');
 	echo $response;
 }
