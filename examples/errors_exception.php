@@ -14,7 +14,7 @@ require '../vendor/autoload.php';
  */
 
 try {
-	throw new Exception('unknown user', 404);
+	throw new Exception('unknown user', \alsvanzelf\jsonapi\base::STATUS_NOT_FOUND);
 }
 catch (Exception $e) {
 	$jsonapi = new \alsvanzelf\jsonapi\errors($e);
