@@ -49,11 +49,6 @@ $jsonapi->fill_collection($collection);
 
 /**
  * sending the response
- * 
- * normally you don't need to set a content type
- * however it can be handy for debugging
  */
 
-$content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
-
-$jsonapi->send_response($content_type);
+$jsonapi->send_response();

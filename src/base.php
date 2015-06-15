@@ -5,10 +5,46 @@ namespace alsvanzelf\jsonapi;
 class base {
 
 /**
+ * advised http status codes
+ */
+const STATUS_BAD_REQUEST           = 400;
+const STATUS_UNAUTHORIZED          = 401;
+const STATUS_FORBIDDEN             = 403;
+const STATUS_NOT_FOUND             = 404;
+const STATUS_METHOD_NOT_ALLOWED    = 405;
+const STATUS_UNPROCESSABLE_ENTITY  = 422;
+const STATUS_INTERNAL_SERVER_ERROR = 500;
+const STATUS_SERVICE_UNAVAILABLE   = 503;
+
+/**
  * content type headers
  */
 const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG = 'application/json';
+
+/**
+ * json encode options
+ * default is JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ * in debug mode (@see ::$debug) JSON_PRETTY_PRINT is added
+ */
+const ENCODE_DEFAULT = 320;
+const ENCODE_DEBUG   = 448;
+
+/**
+ * debug modus for non-production environments
+ * 
+ * this is automatically set based on the display_errors directive
+ * it can be overridden by setting it to a boolean value
+ * 
+ * - encodes json with in pretty print (@see ::ENCODE_DEBUG) (*)
+ * - makes browser display json instead of offering a file (@see ::CONTENT_TYPE_DEBUG) (*)
+ * - outputs the error message for errors (@see error->get_array())
+ * - outputs exception details for errors (@see errors->add_exception())
+ * 
+ * @note the effects marked with an asterisk (*) are automatically turned on ..
+ *       .. when requested by a human developer (request with an accept header w/o json)
+ */
+public static $debug = null;
 
 /**
  * internal data containers
@@ -18,11 +54,21 @@ protected $meta_data          = array();
 protected $included_resources = array();
 
 /**
- * sets the self link using $_SERVER variables
+ * base constructor for all response objects (resource, collection, errors)
+ * 
+ * a few things are arranged here:
+ * - determines ::$debug based on the display_errors directive
+ * - sets the self link using $_SERVER variables
  * 
  * @see ->set_self_link() to override this default behavior
  */
 public function __construct() {
+	// set debug mode based on display_errors
+	if (is_null(self::$debug)) {
+		self::$debug = (bool)ini_get('display_errors');
+	}
+	
+	// auto-fill the self link based on the current request
 	$self_link = $_SERVER['REQUEST_URI'];
 	if (isset($_SERVER['PATH_INFO'])) {
 		$self_link = $_SERVER['PATH_INFO'];
@@ -50,10 +96,17 @@ public function __toString() {
  * @see json_encode() options
  * 
  * @param  int  $encode_options optional, $options for json_encode()
- *                              defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                              defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @return json
  */
-public function get_json($encode_options=448) {
+public function get_json($encode_options=null) {
+	if (is_int($encode_options) == false) {
+		$encode_options = self::ENCODE_DEFAULT;
+	}
+	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+		$encode_options = self::ENCODE_DEBUG;
+	}
+	
 	$response = $this->get_array();
 	
 	$json = json_encode($response, $encode_options);
@@ -65,17 +118,26 @@ public function get_json($encode_options=448) {
  * sends out the json response to the browser
  * this will fetch the response from ->get_json() if not given via $response
  * 
- * @param  string $content_type   optional, defaults to the official IANA registered one
+ * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
+ *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
- *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
+ * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   however, a string will be echo'd to the browser
  */
-public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode_options=448, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null) {
 	if (is_null($response)) {
 		$response = $this->get_json($encode_options);
 	}
 	
-	header('Content-Type: '.$content_type);
+	if (empty($content_type)) {
+		$content_type = self::CONTENT_TYPE_OFFICIAL;
+	}
+	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+		$content_type = self::CONTENT_TYPE_DEBUG;
+	}
+	
+	header('Content-Type: '.$content_type.'; charset=utf-8');
 	echo $response;
 }
 
