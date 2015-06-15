@@ -32,6 +32,8 @@ public function __construct($id) {
 	foreach ($data as $key => $value) {
 		$this->$key = $value;
 	}
+	
+	$this->unknown = null;
 }
 
 public static function find_all() {

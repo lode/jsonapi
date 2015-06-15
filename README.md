@@ -49,14 +49,10 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
 
 ## Installation
 
-[Use Composer](http://getcomposer.org/). Add `alsvanzelf/jsonapi` to your project's `composer.json`:
+[Use Composer](http://getcomposer.org/). And use require to get the latest stable version:
 
-```json
-{
-    "require": {
-        "alsvanzelf/jsonapi": "dev-master"
-    }
-}
+```
+composer require alsvanzelf/jsonapi
 ```
 
 
@@ -69,7 +65,8 @@ Right now, this library handles all the basics:
 - handling error responses
 - sending out the json response with correct http headers
 
-Plans for the future include:
+Plans for the [near](https://github.com/lode/jsonapi/labels/current%20focus)
+and [later](https://github.com/lode/jsonapi/issues?utf8=%E2%9C%93&q=is%3Aopen+-label%3A%22current+focus%22+) future include:
 
 - import a database array as a collection response ([#2](https://github.com/lode/jsonapi/issues/2))
 - accept a collection as to-many relation in a resource ([#3](https://github.com/lode/jsonapi/issues/3))
