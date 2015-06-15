@@ -194,11 +194,6 @@ public function fill_errors($errors) {
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
  */
 public function add_exception($exception=null, $friendly_message=null, $about_link=null) {
-	$previous_exception = $exception->getPrevious();
-	if ($previous_exception) {
-		$this->add_exception($previous_exception);
-	}
-	
 	$error_message = $exception->getMessage();
 	$error_status  = $exception->getCode();
 	
@@ -209,11 +204,15 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	if (base::$debug) {
 		$trace = $exception->getTrace();
 		if ($trace) {
+			foreach ($trace as &$place) {
+				$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+			}
 			$new_error->add_meta('trace', $trace);
 		}
 		
 		$file = $exception->getFile();
 		if ($file) {
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
 			$new_error->add_meta('file',  $file);
 		}
 		
@@ -224,6 +223,11 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	}
 	
 	$this->add_error_object($new_error);
+	
+	$previous_exception = $exception->getPrevious();
+	if ($previous_exception) {
+		$this->add_exception($previous_exception);
+	}
 }
 
 /**
