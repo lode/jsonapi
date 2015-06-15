@@ -19,7 +19,7 @@ $content_type = \alsvanzelf\jsonapi\base::CONTENT_TYPE_DEBUG;
  */
 
 try {
-	throw new Exception('unknown user', 404);
+	throw new Exception('unknown user', \alsvanzelf\jsonapi\base::STATUS_NOT_FOUND);
 }
 catch (Exception $e) {
 	$jsonapi = new \alsvanzelf\jsonapi\errors($e);

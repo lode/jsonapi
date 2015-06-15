@@ -28,7 +28,7 @@ $error->fill_meta($meta_data=['bar' => 'baz']);
 // the http status code
 // @note it is better to set this on the jsonapi\errors object ..
 //       .. as only a single one can be consumed by the browser
-$error->set_http_status($http_status=404);
+$error->set_http_status($http_status=\alsvanzelf\jsonapi\base::STATUS_NOT_FOUND);
 
 // if not set during construction, set them here
 $error->set_error_message($error_message='too much options');
@@ -40,7 +40,7 @@ $error->set_about_link($about_link='www.example.com/options.html');
  */
 
 $another_error  = new \alsvanzelf\jsonapi\error('kiss', 'Error objects can be small and simple as well.');
-$some_exception = new Exception('please don\'t throw things', 500);
+$some_exception = new Exception('please don\'t throw things', \alsvanzelf\jsonapi\base::STATUS_INTERNAL_SERVER_ERROR);
 
 /**
  * building up the json response
@@ -56,7 +56,7 @@ $jsonapi = new \alsvanzelf\jsonapi\errors($error);
 $jsonapi->add_error($another_error);
 $jsonapi->add_exception($some_exception);
 
-$jsonapi->set_http_status(400);
+$jsonapi->set_http_status(\alsvanzelf\jsonapi\base::STATUS_BAD_REQUEST);
 
 /**
  * sending the response
