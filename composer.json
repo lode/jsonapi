@@ -1,8 +1,8 @@
 {
 	"name": "alsvanzelf/jsonapi",
 	"type": "library",
-	"description": "Simple and small http://jsonapi.org library for php servers",
-	"keywords": ["jsonapi"],
+	"description": "Simple and human friendly library for api servers (PHP serving out JSON)",
+	"keywords": ["jsonapi", "api", "json"],
 	"homepage": "https://github.com/lode/jsonapi",
 	"license": "MIT",
 	"authors": [

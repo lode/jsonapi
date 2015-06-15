@@ -170,12 +170,12 @@ public function fill_included_resources($resources) {
  * this will end up in response.meta.{$key}
  * 
  * @param  string  $key
- * @param  mixed   $meta_data objects are converted in arrays using their public properties
+ * @param  mixed   $meta_data objects are converted in arrays, @see ::convert_object_to_array()
  * @return void
  */
 public function add_meta($key, $meta_data) {
-	if (is_scalar($meta_data) == false && is_array($meta_data) == false) {
-		$meta_data = self::convert_to_array($meta_data);
+	if (is_object($meta_data)) {
+		$meta_data = self::convert_object_to_array($meta_data);
 	}
 	
 	$this->meta_data[$key] = $meta_data;
@@ -195,23 +195,22 @@ public function fill_meta($meta_data) {
 }
 
 /**
- * converting a non-array to an array
+ * converting an object to an array
  * 
- * @param  mixed $mixed by default, it is type casted to an array
- *                      if it is an object, its public properties are used
- *                      if it is a \alsvanzelf\jsonapi\resource, its ->get_array() is used
+ * @param  object $object by default, its public properties are used
+ *                        if it is a \alsvanzelf\jsonapi\resource, its ->get_array() is used
  * @return array
  */
-protected static function convert_to_array($mixed) {
-	if ($mixed instanceof \alsvanzelf\jsonapi\resource) {
-		return $mixed->get_array();
+protected static function convert_object_to_array($object) {
+	if (is_object($object) == false) {
+		throw new \Exception('can only convert objects');
 	}
 	
-	if (is_object($mixed)) {
-		return get_object_vars($mixed);
+	if ($object instanceof \alsvanzelf\jsonapi\resource) {
+		return $object->get_array();
 	}
 	
-	return (array)$mixed;
+	return get_object_vars($object);
 }
 
 }
