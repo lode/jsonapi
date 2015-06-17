@@ -280,7 +280,8 @@ public function fill_links($links) {
  * @see jsonapi\response::__construct()
  * 
  * @param  string $link
- * @param  array  $meta_data optional, meta data as key-value pairs
+ * @param  mixed  $meta_data optional, meta data as key-value pairs
+ *                           objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function set_self_link($link, $meta_data=null) {
