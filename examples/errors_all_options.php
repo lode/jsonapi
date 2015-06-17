@@ -25,6 +25,11 @@ $error->set_identifier($identifier=42);
 $error->add_meta($key='foo', $meta_data='bar');
 $error->fill_meta($meta_data=['bar' => 'baz']);
 
+// or as object
+$meta_object = new stdClass();
+$meta_object->property = 'value';
+$error->add_meta($key='object', $meta_object);
+
 // the http status code
 // @note it is better to set this on the jsonapi\errors object ..
 //       .. as only a single one can be consumed by the browser
