@@ -141,9 +141,17 @@ public function get_included_resources() {
  * @see ::__construct()
  * 
  * @param  string $link
+ * @param  array  $meta_data optional, meta data as key-value pairs
  * @return void
  */
-public function set_self_link($link) {
+public function set_self_link($link, $meta_data=null) {
+	if ($meta_data) {
+		$link = array(
+			'href' => $link,
+			'meta' => $meta_data,
+		);
+	}
+	
 	$this->links['self'] = $link;
 }
 

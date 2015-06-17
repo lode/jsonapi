@@ -268,10 +268,11 @@ public function fill_links($links) {
  * @see jsonapi\response::__construct()
  * 
  * @param  string $link
+ * @param  array  $meta_data optional, meta data as key-value pairs
  * @return void
  */
-public function set_self_link($link) {
-	parent::set_self_link($link);
+public function set_self_link($link, $meta_data=null) {
+	parent::set_self_link($link, $meta_data);
 	
 	$this->add_link($key='self', $link);
 }
