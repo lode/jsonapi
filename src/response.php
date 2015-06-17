@@ -146,6 +146,10 @@ public function get_included_resources() {
  */
 public function set_self_link($link, $meta_data=null) {
 	if ($meta_data) {
+		if (is_object($meta)) {
+			$meta = parent::convert_object_to_array($meta);
+		}
+		
 		$link = array(
 			'href' => $link,
 			'meta' => $meta_data,

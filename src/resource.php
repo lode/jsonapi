@@ -233,14 +233,15 @@ public function fill_relations($relations, $skip_include=false) {
  * @return void
  */
 public function add_link($key, $link, $meta_data=null) {
-	if (is_object($link)) {
-		$link = parent::convert_object_to_array($link);
-	}
-	if (is_string($link) == false && is_array($link) == false) {
-		throw new \Exception('link should be a string or an array');
+	if (is_string($link) == false) {
+		throw new \Exception('link should be a string, provide meta data separate');
 	}
 	
 	if ($meta_data) {
+		if (is_object($meta)) {
+			$meta = parent::convert_object_to_array($meta);
+		}
+		
 		$link = array(
 			'href' => $link,
 			'meta' => $meta_data,
