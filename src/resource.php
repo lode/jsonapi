@@ -238,8 +238,8 @@ public function add_link($key, $link, $meta_data=null) {
 	}
 	
 	if ($meta_data) {
-		if (is_object($meta)) {
-			$meta = parent::convert_object_to_array($meta);
+		if (is_object($meta_data)) {
+			$meta_data = parent::convert_object_to_array($meta_data);
 		}
 		
 		$link = array(

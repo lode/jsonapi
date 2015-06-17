@@ -146,8 +146,8 @@ public function get_included_resources() {
  */
 public function set_self_link($link, $meta_data=null) {
 	if ($meta_data) {
-		if (is_object($meta)) {
-			$meta = parent::convert_object_to_array($meta);
+		if (is_object($meta_data)) {
+			$meta_data = parent::convert_object_to_array($meta_data);
 		}
 		
 		$link = array(
