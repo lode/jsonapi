@@ -226,7 +226,7 @@ public function set_identifier($identifier) {
  */
 public function add_meta($key, $meta_data) {
 	if (is_object($meta_data)) {
-		$meta_data = base::convert_object_to_array($meta_data);
+		$meta_data = parent::convert_object_to_array($meta_data);
 	}
 	
 	$this->meta_data[$key] = $meta_data;

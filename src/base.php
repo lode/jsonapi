@@ -37,8 +37,8 @@ const ENCODE_DEBUG   = response::ENCODE_DEBUG;
  * this is automatically set based on the display_errors directive
  * it can be overridden by setting it to a boolean value
  * 
- * - encodes json with in pretty print (@see ::ENCODE_DEBUG) (*)
- * - makes browser display json instead of offering a file (@see ::CONTENT_TYPE_DEBUG) (*)
+ * - encodes json with in pretty print (@see response::ENCODE_DEBUG) (*)
+ * - makes browser display json instead of offering a file (@see response::CONTENT_TYPE_DEBUG) (*)
  * - outputs the error message for errors (@see error->get_array())
  * - outputs exception details for errors (@see errors->add_exception())
  * 

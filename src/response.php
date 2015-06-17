@@ -83,7 +83,7 @@ public function get_json($encode_options=null) {
 	if (is_int($encode_options) == false) {
 		$encode_options = self::ENCODE_DEFAULT;
 	}
-	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+	if (base::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
 		$encode_options = self::ENCODE_DEBUG;
 	}
 	
@@ -113,7 +113,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	if (empty($content_type)) {
 		$content_type = self::CONTENT_TYPE_OFFICIAL;
 	}
-	if (self::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
+	if (base::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
@@ -200,12 +200,12 @@ public function fill_included_resources($resources) {
  * this will end up in response.meta.{$key}
  * 
  * @param  string  $key
- * @param  mixed   $meta_data objects are converted in arrays, @see ::convert_object_to_array()
+ * @param  mixed   $meta_data objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
 public function add_meta($key, $meta_data) {
 	if (is_object($meta_data)) {
-		$meta_data = self::convert_object_to_array($meta_data);
+		$meta_data = parent::convert_object_to_array($meta_data);
 	}
 	
 	$this->meta_data[$key] = $meta_data;
