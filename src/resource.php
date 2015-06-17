@@ -227,15 +227,24 @@ public function fill_relations($relations, $skip_include=false) {
  * useful for links which can not be added as relation, @see ->add_relation()
  * 
  * @param  string $key
- * @param  mixed  $link objects are converted in arrays, @see base::convert_object_to_array()
+ * @param  string $link
+ * @param  mixed  $meta_data optional, meta data as key-value pairs
+ *                           objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
-public function add_link($key, $link) {
+public function add_link($key, $link, $meta_data=null) {
 	if (is_object($link)) {
 		$link = parent::convert_object_to_array($link);
 	}
 	if (is_string($link) == false && is_array($link) == false) {
 		throw new \Exception('link should be a string or an array');
+	}
+	
+	if ($meta_data) {
+		$link = array(
+			'href' => $link,
+			'meta' => $meta_data,
+		);
 	}
 	
 	$this->primary_links[$key] = $link;
@@ -274,7 +283,7 @@ public function fill_links($links) {
 public function set_self_link($link, $meta_data=null) {
 	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link);
+	$this->add_link($key='self', $link, $meta_data);
 }
 
 /**
