@@ -184,10 +184,12 @@ public function add_relation($key, $relation, $skip_include=false) {
 			$this->add_included_resource($relation);
 		}
 		
+		$main_self_link = (is_string($this->links['self'])) ? $this->links['self'] : $this->links['self']['href'];
+		
 		$relation = array(
 			'links' => array(
-				'self'    => $this->links['self'].'/relationships/'.$key,
-				'related' => $this->links['self'].'/'.$key,
+				'self'    => $main_self_link.'/relationships/'.$key,
+				'related' => $main_self_link.'/'.$key,
 			),
 			'data'  => array(
 				'type' => $relation_array['data']['type'],
