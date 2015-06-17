@@ -17,7 +17,7 @@ namespace alsvanzelf\jsonapi;
  * - included  @see ->add_included_resource() or ->fill_included_resources()
  */
 
-class resource extends base {
+class resource extends response {
 
 /**
  * internal data containers
@@ -259,13 +259,13 @@ public function fill_links($links) {
 /**
  * sets the link to the request used to give this response
  * this will end up in response.links.self and response.data.links.self
- * this overrides the jsonapi\base->set_self_link() which only adds it to response.links.self
+ * this overrides the jsonapi\response->set_self_link() which only adds it to response.links.self
  * 
- * @see jsonapi\base->set_self_link()
+ * @see jsonapi\response->set_self_link()
  * 
  * by default this is already set using $_SERVER variables
  * use this method to override this default behavior
- * @see jsonapi\base::__construct()
+ * @see jsonapi\response::__construct()
  * 
  * @param  string $link
  * @return void

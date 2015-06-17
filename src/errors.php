@@ -28,7 +28,7 @@ namespace alsvanzelf\jsonapi;
  * ```
  */
 
-class errors extends base {
+class errors extends response {
 
 /**
  * http status messages used for string output
