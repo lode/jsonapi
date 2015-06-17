@@ -251,7 +251,7 @@ public function fill_meta($meta_data) {
  *                        if it is a \alsvanzelf\jsonapi\resource, its ->get_array() is used
  * @return array
  */
-protected static function convert_object_to_array($object) {
+public static function convert_object_to_array($object) {
 	if (is_object($object) == false) {
 		throw new \Exception('can only convert objects');
 	}
