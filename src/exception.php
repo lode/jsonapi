@@ -29,7 +29,7 @@ public function set_about_link($link) {
 	$this->about_link = $link;
 }
 
-public function send_response($content_type=errors::CONTENT_TYPE_OFFICIAL, $encode_options=448, $response=null) {
+public function send_response($content_type=response::CONTENT_TYPE_OFFICIAL, $encode_options=448, $response=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
 	$jsonapi->send_response($content_type, $encode_options, $response);
 	exit;

@@ -15,7 +15,7 @@ require '../vendor/autoload.php';
  */
 
 try {
-	$http_status = \alsvanzelf\jsonapi\base::STATUS_NOT_FOUND;
+	$http_status = \alsvanzelf\jsonapi\response::STATUS_NOT_FOUND;
 	$friendly_message = 'We don\'t know this user.';
 	$about_link = 'www.example.com/search';
 	throw new \alsvanzelf\jsonapi\exception('unknown user', $http_status, $previous=null, $friendly_message, $about_link);
