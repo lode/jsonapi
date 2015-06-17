@@ -32,7 +32,7 @@ namespace alsvanzelf\jsonapi;
  * @see jsonapi\exception::__toString() when you want to use your own exception handling
  */
 
-class errors extends base {
+class errors extends response {
 
 /**
  * http status messages used for string output
