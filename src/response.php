@@ -179,7 +179,7 @@ public function add_self_link_meta($key, $meta_data) {
 	if (is_string($this->links['self'])) {
 		$this->links['self'] = array(
 			'href' => $this->links['self'],
-			'meta' => array();
+			'meta' => array(),
 		);
 	}
 	
