@@ -272,7 +272,7 @@ public function add_link($key, $link, $meta_data=null) {
 private function add_link_deprecated_arguments($key, $link) {
 	// warn that implementation will change
 	// but continue to handle as before
-	trigger_error('link "'.$key.'" should be a string, provide meta data separate', E_USER_DEPRECATED);
+	trigger_error('link "'.$key.'" should be a string, provide meta data separate, see examples/resource_deprecated_link.php for more details', E_USER_DEPRECATED);
 	
 	if (is_object($link)) {
 		$link = parent::convert_object_to_array($link);
