@@ -15,7 +15,7 @@ namespace alsvanzelf\jsonapi;
  * - included  although possible, you should set those via the resource
  */
 
-class collection extends base {
+class collection extends response {
 
 /**
  * internal data containers

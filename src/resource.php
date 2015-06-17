@@ -17,7 +17,7 @@ namespace alsvanzelf\jsonapi;
  * - included  @see ->add_included_resource() or ->fill_included_resources()
  */
 
-class resource extends base {
+class resource extends response {
 
 /**
  * internal data containers

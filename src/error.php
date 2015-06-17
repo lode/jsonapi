@@ -9,7 +9,7 @@ namespace alsvanzelf\jsonapi;
  *       it is used, and can be used, to fill an errors collection
  */
 
-class error {
+class error extends base {
 
 /**
  * internal data containers
@@ -34,6 +34,8 @@ private $meta_data;
  * @param string $about_link       optional, @see ->set_about_link()
  */
 public function __construct($error_message, $friendly_message=null, $about_link=null) {
+	parent::__construct();
+	
 	$this->set_error_message($error_message);
 	
 	if ($friendly_message) {
