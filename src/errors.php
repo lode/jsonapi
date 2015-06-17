@@ -35,7 +35,7 @@ namespace alsvanzelf\jsonapi;
 class errors extends base {
 
 /**
- * advised http status codes
+ * http status messages used for string output
  */
 public static $http_status_messages = array(
 	400 => 'Bad Request',
@@ -61,6 +61,8 @@ protected $meta_data;
  * it can be instantiated with a first/single exception/error to start the collection with
  * (further) errors can be added via ->add_exception() or ->add_error() or ->fill_errors()
  * 
+ * @note error message (if string) is only shown when debug mode is on (@see base::$debug)
+ * 
  * @param mixed  $error_message    optional, can be exception, jsonapi\error object, or string
  * @param string $friendly_message optional, @see jsonapi\error->set_friendly_message()
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
@@ -78,6 +80,8 @@ public function __construct($error_message=null, $friendly_message=null, $about_
 
 /**
  * generates an array for the whole response body
+ * 
+ * @note error message (`code`) is only shown when debug mode is on (@see base::$debug)
  * 
  * @see jsonapi.org/format
  * 
@@ -122,12 +126,14 @@ public function get_array() {
  * @note it will also terminate script execution afterwards
  * 
  * @param  string $content_type   optional, defaults to the official IANA registered one
+ *                                or to a debug version when ::$debug is set to true
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=self::CONTENT_TYPE_OFFICIAL, $encode_options=448) {
+public function send_response($content_type=null, $encode_options=448, $response=null) {
 	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
 	$status_message = self::get_http_status_message($this->http_status);
 	header($http_protocol.' '.$status_message);
@@ -153,6 +159,8 @@ public function set_http_status($http_status) {
 /**
  * adds an error to the errors collection
  * this will end up in response.errors[]
+ * 
+ * @note error message (if string) is only shown when debug mode is on (@see base::$debug)
  * 
  * @param mixed  $error_message    optional, can be jsonapi\error object or string
  * @param string $friendly_message optional, @see jsonapi\error->set_friendly_message()
@@ -183,18 +191,13 @@ public function fill_errors($errors) {
  * adds an exception as error to the errors collection
  * this will end up in response.errors[]
  * 
+ * @note exception meta data (file, line, trace) is only shown when debug mode is on (@see base::$debug)
+ * 
  * @param object $exception        extending \Exception
  * @param string $friendly_message optional, @see jsonapi\error->set_friendly_message()
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
- * 
- * @todo hide exception meta data on production environments
  */
 public function add_exception($exception, $friendly_message=null, $about_link=null) {
-	$previous_exception = $exception->getPrevious();
-	if ($previous_exception) {
-		$this->add_exception($previous_exception);
-	}
-	
 	$error_message = $exception->getMessage();
 	$error_status  = $exception->getCode();
 	
@@ -202,22 +205,33 @@ public function add_exception($exception, $friendly_message=null, $about_link=nu
 	$new_error->set_http_status($error_status);
 	
 	// meta data
-	$trace = $exception->getTrace();
-	if ($trace) {
-		$new_error->add_meta('trace', $trace);
-	}
-	
-	$file = $exception->getFile();
-	if ($file) {
-		$new_error->add_meta('file',  $file);
-	}
-	
-	$line = $exception->getLine();
-	if ($line) {
-		$new_error->add_meta('line',  $line);
+	if (base::$debug) {
+		$file = $exception->getFile();
+		if ($file) {
+			$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
+			$new_error->add_meta('file',  $file);
+		}
+		
+		$line = $exception->getLine();
+		if ($line) {
+			$new_error->add_meta('line',  $line);
+		}
+		
+		$trace = $exception->getTrace();
+		if ($trace) {
+			foreach ($trace as &$place) {
+				$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+			}
+			$new_error->add_meta('trace', $trace);
+		}
 	}
 	
 	$this->add_error_object($new_error);
+	
+	$previous_exception = $exception->getPrevious();
+	if ($previous_exception) {
+		$this->add_exception($previous_exception);
+	}
 }
 
 /**
