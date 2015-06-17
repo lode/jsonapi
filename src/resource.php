@@ -291,6 +291,25 @@ public function set_self_link($link, $meta_data=null) {
 }
 
 /**
+ * adds meta data to the default self link
+ * this will end up in response.links.self.meta.{$key} and response.data.links.self.meta.{$key}
+ * this overrides the jsonapi\response->add_self_link_meta() which only adds it to response.links.self.meta.{$key}
+ * 
+ * @see jsonapi\response->add_self_link_meta()
+ * 
+ * @note you can also use ->set_self_link() with the whole meta object at once
+ * 
+ * @param  string  $key
+ * @param  mixed   $meta_data objects are converted in arrays, @see base::convert_object_to_array()
+ * @return void
+ */
+public function add_self_link_meta($key, $meta_data) {
+	parent::add_self_link_meta($key, $meta_data);
+	
+	$this->primary_links['self'] = $this->links['self'];
+}
+
+/**
  * adds some meta data
  * this will end up in response.meta.{$key} or response.data.meta.{$key} ..
  * .. depending on $data_level
