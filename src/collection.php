@@ -20,9 +20,9 @@ class collection extends response {
 /**
  * internal data containers
  */
-protected $primary_type       = null;
-protected $primary_collection = array();
-protected $included_data = array();
+protected $primary_type             = null;
+protected $primary_collection       = array();
+protected $primary_resource_objects = array();
 
 /**
  * creates a new collection
@@ -81,6 +81,16 @@ public function get_array() {
 }
 
 /**
+ * returns the primary resource objects
+ * this is used by a resource to add a collection or resource relations
+ * 
+ * @return array
+ */
+public function get_resources() {
+	return $this->primary_resource_objects;
+}
+
+/**
  * adds a resource to the primary collection
  * this will end up in response.data[]
  * 
@@ -103,6 +113,9 @@ public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 	}
 	
 	$this->primary_collection[] = $resource_array['data'];
+	
+	// make a backup of the actual resource, to pass on to a collection
+	$this->primary_resource_objects[] = $resource;
 }
 
 /**

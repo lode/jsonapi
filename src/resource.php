@@ -34,7 +34,6 @@ protected $primary_attributes    = array();
 protected $primary_relationships = array();
 protected $primary_links         = array();
 protected $primary_meta_data     = array();
-protected $included_data         = array();
 
 /**
  * creates a new resource
