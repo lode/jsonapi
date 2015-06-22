@@ -235,7 +235,6 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		}
 		
 		$base_url      = $this->links['self'];
-		$relation_type = $relation->get_type();
 		$relation_id   = $relation->get_id() ?: null;
 		
 		if (isset($this->primary_relationships[$key])) {
@@ -245,14 +244,14 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		if ($type == self::RELATION_TO_MANY) {
 			$relation_id = array($relation_id);
 		}
-			
+		
 		$relation = array(
 			'links' => array(
-				'self'    => $base_url.'/relationships/'.$relation_type,
-				'related' => $base_url.'/'.$relation_type,
+				'self'    => $base_url.'/relationships/'.$key,
+				'related' => $base_url.'/'.$key,
 			),
 			'data'  => array(
-				'type' => $relation_type,
+				'type' => $relation->get_type(),
 				'id'   => $relation_id,
 			),
 		);
@@ -275,8 +274,8 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		
 		$relation = array(
 			'links' => array(
-				'self'    => $base_url.'/relationships/'.$relation_type,
-				'related' => $base_url.'/'.$relation_type,
+				'self'    => $base_url.'/relationships/'.$key,
+				'related' => $base_url.'/'.$key,
 			),
 			'data'  => array(
 				'type' => $relation_type,
