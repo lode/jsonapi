@@ -204,6 +204,10 @@ public function fill_data($values) {
  * @todo allow to add collections as well
  */
 public function add_relation($key, $relation, $skip_include=false) {
+	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource == false) {
+		throw new \Exception('can not add a relation twice, unless using a resource object');
+	}
+	
 	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		// add whole resources as included resource, while keeping the relationship
 		if ($relation->has_data() && $skip_include == false) {
@@ -214,6 +218,12 @@ public function add_relation($key, $relation, $skip_include=false) {
 		$relation_type = $relation->get_type();
 		$relation_id   = $relation->get_id() ?: null;
 		
+		if (isset($this->primary_relationships[$key])) {
+			$this->primary_relationships[$key]['data']['id'] = array($this->primary_relationships[$key]['data']['id']);
+			$this->primary_relationships[$key]['data']['id'][] = $relation_id;
+			return;
+		}
+			
 		$relation = array(
 			'links' => array(
 				'self'    => $base_url.'/relationships/'.$relation_type,
