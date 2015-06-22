@@ -36,6 +36,15 @@ public function __construct($type=null) {
 }
 
 /**
+ * get the primary type as set via the constructor
+ * 
+ * @return string|null
+ */
+public function get_type() {
+	return $this->primary_type;
+}
+
+/**
  * generates an array for the whole response body
  * 
  * @see jsonapi.org/format

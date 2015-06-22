@@ -45,6 +45,34 @@ public function __construct($type, $id=null) {
 }
 
 /**
+ * get the primary type as set via the constructor
+ * 
+ * @return string|null
+ */
+public function get_type() {
+	return $this->primary_type;
+}
+
+/**
+ * get the primary id as set via the constructor
+ * 
+ * @return mixed|null
+ */
+public function get_id() {
+	return $this->primary_id;
+}
+
+/**
+ * whether data has been added via ->add_data()/->fill_data()
+ * this can be useful when adding a resource to another one as included resource
+ * 
+ * @return boolean
+ */
+public function has_data() {
+	return (bool)$this->primary_attributes;
+}
+
+/**
  * generates an array for the whole response body
  * 
  * @see jsonapi.org/format
@@ -177,25 +205,25 @@ public function fill_data($values) {
  */
 public function add_relation($key, $relation, $skip_include=false) {
 	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
-		$relation_array = $relation->get_array();
-		
 		// add whole resources as included resource, while keeping the relationship
-		if (!empty($relation_array['data']['attributes']) && $skip_include == false) {
+		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
 		}
 		
+		$base_url      = $this->links['self'];
+		$relation_type = $relation->get_type();
+		$relation_id   = $relation->get_id() ?: null;
+		
 		$relation = array(
 			'links' => array(
-				'self'    => $this->links['self'].'/relationships/'.$key,
-				'related' => $this->links['self'].'/'.$key,
+				'self'    => $base_url.'/relationships/'.$relation_type,
+				'related' => $base_url.'/'.$relation_type,
 			),
 			'data'  => array(
-				'type' => $relation_array['data']['type'],
+				'type' => $relation_type,
+				'id'   => $relation_id,
 			),
 		);
-		if (!empty($relation_array['data']['id'])) {
-			$relation['data']['id'] = $relation_array['data']['id'];
-		}
 	}
 	
 	if (is_array($relation) == false) {
