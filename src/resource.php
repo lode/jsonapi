@@ -20,6 +20,12 @@ namespace alsvanzelf\jsonapi;
 class resource extends response {
 
 /**
+ * relation types
+ */
+const RELATION_TO_MANY = 'to_many';
+const RELATION_TO_ONE  = 'to_one';
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -199,13 +205,25 @@ public function fill_data($values) {
  * @param  string  $key
  * @param  mixed   $relation     can be an array or a jsonapi\resource
  * @param  boolean $skip_include optional, defaults to false
+ * @param  string  $type         optional, defaults to ::RELATION_TO_ONE
  * @return void
  * 
  * @todo allow to add collections as well
  */
-public function add_relation($key, $relation, $skip_include=false) {
+public function add_relation($key, $relation, $skip_include=false, $type=self::RELATION_TO_ONE) {
+	if (in_array($type, array(self::RELATION_TO_ONE, self::RELATION_TO_MANY)) == false) {
+		throw new \Exception('unknown relation type');
+	}
 	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource == false) {
 		throw new \Exception('can not add a relation twice, unless using a resource object');
+	}
+	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource) {
+		if ($type != self::RELATION_TO_MANY || is_array($this->primary_relationships[$key]['data']['id']) == false) {
+			throw new \Exception('$type should be set to RELATION_TO_MANY for resources using the same key');
+		}
+		if ($relation->get_type() != $this->primary_relationships[$key]['data']['type']) {
+			throw new \Exception('the primary type of a resource should be the same for resources using the same key');
+		}
 	}
 	
 	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
@@ -219,9 +237,11 @@ public function add_relation($key, $relation, $skip_include=false) {
 		$relation_id   = $relation->get_id() ?: null;
 		
 		if (isset($this->primary_relationships[$key])) {
-			$this->primary_relationships[$key]['data']['id'] = array($this->primary_relationships[$key]['data']['id']);
 			$this->primary_relationships[$key]['data']['id'][] = $relation_id;
 			return;
+		}
+		if ($type == self::RELATION_TO_MANY) {
+			$relation_id = array($relation_id);
 		}
 			
 		$relation = array(
