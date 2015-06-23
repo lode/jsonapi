@@ -1,5 +1,7 @@
 <?php
 
+use alsvanzelf\jsonapi;
+
 ini_set('display_errors', 1);
 error_reporting(-1);
 
@@ -22,7 +24,7 @@ $user = new user(42);
  * objects are converted into arrays using their public keys
  */
 
-$jsonapi = new \alsvanzelf\jsonapi\resource($type='user', $user->id);
+$jsonapi = new jsonapi\resource($type='user', $user->id);
 
 $jsonapi->fill_data($user);
 
