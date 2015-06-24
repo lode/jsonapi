@@ -229,23 +229,25 @@ public function fill_relations($relations, $skip_include=false) {
  * useful for links which can not be added as relation, @see ->add_relation()
  * 
  * @param  string $key
- * @param  string $link
+ * @param  mixed  $link      string with link, $meta_data can be used for extra data
+ *                           or raw link object array/object, then $meta_data can *not* be used for extra data
+ *                           objects are converted in arrays, @see base::convert_object_to_array()
  * @param  mixed  $meta_data optional, meta data as key-value pairs
  *                           objects are converted in arrays, @see base::convert_object_to_array()
+ *                           should not be used if $link is array/object
  * @return void
  */
 public function add_link($key, $link, $meta_data=null) {
-	if (is_string($link) == false) {
-		// calls which use the new $meta_data argument are implementing it wrong
-		if (!empty($meta_data)) {
-			throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
-		}
-		
-		$this->add_link_deprecated_arguments($key, $link);
-		return;
+	if (is_object($link)) {
+		$link = parent::convert_object_to_array($link);
 	}
 	
 	if ($meta_data) {
+		// can not combine both raw link object and extra meta data
+		if (is_string($link) == false) {
+			throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
+		}
+		
 		if (is_object($meta_data)) {
 			$meta_data = parent::convert_object_to_array($meta_data);
 		}
@@ -254,31 +256,6 @@ public function add_link($key, $link, $meta_data=null) {
 			'href' => $link,
 			'meta' => $meta_data,
 		);
-	}
-	
-	$this->primary_links[$key] = $link;
-}
-
-/**
- * handle the deprecated argument set for ->add_link()
- * $link was a mixed argument instead of a string
- * 
- * @note this will trigger a E_USER_DEPRECATED
- * 
- * @param  string $key
- * @param  mixed  $link objects are converted in arrays, @see base::convert_object_to_array()
- * @return void
- */
-private function add_link_deprecated_arguments($key, $link) {
-	// warn that implementation will change
-	// but continue to handle as before
-	trigger_error('link "'.$key.'" should be a string, provide meta data separate, see examples/resource_deprecated_link.php for more details', E_USER_DEPRECATED);
-	
-	if (is_object($link)) {
-		$link = parent::convert_object_to_array($link);
-	}
-	if (is_string($link) == false && is_array($link) == false) {
-		throw new \Exception('link "'.$key.'" should be a string or an array');
 	}
 	
 	$this->primary_links[$key] = $link;
