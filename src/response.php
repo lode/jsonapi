@@ -136,7 +136,7 @@ public function get_json($encode_options=null) {
  * @return void                   however, a string will be echo'd to the browser
  */
 public function send_response($content_type=null, $encode_options=null, $response=null) {
-	if (is_null($response)) {
+	if (is_null($response) && $this->http_status != self::STATUS_NO_CONTENT) {
 		$response = $this->get_json($encode_options);
 	}
 	
