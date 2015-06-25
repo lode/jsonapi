@@ -31,18 +31,10 @@ namespace alsvanzelf\jsonapi;
 class errors extends response {
 
 /**
- * http status messages used for string output
+ * @deprecated
+ * @see response::$http_status_messages
  */
-public static $http_status_messages = array(
-	400 => 'Bad Request',
-	401 => 'Unauthorized',
-	403 => 'Forbidden',
-	404 => 'Not Found',
-	405 => 'Method Not Allowed',
-	422 => 'Unprocessable Entity',
-	500 => 'Internal Server Error',
-	503 => 'Service Unavailable',
-);
+public static $http_status_messages = response::$http_status_messages;
 
 /**
  * internal data containers
@@ -141,8 +133,8 @@ public function send_response($content_type=null, $encode_options=448, $response
 /**
  * sets the http status code for this error response
  * 
- * @param int $http_status one of the predefined ones in ::$http_status_messages
- *                         else, 500 is set
+ * @param int $http_status one of the predefined ones in response::$http_status_messages
+ *                         by default, 500 is set
  */
 public function set_http_status($http_status) {
 	if (empty($http_status)) {
@@ -258,22 +250,6 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
  */
 public function fill_included_resources($resources) {
 	throw new \Exception('can not add included resources to errors, add them as meta data instead');
-}
-
-/**
- * generates a http status string from an status code
- * 
- * @param  int    $status_code one of the predefined ones in ::$http_status_messages
- *                             else, 500 is assumed
- * @return string              the status code with the standard status message
- *                             i.e. "404 Not Found"
- */
-public static function get_http_status_message($status_code) {
-	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = 500;
-	}
-	
-	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
 }

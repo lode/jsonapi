@@ -31,6 +31,20 @@ const ENCODE_DEFAULT = 320;
 const ENCODE_DEBUG   = 448;
 
 /**
+ * http status messages used for string output
+ */
+public static $http_status_messages = array(
+	400 => 'Bad Request',
+	401 => 'Unauthorized',
+	403 => 'Forbidden',
+	404 => 'Not Found',
+	405 => 'Method Not Allowed',
+	422 => 'Unprocessable Entity',
+	500 => 'Internal Server Error',
+	503 => 'Service Unavailable',
+);
+
+/**
  * internal data containers
  */
 protected $links              = array();
@@ -119,6 +133,20 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	
 	header('Content-Type: '.$content_type.'; charset=utf-8');
 	echo $response;
+}
+
+/**
+ * sets the http status code for this response
+ * 
+ * @param int $http_status one of the predefined ones in ::$http_status_messages
+ *                         by default, 200 is set
+ */
+public function set_http_status($http_status) {
+	if (empty($http_status)) {
+		return;
+	}
+	
+	$this->http_status = $http_status;
 }
 
 /**
@@ -222,6 +250,22 @@ public function fill_meta($meta_data) {
 	foreach ($meta_data as $key => $single_meta_data) {
 		$this->add_meta($key, $single_meta_data);
 	}
+}
+
+/**
+ * generates a http status string from an status code
+ * 
+ * @param  int    $status_code one of the predefined ones in ::$http_status_messages
+ *                             else, 500 is assumed
+ * @return string              the status code with the standard status message
+ *                             i.e. "404 Not Found"
+ */
+public static function get_http_status_message($status_code) {
+	if (empty(self::$http_status_messages[$status_code])) {
+		$status_code = 500;
+	}
+	
+	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
 }
