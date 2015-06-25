@@ -37,6 +37,12 @@ const ENCODE_DEFAULT = 320;
 const ENCODE_DEBUG   = 448;
 
 /**
+ * whether or not ->send_response() sends out basic status headers
+ * if set to true, it sends the status code and the location header
+ */
+public static $send_status_headers = true;
+
+/**
  * http status messages used for string output
  */
 public static $http_status_messages = array(
@@ -147,7 +153,9 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
-	$this->send_status_headers();
+	if (self::$send_status_headers) {
+		$this->send_status_headers();
+	}
 	
 	header('Content-Type: '.$content_type.'; charset=utf-8');
 	
@@ -193,6 +201,9 @@ public function set_http_status($http_status) {
 	if (empty($http_status)) {
 		return;
 	}
+	if (self::$send_status_headers == false && base::$debug) {
+		trigger_error('status will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
+	}
 	
 	$this->http_status = $http_status;
 }
@@ -203,6 +214,10 @@ public function set_http_status($http_status) {
  * @param string $location    absolute url
  */
 public function set_redirect_location($location) {
+	if (self::$send_status_headers == false && base::$debug) {
+		trigger_error('location will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
+	}
+	
 	$this->redirect_location = $location;
 }
 
