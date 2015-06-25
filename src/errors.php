@@ -34,14 +34,23 @@ class errors extends response {
  * @deprecated
  * @see response::$http_status_messages
  */
-public static $http_status_messages = response::$http_status_messages;
+public static $http_status_messages = array(
+	400 => 'Bad Request',
+	401 => 'Unauthorized',
+	403 => 'Forbidden',
+	404 => 'Not Found',
+	405 => 'Method Not Allowed',
+	422 => 'Unprocessable Entity',
+	500 => 'Internal Server Error',
+	503 => 'Service Unavailable',
+);
 
 /**
  * internal data containers
  */
 protected $links;
 protected $errors_collection;
-protected $http_status;
+protected $http_status = response::STATUS_INTERNAL_SERVER_ERROR;
 protected $meta_data;
 
 /**
@@ -133,15 +142,17 @@ public function send_response($content_type=null, $encode_options=448, $response
 /**
  * sets the http status code for this error response
  * 
+ * @note this does the same as response->set_http_status() except it forces an error status
+ * 
  * @param int $http_status one of the predefined ones in response::$http_status_messages
  *                         by default, 500 is set
  */
 public function set_http_status($http_status) {
-	if (empty($http_status)) {
-		return;
+	if ($http_status && $http_status < 400) {
+		throw new \Exception('can not send out errors response with a non-error http status');
 	}
 	
-	$this->http_status = $http_status;
+	return parent::set_http_status($http_status);
 }
 
 /**

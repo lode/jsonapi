@@ -50,6 +50,7 @@ public static $http_status_messages = array(
 protected $links              = array();
 protected $meta_data          = array();
 protected $included_resources = array();
+protected $http_status        = self::STATUS_OK;
 
 /**
  * base constructor for all response objects (resource, collection, errors)
