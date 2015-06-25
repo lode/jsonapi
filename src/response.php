@@ -6,6 +6,11 @@ class response extends base {
 
 /**
  * advised http status codes
+ * 
+ * next to some defaults, it has a special ::STATUS_FORBIDDEN_HIDDEN ..
+ * .. this is for `403 Forbidden` which would reveal information about existence ..
+ * .. by default this will send out a `404 Not Found` ..
+ * .. when base::$debug is true, you'll see the real `403 Forbidden`
  */
 const STATUS_OK                    = 200;
 const STATUS_CREATED               = 201;
@@ -16,6 +21,7 @@ const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
+const STATUS_FORBIDDEN_HIDDEN      = 403.5;
 const STATUS_NOT_FOUND             = 404;
 const STATUS_METHOD_NOT_ALLOWED    = 405;
 const STATUS_UNPROCESSABLE_ENTITY  = 422;
@@ -327,14 +333,23 @@ public function fill_meta($meta_data) {
 /**
  * generates a http status string from an status code
  * 
+ * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
+ *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
+ *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
+ * 
  * @param  int    $status_code one of the predefined ones in ::$http_status_messages
  *                             else, 500 is assumed
  * @return string              the status code with the standard status message
  *                             i.e. "404 Not Found"
  */
 public static function get_http_status_message($status_code) {
+	// decide whether we hide most forbidden statuses
+	if ($status_code == self::STATUS_FORBIDDEN_HIDDEN) {
+		$status_code = (base::$debug) ? self::STATUS_FORBIDDEN : self::STATUS_NOT_FOUND;
+	}
+	
 	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = 500;
+		$status_code = self::STATUS_INTERNAL_SERVER_ERROR;
 	}
 	
 	return $status_code.' '.self::$http_status_messages[$status_code];
