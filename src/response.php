@@ -63,6 +63,7 @@ protected $links              = array();
 protected $meta_data          = array();
 protected $included_resources = array();
 protected $http_status        = self::STATUS_OK;
+protected $redirect_location  = null;
 
 /**
  * base constructor for all response objects (resource, collection, errors)
@@ -125,6 +126,8 @@ public function get_json($encode_options=null) {
  * sends out the json response to the browser
  * this will fetch the response from ->get_json() if not given via $response
  * 
+ * @note this also sets the needed http headers (status, location and content-type)
+ * 
  * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
  *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
@@ -144,12 +147,35 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
-	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
-	$status_message = self::get_http_status_message($this->http_status);
-	header($http_protocol.' '.$status_message);
+	$this->send_status_headers();
 	
 	header('Content-Type: '.$content_type.'; charset=utf-8');
 	echo $response;
+}
+
+/**
+ * sends out the http status code and optional redirect location
+ * 
+ * @return void
+ */
+private function send_status_headers() {
+	if ($this->redirect_location) {
+		if ($this->http_status == self::STATUS_OK) {
+			$this->set_http_status(self::STATUS_TEMPORARY_REDIRECT);
+		}
+		
+		header('Location: '.$this->redirect_location, $replace=true, $this->http_status);
+		return;
+	}
+	
+	if (function_exists('http_response_code')) {
+		http_response_code($this->http_status);
+		return;
+	}
+	
+	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
+	$status_message = self::get_http_status_message($this->http_status);
+	header($http_protocol.' '.$status_message);
 }
 
 /**
@@ -164,6 +190,15 @@ public function set_http_status($http_status) {
 	}
 	
 	$this->http_status = $http_status;
+}
+
+/**
+ * sets a new location the client should follow
+ * 
+ * @param string $location    absolute url
+ */
+public function set_redirect_location($location) {
+	$this->redirect_location = $location;
 }
 
 /**
