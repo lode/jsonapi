@@ -150,6 +150,11 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	$this->send_status_headers();
 	
 	header('Content-Type: '.$content_type.'; charset=utf-8');
+	
+	if ($this->http_status == self::STATUS_NO_CONTENT) {
+		return;
+	}
+	
 	echo $response;
 }
 
