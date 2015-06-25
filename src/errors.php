@@ -119,23 +119,21 @@ public function get_array() {
 
 /**
  * sends out the json response to the browser
- * this will fetch the response from ->get_json()
- * @note it will also terminate script execution afterwards
+ * this will fetch the response from ->get_json() if not given via $response
  * 
- * @param  string $content_type   optional, defaults to the official IANA registered one
- *                                or to a debug version when ::$debug is set to true
+ * @note this is the same as jsonapi\response->send_response() ..
+ *       .. but it will also terminate script execution afterwards
+ * 
+ * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
+ *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
- *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=null, $encode_options=448, $response=null) {
-	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
-	$status_message = self::get_http_status_message($this->http_status);
-	header($http_protocol.' '.$status_message);
-	
-	parent::send_response($content_type, $encode_options);
+public function send_response($content_type=null, $encode_options=null, $response=null) {
+	parent::send_response($content_type, $encode_options, $response);
 	exit;
 }
 
