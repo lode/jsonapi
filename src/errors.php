@@ -31,9 +31,16 @@ namespace alsvanzelf\jsonapi;
 class errors extends response {
 
 /**
- * http status messages used for string output
+ * @deprecated
+ * @see response::$http_status_messages
  */
 public static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
 	400 => 'Bad Request',
 	401 => 'Unauthorized',
 	403 => 'Forbidden',
@@ -49,7 +56,7 @@ public static $http_status_messages = array(
  */
 protected $links;
 protected $errors_collection;
-protected $http_status;
+protected $http_status = response::STATUS_INTERNAL_SERVER_ERROR;
 protected $meta_data;
 
 /**
@@ -118,38 +125,38 @@ public function get_array() {
 
 /**
  * sends out the json response to the browser
- * this will fetch the response from ->get_json()
- * @note it will also terminate script execution afterwards
+ * this will fetch the response from ->get_json() if not given via $response
  * 
- * @param  string $content_type   optional, defaults to the official IANA registered one
- *                                or to a debug version when ::$debug is set to true
+ * @note this is the same as jsonapi\response->send_response() ..
+ *       .. but it will also terminate script execution afterwards
+ * 
+ * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
+ *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
- *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=null, $encode_options=448, $response=null) {
-	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
-	$status_message = self::get_http_status_message($this->http_status);
-	header($http_protocol.' '.$status_message);
-	
-	parent::send_response($content_type, $encode_options);
+public function send_response($content_type=null, $encode_options=null, $response=null) {
+	parent::send_response($content_type, $encode_options, $response);
 	exit;
 }
 
 /**
  * sets the http status code for this error response
  * 
- * @param int $http_status one of the predefined ones in ::$http_status_messages
- *                         else, 500 is set
+ * @note this does the same as response->set_http_status() except it forces an error status
+ * 
+ * @param int $http_status one of the predefined ones in response::$http_status_messages
+ *                         by default, 500 is set
  */
 public function set_http_status($http_status) {
-	if (empty($http_status)) {
-		return;
+	if ($http_status && $http_status < 400) {
+		throw new \Exception('can not send out errors response with a non-error http status');
 	}
 	
-	$this->http_status = $http_status;
+	return parent::set_http_status($http_status);
 }
 
 /**
@@ -261,19 +268,11 @@ public function fill_included_resources($resources) {
 }
 
 /**
- * generates a http status string from an status code
- * 
- * @param  int    $status_code one of the predefined ones in ::$http_status_messages
- *                             else, 500 is assumed
- * @return string              the status code with the standard status message
- *                             i.e. "404 Not Found"
+ * @deprecated
+ * @see response::get_http_status_message()
  */
 public static function get_http_status_message($status_code) {
-	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = 500;
-	}
-	
-	return $status_code.' '.self::$http_status_messages[$status_code];
+	return response::get_http_status_message($status_code);
 }
 
 }

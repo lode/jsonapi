@@ -7,6 +7,12 @@ class response extends base {
 /**
  * advised http status codes
  */
+const STATUS_OK                    = 200;
+const STATUS_CREATED               = 201;
+const STATUS_NO_CONTENT            = 204;
+const STATUS_NOT_MODIFIED          = 304;
+const STATUS_TEMPORARY_REDIRECT    = 307;
+const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
@@ -31,11 +37,39 @@ const ENCODE_DEFAULT = 320;
 const ENCODE_DEBUG   = 448;
 
 /**
+ * whether or not ->send_response() sends out basic status headers
+ * if set to true, it sends the status code and the location header
+ */
+public static $send_status_headers = true;
+
+/**
+ * http status messages used for string output
+ */
+public static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
+	400 => 'Bad Request',
+	401 => 'Unauthorized',
+	403 => 'Forbidden',
+	404 => 'Not Found',
+	405 => 'Method Not Allowed',
+	422 => 'Unprocessable Entity',
+	500 => 'Internal Server Error',
+	503 => 'Service Unavailable',
+);
+
+/**
  * internal data containers
  */
 protected $links              = array();
 protected $meta_data          = array();
 protected $included_resources = array();
+protected $http_status        = self::STATUS_OK;
+protected $redirect_location  = null;
 
 /**
  * base constructor for all response objects (resource, collection, errors)
@@ -98,6 +132,8 @@ public function get_json($encode_options=null) {
  * sends out the json response to the browser
  * this will fetch the response from ->get_json() if not given via $response
  * 
+ * @note this also sets the needed http headers (status, location and content-type)
+ * 
  * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
  *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
@@ -106,7 +142,7 @@ public function get_json($encode_options=null) {
  * @return void                   however, a string will be echo'd to the browser
  */
 public function send_response($content_type=null, $encode_options=null, $response=null) {
-	if (is_null($response)) {
+	if (is_null($response) && $this->http_status != self::STATUS_NO_CONTENT) {
 		$response = $this->get_json($encode_options);
 	}
 	
@@ -117,8 +153,72 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
+	if (self::$send_status_headers) {
+		$this->send_status_headers();
+	}
+	
 	header('Content-Type: '.$content_type.'; charset=utf-8');
+	
+	if ($this->http_status == self::STATUS_NO_CONTENT) {
+		return;
+	}
+	
 	echo $response;
+}
+
+/**
+ * sends out the http status code and optional redirect location
+ * 
+ * @return void
+ */
+private function send_status_headers() {
+	if ($this->redirect_location) {
+		if ($this->http_status == self::STATUS_OK) {
+			$this->set_http_status(self::STATUS_TEMPORARY_REDIRECT);
+		}
+		
+		header('Location: '.$this->redirect_location, $replace=true, $this->http_status);
+		return;
+	}
+	
+	if (function_exists('http_response_code')) {
+		http_response_code($this->http_status);
+		return;
+	}
+	
+	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
+	$status_message = self::get_http_status_message($this->http_status);
+	header($http_protocol.' '.$status_message);
+}
+
+/**
+ * sets the http status code for this response
+ * 
+ * @param int $http_status one of the predefined ones in ::$http_status_messages
+ *                         by default, 200 is set
+ */
+public function set_http_status($http_status) {
+	if (empty($http_status)) {
+		return;
+	}
+	if (self::$send_status_headers == false && base::$debug) {
+		trigger_error('status will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
+	}
+	
+	$this->http_status = $http_status;
+}
+
+/**
+ * sets a new location the client should follow
+ * 
+ * @param string $location    absolute url
+ */
+public function set_redirect_location($location) {
+	if (self::$send_status_headers == false && base::$debug) {
+		trigger_error('location will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
+	}
+	
+	$this->redirect_location = $location;
 }
 
 /**
@@ -222,6 +322,22 @@ public function fill_meta($meta_data) {
 	foreach ($meta_data as $key => $single_meta_data) {
 		$this->add_meta($key, $single_meta_data);
 	}
+}
+
+/**
+ * generates a http status string from an status code
+ * 
+ * @param  int    $status_code one of the predefined ones in ::$http_status_messages
+ *                             else, 500 is assumed
+ * @return string              the status code with the standard status message
+ *                             i.e. "404 Not Found"
+ */
+public static function get_http_status_message($status_code) {
+	if (empty(self::$http_status_messages[$status_code])) {
+		$status_code = 500;
+	}
+	
+	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
 }
