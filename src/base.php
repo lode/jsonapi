@@ -91,7 +91,7 @@ protected static function convert_object_to_array($object) {
  * 
  * right now this converts:
  * - 51 (response::STATUS_FORBIDDEN_HIDDEN) into 403 or 404
- * - everything unknown (see response::$http_status_messages) into 500
+ * - everything unknown (see response::STATUS_*) into 500
  * 
  * @param  int $http_status
  * @return int

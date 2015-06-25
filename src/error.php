@@ -119,7 +119,7 @@ public function get_array() {
  * returns the set status code apart from the response array
  * used by the errors collection to figure out the generic status code
  * 
- * @return int one of the predefined ones in jsonapi\response::$http_status_messages
+ * @return int one of the predefined ones in jsonapi\response::STATUS_*
  */
 public function get_http_status() {
 	return $this->http_status;
@@ -136,7 +136,7 @@ public function get_http_status() {
  *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
  *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
  * 
- * @param int $http_status one of the predefined ones in jsonapi\response::$http_status_messages
+ * @param int $http_status one of the predefined ones in jsonapi\response::STATUS_*
  *                         by default, 500 is set
  */
 public function set_http_status($http_status) {

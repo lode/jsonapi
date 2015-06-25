@@ -204,7 +204,7 @@ private function send_status_headers() {
  *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
  *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
  * 
- * @param int $http_status one of the predefined ones in ::$http_status_messages
+ * @param int $http_status one of the predefined ones in ::STATUS_*
  *                         by default, 200 is set
  */
 public function set_http_status($http_status) {
@@ -341,7 +341,7 @@ public function fill_meta($meta_data) {
  *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
  *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
  * 
- * @param  int    $status_code one of the predefined ones in ::$http_status_messages
+ * @param  int    $status_code one of the predefined ones in ::STATUS_*
  *                             else, 500 is assumed
  * @return string              the status code with the standard status message
  *                             i.e. "404 Not Found"
