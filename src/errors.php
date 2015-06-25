@@ -246,12 +246,4 @@ public function fill_included_resources($resources) {
 	throw new \Exception('can not add included resources to errors, add them as meta data instead');
 }
 
-/**
- * @deprecated
- * @see response::get_http_status_message()
- */
-public static function get_http_status_message($status_code) {
-	return response::get_http_status_message($status_code);
-}
-
 }
