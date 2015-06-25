@@ -35,6 +35,12 @@ class errors extends response {
  * @see response::$http_status_messages
  */
 public static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
 	400 => 'Bad Request',
 	401 => 'Unauthorized',
 	403 => 'Forbidden',

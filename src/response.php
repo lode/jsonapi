@@ -7,6 +7,12 @@ class response extends base {
 /**
  * advised http status codes
  */
+const STATUS_OK                    = 200;
+const STATUS_CREATED               = 201;
+const STATUS_NO_CONTENT            = 204;
+const STATUS_NOT_MODIFIED          = 304;
+const STATUS_TEMPORARY_REDIRECT    = 307;
+const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
@@ -34,6 +40,12 @@ const ENCODE_DEBUG   = 448;
  * http status messages used for string output
  */
 public static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
 	400 => 'Bad Request',
 	401 => 'Unauthorized',
 	403 => 'Forbidden',
