@@ -6,6 +6,11 @@ class response extends base {
 
 /**
  * advised http status codes
+ * 
+ * next to some defaults, it has a special ::STATUS_FORBIDDEN_HIDDEN ..
+ * .. this is for `403 Forbidden` which would reveal information about existence ..
+ * .. by default this will send out a `404 Not Found` ..
+ * .. when base::$debug is true, you'll see the real `403 Forbidden`
  */
 const STATUS_OK                    = 200;
 const STATUS_CREATED               = 201;
@@ -16,6 +21,7 @@ const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
+const STATUS_FORBIDDEN_HIDDEN      = 51;
 const STATUS_NOT_FOUND             = 404;
 const STATUS_METHOD_NOT_ALLOWED    = 405;
 const STATUS_UNPROCESSABLE_ENTITY  = 422;
@@ -194,7 +200,11 @@ private function send_status_headers() {
 /**
  * sets the http status code for this response
  * 
- * @param int $http_status one of the predefined ones in ::$http_status_messages
+ * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
+ *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
+ *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
+ * 
+ * @param int $http_status one of the predefined ones in ::STATUS_*
  *                         by default, 200 is set
  */
 public function set_http_status($http_status) {
@@ -205,7 +215,7 @@ public function set_http_status($http_status) {
 		trigger_error('status will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
 	}
 	
-	$this->http_status = $http_status;
+	$this->http_status = parent::convert_http_status($http_status);
 }
 
 /**
@@ -327,16 +337,17 @@ public function fill_meta($meta_data) {
 /**
  * generates a http status string from an status code
  * 
- * @param  int    $status_code one of the predefined ones in ::$http_status_messages
+ * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
+ *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
+ *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
+ * 
+ * @param  int    $status_code one of the predefined ones in ::STATUS_*
  *                             else, 500 is assumed
  * @return string              the status code with the standard status message
  *                             i.e. "404 Not Found"
  */
 public static function get_http_status_message($status_code) {
-	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = 500;
-	}
-	
+	$status_code = parent::convert_http_status($status_code);
 	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
