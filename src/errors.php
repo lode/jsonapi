@@ -131,7 +131,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
  *                         by default, 500 is set
  */
 public function set_http_status($http_status) {
-	if ($http_status && $http_status < 400) {
+	if ($http_status && $http_status < 400 && $http_status != response::STATUS_FORBIDDEN_HIDDEN) {
 		throw new \Exception('can not send out errors response with a non-error http status');
 	}
 	

@@ -21,7 +21,7 @@ const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
-const STATUS_FORBIDDEN_HIDDEN      = 403.5;
+const STATUS_FORBIDDEN_HIDDEN      = 51;
 const STATUS_NOT_FOUND             = 404;
 const STATUS_METHOD_NOT_ALLOWED    = 405;
 const STATUS_UNPROCESSABLE_ENTITY  = 422;
@@ -200,6 +200,10 @@ private function send_status_headers() {
 /**
  * sets the http status code for this response
  * 
+ * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
+ *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
+ *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
+ * 
  * @param int $http_status one of the predefined ones in ::$http_status_messages
  *                         by default, 200 is set
  */
@@ -211,7 +215,7 @@ public function set_http_status($http_status) {
 		trigger_error('status will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
 	}
 	
-	$this->http_status = $http_status;
+	$this->http_status = parent::convert_http_status($http_status);
 }
 
 /**
@@ -343,15 +347,7 @@ public function fill_meta($meta_data) {
  *                             i.e. "404 Not Found"
  */
 public static function get_http_status_message($status_code) {
-	// decide whether we hide most forbidden statuses
-	if ($status_code == self::STATUS_FORBIDDEN_HIDDEN) {
-		$status_code = (base::$debug) ? self::STATUS_FORBIDDEN : self::STATUS_NOT_FOUND;
-	}
-	
-	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = self::STATUS_INTERNAL_SERVER_ERROR;
-	}
-	
+	$status_code = parent::convert_http_status($status_code);
 	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
