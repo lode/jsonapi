@@ -31,27 +31,6 @@ namespace alsvanzelf\jsonapi;
 class errors extends response {
 
 /**
- * @deprecated
- * @see response::$http_status_messages
- */
-public static $http_status_messages = array(
-	200 => 'OK',
-	201 => 'Created',
-	204 => 'No Content',
-	304 => 'Not Modified',
-	307 => 'Temporary Redirect',
-	308 => 'Permanent Redirect',
-	400 => 'Bad Request',
-	401 => 'Unauthorized',
-	403 => 'Forbidden',
-	404 => 'Not Found',
-	405 => 'Method Not Allowed',
-	422 => 'Unprocessable Entity',
-	500 => 'Internal Server Error',
-	503 => 'Service Unavailable',
-);
-
-/**
  * internal data containers
  */
 protected $links;
@@ -148,7 +127,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
  * 
  * @note this does the same as response->set_http_status() except it forces an error status
  * 
- * @param int $http_status one of the predefined ones in response::$http_status_messages
+ * @param int $http_status one of the predefined ones in jsonapi\response::$http_status_messages
  *                         by default, 500 is set
  */
 public function set_http_status($http_status) {
