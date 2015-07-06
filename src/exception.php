@@ -25,7 +25,7 @@ protected $about_link;
  * 
  * @param string    $message
  * @param integer   $code             optional, defaults to 500
- *                                    if using one of the predefined ones in response::STATUS_*
+ *                                    if using one of the predefined ones in jsonapi\response::STATUS_*
  *                                    sends out those as http status
  * @param Exception $previous
  * @param string    $friendly_message optional, which message to output to clients
@@ -67,7 +67,7 @@ public function set_about_link($about_link) {
  * 
  * @see errors->send_response()
  */
-public function send_response($content_type=null, $encode_options=448, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
 	$jsonapi->send_response($content_type, $encode_options, $response);
 	exit;
