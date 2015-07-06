@@ -11,30 +11,74 @@ namespace alsvanzelf\jsonapi;
 
 class exception extends \Exception {
 
+/**
+ * internal data containers
+ */
 protected $friendly_message;
 protected $about_link;
 
+/**
+ * custom exception for usage by jsonapi projects
+ * when echo'd, sends a jsonapi\errors response with the exception in it
+ * 
+ * can be thrown as a normal exception, optionally with two extra parameters
+ * 
+ * @param string    $message
+ * @param integer   $code             optional, defaults to 500
+ *                                    if using one of the predefined ones in response::STATUS_*
+ *                                    sends out those as http status
+ * @param Exception $previous
+ * @param string    $friendly_message optional, which message to output to clients
+ *                                    the exception $message is hidden unless base::$debug is true
+ * @param string    $about_link       optional, a url to send clients to for more explanation
+ *                                    i.e. a link to the api documentation
+ */
 public function __construct($message='', $code=0, $previous=null, $friendly_message=null, $about_link=null) {
 	parent::__construct($message, $code, $previous);
 	
-	$this->set_friendly_message($friendly_message);
-	$this->set_about_link($about_link);
+	if ($friendly_message) {
+		$this->set_friendly_message($friendly_message);
+	}
+	if ($about_link) {
+		$this->set_about_link($about_link);
+	}
 }
 
-public function set_friendly_message($message) {
-	$this->friendly_message = $message;
+/**
+ * sets a main user facing message
+ * 
+ * @see error->set_friendly_message()
+ */
+public function set_friendly_message($friendly_message) {
+	$this->friendly_message = $friendly_message;
 }
 
-public function set_about_link($link) {
-	$this->about_link = $link;
+/**
+ * sets a link which can help in solving the problem
+ * 
+ * @see error->set_about_link()
+ */
+public function set_about_link($about_link) {
+	$this->about_link = $about_link;
 }
 
-public function send_response($content_type=response::CONTENT_TYPE_OFFICIAL, $encode_options=448, $response=null) {
+/**
+ * sends out the json response of an jsonapi\errors object to the browser
+ * 
+ * @see errors->send_response()
+ */
+public function send_response($content_type=null, $encode_options=448, $response=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
 	$jsonapi->send_response($content_type, $encode_options, $response);
 	exit;
 }
 
+/**
+ * alias for ->send_response()
+ * 
+ * @return string empty for sake of correctness
+ *                as ->send_response() already echo's the json and terminates script execution
+ */
 public function __toString() {
 	$this->send_response();
 	return '';
