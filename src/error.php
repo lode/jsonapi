@@ -151,20 +151,12 @@ public function get_http_status() {
  * @note this does only hint but not strictly set the actual status code send out to the browser
  *       use jsonapi\errors->set_http_status() to be sure
  * 
- * @note use response::STATUS_FORBIDDEN_NOT_FOUND to hide unauthorized items
- *       @see response::STATUS_*
- * 
  * @param mixed $http_status string:  an http status, should start with the numeric status code
  *                           integer: one of the predefined ones in response::STATUS_* ..
  *                                    .. will be converted to string
  */
 public function set_http_status($http_status) {
 	if (is_int($http_status)) {
-		// decide whether we hide most forbidden statuses
-		if ($http_status == response::STATUS_FORBIDDEN_NOT_FOUND) {
-			$http_status = (self::$debug) ? response::STATUS_FORBIDDEN : response::STATUS_NOT_FOUND;
-		}
-		
 		$http_status = (string)$http_status;
 		
 		// add status message for a few known ones
