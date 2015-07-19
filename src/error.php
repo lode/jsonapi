@@ -25,6 +25,26 @@ private $get_parameter_name;
 private $meta_data;
 
 /**
+ * http status messages used for string output
+ */
+private static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
+	400 => 'Bad Request',
+	401 => 'Unauthorized',
+	403 => 'Forbidden',
+	404 => 'Not Found',
+	405 => 'Method Not Allowed',
+	422 => 'Unprocessable Entity',
+	500 => 'Internal Server Error',
+	503 => 'Service Unavailable',
+);
+
+/**
  * creates a new error for inclusion in the errors collection
  * 
  * @note error message is only shown when debug mode is on (@see base::$debug)

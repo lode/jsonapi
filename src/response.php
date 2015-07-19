@@ -48,26 +48,6 @@ const ENCODE_DEBUG   = 448;
 public static $send_status_headers = true;
 
 /**
- * http status messages used for string output
- */
-public static $http_status_messages = array(
-	200 => 'OK',
-	201 => 'Created',
-	204 => 'No Content',
-	304 => 'Not Modified',
-	307 => 'Temporary Redirect',
-	308 => 'Permanent Redirect',
-	400 => 'Bad Request',
-	401 => 'Unauthorized',
-	403 => 'Forbidden',
-	404 => 'Not Found',
-	405 => 'Method Not Allowed',
-	422 => 'Unprocessable Entity',
-	500 => 'Internal Server Error',
-	503 => 'Service Unavailable',
-);
-
-/**
  * internal data containers
  */
 protected $links              = array();
