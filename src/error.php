@@ -71,8 +71,7 @@ public function get_array() {
 	$response_part = array();
 	
 	// the basics
-	$status_message = response::get_http_status_message($this->http_status);
-	$response_part['status'] = $status_message;
+	$response_part['status'] = $this->http_status;
 	if (base::$debug) {
 		$response_part['code'] = $this->error_message;
 	}
@@ -119,10 +118,10 @@ public function get_array() {
  * returns the set status code apart from the response array
  * used by the errors collection to figure out the generic status code
  * 
- * @return int one of the predefined ones in jsonapi\response::STATUS_*
+ * @return int probably one of the predefined ones in jsonapi\response::STATUS_*
  */
 public function get_http_status() {
-	return $this->http_status;
+	return (int)$this->http_status;
 }
 
 /**
@@ -132,15 +131,29 @@ public function get_http_status() {
  * @note this does only hint but not strictly set the actual status code send out to the browser
  *       use jsonapi\errors->set_http_status() to be sure
  * 
- * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
- *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
- *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
+ * @note use response::STATUS_FORBIDDEN_HIDDEN to hide unauthorized items
+ *       @see response::STATUS_*
  * 
- * @param int $http_status one of the predefined ones in jsonapi\response::STATUS_*
- *                         by default, 500 is set
+ * @param mixed $http_status string:  an http status, should start with the numeric status code
+ *                           integer: one of the predefined ones in response::STATUS_* ..
+ *                                    .. will be converted to string
  */
 public function set_http_status($http_status) {
-	$this->http_status = parent::convert_http_status($http_status);
+	if (is_int($http_status)) {
+		// decide whether we hide most forbidden statuses
+		if ($http_status == response::STATUS_FORBIDDEN_HIDDEN) {
+			$http_status = (self::$debug) ? response::STATUS_FORBIDDEN : response::STATUS_NOT_FOUND;
+		}
+		
+		$http_status = (string)$http_status;
+		
+		// add status message for a few known ones
+		if (isset(self::$http_status_messages[$http_status])) {
+			$http_status .= ' '.self::$http_status_messages[$http_status];
+		}
+	}
+	
+	$this->http_status = $http_status;
 }
 
 /**

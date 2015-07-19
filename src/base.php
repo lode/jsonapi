@@ -86,27 +86,4 @@ protected static function convert_object_to_array($object) {
 	return get_object_vars($object);
 }
 
-/**
- * convert a http status code into a known one we can send out
- * 
- * right now this converts:
- * - 51 (response::STATUS_FORBIDDEN_HIDDEN) into 403 or 404
- * - everything unknown (see response::STATUS_*) into 500
- * 
- * @param  int $http_status
- * @return int
- */
-protected static function convert_http_status($http_status) {
-	// decide whether we hide most forbidden statuses
-	if ($http_status == response::STATUS_FORBIDDEN_HIDDEN) {
-		$http_status = (self::$debug) ? response::STATUS_FORBIDDEN : response::STATUS_NOT_FOUND;
-	}
-	
-	if (empty(response::$http_status_messages[$http_status])) {
-		$http_status = response::STATUS_INTERNAL_SERVER_ERROR;
-	}
-	
-	return $http_status;
-}
-
 }

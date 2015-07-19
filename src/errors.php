@@ -123,15 +123,17 @@ public function send_response($content_type=null, $encode_options=null, $respons
 }
 
 /**
- * sets the http status code for this error response
+ * sets the http status code for this errors response
+ * 
+ * @note use response::STATUS_FORBIDDEN_HIDDEN to hide unauthorized items
+ *       @see response::STATUS_*
  * 
  * @note this does the same as response->set_http_status() except it forces an error status
  * 
- * @param int $http_status one of the predefined ones in jsonapi\response::STATUS_*
- *                         by default, 500 is set
+ * @param int $http_status any will do, you can easily pass one of the predefined ones in ::STATUS_*
  */
 public function set_http_status($http_status) {
-	if ($http_status && $http_status < 400 && $http_status != response::STATUS_FORBIDDEN_HIDDEN) {
+	if ($http_status < 400) {
 		throw new \Exception('can not send out errors response with a non-error http status');
 	}
 	
@@ -184,7 +186,9 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	$error_status  = $exception->getCode();
 	
 	$new_error = new error($error_message, $friendly_message, $about_link);
-	$new_error->set_http_status($error_status);
+	if ($error_status) {
+		$new_error->set_http_status($error_status);
+	}
 	
 	// meta data
 	if (base::$debug) {
@@ -229,7 +233,9 @@ private function add_error_object(\alsvanzelf\jsonapi\error $error) {
 	$error_http_status   = $error->get_http_status();
 	
 	$this->errors_collection[] = $error_response_part;
-	$this->set_http_status($error_http_status);
+	if ($error_http_status) {
+		$this->set_http_status($error_http_status);
+	}
 }
 
 /**

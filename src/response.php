@@ -7,10 +7,9 @@ class response extends base {
 /**
  * advised http status codes
  * 
- * next to some defaults, it has a special ::STATUS_FORBIDDEN_HIDDEN ..
- * .. this is for `403 Forbidden` which would reveal information about existence ..
- * .. by default this will send out a `404 Not Found` ..
- * .. when base::$debug is true, you'll see the real `403 Forbidden`
+ * hide unauthorized requests to existing items by using STATUS_FORBIDDEN_HIDDEN
+ * by default this will be converted to a STATUS_NOT_FOUND, hiding existence
+ * when base::$debug is true, it will show a real STATUS_FORBIDDEN
  */
 const STATUS_OK                    = 200;
 const STATUS_CREATED               = 201;
@@ -21,7 +20,7 @@ const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
-const STATUS_FORBIDDEN_HIDDEN      = 51;
+const STATUS_FORBIDDEN_HIDDEN      = 403404;
 const STATUS_NOT_FOUND             = 404;
 const STATUS_METHOD_NOT_ALLOWED    = 405;
 const STATUS_UNPROCESSABLE_ENTITY  = 422;
@@ -174,6 +173,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
 
 /**
  * sends out the http status code and optional redirect location
+ * defaults to ::STATUS_OK, or ::STATUS_INTERNAL_SERVER_ERROR for an errors response
  * 
  * @return void
  */
@@ -187,35 +187,21 @@ private function send_status_headers() {
 		return;
 	}
 	
-	if (function_exists('http_response_code')) {
-		http_response_code($this->http_status);
-		return;
-	}
-	
-	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
-	$status_message = self::get_http_status_message($this->http_status);
-	header($http_protocol.' '.$status_message);
+	http_response_code($this->http_status);
 }
 
 /**
  * sets the http status code for this response
  * 
- * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
- *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
- *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
- * 
- * @param int $http_status one of the predefined ones in ::STATUS_*
- *                         by default, 200 is set
+ * @param int $http_status any will do, you can easily pass one of the predefined ones in ::STATUS_*
  */
 public function set_http_status($http_status) {
-	if (empty($http_status)) {
-		return;
-	}
-	if (self::$send_status_headers == false && base::$debug) {
-		trigger_error('status will not be send out unless response::$send_status_headers is true', E_USER_NOTICE);
+	// sanity check, this should already be done in jsonapi\error(s)
+	if ($http_status == response::STATUS_FORBIDDEN_HIDDEN) {
+		$http_status = (self::$debug) ? response::STATUS_FORBIDDEN : response::STATUS_NOT_FOUND;
 	}
 	
-	$this->http_status = parent::convert_http_status($http_status);
+	$this->http_status = $http_status;
 }
 
 /**
@@ -332,23 +318,6 @@ public function fill_meta($meta_data) {
 	foreach ($meta_data as $key => $single_meta_data) {
 		$this->add_meta($key, $single_meta_data);
 	}
-}
-
-/**
- * generates a http status string from an status code
- * 
- * @note the special ::STATUS_FORBIDDEN_HIDDEN status is decided here
- *       it is turned into ::STATUS_FORBIDDEN when base::$debug is true ..
- *       .. or into ::STATUS_NOT_FOUND when base::$debug is false
- * 
- * @param  int    $status_code one of the predefined ones in ::STATUS_*
- *                             else, 500 is assumed
- * @return string              the status code with the standard status message
- *                             i.e. "404 Not Found"
- */
-public static function get_http_status_message($status_code) {
-	$status_code = parent::convert_http_status($status_code);
-	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
 }
