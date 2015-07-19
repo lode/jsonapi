@@ -8,6 +8,12 @@ class base {
  * @deprecated
  * @see response::STATUS_*
  */
+const STATUS_OK                    = response::STATUS_OK;
+const STATUS_CREATED               = response::STATUS_CREATED;
+const STATUS_NO_CONTENT            = response::STATUS_NO_CONTENT;
+const STATUS_NOT_MODIFIED          = response::STATUS_NOT_MODIFIED;
+const STATUS_TEMPORARY_REDIRECT    = response::STATUS_TEMPORARY_REDIRECT;
+const STATUS_PERMANENT_REDIRECT    = response::STATUS_PERMANENT_REDIRECT;
 const STATUS_BAD_REQUEST           = response::STATUS_BAD_REQUEST;
 const STATUS_UNAUTHORIZED          = response::STATUS_UNAUTHORIZED;
 const STATUS_FORBIDDEN             = response::STATUS_FORBIDDEN;

@@ -17,39 +17,19 @@ namespace alsvanzelf\jsonapi;
  * - meta data @see ->add_meta() or ->fill_meta()
  * - self link @see ->set_self_link()
  * 
- * @note ease error handling by adding this in your own exception handling
- * 
- * ```
- * public function __toString() {
- *     $jsonapi = new \alsvanzelf\jsonapi\errors($this);
- *     $jsonapi->send_response();
- *     return '';
- * }
- * ```
+ * @note ease error handling by using a jsonapi\exception
+ *       @see examples/errors_exception_direct.php
+ *       @see jsonapi\exception::__toString() when you want to use your own exception handling
  */
 
 class errors extends response {
-
-/**
- * http status messages used for string output
- */
-public static $http_status_messages = array(
-	400 => 'Bad Request',
-	401 => 'Unauthorized',
-	403 => 'Forbidden',
-	404 => 'Not Found',
-	405 => 'Method Not Allowed',
-	422 => 'Unprocessable Entity',
-	500 => 'Internal Server Error',
-	503 => 'Service Unavailable',
-);
 
 /**
  * internal data containers
  */
 protected $links;
 protected $errors_collection;
-protected $http_status;
+protected $http_status = response::STATUS_INTERNAL_SERVER_ERROR;
 protected $meta_data;
 
 /**
@@ -118,38 +98,37 @@ public function get_array() {
 
 /**
  * sends out the json response to the browser
- * this will fetch the response from ->get_json()
- * @note it will also terminate script execution afterwards
+ * this will fetch the response from ->get_json() if not given via $response
  * 
- * @param  string $content_type   optional, defaults to the official IANA registered one
- *                                or to a debug version when ::$debug is set to true
+ * @note this is the same as jsonapi\response->send_response() ..
+ *       .. but it will also terminate script execution afterwards
+ * 
+ * @param  string $content_type   optional, defaults to ::CONTENT_TYPE_OFFICIAL (the official IANA registered one) ..
+ *                                .. or to ::CONTENT_TYPE_DEBUG, @see ::$debug
  * @param  int    $encode_options optional, $options for json_encode()
- *                                defaults to JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
+ *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=null, $encode_options=448, $response=null) {
-	$http_protocol  = $_SERVER['SERVER_PROTOCOL'];
-	$status_message = self::get_http_status_message($this->http_status);
-	header($http_protocol.' '.$status_message);
-	
-	parent::send_response($content_type, $encode_options);
+public function send_response($content_type=null, $encode_options=null, $response=null) {
+	parent::send_response($content_type, $encode_options, $response);
 	exit;
 }
 
 /**
- * sets the http status code for this error response
+ * sets the http status code for this errors response
  * 
- * @param int $http_status one of the predefined ones in ::$http_status_messages
- *                         else, 500 is set
+ * @note this does the same as response->set_http_status() except it forces an error status
+ * 
+ * @param int $http_status any will do, you can easily pass one of the predefined ones in ::STATUS_*
  */
 public function set_http_status($http_status) {
-	if (empty($http_status)) {
-		return;
+	if ($http_status < 400) {
+		throw new \Exception('can not send out errors response with a non-error http status');
 	}
 	
-	$this->http_status = $http_status;
+	return parent::set_http_status($http_status);
 }
 
 /**
@@ -193,12 +172,14 @@ public function fill_errors($errors) {
  * @param string $friendly_message optional, @see jsonapi\error->set_friendly_message()
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
  */
-public function add_exception($exception=null, $friendly_message=null, $about_link=null) {
+public function add_exception($exception, $friendly_message=null, $about_link=null) {
 	$error_message = $exception->getMessage();
 	$error_status  = $exception->getCode();
 	
 	$new_error = new error($error_message, $friendly_message, $about_link);
-	$new_error->set_http_status($error_status);
+	if ($error_status) {
+		$new_error->set_http_status($error_status);
+	}
 	
 	// meta data
 	if (base::$debug) {
@@ -245,7 +226,9 @@ private function add_error_object(\alsvanzelf\jsonapi\error $error) {
 	$error_http_status   = $error->get_http_status();
 	
 	$this->errors_collection[] = $error_response_part;
-	$this->set_http_status($error_http_status);
+	if ($error_http_status) {
+		$this->set_http_status($error_http_status);
+	}
 }
 
 /**
@@ -260,22 +243,6 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
  */
 public function fill_included_resources($resources) {
 	throw new \Exception('can not add included resources to errors, add them as meta data instead');
-}
-
-/**
- * generates a http status string from an status code
- * 
- * @param  int    $status_code one of the predefined ones in ::$http_status_messages
- *                             else, 500 is assumed
- * @return string              the status code with the standard status message
- *                             i.e. "404 Not Found"
- */
-public static function get_http_status_message($status_code) {
-	if (empty(self::$http_status_messages[$status_code])) {
-		$status_code = 500;
-	}
-	
-	return $status_code.' '.self::$http_status_messages[$status_code];
 }
 
 }
