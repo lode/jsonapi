@@ -7,7 +7,7 @@ class response extends base {
 /**
  * advised http status codes
  * 
- * hide unauthorized requests to existing items by using STATUS_FORBIDDEN_HIDDEN
+ * hide unauthorized requests to existing items by using STATUS_FORBIDDEN_NOT_FOUND
  * by default this will be converted to a STATUS_NOT_FOUND, hiding existence
  * when base::$debug is true, it will show a real STATUS_FORBIDDEN
  */
@@ -20,7 +20,7 @@ const STATUS_PERMANENT_REDIRECT    = 308;
 const STATUS_BAD_REQUEST           = 400;
 const STATUS_UNAUTHORIZED          = 401;
 const STATUS_FORBIDDEN             = 403;
-const STATUS_FORBIDDEN_HIDDEN      = 403404;
+const STATUS_FORBIDDEN_NOT_FOUND   = 403404;
 const STATUS_NOT_FOUND             = 404;
 const STATUS_METHOD_NOT_ALLOWED    = 405;
 const STATUS_UNPROCESSABLE_ENTITY  = 422;
@@ -177,7 +177,7 @@ private function send_status_headers() {
  */
 public function set_http_status($http_status) {
 	// sanity check, this should already be done in jsonapi\error(s)
-	if ($http_status == response::STATUS_FORBIDDEN_HIDDEN) {
+	if ($http_status == response::STATUS_FORBIDDEN_NOT_FOUND) {
 		$http_status = (self::$debug) ? response::STATUS_FORBIDDEN : response::STATUS_NOT_FOUND;
 	}
 	
