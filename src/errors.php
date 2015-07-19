@@ -125,9 +125,6 @@ public function send_response($content_type=null, $encode_options=null, $respons
 /**
  * sets the http status code for this errors response
  * 
- * @note use response::STATUS_FORBIDDEN_NOT_FOUND to hide unauthorized items
- *       @see response::STATUS_*
- * 
  * @note this does the same as response->set_http_status() except it forces an error status
  * 
  * @param int $http_status any will do, you can easily pass one of the predefined ones in ::STATUS_*
