@@ -16,7 +16,7 @@ require '../vendor/autoload.php';
 jsonapi\base::$debug = true;
 
 try {
-	throw new Exception('content is not from this user', jsonapi\response::STATUS_FORBIDDEN_HIDDEN);
+	throw new Exception('content is not from this user', jsonapi\response::STATUS_FORBIDDEN_NOT_FOUND);
 }
 catch (Exception $e) {
 	$jsonapi = new jsonapi\errors($e);
