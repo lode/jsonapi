@@ -189,14 +189,6 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	
 	// meta data
 	if (base::$debug) {
-		$trace = $exception->getTrace();
-		if ($trace) {
-			foreach ($trace as &$place) {
-				$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
-			}
-			$new_error->add_meta('trace', $trace);
-		}
-		
 		$file = $exception->getFile();
 		if ($file) {
 			$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
@@ -206,6 +198,16 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 		$line = $exception->getLine();
 		if ($line) {
 			$new_error->add_meta('line',  $line);
+		}
+		
+		$trace = $exception->getTrace();
+		if ($trace) {
+			foreach ($trace as &$place) {
+				if (!empty($place['file'])) {
+					$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+				}
+			}
+			$new_error->add_meta('trace', $trace);
 		}
 	}
 	
