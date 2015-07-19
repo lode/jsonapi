@@ -44,6 +44,9 @@ Which will result in:
 }
 ```
 
+For a collection response, data is an array of resources.
+Errors can also be send as response, even automatically by exceptions.
+
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 

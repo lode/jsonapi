@@ -17,15 +17,9 @@ namespace alsvanzelf\jsonapi;
  * - meta data @see ->add_meta() or ->fill_meta()
  * - self link @see ->set_self_link()
  * 
- * @note ease error handling by adding this in your own exception handling
- * 
- * ```
- * public function __toString() {
- *     $jsonapi = new \alsvanzelf\jsonapi\errors($this);
- *     $jsonapi->send_response();
- *     return '';
- * }
- * ```
+ * @note ease error handling by using a jsonapi\exception
+ *       @see examples/errors_exception_direct.php
+ *       @see jsonapi\exception::__toString() when you want to use your own exception handling
  */
 
 class errors extends response {
@@ -178,7 +172,7 @@ public function fill_errors($errors) {
  * @param string $friendly_message optional, @see jsonapi\error->set_friendly_message()
  * @param string $about_link       optional, @see jsonapi\error->set_about_link()
  */
-public function add_exception($exception=null, $friendly_message=null, $about_link=null) {
+public function add_exception($exception, $friendly_message=null, $about_link=null) {
 	$error_message = $exception->getMessage();
 	$error_status  = $exception->getCode();
 	
@@ -189,14 +183,6 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 	
 	// meta data
 	if (base::$debug) {
-		$trace = $exception->getTrace();
-		if ($trace) {
-			foreach ($trace as &$place) {
-				$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
-			}
-			$new_error->add_meta('trace', $trace);
-		}
-		
 		$file = $exception->getFile();
 		if ($file) {
 			$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
@@ -206,6 +192,16 @@ public function add_exception($exception=null, $friendly_message=null, $about_li
 		$line = $exception->getLine();
 		if ($line) {
 			$new_error->add_meta('line',  $line);
+		}
+		
+		$trace = $exception->getTrace();
+		if ($trace) {
+			foreach ($trace as &$place) {
+				if (!empty($place['file'])) {
+					$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+				}
+			}
+			$new_error->add_meta('trace', $trace);
 		}
 	}
 	
