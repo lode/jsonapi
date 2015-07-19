@@ -21,5 +21,4 @@ try {
 catch (Exception $e) {
 	$jsonapi = new jsonapi\errors($e);
 	$jsonapi->send_response();
-	exit;
 }
