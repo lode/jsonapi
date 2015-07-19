@@ -17,9 +17,9 @@ namespace alsvanzelf\jsonapi;
  * - meta data @see ->add_meta() or ->fill_meta()
  * - self link @see ->set_self_link()
  * 
- * @note ease error handling by using a jsonapi\exception instead
+ * @note ease error handling by using a jsonapi\exception
  *       @see examples/errors_exception_direct.php
- *       @see or jsonapi\exception::__toString() when you want to use your own exception handling
+ *       @see jsonapi\exception::__toString() when you want to use your own exception handling
  */
 
 class errors extends response {
