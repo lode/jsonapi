@@ -210,7 +210,9 @@ public function add_exception($exception, $friendly_message=null, $about_link=nu
 		$trace = $exception->getTrace();
 		if ($trace) {
 			foreach ($trace as &$place) {
-				$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+				if (!empty($place['file'])) {
+					$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+				}
 			}
 			$new_error->add_meta('trace', $trace);
 		}
