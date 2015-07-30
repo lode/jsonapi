@@ -75,8 +75,9 @@ public function get_array() {
  * adds a resource to the primary collection
  * this will end up in response.data[]
  * 
- * @note only the data-key of a resource is used
+ * @note only data and meta(root-level) of a resource are used
  *       that is its type, id, attributes, relations, links, meta(data-level)
+ *       and meta(root-level) is added to response.meta[]
  *       further, its included resources are separately added to response.included[]
  * 
  * @see jsonapi\resource
@@ -91,6 +92,11 @@ public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 	$included_resources = $resource->get_included_resources();
 	if (!empty($included_resources)) {
 		$this->fill_included_resources($included_resources);
+	}
+	
+	// root-level meta-data
+	if (!empty($resource_array['meta'])) {
+		$this->fill_meta($resource_array['meta']);
 	}
 	
 	$this->primary_collection[] = $resource_array['data'];
