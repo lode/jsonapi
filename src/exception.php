@@ -34,6 +34,9 @@ protected $about_link;
  *                                    i.e. a link to the api documentation
  */
 public function __construct($message='', $code=0, $previous=null, $friendly_message=null, $about_link=null) {
+	// exception is the only class not extending base
+	new base();
+	
 	parent::__construct($message, $code, $previous);
 	
 	if ($friendly_message) {
