@@ -229,12 +229,11 @@ public function fill_relations($relations, $skip_include=false) {
  * useful for links which can not be added as relation, @see ->add_relation()
  * 
  * @param  string $key
- * @param  mixed  $link      string with link, $meta_data can be used for extra data
- *                           or raw link object array/object, then $meta_data can *not* be used for extra data
+ * @param  mixed  $link      string with link, or raw link object array/object
  *                           objects are converted in arrays, @see base::convert_object_to_array()
  * @param  mixed  $meta_data optional, meta data as key-value pairs
+ *                           should not be used if $link is non-string
  *                           objects are converted in arrays, @see base::convert_object_to_array()
- *                           should not be used if $link is array/object
  * @return void
  */
 public function add_link($key, $link, $meta_data=null) {
