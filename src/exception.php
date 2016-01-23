@@ -70,16 +70,23 @@ public function set_about_link($about_link) {
 public function send_response($content_type=null, $encode_options=null, $response=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
 	$jsonapi->send_response($content_type, $encode_options, $response);
-	exit;
+	exit; // sanity check
 }
 
 /**
  * alias for ->send_response()
  * 
+ * @deprecated as this causes hard to debug issues ..
+ *             .. when exceptions are called as a by-effect of this function
+ * 
  * @return string empty for sake of correctness
  *                as ->send_response() already echo's the json and terminates script execution
  */
 public function __toString() {
+	if (base::$debug) {
+		trigger_error('toString conversion of exception is deprecated, use ->send_response() instead', E_USER_DEPRECATED);
+	}
+	
 	$this->send_response();
 	return '';
 }
