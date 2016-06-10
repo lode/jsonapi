@@ -27,6 +27,7 @@ const STATUS_SERVICE_UNAVAILABLE   = 503;
  */
 const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG    = 'application/json';
+const CONTENT_TYPE_JSONP    = 'application/javascript';
 
 /**
  * json encode options
@@ -119,18 +120,19 @@ public function get_json($encode_options=null) {
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
+ * @param  string $jsonp_callback optional, response as jsonp
  * @return void                   however, a string will be echo'd to the browser
  */
-public function send_response($content_type=null, $encode_options=null, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null, $jsonp_callback=null) {
 	if (is_null($response) && $this->http_status != self::STATUS_NO_CONTENT) {
 		$response = $this->get_json($encode_options);
 	}
 	
 	if (empty($content_type)) {
-		$content_type = self::CONTENT_TYPE_OFFICIAL;
+		$content_type = $jsonp_callback ? self::CONTENT_TYPE_JSONP : self::CONTENT_TYPE_OFFICIAL;
 	}
 	if (base::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
-		$content_type = self::CONTENT_TYPE_DEBUG;
+		$content_type = $jsonp_callback ? self::CONTENT_TYPE_JSONP : self::CONTENT_TYPE_DEBUG;
 	}
 	
 	if (self::$send_status_headers) {
@@ -143,7 +145,7 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		return;
 	}
 	
-	echo $response;
+	echo $jsonp_callback ? "{$jsonp_callback}({$response})" : $response;
 }
 
 /**
