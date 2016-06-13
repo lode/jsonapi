@@ -30,6 +30,11 @@ const CONTENT_TYPE_DEBUG    = 'application/json';
 const CONTENT_TYPE_JSONP    = 'application/javascript';
 
 /**
+ *	Jsonp callback methods
+ */
+const JSONP_CALLBACK_DEFAULT = "JSONP_CALLBACK";
+ 
+/**
  * json encode options
  * default is JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
  * in debug mode (@see ::$debug) JSON_PRETTY_PRINT is added
@@ -129,10 +134,10 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	}
 	
 	if (empty($content_type)) {
-		$content_type = $jsonp_callback ? self::CONTENT_TYPE_JSONP : self::CONTENT_TYPE_OFFICIAL;
+		$content_type = self::CONTENT_TYPE_OFFICIAL;
 	}
 	if (base::$debug || strpos($_SERVER['HTTP_ACCEPT'], '/json') == false) {
-		$content_type = $jsonp_callback ? self::CONTENT_TYPE_JSONP : self::CONTENT_TYPE_DEBUG;
+		$content_type = self::CONTENT_TYPE_DEBUG;
 	}
 	
 	if (self::$send_status_headers) {
@@ -143,9 +148,18 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	
 	if ($this->http_status == self::STATUS_NO_CONTENT) {
 		return;
-	}
+	} 
 	
-	echo $jsonp_callback ? "{$jsonp_callback}({$response})" : $response;
+	if ($content_type == self::CONTENT_TYPE_JSONP) {
+		if (empty($jsonp_callback)) {
+			$jsonp_callback = self::JSONP_CALLBACK_DEFAULT;
+		}
+		// jsonp response
+		echo $jsonp_callback.'('.$response.')';
+	} else { 
+		// json response
+		echo $response;
+	}
 }
 
 /**
