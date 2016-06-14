@@ -150,16 +150,16 @@ public function send_response($content_type=null, $encode_options=null, $respons
 		return;
 	} 
 	
+	// jsonp response
 	if ($content_type == self::CONTENT_TYPE_JSONP) {
 		if (empty($jsonp_callback)) {
 			$jsonp_callback = self::JSONP_CALLBACK_DEFAULT;
 		}
-		// jsonp response
 		echo $jsonp_callback.'('.$response.')';
-	} else { 
-		// json response
-		echo $response;
+		return;
 	}
+	
+	echo $response;
 }
 
 /**
