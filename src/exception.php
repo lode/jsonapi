@@ -70,9 +70,9 @@ public function set_about_link($about_link) {
  * 
  * @see errors->send_response()
  */
-public function send_response($content_type=null, $encode_options=null, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null, $jsonp_callback=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
-	$jsonapi->send_response($content_type, $encode_options, $response);
+	$jsonapi->send_response($content_type, $encode_options, $response, $jsonp_callback);
 	exit; // sanity check
 }
 
