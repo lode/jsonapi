@@ -126,7 +126,8 @@ public function send_response($content_type=null, $encode_options=null, $respons
  */
 public function set_http_status($http_status) {
 	if ($http_status < 400) {
-		throw new \Exception('can not send out errors response with a non-error http status');
+		// can't use that as http status code
+		return;
 	}
 	
 	return parent::set_http_status($http_status);
