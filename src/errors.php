@@ -108,11 +108,12 @@ public function get_array() {
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
+ * @param  string $jsonp_callback optional, response as jsonp
  * @return void                   more so, a string will be echo'd to the browser ..
  *                                .. and script execution will terminate
  */
-public function send_response($content_type=null, $encode_options=null, $response=null) {
-	parent::send_response($content_type, $encode_options, $response);
+public function send_response($content_type=null, $encode_options=null, $response=null, $jsonp_callback=null) {
+	parent::send_response($content_type, $encode_options, $response, $jsonp_callback);
 	exit;
 }
 
@@ -125,7 +126,8 @@ public function send_response($content_type=null, $encode_options=null, $respons
  */
 public function set_http_status($http_status) {
 	if ($http_status < 400) {
-		throw new \Exception('can not send out errors response with a non-error http status');
+		// can't use that as http status code
+		return;
 	}
 	
 	return parent::set_http_status($http_status);
