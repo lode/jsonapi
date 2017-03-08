@@ -44,6 +44,9 @@ Which will result in:
 }
 ```
 
+For a collection response, data is an array of resources.
+Errors can also be send as response, even automatically by exceptions.
+
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 
@@ -65,12 +68,17 @@ Right now, this library handles all the basics:
 - handling error responses
 - sending out the json response with correct http headers
 
+Plus some handy tools:
+
+- easy turning thrown exceptions into jsonapi responses
+- constants for easy setting http status codes
+- sending out redirect locations
+
 Plans for the [near](https://github.com/lode/jsonapi/labels/current%20focus)
 and [later](https://github.com/lode/jsonapi/issues?utf8=%E2%9C%93&q=is%3Aopen+-label%3A%22current+focus%22+) future include:
 
 - import a database array as a collection response ([#2](https://github.com/lode/jsonapi/issues/2))
 - accept a collection as to-many relation in a resource ([#3](https://github.com/lode/jsonapi/issues/3))
-- sending out redirect locations and status codes for non-error responses ([#4](https://github.com/lode/jsonapi/issues/4))
 - handle creating, updating and deleting resources ([#5](https://github.com/lode/jsonapi/issues/5))
 
 

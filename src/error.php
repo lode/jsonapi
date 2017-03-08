@@ -25,6 +25,26 @@ private $get_parameter_name;
 private $meta_data;
 
 /**
+ * http status messages used for string output
+ */
+private static $http_status_messages = array(
+	200 => 'OK',
+	201 => 'Created',
+	204 => 'No Content',
+	304 => 'Not Modified',
+	307 => 'Temporary Redirect',
+	308 => 'Permanent Redirect',
+	400 => 'Bad Request',
+	401 => 'Unauthorized',
+	403 => 'Forbidden',
+	404 => 'Not Found',
+	405 => 'Method Not Allowed',
+	422 => 'Unprocessable Entity',
+	500 => 'Internal Server Error',
+	503 => 'Service Unavailable',
+);
+
+/**
  * creates a new error for inclusion in the errors collection
  * 
  * @note error message is only shown when debug mode is on (@see base::$debug)
@@ -71,8 +91,7 @@ public function get_array() {
 	$response_part = array();
 	
 	// the basics
-	$status_message = errors::get_http_status_message($this->http_status);
-	$response_part['status'] = $status_message;
+	$response_part['status'] = $this->http_status;
 	if (base::$debug) {
 		$response_part['code'] = $this->error_message;
 	}
@@ -119,10 +138,10 @@ public function get_array() {
  * returns the set status code apart from the response array
  * used by the errors collection to figure out the generic status code
  * 
- * @return int one of the predefined ones in jsonapi\errors::$http_status_messages
+ * @return int probably one of the predefined ones in jsonapi\response::STATUS_*
  */
 public function get_http_status() {
-	return $this->http_status;
+	return (int)$this->http_status;
 }
 
 /**
@@ -132,10 +151,20 @@ public function get_http_status() {
  * @note this does only hint but not strictly set the actual status code send out to the browser
  *       use jsonapi\errors->set_http_status() to be sure
  * 
- * @param int $http_status one of the predefined ones in jsonapi\errors::$http_status_messages
- *                         else, 500 is set
+ * @param mixed $http_status string:  an http status, should start with the numeric status code
+ *                           integer: one of the predefined ones in response::STATUS_* ..
+ *                                    .. will be converted to string
  */
 public function set_http_status($http_status) {
+	if (is_int($http_status)) {
+		$http_status = (string)$http_status;
+		
+		// add status message for a few known ones
+		if (isset(self::$http_status_messages[$http_status])) {
+			$http_status .= ' '.self::$http_status_messages[$http_status];
+		}
+	}
+	
 	$this->http_status = $http_status;
 }
 

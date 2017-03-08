@@ -1,5 +1,7 @@
 <?php
 
+use alsvanzelf\jsonapi;
+
 ini_set('display_errors', 1);
 error_reporting(-1);
 
@@ -14,9 +16,11 @@ require '../vendor/autoload.php';
  */
 
 try {
-	throw new Exception('unknown user', \alsvanzelf\jsonapi\response::STATUS_NOT_FOUND);
+	$http_status = jsonapi\response::STATUS_NOT_FOUND;
+	$friendly_message = 'We don\'t know this user.';
+	$about_link = 'www.example.com/search';
+	throw new jsonapi\exception('unknown user', $http_status, $previous=null, $friendly_message, $about_link);
 }
-catch (Exception $e) {
-	$jsonapi = new \alsvanzelf\jsonapi\errors($e);
-	$jsonapi->send_response();
+catch (jsonapi\exception $e) {
+	$e->send_response();
 }
