@@ -114,7 +114,7 @@ public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 	
 	$this->primary_collection[] = $resource_array['data'];
 	
-	// make a backup of the actual resource, to pass on to a collection
+	// make a backup of the actual resource, to pass on as a collection for a relation
 	$this->primary_resource_objects[] = $resource;
 }
 
