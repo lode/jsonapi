@@ -20,6 +20,12 @@ namespace alsvanzelf\jsonapi;
 class resource extends response {
 
 /**
+ * relation types
+ */
+const RELATION_TO_MANY = 'to_many';
+const RELATION_TO_ONE  = 'to_one';
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -28,7 +34,6 @@ protected $primary_attributes    = array();
 protected $primary_relationships = array();
 protected $primary_links         = array();
 protected $primary_meta_data     = array();
-protected $included_data         = array();
 
 /**
  * creates a new resource
@@ -42,6 +47,34 @@ public function __construct($type, $id=null) {
 	
 	$this->primary_type = $type;
 	$this->primary_id = $id;
+}
+
+/**
+ * get the primary type as set via the constructor
+ * 
+ * @return string|null
+ */
+public function get_type() {
+	return $this->primary_type;
+}
+
+/**
+ * get the primary id as set via the constructor
+ * 
+ * @return mixed|null
+ */
+public function get_id() {
+	return $this->primary_id;
+}
+
+/**
+ * whether data has been added via ->add_data()/->fill_data()
+ * this can be useful when adding a resource to another one as included resource
+ * 
+ * @return boolean
+ */
+public function has_data() {
+	return (bool)$this->primary_attributes;
 }
 
 /**
@@ -165,37 +198,90 @@ public function fill_data($values) {
  *   - type
  *   - id
  * 
- * if $relation is a jsonapi\resource, it will also add an included resource
+ * if $relation is a jsonapi\resource or jsonapi\collection, it will also add an included resource
  * @see ->add_included_resource()
  * 
  * @param  string  $key
- * @param  mixed   $relation     can be an array or a jsonapi\resource
+ * @param  mixed   $relation     can be array or jsonapi\resource or jsonapi\collection
  * @param  boolean $skip_include optional, defaults to false
+ * @param  string  $type         optional, defaults to null
  * @return void
  * 
  * @todo allow to add collections as well
  */
-public function add_relation($key, $relation, $skip_include=false) {
+public function add_relation($key, $relation, $skip_include=false, $type=null) {
+	if ($type && in_array($type, array(self::RELATION_TO_ONE, self::RELATION_TO_MANY)) == false) {
+		throw new \Exception('unknown relation type');
+	}
+	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource == false) {
+		throw new \Exception('can not add a relation twice, unless using a resource object');
+	}
+	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource) {
+		if ($type != self::RELATION_TO_MANY || is_array($this->primary_relationships[$key]['data']['id']) == false) {
+			throw new \Exception('$type should be set to RELATION_TO_MANY for resources using the same key');
+		}
+		if ($relation->get_type() != $this->primary_relationships[$key]['data']['type']) {
+			throw new \Exception('the primary type of a resource should be the same for resources using the same key');
+		}
+	}
+	if ($relation instanceof \alsvanzelf\jsonapi\collection && $type == self::RELATION_TO_ONE) {
+		throw new \Exception('collections can only be added as RELATION_TO_MANY');
+	}
+	
 	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
-		$relation_array = $relation->get_array();
-		
 		// add whole resources as included resource, while keeping the relationship
-		if (!empty($relation_array['data']['attributes']) && $skip_include == false) {
+		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
+		}
+		
+		$base_url      = $this->links['self'];
+		$relation_id   = $relation->get_id() ?: null;
+		
+		if (isset($this->primary_relationships[$key])) {
+			$this->primary_relationships[$key]['data']['id'][] = $relation_id;
+			return;
+		}
+		if ($type == self::RELATION_TO_MANY) {
+			$relation_id = array($relation_id);
 		}
 		
 		$relation = array(
 			'links' => array(
-				'self'    => $this->links['self'].'/relationships/'.$key,
-				'related' => $this->links['self'].'/'.$key,
+				'self'    => $base_url.'/relationships/'.$key,
+				'related' => $base_url.'/'.$key,
 			),
 			'data'  => array(
-				'type' => $relation_array['data']['type'],
+				'type' => $relation->get_type(),
+				'id'   => $relation_id,
 			),
 		);
-		if (!empty($relation_array['data']['id'])) {
-			$relation['data']['id'] = $relation_array['data']['id'];
+	}
+	
+	if ($relation instanceof \alsvanzelf\jsonapi\collection) {
+		$relation_resources = $relation->get_resources();
+		
+		// add whole resources as included resource, while keeping the relationship
+		if ($relation_resources && $skip_include == false) {
+			$this->fill_included_resources($relation);
 		}
+		
+		$base_url      = $this->links['self'];
+		$relation_ids  = array();
+		foreach ($relation_resources as $relation_resource) {
+			$relation_ids[] = $relation_resource->get_id();
+		}
+		$relation_type = $relation_resource->get_type();
+		
+		$relation = array(
+			'links' => array(
+				'self'    => $base_url.'/relationships/'.$key,
+				'related' => $base_url.'/'.$key,
+			),
+			'data'  => array(
+				'type' => $relation_type,
+				'id'   => $relation_ids,
+			),
+		);
 	}
 	
 	if (is_array($relation) == false) {

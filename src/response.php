@@ -53,6 +53,7 @@ public static $send_status_headers = true;
  */
 protected $links              = array();
 protected $meta_data          = array();
+protected $included_data      = array();
 protected $included_resources = array();
 protected $http_status        = self::STATUS_OK;
 protected $redirect_location  = null;
@@ -293,10 +294,15 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
  * 
  * prefer using ->fill_relations() instead
  * 
- * @param  array $resources of \alsvanzelf\jsonapi\resource objects
+ * @param  mixed $resources array of \alsvanzelf\jsonapi\resource objects
+ *                          or \alsvanzelf\jsonapi\collection object
  * @return void
  */
 public function fill_included_resources($resources) {
+	if ($resources instanceof \alsvanzelf\jsonapi\collection) {
+		$resources = $resources->get_resources();
+	}
+	
 	foreach ($resources as $resource) {
 		$this->add_included_resource($resource);
 	}
