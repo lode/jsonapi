@@ -94,8 +94,9 @@ public function get_resources() {
  * adds a resource to the primary collection
  * this will end up in response.data[]
  * 
- * @note only the data-key of a resource is used
+ * @note only data and meta(root-level) of a resource are used
  *       that is its type, id, attributes, relations, links, meta(data-level)
+ *       and meta(root-level) is added to response.meta[]
  *       further, its included resources are separately added to response.included[]
  * 
  * @see jsonapi\resource
