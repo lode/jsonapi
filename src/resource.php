@@ -220,9 +220,6 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		if ($type != self::RELATION_TO_MANY || is_array($this->primary_relationships[$key]['data']['id']) == false) {
 			throw new \Exception('$type should be set to RELATION_TO_MANY for resources using the same key');
 		}
-		if ($relation->get_type() != $this->primary_relationships[$key]['data']['type']) {
-			throw new \Exception('the primary type of a resource should be the same for resources using the same key');
-		}
 	}
 	if ($relation instanceof \alsvanzelf\jsonapi\collection && $type == self::RELATION_TO_ONE) {
 		throw new \Exception('collections can only be added as RELATION_TO_MANY');
