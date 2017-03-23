@@ -251,6 +251,11 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 		return;
 	}
 	
+	// root-level meta-data
+	if (!empty($resource_array['meta'])) {
+		$this->fill_meta($resource_array['meta']);
+	}
+	
 	$resource_array = $resource_array['data'];
 	unset($resource_array['relationships'], $resource_array['meta']);
 	
