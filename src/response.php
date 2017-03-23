@@ -89,6 +89,31 @@ public function __toString() {
 }
 
 /**
+ * generates an array for the whole response body
+ *
+ * @see jsonapi.org/format
+ *
+ * @return array, containing:
+ *         - links
+ *         - meta
+ */
+public function get_array() {
+	$response = array();
+	
+	// links
+	if ($this->links) {
+		$response['links'] = $this->links;
+	}
+	
+	// meta data
+	if ($this->meta_data) {
+		$response['meta'] = $this->meta_data;
+	}
+	
+	return $response;
+}
+
+/**
  * returns the whole response body as json
  * it generates the response via ->get_array()
  * 
