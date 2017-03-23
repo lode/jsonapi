@@ -94,6 +94,11 @@ public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 		$this->fill_included_resources($included_resources);
 	}
 	
+	// root-level meta-data
+	if (!empty($resource_array['meta'])) {
+		$this->fill_meta($resource_array['meta']);
+	}
+	
 	$this->primary_collection[] = $resource_array['data'];
 }
 
