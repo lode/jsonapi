@@ -217,11 +217,8 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		throw new \Exception('can not add a relation twice, unless using a resource object');
 	}
 	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource) {
-		if ($type != self::RELATION_TO_MANY || is_array($this->primary_relationships[$key]['data']['id']) == false) {
+		if ($type != self::RELATION_TO_MANY || isset($this->primary_relationships[$key]['data']['type'])) {
 			throw new \Exception('$type should be set to RELATION_TO_MANY for resources using the same key');
-		}
-		if ($relation->get_type() != $this->primary_relationships[$key]['data']['type']) {
-			throw new \Exception('the primary type of a resource should be the same for resources using the same key');
 		}
 	}
 	if ($relation instanceof \alsvanzelf\jsonapi\collection && $type == self::RELATION_TO_ONE) {
@@ -236,13 +233,17 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		
 		$base_url      = $this->links['self'];
 		$relation_id   = $relation->get_id() ?: null;
+		$relation_data = [
+			'type' => $relation->get_type(),
+			'id'   => $relation_id,
+		];
 		
 		if (isset($this->primary_relationships[$key])) {
-			$this->primary_relationships[$key]['data']['id'][] = $relation_id;
+			$this->primary_relationships[$key]['data'][] = $relation_data;
 			return;
 		}
 		if ($type == self::RELATION_TO_MANY) {
-			$relation_id = array($relation_id);
+			$relation_data = array($relation_data);
 		}
 		
 		$relation = array(
@@ -250,10 +251,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 				'self'    => $base_url.'/relationships/'.$key,
 				'related' => $base_url.'/'.$key,
 			),
-			'data'  => array(
-				'type' => $relation->get_type(),
-				'id'   => $relation_id,
-			),
+			'data'  => $relation_data,
 		);
 	}
 	
@@ -266,21 +264,20 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		}
 		
 		$base_url      = $this->links['self'];
-		$relation_ids  = array();
+		$relation_data = array();
 		foreach ($relation_resources as $relation_resource) {
-			$relation_ids[] = $relation_resource->get_id();
+			$relation_data[] = [
+				'type' => $relation_resource->get_type(),
+				'id'   => $relation_resource->get_id(),
+			];
 		}
-		$relation_type = $relation_resource->get_type();
 		
 		$relation = array(
 			'links' => array(
 				'self'    => $base_url.'/relationships/'.$key,
 				'related' => $base_url.'/'.$key,
 			),
-			'data'  => array(
-				'type' => $relation_type,
-				'id'   => $relation_ids,
-			),
+			'data'  => $relation_data,
 		);
 	}
 	
