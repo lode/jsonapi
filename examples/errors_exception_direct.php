@@ -13,7 +13,6 @@ require '../vendor/autoload.php';
  * @note previous exceptions will be added as well
  * @note exceptions only output file, line, trace if the display_errors directive is true
  *       you can tune it with that, or by setting jsonapi\base::$debug to false
- * @note echo'ing the exception has the same effect as using ->send_response()
  */
 
 try {
@@ -22,7 +21,6 @@ try {
 	$about_link = 'www.example.com/search';
 	throw new jsonapi\exception('unknown user', $http_status, $previous=null, $friendly_message, $about_link);
 }
-catch (Exception $e) {
-	echo $e;
-	exit;
+catch (jsonapi\exception $e) {
+	$e->send_response();
 }

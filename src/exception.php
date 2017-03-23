@@ -34,6 +34,9 @@ protected $about_link;
  *                                    i.e. a link to the api documentation
  */
 public function __construct($message='', $code=0, $previous=null, $friendly_message=null, $about_link=null) {
+	// exception is the only class not extending base
+	new base();
+	
 	parent::__construct($message, $code, $previous);
 	
 	if ($friendly_message) {
@@ -67,19 +70,26 @@ public function set_about_link($about_link) {
  * 
  * @see errors->send_response()
  */
-public function send_response($content_type=null, $encode_options=null, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null, $jsonp_callback=null) {
 	$jsonapi = new errors($this, $this->friendly_message, $this->about_link);
-	$jsonapi->send_response($content_type, $encode_options, $response);
-	exit;
+	$jsonapi->send_response($content_type, $encode_options, $response, $jsonp_callback);
+	exit; // sanity check
 }
 
 /**
  * alias for ->send_response()
  * 
+ * @deprecated as this causes hard to debug issues ..
+ *             .. when exceptions are called as a by-effect of this function
+ * 
  * @return string empty for sake of correctness
  *                as ->send_response() already echo's the json and terminates script execution
  */
 public function __toString() {
+	if (base::$debug) {
+		trigger_error('toString conversion of exception is deprecated, use ->send_response() instead', E_USER_DEPRECATED);
+	}
+	
 	$this->send_response();
 	return '';
 }
