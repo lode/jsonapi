@@ -25,6 +25,9 @@ $friend1_resource->add_data('foo', 'bar');
 $friend2_resource = new jsonapi\resource('user', 42);
 $friend2_resource->add_data('bar', 'baz');
 
+$dock_resource = new jsonapi\resource('dock', 3);
+$dock_resource->add_data('bar', 'baf');
+
 /**
  * to-one relationship
  */
@@ -66,6 +69,13 @@ $jsonapi->add_relation('implicit-friends', $friends);
  */
 
 $jsonapi->add_relation('explicit-friends', $friends, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
+
+/**
+ * to-many relationship, different types
+ */
+
+$jsonapi->add_relation('one-by-one-neighbours', $ship1_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
+$jsonapi->add_relation('one-by-one-neighbours', $dock_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
 
 /**
  * sending the response
