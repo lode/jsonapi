@@ -20,9 +20,9 @@ class collection extends response {
 /**
  * internal data containers
  */
-protected $primary_type       = null;
-protected $primary_collection = array();
-protected $included_data = array();
+protected $primary_type             = null;
+protected $primary_collection       = array();
+protected $primary_resource_objects = array();
 
 /**
  * creates a new collection
@@ -33,6 +33,15 @@ public function __construct($type=null) {
 	parent::__construct();
 	
 	$this->primary_type = $type;
+}
+
+/**
+ * get the primary type as set via the constructor
+ * 
+ * @return string|null
+ */
+public function get_type() {
+	return $this->primary_type;
 }
 
 /**
@@ -72,11 +81,22 @@ public function get_array() {
 }
 
 /**
+ * returns the primary resource objects
+ * this is used by a resource to add a collection or resource relations
+ * 
+ * @return array
+ */
+public function get_resources() {
+	return $this->primary_resource_objects;
+}
+
+/**
  * adds a resource to the primary collection
  * this will end up in response.data[]
  * 
- * @note only the data-key of a resource is used
+ * @note only data and meta(root-level) of a resource are used
  *       that is its type, id, attributes, relations, links, meta(data-level)
+ *       and meta(root-level) is added to response.meta[]
  *       further, its included resources are separately added to response.included[]
  * 
  * @see jsonapi\resource
@@ -93,7 +113,15 @@ public function add_resource(\alsvanzelf\jsonapi\resource $resource) {
 		$this->fill_included_resources($included_resources);
 	}
 	
+	// root-level meta-data
+	if (!empty($resource_array['meta'])) {
+		$this->fill_meta($resource_array['meta']);
+	}
+	
 	$this->primary_collection[] = $resource_array['data'];
+	
+	// make a backup of the actual resource, to pass on as a collection for a relation
+	$this->primary_resource_objects[] = $resource;
 }
 
 /**
