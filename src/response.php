@@ -252,7 +252,6 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 	}
 	
 	$resource_array = $resource_array['data'];
-	unset($resource_array['relationships'], $resource_array['meta']);
 	
 	$key = $resource_array['type'].'/'.$resource_array['id'];
 	
@@ -260,6 +259,21 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 	
 	// make a backup of the actual resource, to pass on to a collection
 	$this->included_resources[$key] = $resource;
+	
+	// allow nesting relationshios
+	foreach ($resource->get_included_resources() as $included_resource) {
+		if (empty($included_resource->primary_id)) {
+			continue;
+		}
+		
+		$included_key = $included_resource->primary_type.'/'.$included_resource->primary_id;
+		
+		$this->included_resources[$included_key] = $included_resource;
+		
+		$included_array = $included_resource->get_array();
+		$included_array = $included_array['data'];
+		$this->included_data[$included_key] = $included_array;
+	}
 }
 
 /**
