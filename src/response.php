@@ -284,7 +284,7 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 	
 	$resource_array = $resource_array['data'];
 	
-	$key = $resource_array['type'].'/'.$resource_array['id'];
+	$key = $resource->get_type().'/'.$resource->get_id();
 	
 	$this->included_data[$key] = $resource_array;
 	
@@ -297,7 +297,7 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 			continue;
 		}
 		
-		$included_key = $included_resource->primary_type.'/'.$included_resource->primary_id;
+		$included_key = $included_resource->get_type().'/'.$included_resource->get_id();
 		
 		$this->included_resources[$included_key] = $included_resource;
 		
