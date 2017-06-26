@@ -231,7 +231,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 			$this->add_included_resource($relation);
 		}
 		
-		$base_url      = (is_string($this->links['self'])) ? $this->links['self'] : $this->links['self']['href'];
+		$base_url      = (isset($this->links['self']['href'])) ? $this->links['self']['href'] : $this->links['self'];
 		$relation_id   = $relation->get_id() ?: null;
 		$relation_data = [
 			'type' => $relation->get_type(),
@@ -263,7 +263,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 			$this->fill_included_resources($relation);
 		}
 		
-		$base_url      = (is_string($this->links['self'])) ? $this->links['self'] : $this->links['self']['href'];
+		$base_url      = (isset($this->links['self']['href'])) ? $this->links['self']['href'] : $this->links['self'];
 		$relation_data = array();
 		foreach ($relation_resources as $relation_resource) {
 			$relation_data[] = [
