@@ -255,6 +255,11 @@ public function get_included_resources() {
  */
 public function set_self_link($link, $meta_data=null) {
 	if ($meta_data) {
+		// can not combine both raw link object and extra meta data
+		if (is_string($link) == false) {
+			throw new \Exception('link "self" should be a string if meta data is provided separate');
+		}
+		
 		if (is_object($meta_data)) {
 			$meta_data = parent::convert_object_to_array($meta_data);
 		}
