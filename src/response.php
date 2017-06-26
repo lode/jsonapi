@@ -27,7 +27,13 @@ const STATUS_SERVICE_UNAVAILABLE   = 503;
  */
 const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 const CONTENT_TYPE_DEBUG    = 'application/json';
+const CONTENT_TYPE_JSONP    = 'application/javascript';
 
+/**
+ *	Jsonp callback methods
+ */
+const JSONP_CALLBACK_DEFAULT = "JSONP_CALLBACK";
+ 
 /**
  * json encode options
  * default is JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
@@ -47,6 +53,7 @@ public static $send_status_headers = true;
  */
 protected $links              = array();
 protected $meta_data          = array();
+protected $included_data      = array();
 protected $included_resources = array();
 protected $http_status        = self::STATUS_OK;
 protected $redirect_location  = null;
@@ -80,6 +87,31 @@ public function __construct() {
  */
 public function __toString() {
 	return $this->get_json();
+}
+
+/**
+ * generates an array for the whole response body
+ *
+ * @see jsonapi.org/format
+ *
+ * @return array, containing:
+ *         - links
+ *         - meta
+ */
+public function get_array() {
+	$response = array();
+	
+	// links
+	if ($this->links) {
+		$response['links'] = $this->links;
+	}
+	
+	// meta data
+	if ($this->meta_data) {
+		$response['meta'] = $this->meta_data;
+	}
+	
+	return $response;
 }
 
 /**
@@ -119,9 +151,10 @@ public function get_json($encode_options=null) {
  * @param  int    $encode_options optional, $options for json_encode()
  *                                defaults to ::ENCODE_DEFAULT or ::ENCODE_DEBUG, @see ::$debug
  * @param  json   $response       optional, defaults to ::get_json()
+ * @param  string $jsonp_callback optional, response as jsonp
  * @return void                   however, a string will be echo'd to the browser
  */
-public function send_response($content_type=null, $encode_options=null, $response=null) {
+public function send_response($content_type=null, $encode_options=null, $response=null, $jsonp_callback=null) {
 	if (is_null($response) && $this->http_status != self::STATUS_NO_CONTENT) {
 		$response = $this->get_json($encode_options);
 	}
@@ -140,6 +173,15 @@ public function send_response($content_type=null, $encode_options=null, $respons
 	header('Content-Type: '.$content_type.'; charset=utf-8');
 	
 	if ($this->http_status == self::STATUS_NO_CONTENT) {
+		return;
+	} 
+	
+	// jsonp response
+	if ($content_type == self::CONTENT_TYPE_JSONP) {
+		if (empty($jsonp_callback)) {
+			$jsonp_callback = self::JSONP_CALLBACK_DEFAULT;
+		}
+		echo $jsonp_callback.'('.$response.')';
 		return;
 	}
 	
@@ -274,15 +316,34 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
 		return;
 	}
 	
-	$resource_array = $resource_array['data'];
-	unset($resource_array['relationships'], $resource_array['meta']);
+	// root-level meta-data
+	if (!empty($resource_array['meta'])) {
+		$this->fill_meta($resource_array['meta']);
+	}
 	
-	$key = $resource_array['type'].'/'.$resource_array['id'];
+	$resource_array = $resource_array['data'];
+	
+	$key = $resource->get_type().'/'.$resource->get_id();
 	
 	$this->included_data[$key] = $resource_array;
 	
 	// make a backup of the actual resource, to pass on to a collection
 	$this->included_resources[$key] = $resource;
+	
+	// allow nesting relationshios
+	foreach ($resource->get_included_resources() as $included_resource) {
+		if (empty($included_resource->primary_id)) {
+			continue;
+		}
+		
+		$included_key = $included_resource->get_type().'/'.$included_resource->get_id();
+		
+		$this->included_resources[$included_key] = $included_resource;
+		
+		$included_array = $included_resource->get_array();
+		$included_array = $included_array['data'];
+		$this->included_data[$included_key] = $included_array;
+	}
 }
 
 /**
@@ -291,10 +352,15 @@ public function add_included_resource(\alsvanzelf\jsonapi\resource $resource) {
  * 
  * prefer using ->fill_relations() instead
  * 
- * @param  array $resources of \alsvanzelf\jsonapi\resource objects
+ * @param  mixed $resources array of \alsvanzelf\jsonapi\resource objects
+ *                          or \alsvanzelf\jsonapi\collection object
  * @return void
  */
 public function fill_included_resources($resources) {
+	if ($resources instanceof \alsvanzelf\jsonapi\collection) {
+		$resources = $resources->get_resources();
+	}
+	
 	foreach ($resources as $resource) {
 		$this->add_included_resource($resource);
 	}
