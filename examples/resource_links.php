@@ -19,7 +19,7 @@ $jsonapi->fill_data($user);
 /**
  * self links are adding both at root and in data levels
  */
-$self_meta      = ['level' => jsonapi\resource::LINK_LEVEL_DATA.'+'.jsonapi\resource::LINK_LEVEL_ROOT];
+$self_meta      = ['level' => jsonapi\resource::LINK_LEVEL_BOTH];
 $backwards_meta = ['level' => jsonapi\resource::LINK_LEVEL_DATA];
 $partner_meta   = ['level' => jsonapi\resource::LINK_LEVEL_DATA];
 $redirect_meta  = ['level' => jsonapi\resource::LINK_LEVEL_ROOT];

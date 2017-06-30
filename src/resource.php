@@ -30,6 +30,7 @@ const RELATION_TO_ONE  = 'to_one';
  */
 const LINK_LEVEL_DATA    = 'data';
 const LINK_LEVEL_ROOT    = 'root';
+const LINK_LEVEL_BOTH    = 'both';
 
 /**
  * internal data containers
@@ -333,8 +334,10 @@ public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_D
 	
 	parent::add_link($key, $link, $meta_data);
 	
-	if ($level === self::LINK_LEVEL_DATA) {
+	if ($level === self::LINK_LEVEL_DATA || $level === self::LINK_LEVEL_BOTH) {
 		$this->primary_links[$key] = $this->links[$key];
+	}
+	if ($level === self::LINK_LEVEL_DATA) {
 		unset($this->links[$key]);
 	}
 }
@@ -358,8 +361,7 @@ public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_D
 public function set_self_link($link, $meta_data=null) {
 	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link, $meta_data, $level=self::LINK_LEVEL_DATA);
-	$this->add_link($key='self', $link, $meta_data, $level=self::LINK_LEVEL_ROOT);
+	$this->add_link($key='self', $link, $meta_data, $level=self::LINK_LEVEL_BOTH);
 }
 
 /**
