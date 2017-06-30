@@ -26,6 +26,13 @@ const RELATION_TO_MANY = 'to_many';
 const RELATION_TO_ONE  = 'to_one';
 
 /**
+ * placement of link objects
+ */
+const LINK_LEVEL_DATA    = 'data';
+const LINK_LEVEL_ROOT    = 'root';
+const LINK_LEVEL_BOTH    = 'both';
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -309,9 +316,10 @@ public function fill_relations($relations, $skip_include=false) {
  * @param  string $key
  * @param  mixed  $link      objects are converted in arrays, @see base::convert_object_to_array()
  * @param  mixed  $meta_data should not be used if $link is non-string
+ * @param  string $level     one of the predefined ones in ::LINK_LEVEL_*
  * @return void
  */
-public function add_link($key, $link, $meta_data=null) {
+public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_DATA) {
 	if (is_object($link)) {
 		$link = parent::convert_object_to_array($link);
 	}
@@ -322,6 +330,13 @@ public function add_link($key, $link, $meta_data=null) {
 	}
 	
 	parent::add_link($key, $link, $meta_data);
+	
+	if ($level === self::LINK_LEVEL_DATA || $level === self::LINK_LEVEL_BOTH) {
+		$this->primary_links[$key] = $this->links[$key];
+	}
+	if ($level === self::LINK_LEVEL_DATA) {
+		unset($this->links[$key]);
+	}
 }
 
 /**
@@ -343,7 +358,7 @@ public function add_link($key, $link, $meta_data=null) {
 public function set_self_link($link, $meta_data=null) {
 	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link, $meta_data);
+	$this->add_link($key='self', $link, $meta_data, $level=self::LINK_LEVEL_BOTH);
 }
 
 /**
