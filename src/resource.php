@@ -26,6 +26,14 @@ const RELATION_TO_MANY = 'to_many';
 const RELATION_TO_ONE  = 'to_one';
 
 /**
+ * which links should be set for relations
+ */
+const RELATION_LINKS_RELATIONSHIP = 'relationship';
+const RELATION_LINKS_RESOURCE     = 'resource';
+const RELATION_LINKS_BOTH         = 'both';
+const RELATION_LINKS_NONE         = 'none';
+
+/**
  * placement of link objects
  */
 const LINK_LEVEL_DATA    = 'data';
@@ -48,6 +56,12 @@ const SELF_LINK_NONE   = 'none';
  * from 2.x this will (probably) switch to ::SELF_LINK_TYPE
  */
 public static $self_link_data_level = self::SELF_LINK_SERVER;
+
+/**
+ * allow to toggle the auto generated links for relations
+ * @todo allow to customize the format completly instead of only toggling
+ */
+public static $relation_links = self::RELATION_LINKS_BOTH;
 
 /**
  * internal data containers
@@ -249,7 +263,14 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		throw new \Exception('collections can only be added as RELATION_TO_MANY');
 	}
 	
-	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
+	if ($relation instanceof \alsvanzelf\jsonapi\resource == false && $relation instanceof \alsvanzelf\jsonapi\collection == false && is_array($relation) == false) {
+		throw new \Exception('unknown relation format');
+	}
+	
+	if (is_array($relation)) {
+		$this->primary_relationships[$key] = $relation;
+	}
+	elseif ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		// add whole resources as included resource, while keeping the relationship
 		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
@@ -269,17 +290,8 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		if ($type == self::RELATION_TO_MANY) {
 			$relation_data = array($relation_data);
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
-	
-	if ($relation instanceof \alsvanzelf\jsonapi\collection) {
+	elseif ($relation instanceof \alsvanzelf\jsonapi\collection) {
 		$relation_resources = $relation->get_resources();
 		
 		// add whole resources as included resource, while keeping the relationship
@@ -295,21 +307,23 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 				'id'   => $relation_resource->get_id(),
 			];
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
 	
-	if (is_array($relation) == false) {
-		throw new \Exception('unknown relation format');
+	$this->primary_relationships[$key] = array(
+		'data'  => $relation_data,
+	);
+	
+	$relation_links = [];
+	if (self::$relation_links == self::RELATION_LINKS_RELATIONSHIP || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['self'] = $base_url.'/relationships/'.$key;
+	}
+	if (self::$relation_links == self::RELATION_LINKS_RESOURCE || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['related'] = $base_url.'/'.$key;
 	}
 	
-	$this->primary_relationships[$key] = $relation;
+	if ($relation_links) {
+		$this->primary_relationships[$key]['links'] = $relation_links;
+	}
 }
 
 /**
