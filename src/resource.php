@@ -26,6 +26,20 @@ const RELATION_TO_MANY = 'to_many';
 const RELATION_TO_ONE  = 'to_one';
 
 /**
+ * which links should be set for relations
+ */
+const RELATION_LINKS_RELATIONSHIP = 'relationship';
+const RELATION_LINKS_RESOURCE     = 'resource';
+const RELATION_LINKS_BOTH         = 'both';
+const RELATION_LINKS_NONE         = 'none';
+
+/**
+ * allow to toggle the auto generated links for relations
+ * @todo allow to customize the format completly instead of only toggling
+ */
+public static $relation_links = self::RELATION_LINKS_BOTH;
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -272,12 +286,20 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 	}
 	
 	$this->primary_relationships[$key] = array(
-		'links' => array(
-			'self'    => $base_url.'/relationships/'.$key,
-			'related' => $base_url.'/'.$key,
-		),
 		'data'  => $relation_data,
 	);
+	
+	$relation_links = [];
+	if (self::$relation_links == self::RELATION_LINKS_RELATIONSHIP || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['self'] = $base_url.'/relationships/'.$key;
+	}
+	if (self::$relation_links == self::RELATION_LINKS_RESOURCE || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['related'] = $base_url.'/'.$key;
+	}
+	
+	if ($relation_links) {
+		$this->primary_relationships[$key]['links'] = $relation_links;
+	}
 }
 
 /**
