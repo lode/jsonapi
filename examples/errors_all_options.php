@@ -62,6 +62,7 @@ $jsonapi = new jsonapi\errors($error);
 
 $jsonapi->add_error($another_error);
 $jsonapi->add_exception($some_exception);
+$jsonapi->add_link('redirect', '/login', ['label'=>'Log in']);
 
 $jsonapi->set_http_status(jsonapi\response::STATUS_BAD_REQUEST);
 
