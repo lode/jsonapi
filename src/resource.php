@@ -304,6 +304,9 @@ public function fill_relations($relations, $skip_include=false) {
 }
 
 /**
+ * this will end up in response.data.links.{$key}
+ * if $also_root is set to true, it will also end up in response.links.{$key}
+ * 
  * @see jsonapi\response->add_link()
  * 
  * @param  string  $key
