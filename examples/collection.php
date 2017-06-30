@@ -8,6 +8,11 @@ error_reporting(-1);
 require '../vendor/autoload.php';
 
 /**
+ * settings which will change default from 2.x
+ */
+jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
+
+/**
  * the collection you want to send out
  * 
  * normally, you'd fetch this from a database
@@ -25,13 +30,11 @@ $collection = array();
 
 foreach ($users as $user) {
 	$resource = new jsonapi\resource($type='user', $user->id);
-	$resource->set_self_link('/user/'.$user->id);
 	$resource->fill_data($user);
 	
 	if ($user->id == 42) {
 		$ship = new jsonapi\resource('ship', 5);
 		$ship->add_data('name', 'Heart of Gold');
-		$ship->set_self_link('/ship/5');
 		$resource->add_relation('ship', $ship);
 	}
 	

@@ -8,6 +8,11 @@ error_reporting(-1);
 require '../vendor/autoload.php';
 
 /**
+ * settings which will change default from 2.x
+ */
+jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
+
+/**
  * the resource you want to send out
  * 
  * normally, you'd fetch this from a database
