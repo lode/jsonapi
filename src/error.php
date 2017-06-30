@@ -228,9 +228,22 @@ public function blame_get_parameter($get_parameter_name) {
  * sets a link which can help in solving the problem
  * this will end up in response.errors[].links.about
  * 
- * @param string $about_link
+ * @param  string $about_link string with link
+ * @param  mixed  $meta_data  optional, meta data as key-value pairs
+ *                            objects are converted in arrays, @see base::convert_object_to_array()
  */
-public function set_about_link($about_link) {
+public function set_about_link($about_link, $meta_data=null) {
+	if ($meta_data) {
+		if (is_object($meta_data)) {
+			$meta_data = parent::convert_object_to_array($meta_data);
+		}
+		
+		$about_link = array(
+			'href' => $about_link,
+			'meta' => $meta_data,
+		);
+	}
+	
 	$this->about_link = $about_link;
 }
 

@@ -54,6 +54,13 @@ const ENCODE_DEBUG   = response::ENCODE_DEBUG;
 public static $debug = null;
 
 /**
+ * the root of the application using jsonapi
+ * this is currently used to shorten filename of exception traces ..
+ * .. and thus only used when ::$debug is set to true
+ */
+public static $appRoot = __DIR__.'/../../../../';
+
+/**
  * base constructor for all objects
  * 
  * few things are arranged here:
@@ -64,6 +71,8 @@ public function __construct() {
 	if (is_null(self::$debug)) {
 		self::$debug = (bool)ini_get('display_errors');
 	}
+	
+	self::$appRoot = realpath(self::$appRoot).'/';
 }
 
 /**

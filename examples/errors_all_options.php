@@ -40,7 +40,7 @@ $error->set_http_status($http_status=jsonapi\response::STATUS_NOT_FOUND);
 // if not set during construction, set them here
 $error->set_error_message($error_message='too much options');
 $error->set_friendly_message($friendly_message='Please, choose a bit less.');
-$error->set_about_link($about_link='www.example.com/options.html');
+$error->set_about_link($about_link='www.example.com/options.html', ['foo'=>'bar']);
 
 /**
  * prepare multiple error objects for the errors response
@@ -62,6 +62,7 @@ $jsonapi = new jsonapi\errors($error);
 
 $jsonapi->add_error($another_error);
 $jsonapi->add_exception($some_exception);
+$jsonapi->add_link('redirect', '/login', ['label'=>'Log in']);
 
 $jsonapi->set_http_status(jsonapi\response::STATUS_BAD_REQUEST);
 

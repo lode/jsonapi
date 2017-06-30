@@ -187,7 +187,7 @@ public function add_exception($exception, $friendly_message=null, $about_link=nu
 	if (base::$debug) {
 		$file = $exception->getFile();
 		if ($file) {
-			$file = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $file);
+			$file = str_replace(base::$appRoot, '', $file);
 			$new_error->add_meta('file',  $file);
 		}
 		
@@ -200,7 +200,7 @@ public function add_exception($exception, $friendly_message=null, $about_link=nu
 		if ($trace) {
 			foreach ($trace as &$place) {
 				if (!empty($place['file'])) {
-					$place['file'] = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $place['file']);
+					$place['file'] = str_replace(base::$appRoot, '', $place['file']);
 				}
 			}
 			$new_error->add_meta('trace', $trace);

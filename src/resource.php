@@ -26,6 +26,44 @@ const RELATION_TO_MANY = 'to_many';
 const RELATION_TO_ONE  = 'to_one';
 
 /**
+ * which links should be set for relations
+ */
+const RELATION_LINKS_RELATIONSHIP = 'relationship';
+const RELATION_LINKS_RESOURCE     = 'resource';
+const RELATION_LINKS_BOTH         = 'both';
+const RELATION_LINKS_NONE         = 'none';
+
+/**
+ * placement of link objects
+ */
+const LINK_LEVEL_DATA    = 'data';
+const LINK_LEVEL_ROOT    = 'root';
+const LINK_LEVEL_BOTH    = 'both';
+
+/**
+ * methods for filling the self link
+ * @see ::$self_link_method
+ */
+const SELF_LINK_SERVER = 'server';
+const SELF_LINK_TYPE   = 'type';
+const SELF_LINK_NONE   = 'none';
+
+/**
+ * the method to use for filling the self link
+ * 
+ * the current default ::SELF_LINK_SERVER fills the link using the $_SERVER request info
+ * for backwards compatibility this stays for the 1.x releases
+ * from 2.x this will (probably) switch to ::SELF_LINK_TYPE
+ */
+public static $self_link_data_level = self::SELF_LINK_SERVER;
+
+/**
+ * allow to toggle the auto generated links for relations
+ * @todo allow to customize the format completly instead of only toggling
+ */
+public static $relation_links = self::RELATION_LINKS_BOTH;
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -43,10 +81,10 @@ protected $primary_meta_data     = array();
  *                     can be integer or hash or whatever
  */
 public function __construct($type, $id=null) {
-	parent::__construct();
-	
 	$this->primary_type = $type;
 	$this->primary_id = $id;
+	
+	parent::__construct();
 }
 
 /**
@@ -225,13 +263,20 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		throw new \Exception('collections can only be added as RELATION_TO_MANY');
 	}
 	
-	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
+	if ($relation instanceof \alsvanzelf\jsonapi\resource == false && $relation instanceof \alsvanzelf\jsonapi\collection == false && is_array($relation) == false) {
+		throw new \Exception('unknown relation format');
+	}
+	
+	if (is_array($relation)) {
+		$this->primary_relationships[$key] = $relation;
+	}
+	elseif ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		// add whole resources as included resource, while keeping the relationship
 		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
 		}
 		
-		$base_url      = $this->links['self'];
+		$base_url      = (isset($this->primary_links['self']['href'])) ? $this->primary_links['self']['href'] : $this->primary_links['self'];
 		$relation_id   = $relation->get_id() ?: null;
 		$relation_data = [
 			'type' => $relation->get_type(),
@@ -245,17 +290,8 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		if ($type == self::RELATION_TO_MANY) {
 			$relation_data = array($relation_data);
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
-	
-	if ($relation instanceof \alsvanzelf\jsonapi\collection) {
+	elseif ($relation instanceof \alsvanzelf\jsonapi\collection) {
 		$relation_resources = $relation->get_resources();
 		
 		// add whole resources as included resource, while keeping the relationship
@@ -263,7 +299,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 			$this->fill_included_resources($relation);
 		}
 		
-		$base_url      = $this->links['self'];
+		$base_url      = (isset($this->primary_links['self']['href'])) ? $this->primary_links['self']['href'] : $this->primary_links['self'];
 		$relation_data = array();
 		foreach ($relation_resources as $relation_resource) {
 			$relation_data[] = [
@@ -271,21 +307,23 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 				'id'   => $relation_resource->get_id(),
 			];
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
 	
-	if (is_array($relation) == false) {
-		throw new \Exception('unknown relation format');
+	$this->primary_relationships[$key] = array(
+		'data'  => $relation_data,
+	);
+	
+	$relation_links = [];
+	if (self::$relation_links == self::RELATION_LINKS_RELATIONSHIP || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['self'] = $base_url.'/relationships/'.$key;
+	}
+	if (self::$relation_links == self::RELATION_LINKS_RESOURCE || self::$relation_links == self::RELATION_LINKS_BOTH) {
+		$relation_links['related'] = $base_url.'/'.$key;
 	}
 	
-	$this->primary_relationships[$key] = $relation;
+	if ($relation_links) {
+		$this->primary_relationships[$key]['links'] = $relation_links;
+	}
 }
 
 /**
@@ -304,38 +342,43 @@ public function fill_relations($relations, $skip_include=false) {
 }
 
 /**
- * adds a link
  * this will end up in response.data.links.{$key}
+ * if $also_root is set to true, it will also end up in response.links.{$key}
  * 
- * useful for links which can not be added as relation, @see ->add_relation()
+ * @see jsonapi\response->add_link()
  * 
  * @param  string $key
- * @param  mixed  $link objects are converted in arrays, @see base::convert_object_to_array()
+ * @param  mixed  $link      objects are converted in arrays, @see base::convert_object_to_array()
+ * @param  mixed  $meta_data should not be used if $link is non-string
+ * @param  string $level     one of the predefined ones in ::LINK_LEVEL_*
  * @return void
  */
-public function add_link($key, $link) {
+public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_DATA) {
 	if (is_object($link)) {
 		$link = parent::convert_object_to_array($link);
 	}
-	if (is_string($link) == false && is_array($link) == false) {
-		throw new \Exception('link should be a string or an array');
+	
+	// can not combine both raw link object and extra meta data
+	if ($meta_data && is_string($link) == false) {
+		throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
 	}
 	
-	$this->primary_links[$key] = $link;
-}
-
-/**
- * fills the set of links
- * this will end up in response.data.links
- * 
- * @see ->add_link()
- * 
- * @param  array   $links
- * @return void
- */
-public function fill_links($links) {
-	foreach ($links as $key => $link) {
-		$this->add_link($key, $link);
+	if ($level === self::LINK_LEVEL_DATA) {
+		$revert_root_level = (isset($this->links[$key])) ? $this->links[$key] : null;
+	}
+	
+	parent::add_link($key, $link, $meta_data);
+	
+	if ($level === self::LINK_LEVEL_DATA || $level === self::LINK_LEVEL_BOTH) {
+		$this->primary_links[$key] = $this->links[$key];
+	}
+	if ($level === self::LINK_LEVEL_DATA) {
+		if ($revert_root_level) {
+			$this->links[$key] = $revert_root_level;
+		}
+		else {
+			unset($this->links[$key]);
+		}
 	}
 }
 
@@ -351,12 +394,39 @@ public function fill_links($links) {
  * @see jsonapi\response::__construct()
  * 
  * @param  string $link
+ * @param  mixed  $meta_data optional, meta data as key-value pairs
+ *                           objects are converted in arrays, @see base::convert_object_to_array()
  * @return void
  */
-public function set_self_link($link) {
-	parent::set_self_link($link);
+public function set_self_link($link, $meta_data=null) {
+	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link);
+	if (self::$self_link_data_level == self::SELF_LINK_SERVER) {
+		$this->add_link($key='self', $link, $meta_data);
+	}
+	if (self::$self_link_data_level == self::SELF_LINK_TYPE) {
+		$link = '/'.$this->primary_type.'/'.$this->primary_id;
+		$this->add_link($key='self', $link, $meta_data);
+	}
+}
+
+/**
+ * adds meta data to the default self link
+ * this will end up in response.links.self.meta.{$key} and response.data.links.self.meta.{$key}
+ * this overrides the jsonapi\response->add_self_link_meta() which only adds it to response.links.self.meta.{$key}
+ * 
+ * @see jsonapi\response->add_self_link_meta()
+ * 
+ * @note you can also use ->set_self_link() with the whole meta object at once
+ * 
+ * @param  string  $key
+ * @param  mixed   $meta_data objects are converted in arrays, @see base::convert_object_to_array()
+ * @return void
+ */
+public function add_self_link_meta($key, $meta_data) {
+	parent::add_self_link_meta($key, $meta_data);
+	
+	$this->primary_links['self'] = $this->links['self'];
 }
 
 /**
