@@ -225,7 +225,14 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		throw new \Exception('collections can only be added as RELATION_TO_MANY');
 	}
 	
-	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
+	if ($relation instanceof \alsvanzelf\jsonapi\resource == false && $relation instanceof \alsvanzelf\jsonapi\collection == false && is_array($relation) == false) {
+		throw new \Exception('unknown relation format');
+	}
+	
+	if (is_array($relation)) {
+		$this->primary_relationships[$key] = $relation;
+	}
+	elseif ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		// add whole resources as included resource, while keeping the relationship
 		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
@@ -245,17 +252,8 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		if ($type == self::RELATION_TO_MANY) {
 			$relation_data = array($relation_data);
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
-	
-	if ($relation instanceof \alsvanzelf\jsonapi\collection) {
+	elseif ($relation instanceof \alsvanzelf\jsonapi\collection) {
 		$relation_resources = $relation->get_resources();
 		
 		// add whole resources as included resource, while keeping the relationship
@@ -271,21 +269,15 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 				'id'   => $relation_resource->get_id(),
 			];
 		}
-		
-		$relation = array(
-			'links' => array(
-				'self'    => $base_url.'/relationships/'.$key,
-				'related' => $base_url.'/'.$key,
-			),
-			'data'  => $relation_data,
-		);
 	}
 	
-	if (is_array($relation) == false) {
-		throw new \Exception('unknown relation format');
-	}
-	
-	$this->primary_relationships[$key] = $relation;
+	$this->primary_relationships[$key] = array(
+		'links' => array(
+			'self'    => $base_url.'/relationships/'.$key,
+			'related' => $base_url.'/'.$key,
+		),
+		'data'  => $relation_data,
+	);
 }
 
 /**
