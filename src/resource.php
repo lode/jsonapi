@@ -304,17 +304,11 @@ public function fill_relations($relations, $skip_include=false) {
 }
 
 /**
- * adds a link
- * this will end up in response.data.links.{$key}
- * 
- * useful for links which can not be added as relation, @see ->add_relation()
+ * @see jsonapi\response->add_link()
  * 
  * @param  string $key
- * @param  mixed  $link      string with link, or raw link object array/object
- *                           objects are converted in arrays, @see base::convert_object_to_array()
- * @param  mixed  $meta_data optional, meta data as key-value pairs
- *                           should not be used if $link is non-string
- *                           objects are converted in arrays, @see base::convert_object_to_array()
+ * @param  mixed  $link      objects are converted in arrays, @see base::convert_object_to_array()
+ * @param  mixed  $meta_data should not be used if $link is non-string
  * @return void
  */
 public function add_link($key, $link, $meta_data=null) {
@@ -322,38 +316,12 @@ public function add_link($key, $link, $meta_data=null) {
 		$link = parent::convert_object_to_array($link);
 	}
 	
-	if ($meta_data) {
-		// can not combine both raw link object and extra meta data
-		if (is_string($link) == false) {
-			throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
-		}
-		
-		if (is_object($meta_data)) {
-			$meta_data = parent::convert_object_to_array($meta_data);
-		}
-		
-		$link = array(
-			'href' => $link,
-			'meta' => $meta_data,
-		);
+	// can not combine both raw link object and extra meta data
+	if ($meta_data && is_string($link) == false) {
+		throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
 	}
 	
-	$this->primary_links[$key] = $link;
-}
-
-/**
- * fills the set of links
- * this will end up in response.data.links
- * 
- * @see ->add_link()
- * 
- * @param  array   $links
- * @return void
- */
-public function fill_links($links) {
-	foreach ($links as $key => $link) {
-		$this->add_link($key, $link);
-	}
+	parent::add_link($key, $link, $meta_data);
 }
 
 /**

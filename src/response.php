@@ -240,6 +240,48 @@ public function get_included_resources() {
 }
 
 /**
+ * adds a link
+ * this will end up in response.links.{$key}
+ * 
+ * useful for links which can not be added as relation, @see ->add_relation()
+ * 
+ * @param  string $key
+ * @param  mixed  $link      string with link, or raw link object array/object
+ * @param  mixed  $meta_data optional, meta data as key-value pairs
+ *                           objects are converted in arrays, @see base::convert_object_to_array()
+ * @return void
+ */
+public function add_link($key, $link, $meta_data=null) {
+	if ($meta_data) {
+		if (is_object($meta_data)) {
+			$meta_data = parent::convert_object_to_array($meta_data);
+		}
+		
+		$link = array(
+			'href' => $link,
+			'meta' => $meta_data,
+		);
+	}
+	
+	$this->links[$key] = $link;
+}
+
+/**
+ * fills the set of links
+ * this will end up in response.links
+ * 
+ * @see ->add_link()
+ * 
+ * @param  array $links
+ * @return void
+ */
+public function fill_links($links) {
+	foreach ($links as $key => $link) {
+		$this->add_link($key, $link);
+	}
+}
+
+/**
  * sets the link to the request used to give this response
  * this will end up in response.links.self ..
  * and in response.data.links.self for single resource objects
