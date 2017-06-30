@@ -67,10 +67,10 @@ protected $primary_meta_data     = array();
  *                     can be integer or hash or whatever
  */
 public function __construct($type, $id=null) {
-	parent::__construct();
-	
 	$this->primary_type = $type;
 	$this->primary_id = $id;
+	
+	parent::__construct();
 }
 
 /**
