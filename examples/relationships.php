@@ -8,6 +8,11 @@ error_reporting(-1);
 require '../vendor/autoload.php';
 
 /**
+ * settings which will change default from 2.x
+ */
+jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
+
+/**
  * the different ways of adding relationships to a resource
  */
 
