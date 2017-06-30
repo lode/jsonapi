@@ -332,13 +332,22 @@ public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_D
 		throw new \Exception('link "'.$key.'" should be a string if meta data is provided separate');
 	}
 	
+	if ($level === self::LINK_LEVEL_DATA) {
+		$revert_root_level = (isset($this->links[$key])) ? $this->links[$key] : null;
+	}
+	
 	parent::add_link($key, $link, $meta_data);
 	
 	if ($level === self::LINK_LEVEL_DATA || $level === self::LINK_LEVEL_BOTH) {
 		$this->primary_links[$key] = $this->links[$key];
 	}
 	if ($level === self::LINK_LEVEL_DATA) {
-		unset($this->links[$key]);
+		if ($revert_root_level) {
+			$this->links[$key] = $revert_root_level;
+		}
+		else {
+			unset($this->links[$key]);
+		}
 	}
 }
 
@@ -361,7 +370,7 @@ public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_D
 public function set_self_link($link, $meta_data=null) {
 	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link, $meta_data, $level=self::LINK_LEVEL_BOTH);
+	$this->add_link($key='self', $link, $meta_data);
 }
 
 /**
