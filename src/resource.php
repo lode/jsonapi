@@ -33,6 +33,23 @@ const LINK_LEVEL_ROOT    = 'root';
 const LINK_LEVEL_BOTH    = 'both';
 
 /**
+ * methods for filling the self link
+ * @see ::$self_link_method
+ */
+const SELF_LINK_SERVER = 'server';
+const SELF_LINK_TYPE   = 'type';
+const SELF_LINK_NONE   = 'none';
+
+/**
+ * the method to use for filling the self link
+ * 
+ * the current default ::SELF_LINK_SERVER fills the link using the $_SERVER request info
+ * for backwards compatibility this stays for the 1.x releases
+ * from 2.x this will (probably) switch to ::SELF_LINK_TYPE
+ */
+public static $self_link_data_level = self::SELF_LINK_SERVER;
+
+/**
  * internal data containers
  */
 protected $primary_type          = null;
@@ -370,7 +387,13 @@ public function add_link($key, $link, $meta_data=null, $level=self::LINK_LEVEL_D
 public function set_self_link($link, $meta_data=null) {
 	parent::set_self_link($link, $meta_data);
 	
-	$this->add_link($key='self', $link, $meta_data);
+	if (self::$self_link_data_level == self::SELF_LINK_SERVER) {
+		$this->add_link($key='self', $link, $meta_data);
+	}
+	if (self::$self_link_data_level == self::SELF_LINK_TYPE) {
+		$link = '/'.$this->primary_type.'/'.$this->primary_id;
+		$this->add_link($key='self', $link, $meta_data);
+	}
 }
 
 /**
