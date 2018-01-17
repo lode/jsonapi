@@ -83,6 +83,14 @@ $jsonapi->add_relation('one-by-one-neighbours', $ship1_resource, $skip_include=f
 $jsonapi->add_relation('one-by-one-neighbours', $dock_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
 
 /**
+ * custom
+ */
+$custom_relation = [
+	'data' => ['cus' => 'tom'],
+];
+$jsonapi->add_relation('custom', $custom_relation);
+
+/**
  * sending the response
  */
 
