@@ -3,6 +3,7 @@
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
+use alsvanzelf\jsonapi\ErrorsDocument;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -35,6 +36,11 @@ echo '</pre><pre>';
 
 $jsonapi = new DataDocument();
 $jsonapi->setHttpStatusCode(201);
+$jsonapi->sendResponse();
+
+echo '</pre><pre>';
+
+$jsonapi = ErrorsDocument::fromException($exception);
 $jsonapi->sendResponse();
 
 echo '</pre>';
