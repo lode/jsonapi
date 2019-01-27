@@ -49,16 +49,19 @@ class ResourceObject extends ResourceIdentifierObject {
 	 * spec api
 	 */
 	
+	/**
+	 * @param AttributesObject $attributesObject
+	 */
 	public function setAttributesObject(AttributesObject $attributesObject) {
 		$this->attributes = $attributesObject;
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
 	/**
-	 * @return boolean
+	 * @inheritDoc
 	 */
 	public function isEmpty() {
 		if (parent::isEmpty() === false) {
@@ -72,7 +75,7 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function toArray() {
 		$array = parent::toArray();

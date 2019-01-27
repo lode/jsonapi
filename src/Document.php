@@ -31,6 +31,9 @@ abstract class Document implements DocumentInterface {
 	 * options
 	 */
 	
+	/**
+	 * @param int $statusCode
+	 */
 	public function setHttpStatusCode($statusCode) {
 		$this->httpStatusCode = $statusCode;
 	}
@@ -81,14 +84,20 @@ abstract class Document implements DocumentInterface {
 		$this->meta = $metaObject;
 	}
 	
+	/**
+	 * @param JsonapiObject $jsonapiObject
+	 */
 	public function setJsonapiObject(JsonapiObject $jsonapiObject) {
 		$this->jsonapi = $jsonapiObject;
 	}
 	
 	/**
-	 * output
+	 * DocumentInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toArray() {
 		$array = [];
 		
@@ -102,12 +111,18 @@ abstract class Document implements DocumentInterface {
 		return $array;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toJson(array $array=null) {
 		$array = $array ?: $this->toArray();
 		
 		return json_encode($array, JSON_PRETTY_PRINT);
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function sendResponse($json=null) {
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);

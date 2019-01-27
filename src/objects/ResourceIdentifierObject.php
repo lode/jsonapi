@@ -93,11 +93,11 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
 	/**
-	 * @return boolean
+	 * @inheritDoc
 	 */
 	public function isEmpty() {
 		if ($this->type !== null || $this->id !== null) {
@@ -111,7 +111,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	}
 	
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function toArray() {
 		$array = [

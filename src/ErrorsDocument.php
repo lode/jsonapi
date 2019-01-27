@@ -6,8 +6,12 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class ErrorsDocument extends Document {
+	/** @var ErrorObject[] */
 	public $errors = [];
 	
+	/**
+	 * @param ErrorObject $errorObject optional
+	 */
 	public function __construct(ErrorObject $errorObject=null) {
 		parent::__construct();
 		
@@ -20,6 +24,10 @@ class ErrorsDocument extends Document {
 	 * human api
 	 */
 	
+	/**
+	 * @param  \Exception $exception
+	 * @return ErrorsObject
+	 */
 	public static function fromException(\Exception $exception) {
 		return new self(ErrorObject::fromException($exception));
 	}
@@ -28,6 +36,11 @@ class ErrorsDocument extends Document {
 	 * spec api
 	 */
 	
+	/**
+	 * @note also defines the http status code of the document if the ErrorObject has it defined
+	 * 
+	 * @param ErrorObject $errorObject
+	 */
 	public function addErrorObject(ErrorObject $errorObject) {
 		$this->errors[] = $errorObject;
 		
@@ -37,9 +50,12 @@ class ErrorsDocument extends Document {
 	}
 	
 	/**
-	 * output
+	 * DocumentInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toArray() {
 		$array = parent::toArray();
 		

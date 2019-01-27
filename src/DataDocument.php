@@ -14,9 +14,12 @@ class DataDocument extends Document {
 	 */
 	
 	/**
-	 * output
+	 * DocumentInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toArray() {
 		$array = parent::toArray();
 		

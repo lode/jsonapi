@@ -9,6 +9,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
+	/** @var ResourceIdentifierObject|ResourceObject */
 	private $resource;
 	
 	/**
@@ -62,6 +63,11 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * spec api
 	 */
 	
+	/**
+	 * @param ResourceInterface $resource
+	 * 
+	 * @throws InputException if the $resource is a ResourceDocument itself
+	 */
 	public function setResource(ResourceInterface $resource) {
 		if ($resource instanceof ResourceDocument) {
 			throw new InputException('does not make sense to set a document inside a document, use ResourceObject or ResourceIdentifierObject instead');
@@ -71,9 +77,12 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	}
 	
 	/**
-	 * output
+	 * DocumentInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -89,6 +98,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * ResourceInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getResource() {
 		return $this->resource;
 	}

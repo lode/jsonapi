@@ -47,18 +47,18 @@ class MetaObject implements ObjectInterface {
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
 	/**
-	 * @return boolean
+	 * @inheritDoc
 	 */
 	public function isEmpty() {
 		return ($this->meta === []);
 	}
 	
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function toArray() {
 		return $this->meta;

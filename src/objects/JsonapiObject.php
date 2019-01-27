@@ -12,6 +12,9 @@ class JsonapiObject implements ObjectInterface {
 	/** @var MetaObject */
 	public $meta;
 	
+	/**
+	 * @param string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_DEFAULT
+	 */
 	public function __construct($version=Document::JSONAPI_VERSION_DEFAULT) {
 		if ($version !== null) {
 			$this->setVersion($version);
@@ -53,9 +56,12 @@ class JsonapiObject implements ObjectInterface {
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function isEmpty() {
 		if ($this->version !== null) {
 			return false;
@@ -68,7 +74,7 @@ class JsonapiObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function toArray() {
 		$array = [];

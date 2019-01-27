@@ -5,13 +5,19 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class ErrorObject implements ObjectInterface {
+	/** @var string */
 	public $status;
+	/** @var string */
 	public $code;
 	
 	/**
 	 * human api
 	 */
 	
+	/**
+	 * @param  \Exception $exception
+	 * @return ErrorObject
+	 */
 	public static function fromException(\Exception $exception) {
 		$errorObject = new self();
 		
@@ -27,18 +33,31 @@ class ErrorObject implements ObjectInterface {
 	 * spec api
 	 */
 	
+	/**
+	 * the HTTP status code applicable to this problem
+	 * 
+	 * @param string|int $httpStatusCode will be casted to a string
+	 */
 	public function setHttpStatusCode($httpStatusCode) {
 		$this->status = (string) $httpStatusCode;
 	}
 	
+	/**
+	 * an application-specific error code, expressed as a string value
+	 * 
+	 * @param string $errorCode
+	 */
 	public function setErrorCode($errorCode) {
 		$this->code = $errorCode;
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function isEmpty() {
 		if ($this->status !== null) {
 			return false;
@@ -50,6 +69,9 @@ class ErrorObject implements ObjectInterface {
 		return true;
 	}
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function toArray() {
 		$array = [];
 		
@@ -67,6 +89,10 @@ class ErrorObject implements ObjectInterface {
 	 * internal api
 	 */
 	
+	/**
+	 * @param  string|int $httpStatusCode
+	 * @return boolean
+	 */
 	private static function isValidHttpStatusCode($httpStatusCode) {
 		$httpStatusCode = (int) $httpStatusCode;
 		

@@ -47,18 +47,18 @@ class AttributesObject implements ObjectInterface {
 	}
 	
 	/**
-	 * output
+	 * ObjectInterface
 	 */
 	
 	/**
-	 * @return boolean
+	 * @inheritDoc
 	 */
 	public function isEmpty() {
 		return ($this->attributes === []);
 	}
 	
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
 	public function toArray() {
 		return $this->attributes;
