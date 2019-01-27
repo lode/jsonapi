@@ -3,13 +3,17 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
+use alsvanzelf\jsonapi\objects\MetaObject;
 
-class ResourceIdentifierObject implements ResourceInterface {
+class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	/** @var string */
 	public $type;
 	/** @var string */
 	public $id;
+	/** @var MetaObject */
+	public $meta;
 	/** @var Validator */
 	protected $validator;
 	
@@ -37,6 +41,18 @@ class ResourceIdentifierObject implements ResourceInterface {
 	 */
 	
 	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 */
+	public function addMeta($key, $value) {
+		if ($this->meta === null) {
+			$this->setMetaObject(new MetaObject());
+		}
+		
+		$this->meta->add($key, $value);
+	}
+	
+	/**
 	 * spec api
 	 */
 	
@@ -56,6 +72,13 @@ class ResourceIdentifierObject implements ResourceInterface {
 		$this->id = (string) $id;
 		
 		$this->validator->markUsedField($fieldName='id', Validator::OBJECT_CONTAINER_ID);
+	}
+	
+	/**
+	 * @param MetaObject $metaObject
+	 */
+	public function setMetaObject(MetaObject $metaObject) {
+		$this->meta = $metaObject;
 	}
 	
 	/**
@@ -80,6 +103,9 @@ class ResourceIdentifierObject implements ResourceInterface {
 		if ($this->type !== null || $this->id !== null) {
 			return false;
 		}
+		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -92,6 +118,10 @@ class ResourceIdentifierObject implements ResourceInterface {
 			'type' => $this->type,
 			'id'   => $this->id,
 		];
+		
+		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+			$array['meta'] = $this->meta->toArray();
+		}
 		
 		return $array;
 	}

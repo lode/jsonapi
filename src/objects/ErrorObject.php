@@ -2,7 +2,9 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-class ErrorObject {
+use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+
+class ErrorObject implements ObjectInterface {
 	public $status;
 	public $code;
 	
@@ -31,6 +33,34 @@ class ErrorObject {
 	
 	public function setErrorCode($errorCode) {
 		$this->code = $errorCode;
+	}
+	
+	/**
+	 * output
+	 */
+	
+	public function isEmpty() {
+		if ($this->status !== null) {
+			return false;
+		}
+		if ($this->code !== null) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public function toArray() {
+		$array = [];
+		
+		if ($this->status !== null) {
+			$array['status'] = $this->status;
+		}
+		if ($this->code !== null) {
+			$array['code'] = $this->code;
+		}
+		
+		return $array;
 	}
 	
 	/**

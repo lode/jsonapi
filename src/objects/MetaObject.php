@@ -6,26 +6,26 @@ use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
-class AttributesObject implements ObjectInterface {
+class MetaObject implements ObjectInterface {
 	/** @var array */
-	public $attributes = [];
+	public $meta = [];
 	
 	/**
 	 * human api
 	 */
 	
 	/**
-	 * @param  array $attributes
-	 * @return AttributesObject
+	 * @param  array $meta
+	 * @return MetaObject
 	 */
-	public static function fromArray(array $attributes) {
-		$attributesObject = new self();
+	public static function fromArray(array $meta) {
+		$metaObject = new self();
 		
-		foreach ($attributes as $key => $value) {
-			$attributesObject->add($key, $value);
+		foreach ($meta as $key => $value) {
+			$metaObject->add($key, $value);
 		}
 		
-		return $attributesObject;
+		return $metaObject;
 	}
 	
 	/**
@@ -43,7 +43,7 @@ class AttributesObject implements ObjectInterface {
 			$value = Converter::objectToArray($value);
 		}
 		
-		$this->attributes[$key] = $value;
+		$this->meta[$key] = $value;
 	}
 	
 	/**
@@ -54,13 +54,13 @@ class AttributesObject implements ObjectInterface {
 	 * @return boolean
 	 */
 	public function isEmpty() {
-		return ($this->attributes === []);
+		return ($this->meta === []);
 	}
 	
 	/**
 	 * @return array
 	 */
 	public function toArray() {
-		return $this->attributes;
+		return $this->meta;
 	}
 }

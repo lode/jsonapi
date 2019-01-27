@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\DataDocument;
+use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -19,6 +20,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param string|int $id   optional
 	 */
 	public function __construct($type=null, $id=null) {
+		parent::__construct();
+		
 		$this->setResource(new ResourceObject($type, $id));
 	}
 	
@@ -34,6 +37,25 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 */
 	public function add($key, $value) {
 		$this->resource->add($key, $value);
+	}
+	
+	/**
+	 * @param string $key
+	 * @param mixed  $value
+	 * @param string $level one of the Document::META_LEVEL_* constants, optional, defaults to Document::META_LEVEL_ROOT
+	 * 
+	 * @throws InputException if the $level is unknown
+	 */
+	public function addMeta($key, $value, $level=Document::META_LEVEL_ROOT) {
+		if ($level === Document::META_LEVEL_ROOT || $level === Document::META_LEVEL_JSONAPI) {
+			parent::addMeta($key, $value, $level);
+		}
+		elseif ($level === Document::META_LEVEL_RESOURCE) {
+			$this->resource->addMeta($key, $value);
+		}
+		else {
+			throw new InputException('unknown meta level "'.$level.'"');
+		}
 	}
 	
 	/**

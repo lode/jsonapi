@@ -9,6 +9,8 @@ class ErrorsDocument extends Document {
 	public $errors = [];
 	
 	public function __construct(ErrorObject $errorObject=null) {
+		parent::__construct();
+		
 		if ($errorObject !== null) {
 			$this->addErrorObject($errorObject);
 		}
@@ -43,7 +45,11 @@ class ErrorsDocument extends Document {
 		
 		$array['errors'] = [];
 		foreach ($this->errors as $error) {
-			$array['errors'] = $error;
+			if ($error->isEmpty()) {
+				continue;
+			}
+			
+			$array['errors'][] = $error->toArray();
 		}
 		
 		return $array;

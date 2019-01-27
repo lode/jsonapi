@@ -1,5 +1,6 @@
 <?php
 
+use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
@@ -23,6 +24,9 @@ echo '<pre>';
 
 $resource = new ResourceDocument($type, $id);
 $resource->add($key, $value);
+$resource->addMeta('metaAtRoot', 'foo');
+$resource->addMeta('metaAtJsonapi', 'bar', Document::META_LEVEL_JSONAPI);
+$resource->addMeta('metaAtResource', 'baf', Document::META_LEVEL_RESOURCE);
 $resource->sendResponse();
 
 echo '</pre><pre>';
