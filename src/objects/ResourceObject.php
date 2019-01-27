@@ -4,11 +4,14 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 class ResourceObject extends ResourceIdentifierObject {
 	/** @var AttributesObject */
 	public $attributes;
+	/** @var LinksObject */
+	public $links;
 	
 	/**
 	 * human api
@@ -46,6 +49,27 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
+	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function addLink($key, $href, array $meta=[]) {
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$this->links->add($key, $href, $meta);
+	}
+	
+	/**
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setSelfLink($href, array $meta=[]) {
+		$this->addLink('self', $href, $meta);
+	}
+	
+	/**
 	 * spec api
 	 */
 	
@@ -54,6 +78,13 @@ class ResourceObject extends ResourceIdentifierObject {
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject) {
 		$this->attributes = $attributesObject;
+	}
+	
+	/**
+	 * @param LinksObject $linksObject
+	 */
+	public function setLinksObject(LinksObject $linksObject) {
+		$this->links = $linksObject;
 	}
 	
 	/**
@@ -70,6 +101,9 @@ class ResourceObject extends ResourceIdentifierObject {
 		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
 			return false;
 		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -82,6 +116,9 @@ class ResourceObject extends ResourceIdentifierObject {
 		
 		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
 			$array['attributes'] = $this->attributes->toArray();
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			$array['links'] = $this->links->toArray();
 		}
 		
 		return $array;

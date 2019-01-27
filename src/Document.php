@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
+use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 abstract class Document implements DocumentInterface {
@@ -18,6 +19,8 @@ abstract class Document implements DocumentInterface {
 	
 	/** @var int */
 	public $httpStatusCode = 200;
+	/** @var LinksObject */
+	public $links;
 	/** @var MetaObject */
 	public $meta;
 	/** @var JsonapiObject */
@@ -41,6 +44,33 @@ abstract class Document implements DocumentInterface {
 	/**
 	 * human api
 	 */
+	
+	/**
+	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 * 
+	 * @throws InputException if the $level is Document::LEVEL_JSONAPI, Document::LEVEL_RESOURCE, or unknown
+	 */
+	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
+		if ($level === Document::LEVEL_ROOT) {
+			if ($this->links === null) {
+				$this->setLinksObject(new LinksObject());
+			}
+			
+			$this->links->add($key, $href, $meta);
+		}
+		elseif ($level === Document::LEVEL_JSONAPI) {
+			throw new InputException('level "jsonapi" can not be used for links');
+		}
+		elseif ($level === Document::LEVEL_RESOURCE) {
+			throw new InputException('level "resource" can only be set on a ResourceDocument');
+		}
+		else {
+			throw new InputException('unknown level "'.$level.'"');
+		}
+	}
 	
 	/**
 	 * @param string $key
@@ -78,6 +108,13 @@ abstract class Document implements DocumentInterface {
 	 */
 	
 	/**
+	 * @param LinksObject $linksObject
+	 */
+	public function setLinksObject(LinksObject $linksObject) {
+		$this->links = $linksObject;
+	}
+	
+	/**
 	 * @param MetaObject $metaObject
 	 */
 	public function setMetaObject(MetaObject $metaObject) {
@@ -104,6 +141,9 @@ abstract class Document implements DocumentInterface {
 		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();
 		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			$array['links'] = $this->links->toArray();
+		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
@@ -117,7 +157,7 @@ abstract class Document implements DocumentInterface {
 	public function toJson(array $array=null) {
 		$array = $array ?: $this->toArray();
 		
-		return json_encode($array, JSON_PRETTY_PRINT);
+		return json_encode($array, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
 	}
 	
 	/**

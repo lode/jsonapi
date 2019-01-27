@@ -28,7 +28,7 @@ class CollectionDocument extends DataDocument {
 	/**
 	 * @param string     $type
 	 * @param string|int $id
-	 * @param array      $attributes optional, leave empty to add a ResourceIdentifierObject, otherwise a ResourceObject is added
+	 * @param array      $attributes optional, if given a ResourceObject is added, otherwise a ResourceIdentifierObject is added
 	 */
 	public function add($type, $id, array $attributes=[]) {
 		if ($attributes === []) {

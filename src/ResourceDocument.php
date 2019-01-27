@@ -42,6 +42,21 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	
 	/**
 	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 */
+	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
+		if ($level === Document::LEVEL_RESOURCE) {
+			$this->resource->addLink($key, $href, $meta);
+		}
+		else {
+			parent::addLink($key, $href, $meta, $level);
+		}
+	}
+	
+	/**
+	 * @param string $key
 	 * @param mixed  $value
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */

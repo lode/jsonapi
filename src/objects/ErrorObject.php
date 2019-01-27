@@ -3,12 +3,15 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
 	/** @var string */
 	public $status;
 	/** @var string */
 	public $code;
+	/** @var LinksObject */
+	public $links;
 	
 	/**
 	 * human api
@@ -27,6 +30,27 @@ class ErrorObject implements ObjectInterface {
 		}
 		
 		return $errorObject;
+	}
+	
+	/**
+	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function addLink($key, $href, array $meta=[]) {
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$this->links->add($key, $href, $meta);
+	}
+	
+	/**
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setAboutLink($href, array $meta=[]) {
+		$this->addLink('about', $href, $meta);
 	}
 	
 	/**
@@ -52,6 +76,13 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @param LinksObject $linksObject
+	 */
+	public function setLinksObject(LinksObject $linksObject) {
+		$this->links = $linksObject;
+	}
+	
+	/**
 	 * ObjectInterface
 	 */
 	
@@ -63,6 +94,9 @@ class ErrorObject implements ObjectInterface {
 			return false;
 		}
 		if ($this->code !== null) {
+			return false;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
 			return false;
 		}
 		
@@ -80,6 +114,9 @@ class ErrorObject implements ObjectInterface {
 		}
 		if ($this->code !== null) {
 			$array['code'] = $this->code;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			$array['links'] = $this->links->toArray();
 		}
 		
 		return $array;
