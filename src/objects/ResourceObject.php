@@ -2,74 +2,85 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 class ResourceObject extends ResourceIdentifierObject {
-	public $attributes = [];
+	/** @var AttributesObject */
+	public $attributes;
 	
 	/**
 	 * human api
 	 */
 	
 	/**
+	 * @param  array      $attributes
+	 * @param  string     $type optional
+	 * @param  string|int $id   optional
+	 * @return ResourceObject
+	 */
+	public static function fromArray(array $attributes, $type=null, $id=null) {
+		$resourceObject = new self($type, $id);
+		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes));
+		
+		return $resourceObject;
+	}
+	
+	/**
 	 * add key-value pairs to attributes
 	 * 
 	 * @param string $key
-	 * @param mixed  $value objects will be converted using `get_object_vars()`
+	 * @param mixed  $value
 	 */
-	public function addData($key, $value) {
-		$this->checkMemberName($key);
-		$this->checkUsedField($key, $objectContainer='attributes');
-		
-		if (is_object($value)) {
-			$value = get_object_vars($value);
+	public function add($key, $value) {
+		if ($this->attributes === null) {
+			$this->attributes = new AttributesObject();
 		}
 		
-		$this->attributes[$key] = $value;
-		$this->markUsedField($key, $objectContainer='attributes');
-	}
-	
-	public function setData(array $array) {
-		foreach ($array as $key => $value) {
-			$this->addData($key, $value);
-		}
+		$this->validator->checkUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES);
+		
+		$this->attributes->add($key, $value);
+		
+		$this->validator->markUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES);
 	}
 	
 	/**
-	 * internal api
+	 * spec api
+	 */
+	
+	public function setAttributesObject(AttributesObject $attributesObject) {
+		$this->attributes = $attributesObject;
+	}
+	
+	/**
+	 * output
 	 */
 	
 	/**
-	 * @see https://jsonapi.org/format/1.1/#document-member-names
-	 * 
-	 * @todo allow non-url safe chars
-	 * @todo allow @-members for JSON-LD {@see https://jsonapi.org/format/1.1/#document-member-names-at-members}
-	 * 
-	 * @param  string $memberName
-	 * 
-	 * @throws InputException
+	 * @return boolean
 	 */
-	private function checkMemberName($memberName) {
-		$globallyAllowedCharacters  = 'a-zA-Z0-9';
-		$generallyAllowedCharacters = $globallyAllowedCharacters.'_-';
-		
-		$regex = '{^
-			(
-				['.$globallyAllowedCharacters.']
-				
-				|
-				
-				['.$globallyAllowedCharacters.']
-				['.$generallyAllowedCharacters.']*
-				['.$globallyAllowedCharacters.']
-			)
-		$}x';
-		
-		if (preg_match($regex, $memberName) === 1) {
-			return;
+	public function isEmpty() {
+		if (parent::isEmpty() === false) {
+			return false;
+		}
+		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+			return false;
 		}
 		
-		throw new InputException('invalid member name "'.$memberName.'"');
+		return true;
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		$array = parent::toArray();
+		
+		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+			$array['attributes'] = $this->attributes->toArray();
+		}
+		
+		return $array;
 	}
 }

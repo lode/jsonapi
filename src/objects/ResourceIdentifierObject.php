@@ -2,68 +2,97 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
 class ResourceIdentifierObject implements ResourceInterface {
+	/** @var string */
 	public $type;
+	/** @var string */
 	public $id;
-	protected $fields = [];
+	/** @var Validator */
+	protected $validator;
 	
-	public function __construct($type, $id) {
-		$this->type = $type;
-		$this->id   = (string) $id;
+	/**
+	 * @note $type and $id are optional to pass during construction
+	 *       however they are required for a valid ResourceIdentifierObject
+	 *       so use ->setType() and ->setId() if not passing them during construction
+	 * 
+	 * @param string     $type optional
+	 * @param string|int $id   optional
+	 */
+	public function __construct($type=null, $id=null) {
+		$this->validator = new Validator();
 		
-		$this->markUsedField($fieldName='type', $objectContainer='type');
-		$this->markUsedField($fieldName='id', $objectContainer='id');
+		if ($type !== null) {
+			$this->setType($type);
+		}
+		if ($id !== null) {
+			$this->setId($id);
+		}
 	}
+	
+	/**
+	 * human api
+	 */
 	
 	/**
 	 * spec api
 	 */
 	
-	public function setType(string $type) {
+	/**
+	 * @param string $type
+	 */
+	public function setType($type) {
 		$this->type = $type;
+		
+		$this->validator->markUsedField($fieldName='type', Validator::OBJECT_CONTAINER_TYPE);
 	}
 	
+	/**
+	 * @param string|int $id will be casted to a string
+	 */
 	public function setId($id) {
-		$this->id = $id;
+		$this->id = (string) $id;
+		
+		$this->validator->markUsedField($fieldName='id', Validator::OBJECT_CONTAINER_ID);
 	}
 	
 	/**
 	 * ResourceInterface
 	 */
 	
+	/**
+	 * @inheritDoc
+	 */
 	public function getResource() {
 		return $this;
 	}
 	
 	/**
-	 * internal api
+	 * output
 	 */
 	
 	/**
-	 * block if already existing in another object, otherwise just overwrite
-	 * 
-	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
-	 * 
-	 * @param  string $fieldName
-	 * @param  string $objectContainer one of 'type', 'id', 'attributes', 'relationships'
-	 * 
-	 * @throws DuplicateException
+	 * @return boolean
 	 */
-	protected function checkUsedField($fieldName, $objectContainer) {
-		if (isset($this->fields[$fieldName]) === false) {
-			return;
-		}
-		if ($this->fields[$fieldName] === $objectContainer) {
-			return;
+	public function isEmpty() {
+		if ($this->type !== null || $this->id !== null) {
+			return false;
 		}
 		
-		throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->fields[$fieldName].'"');
+		return true;
 	}
 	
-	protected function markUsedField($fieldName, $objectContainer) {
-		$this->fields[$fieldName] = $objectContainer;
+	/**
+	 * @return array
+	 */
+	public function toArray() {
+		$array = [
+			'type' => $this->type,
+			'id'   => $this->id,
+		];
+		
+		return $array;
 	}
 }

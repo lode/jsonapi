@@ -16,14 +16,12 @@ class CollectionDocument extends DataDocument {
 	 * human api
 	 */
 	
-	public function addData($type, $id, array $attributes=[]) {
+	public function add($type, $id, array $attributes=[]) {
 		if ($attributes === []) {
 			$this->addResource(new ResourceIdentifierObject($type, $id));
 		}
 		else {
-			$resourceObject = new ResourceObject($type, $id);
-			$resourceObject->setData($attributes);
-			$this->addResource($resourceObject);
+			$this->addResource(ResourceObject::fromArray($attributes, $type, $id));
 		}
 	}
 	

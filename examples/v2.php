@@ -22,13 +22,13 @@ $exception = new \Exception('foo', 422);
 echo '<pre>';
 
 $resource = new ResourceDocument($type, $id);
-$resource->addData($key, $value);
+$resource->add($key, $value);
 $resource->sendResponse();
 
 echo '</pre><pre>';
 
 $collection = new CollectionDocument($type);
-$collection->addData($type, ($id*2), $array);
+$collection->add($type, ($id*2), $array);
 $collection->addResource($resource);
 $collection->sendResponse();
 
