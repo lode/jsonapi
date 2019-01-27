@@ -12,9 +12,9 @@ abstract class Document implements DocumentInterface {
 	const JSONAPI_VERSION_1_1 = '1.0';
 	const JSONAPI_VERSION_DEFAULT = Document::JSONAPI_VERSION_1_0;
 	
-	const META_LEVEL_ROOT     = 'root';
-	const META_LEVEL_JSONAPI  = 'jsonapi';
-	const META_LEVEL_RESOURCE = 'resource';
+	const LEVEL_ROOT     = 'root';
+	const LEVEL_JSONAPI  = 'jsonapi';
+	const LEVEL_RESOURCE = 'resource';
 	
 	/** @var int */
 	public $httpStatusCode = 200;
@@ -45,31 +45,31 @@ abstract class Document implements DocumentInterface {
 	/**
 	 * @param string $key
 	 * @param mixed  $value
-	 * @param string $level one of the Document::META_LEVEL_* constants, optional, defaults to Document::META_LEVEL_ROOT
+	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 * 
 	 * @throws InputException if the $level is unknown
-	 * @throws InputException if the $level is Document::META_LEVEL_RESOURCE
+	 * @throws InputException if the $level is Document::LEVEL_RESOURCE
 	 */
-	public function addMeta($key, $value, $level=Document::META_LEVEL_ROOT) {
-		if ($level === Document::META_LEVEL_ROOT) {
+	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
+		if ($level === Document::LEVEL_ROOT) {
 			if ($this->meta === null) {
 				$this->setMetaObject(new MetaObject());
 			}
 			
 			$this->meta->add($key, $value);
 		}
-		elseif ($level === Document::META_LEVEL_JSONAPI) {
+		elseif ($level === Document::LEVEL_JSONAPI) {
 			if ($this->jsonapi === null) {
 				$this->setJsonapiObject(new JsonapiObject());
 			}
 			
 			$this->jsonapi->addMeta($key, $value);
 		}
-		elseif ($level === Document::META_LEVEL_RESOURCE) {
-			throw new InputException('meta level "resource" can only be set on a ResourceDocument');
+		elseif ($level === Document::LEVEL_RESOURCE) {
+			throw new InputException('level "resource" can only be set on a ResourceDocument');
 		}
 		else {
-			throw new InputException('unknown meta level "'.$level.'"');
+			throw new InputException('unknown level "'.$level.'"');
 		}
 	}
 	

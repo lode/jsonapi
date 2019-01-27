@@ -43,19 +43,14 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * @param string $key
 	 * @param mixed  $value
-	 * @param string $level one of the Document::META_LEVEL_* constants, optional, defaults to Document::META_LEVEL_ROOT
-	 * 
-	 * @throws InputException if the $level is unknown
+	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function addMeta($key, $value, $level=Document::META_LEVEL_ROOT) {
-		if ($level === Document::META_LEVEL_ROOT || $level === Document::META_LEVEL_JSONAPI) {
-			parent::addMeta($key, $value, $level);
-		}
-		elseif ($level === Document::META_LEVEL_RESOURCE) {
+	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
+		if ($level === Document::LEVEL_RESOURCE) {
 			$this->resource->addMeta($key, $value);
 		}
 		else {
-			throw new InputException('unknown meta level "'.$level.'"');
+			parent::addMeta($key, $value, $level);
 		}
 	}
 	
