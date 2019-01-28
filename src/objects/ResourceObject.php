@@ -81,6 +81,18 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
+	 * @param LinkObject $linkObject
+	 * @param string     $key        optional, required if $linkObject has no key defined
+	 */
+	public function addLinkObject(LinkObject $linkObject, $key=null) {
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$this->links->addLinkObject($linkObject);
+	}
+	
+	/**
 	 * @param LinksObject $linksObject
 	 */
 	public function setLinksObject(LinksObject $linksObject) {

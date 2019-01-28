@@ -10,12 +10,12 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
 	/** @var ResourceIdentifierObject|ResourceObject */
-	private $resource;
+	protected $resource;
 	
 	/**
 	 * @note $type and $id are optional to pass during construction
 	 *       however they are required for a valid ResourceDocument
-	 *       so use ->setResource() if not passing them during construction
+	 *       so use ->setPrimaryResource() if not passing them during construction
 	 * 
 	 * @param string     $type optional
 	 * @param string|int $id   optional
@@ -23,7 +23,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	public function __construct($type=null, $id=null) {
 		parent::__construct();
 		
-		$this->setResource(new ResourceObject($type, $id));
+		$this->setPrimaryResource(new ResourceObject($type, $id));
 	}
 	
 	/**
@@ -78,7 +78,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * 
 	 * @throws InputException if the $resource is a ResourceDocument itself
 	 */
-	public function setResource(ResourceInterface $resource) {
+	public function setPrimaryResource(ResourceInterface $resource) {
 		if ($resource instanceof ResourceDocument) {
 			throw new InputException('does not make sense to set a document inside a document, use ResourceObject or ResourceIdentifierObject instead');
 		}

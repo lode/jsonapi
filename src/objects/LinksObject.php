@@ -85,11 +85,7 @@ class LinksObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		if ($this->links !== []) {
-			return false;
-		}
-		
-		return true;
+		return ($this->links === []);
 	}
 	
 	/**
