@@ -97,6 +97,56 @@ class RelationshipObject implements ObjectInterface {
 	
 	/**
 	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function addLink($key, $href, array $meta=[]) {
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$this->links->add($key, $href, $meta);
+	}
+	
+	/**
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setSelfLink($href, array $meta=[]) {
+		$this->addLink('self', $href, $meta);
+	}
+	
+	/**
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setRelatedLink($href, array $meta=[]) {
+		$this->addLink('related', $href, $meta);
+	}
+	
+	/**
+	 * @param string $previousHref optional
+	 * @param string $nextHref     optional
+	 * @param string $firstHref    optional
+	 * @param string $lastHref     optional
+	 */
+	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
+		if ($previousHref !== null) {
+			$this->addLink('prev', $previousHref);
+		}
+		if ($nextHref !== null) {
+			$this->addLink('next', $nextHref);
+		}
+		if ($firstHref !== null) {
+			$this->addLink('first', $firstHref);
+		}
+		if ($lastHref !== null) {
+			$this->addLink('last', $lastHref);
+		}
+	}
+	
+	/**
+	 * @param string $key
 	 * @param mixed  $value
 	 */
 	public function addMeta($key, $value) {
