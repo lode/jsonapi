@@ -6,6 +6,7 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
+use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -30,6 +31,7 @@ $resource->addMeta('metaAtJsonapi', 'bar', Document::LEVEL_JSONAPI);
 $resource->addMeta('metaAtResource', 'baf', Document::LEVEL_RESOURCE);
 $resource->addLink('linkAtRoot', 'https://foo.exampe.com/', $meta=['foo' => 'bar']);
 $resource->addLink('linkAtResource', 'https://baf.exampe.com/', $meta=['foo' => 'bar'], Document::LEVEL_RESOURCE);
+$resource->addRelationship('author', new ResourceIdentifierObject($type, ($id/2)));
 $resource->sendResponse();
 
 echo '</pre><pre>';
@@ -38,6 +40,13 @@ $collection = new CollectionDocument($type);
 $collection->add($type, ($id*2), $array);
 $collection->addResource($resource);
 $collection->sendResponse();
+
+echo '</pre><pre>';
+
+$resource = new ResourceDocument($type, ($id/2));
+$resource->addRelationship('relationFromCollection', $collection);
+$resource->addRelationship('relationFromArray', $collection->resources);
+$resource->sendResponse();
 
 echo '</pre><pre>';
 

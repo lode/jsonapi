@@ -41,6 +41,20 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	
 	/**
+	 * @param  ResourceObject $resourceObject
+	 * @return ResourceIdentifierObject
+	 */
+	public static function fromResourceObject(ResourceObject $resourceObject) {
+		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->id);
+		
+		if ($resourceObject->meta !== null) {
+			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
+		}
+		
+		return $resourceIdentifierObject;
+	}
+	
+	/**
 	 * @param string $key
 	 * @param mixed  $value
 	 */
@@ -50,6 +64,14 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		}
 		
 		$this->meta->add($key, $value);
+	}
+	
+	/**
+	 * @param  ResourceInterface $resource
+	 * @return boolean
+	 */
+	public function equals(ResourceInterface $resource) {
+		return ($this->type === $resource->type && $this->id === $resource->id);
 	}
 	
 	/**
@@ -88,7 +110,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getResource() {
+	public function getResource($identifierOnly=false) {
 		return $this;
 	}
 	

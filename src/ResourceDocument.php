@@ -2,10 +2,12 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
+use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
@@ -38,6 +40,28 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 */
 	public function add($key, $value) {
 		$this->resource->add($key, $value);
+	}
+	
+	/**
+	 * @todo add to included resources, and allow skip that via parameter
+	 * 
+	 * @param string $key
+	 * @param mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
+	 * @param array  $links    optional
+	 * @param array  $meta     optional
+	 */
+	public function addRelationship($key, $relation, array $links=[], array $meta=[]) {
+		$this->resource->addRelationship($key, $relation, $links, $meta);
+	}
+	
+	/**
+	 * @todo add to included resources, and allow skip that via parameter
+	 * 
+	 * @param RelationshipObject $relationshipObject
+	 * @param string             $key                optional, required if $relationshipObject has no key defined
+	 */
+	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null) {
+		$this->resource->addRelationshipObject($relationshipObject, $key);
 	}
 	
 	/**
@@ -111,7 +135,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function getResource() {
-		return $this->resource;
+	public function getResource($identifierOnly=false) {
+		return $this->resource->getResource($identifierOnly);
 	}
 }

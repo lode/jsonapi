@@ -9,5 +9,5 @@ interface ResourceInterface {
 	/**
 	 * @return ResourceIdentifierObject|ResourceObject
 	 */
-	public function getResource();
+	public function getResource($identifierOnly=false);
 }

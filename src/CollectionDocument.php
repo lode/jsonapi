@@ -26,6 +26,20 @@ class CollectionDocument extends DataDocument {
 	 */
 	
 	/**
+	 * @param  ResourceInterface ...$resources
+	 * @return CollectionDocument
+	 */
+	public static function fromResources(ResourceInterface ...$resources) {
+		$collectionDocument = new self();
+		
+		foreach ($resources as $resource) {
+			$collectionDocument->addResource($resource);
+		}
+		
+		return $collectionDocument;
+	}
+	
+	/**
 	 * @param string     $type
 	 * @param string|int $id
 	 * @param array      $attributes optional, if given a ResourceObject is added, otherwise a ResourceIdentifierObject is added
