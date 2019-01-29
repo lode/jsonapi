@@ -91,6 +91,42 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
+	 * whether the ResourceObject is empty except for the ResourceIdentifierObject
+	 * 
+	 * this can be used to determine if a Relationship's resource could be added as included resource
+	 * 
+	 * @return boolean
+	 */
+	public function hasIdentifierPropertiesOnly() {
+		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+			return false;
+		}
+		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
+			return false;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * get ResourceObjects from inside all RelationshipsObjects which are not only a ResourceIdentifierObject
+	 * 
+	 * this can be used to add included ResourceObjects on a DataDocument
+	 * 
+	 * @return ResourceObject[]
+	 */
+	public function getRelatedResourceObjects() {
+		if ($this->relationships === null) {
+			return [];
+		}
+		
+		return $this->relationships->getRelatedResourceObjects();
+	}
+	
+	/**
 	 * spec api
 	 */
 	

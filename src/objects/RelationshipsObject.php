@@ -10,6 +10,7 @@ use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject implements ObjectInterface {
 	/** @var RelationshipObject[] */
@@ -41,6 +42,23 @@ class RelationshipsObject implements ObjectInterface {
 		else {
 			throw new InputException('unknown format of relation "'.gettype($relation).'"');
 		}
+	}
+	
+	/**
+	 * get ResourceObjects from inside all RelationshipObjects which are not only a ResourceIdentifierObject
+	 * 
+	 * this can be used to add included ResourceObjects on a DataDocument
+	 * 
+	 * @return ResourceObject[]
+	 */
+	public function getRelatedResourceObjects() {
+		$resourceObjects = [];
+		
+		foreach ($this->relationships as $relationship) {
+			$resourceObjects = array_merge($resourceObjects, $relationship->getRelatedResourceObjects());
+		}
+		
+		return $resourceObjects;
 	}
 	
 	/**

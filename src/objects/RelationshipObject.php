@@ -10,6 +10,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipObject implements ObjectInterface {
 	const TO_ONE  = 'one';
@@ -185,6 +186,38 @@ class RelationshipObject implements ObjectInterface {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * get ResourceObjects from inside which are not only a ResourceIdentifierObject
+	 * 
+	 * this can be used to add included ResourceObjects on a DataDocument
+	 * 
+	 * @note also recursively gets ResourceObjects from the relationships of the ResourceObjects found
+	 * 
+	 * @return ResourceObject[]
+	 */
+	public function getRelatedResourceObjects() {
+		$resources       = ($this->type === RelationshipObject::TO_ONE) ? [$this->resource] : $this->resources;
+		$resourceObjects = [];
+		
+		foreach ($resources as $resource) {
+			if ($resource->getResource() instanceof ResourceObject === false) {
+				continue;
+			}
+			
+			/** @var ResourceObject */
+			$resourceObject = $resource->getResource();
+			
+			if ($resource->getResource()->hasIdentifierPropertiesOnly()) {
+				continue;
+			}
+			
+			$resourceObjects[] = $resourceObject;
+			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getRelatedResourceObjects());
+		}
+		
+		return $resourceObjects;
 	}
 	
 	/**

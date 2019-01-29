@@ -43,15 +43,22 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	}
 	
 	/**
-	 * @todo add to included resources, and allow skip that via parameter
+	 * add a relation to the resource
 	 * 
-	 * @param string $key
-	 * @param mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param array  $links    optional
-	 * @param array  $meta     optional
+	 * adds included resources if found inside the relation, unless $skipIncluding is set to true
+	 * 
+	 * @param string  $key
+	 * @param mixed   $relation      ResourceInterface | ResourceInterface[] | CollectionDocument
+	 * @param array   $links         optional
+	 * @param array   $meta          optional
+	 * @param boolean $skipIncluding optional, defaults to false
 	 */
-	public function addRelationship($key, $relation, array $links=[], array $meta=[]) {
+	public function addRelationship($key, $relation, array $links=[], array $meta=[], $skipIncluding=false) {
 		$this->resource->addRelationship($key, $relation, $links, $meta);
+		
+		if ($skipIncluding === false && $this->resource instanceof ResourceObject) {
+			$this->addIncludedResourceObject(...$this->resource->getRelatedResourceObjects());
+		}
 	}
 	
 	/**
@@ -98,16 +105,25 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 */
 	
 	/**
+	 * overwrites the primary resource
+	 * 
+	 * adds included resources if found inside the resource's relationships, unless $skipIncluding is set to true
+	 * 
 	 * @param ResourceInterface $resource
+	 * @param boolean           $skipIncluding optional, defaults to false
 	 * 
 	 * @throws InputException if the $resource is a ResourceDocument itself
 	 */
-	public function setPrimaryResource(ResourceInterface $resource) {
+	public function setPrimaryResource(ResourceInterface $resource, $skipIncluding=false) {
 		if ($resource instanceof ResourceDocument) {
 			throw new InputException('does not make sense to set a document inside a document, use ResourceObject or ResourceIdentifierObject instead');
 		}
 		
 		$this->resource = $resource;
+		
+		if ($skipIncluding === false && $this->resource instanceof ResourceObject) {
+			$this->addIncludedResourceObject(...$this->resource->getRelatedResourceObjects());
+		}
 	}
 	
 	/**

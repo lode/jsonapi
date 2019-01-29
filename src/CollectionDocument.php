@@ -3,7 +3,6 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\DataDocument;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -12,20 +11,16 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 class CollectionDocument extends DataDocument {
 	/** @var ResourceInterface[] */
 	public $resources = [];
-	/** @var Validator */
-	protected $validator;
-	
-	public function __construct() {
-		parent::__construct();
-		
-		$this->validator = new Validator();
-	}
 	
 	/**
 	 * human api
 	 */
 	
 	/**
+	 * generate a CollectionDocument from one or multiple resources
+	 * 
+	 * adds included resources if found inside the resource's relationships, use {@see ->addResource()} to change that behavior
+	 * 
 	 * @param  ResourceInterface ...$resources
 	 * @return CollectionDocument
 	 */
@@ -58,11 +53,16 @@ class CollectionDocument extends DataDocument {
 	 */
 	
 	/**
+	 * add a resource to the collection
+	 * 
+	 * adds included resources if found inside the resource's relationships, unless $skipIncluding is set to true
+	 * 
 	 * @param ResourceInterface $resource
+	 * @param boolean           $skipIncluding optional, defaults to false
 	 * 
 	 * @throws InputException if the resource is empty
 	 */
-	public function addResource(ResourceInterface $resource) {
+	public function addResource(ResourceInterface $resource, $skipIncluding=false) {
 		if ($resource->getResource()->isEmpty()) {
 			throw new InputException('does not make sense to add empty resources to a collection');
 		}
@@ -72,6 +72,10 @@ class CollectionDocument extends DataDocument {
 		$this->resources[] = $resource;
 		
 		$this->validator->markUsedResourceIdentifier($resource);
+		
+		if ($skipIncluding === false && $resource instanceof ResourceObject) {
+			$this->addIncludedResourceObject(...$resource->getRelatedResourceObjects());
+		}
 	}
 	
 	/**
