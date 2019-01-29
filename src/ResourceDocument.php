@@ -54,10 +54,10 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param boolean $skipIncluding optional, defaults to false
 	 */
 	public function addRelationship($key, $relation, array $links=[], array $meta=[], $skipIncluding=false) {
-		$this->resource->addRelationship($key, $relation, $links, $meta);
+		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
 		if ($skipIncluding === false && $this->resource instanceof ResourceObject) {
-			$this->addIncludedResourceObject(...$this->resource->getRelatedResourceObjects());
+			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
 		}
 	}
 	

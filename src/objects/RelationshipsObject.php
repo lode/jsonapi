@@ -21,10 +21,11 @@ class RelationshipsObject implements ObjectInterface {
 	 */
 	
 	/**
-	 * @param string $key
-	 * @param mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param array  $links    optional
-	 * @param array  $meta     optional
+	 * @param  string $key
+	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
+	 * @param  array  $links    optional
+	 * @param  array  $meta     optional
+	 * @return RelationshipObject
 	 * 
 	 * @throws InputException if $relation is not one of the supported formats
 	 */
@@ -34,14 +35,18 @@ class RelationshipsObject implements ObjectInterface {
 		}
 		
 		if ($relation instanceof ResourceInterface) {
-			$this->addRelationshipObject(RelationshipObject::fromResource($relation, $links, $meta), $key);
+			$relationshipObject = RelationshipObject::fromResource($relation, $links, $meta);
 		}
 		elseif ($relation instanceof CollectionDocument) {
-			$this->addRelationshipObject(RelationshipObject::fromCollectionDocument($relation, $links, $meta), $key);
+			$relationshipObject = RelationshipObject::fromCollectionDocument($relation, $links, $meta);
 		}
 		else {
 			throw new InputException('unknown format of relation "'.gettype($relation).'"');
 		}
+		
+		$this->addRelationshipObject($relationshipObject, $key);
+		
+		return $relationshipObject;
 	}
 	
 	/**

@@ -56,17 +56,18 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
-	 * @param string $key
-	 * @param mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param array  $links    optional
-	 * @param array  $meta     optional
+	 * @param  string $key
+	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
+	 * @param  array  $links    optional
+	 * @param  array  $meta     optional
+	 * @return RelationshipObject
 	 */
 	public function addRelationship($key, $relation, array $links=[], array $meta=[]) {
 		if ($this->relationships === null) {
 			$this->setRelationshipsObject(new RelationshipsObject());
 		}
 		
-		$this->relationships->add($key, $relation, $links, $meta);
+		return $this->relationships->add($key, $relation, $links, $meta);
 	}
 	
 	/**
