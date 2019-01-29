@@ -32,7 +32,7 @@ $resource->addMeta('metaAtResource', 'baf', Document::LEVEL_RESOURCE);
 $resource->addLink('linkAtRoot', 'https://foo.exampe.com/', $meta=['foo' => 'bar']);
 $resource->addLink('linkAtResource', 'https://baf.exampe.com/', $meta=['foo' => 'bar'], Document::LEVEL_RESOURCE);
 $resource2 = new ResourceObject($type, ($id/2));
-#$resource2->add($key, $value);
+$resource2->add($key, $value);
 $resource->addRelationship('author', $resource2);
 $resource->sendResponse();
 
