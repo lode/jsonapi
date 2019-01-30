@@ -27,33 +27,37 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * get an ErrorsObject with an ErrorObject for the given $exception
+	 * @param  \Exception $exception
+	 * @param  boolean    $expose       optional, defaults to false
+	 * @param  boolean    $skipPrevious optional, defaults to false
+	 * @return ErrorsDocument
+	 */
+	public static function fromException(\Exception $exception, $expose=false, $skipPrevious=false) {
+		$errorsDocument = new self();
+		$errorsDocument->addException($exception, $expose, $skipPrevious);
+		
+		return $errorsDocument;
+	}
+	
+	/**
+	 * add an ErrorObject for the given $exception
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param  \Exception $exception
-	 * @param  boolean    $skipPrevious optional, defaults to false
-	 * @return ErrorsObject
+	 * @param \Exception $exception
+	 * @param boolean    $expose       optional, defaults to false
+	 * @param boolean    $skipPrevious optional, defaults to false
 	 */
-	public static function fromException(\Exception $exception, $skipPrevious=false) {
-		$errorsObject = new self(ErrorObject::fromException($exception));
+	public function addException(\Exception $exception, $expose=false, $skipPrevious=false) {
+		$this->addErrorObject(ErrorObject::fromException($exception));
 		
 		if ($skipPrevious === false) {
 			$exception = $exception->getPrevious();
 			while ($exception !== null) {
-				$errorsObject->addException($exception);
+				$this->addException($exception, $expose);
 				$exception = $exception->getPrevious();
 			}
 		}
-		
-		return $errorsObject;
-	}
-	
-	/**
-	 * @param \Exception $exception
-	 */
-	public function addException(\Exception $exception) {
-		$this->addErrorObject(ErrorObject::fromException($exception));
 	}
 	
 	/**

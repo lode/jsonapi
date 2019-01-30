@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Converter;
+use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
@@ -32,18 +33,21 @@ class ErrorObject implements ObjectInterface {
 	
 	/**
 	 * @param  \Exception $exception
+	 * @param  boolean    $expose    optional, defaults to false
 	 * @return ErrorObject
 	 */
-	public static function fromException(\Exception $exception) {
+	public static function fromException(\Exception $exception, $expose=false) {
 		$errorObject = new self();
 		
-		$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
-		$errorObject->addMeta('exception', [
-			'message' => $exception->getMessage(),
-			'file'    => $exception->getFile(),
-			'line'    => $exception->getLine(),
-			'trace'   => $exception->getTrace(),
-		]);
+		if ($expose) {
+			$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
+			$errorObject->addMeta('exception', [
+				'message' => $exception->getMessage(),
+				'file'    => $exception->getFile(),
+				'line'    => $exception->getLine(),
+				'trace'   => $exception->getTrace(),
+			]);
+		}
 		
 		if ($exception->getCode() !== 0) {
 			$errorObject->setApplicationCode($exception->getCode());

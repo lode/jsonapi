@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
@@ -13,6 +14,13 @@ abstract class Document implements DocumentInterface {
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.0';
 	const JSONAPI_VERSION_DEFAULT = Document::JSONAPI_VERSION_1_0;
+	
+	const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
+	const CONTENT_TYPE_DEBUG    = 'application/json';
+	const CONTENT_TYPE_JSONP    = 'application/javascript';
+	const CONTENT_TYPE_DEFAULT  = Document::CONTENT_TYPE_OFFICIAL;
+	
+	const JSONP_CALLBACK_DEFAULT = 'JSONP_CALLBACK';
 	
 	const LEVEL_ROOT     = 'root';
 	const LEVEL_JSONAPI  = 'jsonapi';
@@ -161,24 +169,45 @@ abstract class Document implements DocumentInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function toJson(array $array=null) {
-		$array = $array ?: $this->toArray();
+	public function toJson(array $array=null, $prettyPrint=false) {
+		$array         = $array ?: $this->toArray();
+		$encodeOptions = JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE;
+		if ($prettyPrint) {
+			$encodeOptions |= JSON_PRETTY_PRINT;
+		}
 		
-		return json_encode($array, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+		$json = json_encode($array, $encodeOptions);
+		if ($json === false) {
+			throw new Exception('failed to generate json: '.json_last_error_msg());
+		}
+		
+		return $json;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
-	public function sendResponse($json=null) {
+	public function sendResponse($json=null, $contentType=Document::CONTENT_TYPE_DEFAULT, $prettyPrint=false) {
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);
 			return;
 		}
 		
-		$json = $json ?: $this->toJson();
+		$json = $json ?: $this->toJson($array=null, $prettyPrint);
 		
 		http_response_code($this->httpStatusCode);
+		header('Content-Type: '.$contentType);
+		
 		echo $json;
+	}
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function sendJsonpResponse($callback=Document::JSONP_CALLBACK_DEFAULT, $json=null, $prettyPrint=false) {
+		$json = $json ?: $this->toJson($array=null, $prettyPrint);
+		$json = $callback.'('.$json.')';
+		
+		$this->sendResponse($json, $contentType=Document::CONTENT_TYPE_JSONP, $prettyPrint);
 	}
 }
