@@ -60,9 +60,11 @@ $jsonapi->sendResponse();
 echo '</pre><h2>Errors</h2><pre>';
 
 $jsonapi = ErrorsDocument::fromException($exception);
+$jsonapi->add(422, 'Invalid input', 'The title you entered ("foo") is too generic', 'https://error.exampe.com/?q='.$errorId);
 $error = new ErrorObject();
-$error->setGeneric('Title is too generic', 1);
-$error->setOccurence('The title you entered ("foo") is too generic', $errorId, 'https://error.exampe.com/?q='.$errorId);
+$error->setHumanExplanation('Invalid input', 'The title you entered ("foo") is too generic', 'https://error.exampe.com/?q='.$errorId);
+$error->setApplicationCode(422);
+$error->setUniqueIdentifier($errorId);
 $error->addLink('linkAtError', 'https://error.exampe.com/');
 $error->setActionLink('https://inspiration.exampe.com/', $meta=['label' => 'Need inspiration?']);
 $error->blameJsonPointer('/data/attributes/title');

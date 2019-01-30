@@ -57,24 +57,15 @@ class ErrorsDocument extends Document {
 	}
 	
 	/**
-	 * @param string     $titleExplanation
-	 * @param string|int $applicationCode  optional
+	 * @param string|int $applicationCode
+	 * @param string     $title
+	 * @param string     $detailedExplanation optional
+	 * @param string     $aboutLink           optional
 	 */
-	public function addGeneric($titleExplanation, $applicationCode=null) {
+	public function add($applicationCode, $title, $detailedExplanation=null, $aboutLink=null) {
 		$errorObject = new ErrorObject();
-		$errorObject->setGeneric($titleExplanation, $applicationCode);
-		
-		$this->addErrorObject($errorObject);
-	}
-	
-	/**
-	 * @param string     $detailExplanation
-	 * @param string|int $id                optional
-	 * @param string     $aboutLink         optional
-	 */
-	public function addOccurence($detailExplanation, $id=null, $aboutLink=null) {
-		$errorObject = new ErrorObject();
-		$errorObject->setOccurence($detailExplanation, $id, $aboutLink);
+		$errorObject->setApplicationCode($applicationCode);
+		$errorObject->setHumanExplanation($title, $detailedExplanation, $aboutLink);
 		
 		$this->addErrorObject($errorObject);
 	}

@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
@@ -10,8 +11,6 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 class ErrorObject implements ObjectInterface {
 	/** @var string */
 	public $id;
-	/** @var LinksObject */
-	public $links;
 	/** @var string */
 	public $status;
 	/** @var string */
@@ -20,6 +19,8 @@ class ErrorObject implements ObjectInterface {
 	public $title;
 	/** @var string */
 	public $detail;
+	/** @var LinksObject */
+	public $links;
 	/** @var array */
 	public $source = [];
 	/** @var MetaObject */
@@ -36,48 +37,37 @@ class ErrorObject implements ObjectInterface {
 	public static function fromException(\Exception $exception) {
 		$errorObject = new self();
 		
-		$errorObject->setGeneric($exception->getMessage(), $exception->getCode());
-		$errorObject->addMeta('file', $exception->getFile());
-		$errorObject->addMeta('line', $exception->getLine());
-		$errorObject->addMeta('trace', $exception->getTrace());
+		$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
+		$errorObject->addMeta('exception', [
+			'message' => $exception->getMessage(),
+			'file'    => $exception->getFile(),
+			'line'    => $exception->getLine(),
+			'trace'   => $exception->getTrace(),
+		]);
 		
-		if (Validator::checkHttpStatusCode($exception->getCode())) {
-			$errorObject->setHttpStatusCode($exception->getCode());
+		if ($exception->getCode() !== 0) {
+			$errorObject->setApplicationCode($exception->getCode());
+			
+			if (Validator::checkHttpStatusCode($exception->getCode())) {
+				$errorObject->setHttpStatusCode($exception->getCode());
+			}
 		}
 		
 		return $errorObject;
 	}
 	
 	/**
-	 * describe the generic type of this error, without anything about this particular occurence
+	 * explain this particular occurence of the error in a human friendly way
 	 * 
-	 * @param string     $titleExplanation
-	 * @param string|int $applicationCode  optional
+	 * @param string     $title
+	 * @param string     $detailedExplanation optional
+	 * @param string     $aboutLink           optional
 	 */
-	public function setGeneric($titleExplanation, $applicationCode=null) {
-		$this->setTitle($titleExplanation);
+	public function setHumanExplanation($title, $detailedExplanation=null, $aboutLink=null) {
+		$this->setHumanTitle($title);
 		
-		if ($applicationCode !== null) {
-			$this->setApplicationCode($applicationCode);
-			
-			if (Validator::checkHttpStatusCode($applicationCode)) {
-				$this->setHttpStatusCode($applicationCode);
-			}
-		}
-	}
-	
-	/**
-	 * describe this particular occurence of the error
-	 * 
-	 * @param string     $detailExplanation
-	 * @param string|int $id                optional
-	 * @param string     $aboutLink         optional
-	 */
-	public function setOccurence($detailExplanation, $id=null, $aboutLink=null) {
-		$this->setDetailOccurence($detailExplanation);
-		
-		if ($id !== null) {
-			$this->setUniqueIdentifier($id);
+		if ($detailedExplanation !== null) {
+			$this->setHumanDetails($detailedExplanation);
 		}
 		if ($aboutLink !== null) {
 			$this->setAboutLink($aboutLink);
@@ -176,13 +166,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
-	}
-	
-	/**
 	 * the HTTP status code applicable to this problem
 	 * 
 	 * @param string|int $httpStatusCode will be casted to a string
@@ -207,24 +190,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * a short human friendly explanation of the generic type of this error
-	 * 
-	 * @param string $title
-	 */
-	public function setTitle($title) {
-		$this->title = $title;
-	}
-	
-	/**
-	 * a human friendly explanation of this particular occurrence of the error
-	 * 
-	 * @param string $detailExplanation
-	 */
-	public function setDetailOccurence($detailExplanation) {
-		$this->detail = $detailExplanation;
-	}
-	
-	/**
 	 * add the source of the error
 	 * 
 	 * @param string $key   {@see ->blameJsonPointer(), ->blameQueryParameter(), ->blamePostData()}
@@ -232,6 +197,31 @@ class ErrorObject implements ObjectInterface {
 	 */
 	public function addSource($key, $value) {
 		$this->source[$key] = $value;
+	}
+	
+	/**
+	 * a short human friendly explanation of the generic type of this error
+	 * 
+	 * @param string $title
+	 */
+	public function setHumanTitle($title) {
+		$this->title = $title;
+	}
+	
+	/**
+	 * a human friendly explanation of this particular occurrence of the error
+	 * 
+	 * @param string $detailedExplanation
+	 */
+	public function setHumanDetails($detailedExplanation) {
+		$this->detail = $detailedExplanation;
+	}
+	
+	/**
+	 * @param LinksObject $linksObject
+	 */
+	public function setLinksObject(LinksObject $linksObject) {
+		$this->links = $linksObject;
 	}
 	
 	/**
@@ -252,9 +242,6 @@ class ErrorObject implements ObjectInterface {
 		if ($this->id !== null) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
-			return false;
-		}
 		if ($this->status !== null) {
 			return false;
 		}
@@ -265,6 +252,9 @@ class ErrorObject implements ObjectInterface {
 			return false;
 		}
 		if ($this->detail !== null) {
+			return false;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
 			return false;
 		}
 		if ($this->source !== []) {
@@ -286,9 +276,6 @@ class ErrorObject implements ObjectInterface {
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
-			$array['links'] = $this->links->toArray();
-		}
 		if ($this->status !== null) {
 			$array['status'] = $this->status;
 		}
@@ -300,6 +287,9 @@ class ErrorObject implements ObjectInterface {
 		}
 		if ($this->detail !== null) {
 			$array['detail'] = $this->detail;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			$array['links'] = $this->links->toArray();
 		}
 		if ($this->source !== []) {
 			$array['source'] = $this->source;
