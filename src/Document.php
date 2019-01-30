@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
@@ -35,10 +36,16 @@ abstract class Document implements DocumentInterface {
 	 */
 	
 	/**
-	 * @param int $statusCode
+	 * @param string|int $statusCode
+	 * 
+	 * @throws InputException if an invalid code is used
 	 */
 	public function setHttpStatusCode($statusCode) {
-		$this->httpStatusCode = $statusCode;
+		if (Validator::checkHttpStatusCode($statusCode) === false) {
+			throw new InputException('can not use an invalid http status code');
+		}
+		
+		$this->httpStatusCode = (int) $statusCode;
 	}
 	
 	/**

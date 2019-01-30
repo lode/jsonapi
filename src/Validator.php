@@ -105,4 +105,21 @@ class Validator {
 		
 		throw new InputException('invalid member name "'.$memberName.'"');
 	}
+	
+	/**
+	 * @param  string|int $httpStatusCode
+	 * @return boolean
+	 */
+	public static function checkHttpStatusCode($httpStatusCode) {
+		$httpStatusCode = (int) $httpStatusCode;
+		
+		if ($httpStatusCode < 100) {
+			return false;
+		}
+		if ($httpStatusCode >= 600) {
+			return false;
+		}
+		
+		return true;
+	}
 }

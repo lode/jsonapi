@@ -8,6 +8,8 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
 	public $errors = [];
+	/** @var array */
+	private $httpStatusCodes;
 	
 	/**
 	 * @param ErrorObject $errorObject optional
@@ -25,11 +27,56 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
+	 * get an ErrorsObject with an ErrorObject for the given $exception
+	 * 
+	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
+	 * 
 	 * @param  \Exception $exception
+	 * @param  boolean    $skipPrevious optional, defaults to false
 	 * @return ErrorsObject
 	 */
-	public static function fromException(\Exception $exception) {
-		return new self(ErrorObject::fromException($exception));
+	public static function fromException(\Exception $exception, $skipPrevious=false) {
+		$errorsObject = new self(ErrorObject::fromException($exception));
+		
+		if ($skipPrevious === false) {
+			$exception = $exception->getPrevious();
+			while ($exception !== null) {
+				$errorsObject->addException($exception);
+				$exception = $exception->getPrevious();
+			}
+		}
+		
+		return $errorsObject;
+	}
+	
+	/**
+	 * @param \Exception $exception
+	 */
+	public function addException(\Exception $exception) {
+		$this->addErrorObject(ErrorObject::fromException($exception));
+	}
+	
+	/**
+	 * @param string     $titleExplanation
+	 * @param string|int $applicationCode  optional
+	 */
+	public function addGeneric($titleExplanation, $applicationCode=null) {
+		$errorObject = new ErrorObject();
+		$errorObject->setGeneric($titleExplanation, $applicationCode);
+		
+		$this->addErrorObject($errorObject);
+	}
+	
+	/**
+	 * @param string     $detailExplanation
+	 * @param string|int $id                optional
+	 * @param string     $aboutLink         optional
+	 */
+	public function addOccurence($detailExplanation, $id=null, $aboutLink=null) {
+		$errorObject = new ErrorObject();
+		$errorObject->setOccurence($detailExplanation, $id, $aboutLink);
+		
+		$this->addErrorObject($errorObject);
 	}
 	
 	/**
@@ -45,7 +92,7 @@ class ErrorsDocument extends Document {
 		$this->errors[] = $errorObject;
 		
 		if ($errorObject->status !== null) {
-			$this->setHttpStatusCode($errorObject->status);
+			$this->setHttpStatusCode($this->determineHttpStatusCode($errorObject->status));
 		}
 	}
 	
@@ -69,5 +116,47 @@ class ErrorsDocument extends Document {
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @param  string|int $httpStatusCode
+	 * @return int
+	 */
+	private function determineHttpStatusCode($httpStatusCode) {
+		// add the new code
+		$category = substr($httpStatusCode, 0, 1);
+		$this->httpStatusCodes[$category][$httpStatusCode] = true;
+		
+		$advisedStatusCode = $httpStatusCode;
+		
+		// when there's multiple, give preference to 5xx errors
+		if (isset($this->httpStatusCodes['5']) && isset($this->httpStatusCodes['4'])) {
+			// use a generic one
+			$advisedStatusCode = 500;
+		}
+		elseif (isset($this->httpStatusCodes['5'])) {
+			if (count($this->httpStatusCodes['5']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['5']);
+			}
+			else {
+				// use a generic one
+				$advisedStatusCode = 500;
+			}
+		}
+		elseif (isset($this->httpStatusCodes['4'])) {
+			if (count($this->httpStatusCodes['4']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['4']);
+			}
+			else {
+				// use a generic one
+				$advisedStatusCode = 400;
+			}
+		}
+		
+		return (int) $advisedStatusCode;
 	}
 }

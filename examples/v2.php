@@ -21,6 +21,7 @@ $array = [
 	'baf' => 'baz',
 ];
 $exception = new \Exception('foo', 422);
+$errorId   = uniqid();
 
 echo '<h2>Resource</h2><pre>';
 
@@ -60,9 +61,19 @@ echo '</pre><h2>Errors</h2><pre>';
 
 $jsonapi = ErrorsDocument::fromException($exception);
 $error = new ErrorObject();
+$error->setGeneric('Title is too generic', 1);
+$error->setOccurence('The title you entered ("foo") is too generic', $errorId, 'https://error.exampe.com/?q='.$errorId);
 $error->addLink('linkAtError', 'https://error.exampe.com/');
+$error->setActionLink('https://inspiration.exampe.com/', $meta=['label' => 'Need inspiration?']);
+$error->blameJsonPointer('/data/attributes/title');
+$error->blameQueryParameter('title');
+$error->blamePostData('title');
+$error->addMeta($key, $value);
 $jsonapi->addErrorObject($error);
 $jsonapi->addLink('linkAtRoot', 'https://root.exampe.com/');
+if ($jsonapi->httpStatusCode !== 200) {
+	echo '<em>Send with http status code: '.$jsonapi->httpStatusCode.'</em>'.PHP_EOL.PHP_EOL;
+}
 $jsonapi->sendResponse();
 
 echo '</pre>';
