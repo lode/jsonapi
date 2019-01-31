@@ -33,7 +33,7 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @param  \Exception $exception
-	 * @param  array      $options   optional, {@see ErrorsDocument::$defaults for defaults}
+	 * @param  array      $options   optional {@see ErrorsDocument::$defaults}
 	 * @return ErrorsDocument
 	 */
 	public static function fromException(\Exception $exception, array $options=[]) {
@@ -51,7 +51,7 @@ class ErrorsDocument extends Document {
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
 	 * @param \Exception $exception
-	 * @param array      $options   optional, {@see ErrorsDocument::$defaults for defaults}
+	 * @param array      $options   optional {@see ErrorsDocument::$defaults}
 	 */
 	public function addException(\Exception $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);

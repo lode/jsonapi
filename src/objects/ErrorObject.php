@@ -37,7 +37,7 @@ class ErrorObject implements ObjectInterface {
 	
 	/**
 	 * @param  \Exception $exception
-	 * @param  array      $options   optional, {@see ErrorObject::$defaults for defaults}
+	 * @param  array      $options   optional {@see ErrorObject::$defaults}
 	 * @return ErrorObject
 	 */
 	public static function fromException(\Exception $exception, array $options=[]) {

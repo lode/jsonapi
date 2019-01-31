@@ -40,10 +40,11 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * add key-value pairs to the resource's attributes
 	 * 
 	 * @param string $key
-	 * @param mixed  $value objects will be converted using `get_object_vars()`
+	 * @param mixed  $value   objects will be converted using `get_object_vars()`
+	 * @param array  $options optional {@see ResourceObject::$defaults}
 	 */
-	public function add($key, $value) {
-		$this->resource->add($key, $value);
+	public function add($key, $value, array $options=[]) {
+		$this->resource->add($key, $value, $options);
 	}
 	
 	/**
@@ -55,7 +56,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param mixed   $relation ResourceInterface | ResourceInterface[] | CollectionDocument
 	 * @param array   $links    optional
 	 * @param array   $meta     optional
-	 * @param array   $options  optional, {@see ResourceDocument::$defaults for defaults}
+	 * @param array   $options  optional {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
@@ -116,7 +117,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * adds included resources if found inside the resource's relationships, unless $options['skipIncluding'] is set to true
 	 * 
 	 * @param ResourceInterface $resource
-	 * @param array             $options  optional, {@see ResourceDocument::$defaults for defaults}
+	 * @param array             $options  optional {@see ResourceDocument::$defaults}
 	 * 
 	 * @throws InputException if the $resource is a ResourceDocument itself
 	 */

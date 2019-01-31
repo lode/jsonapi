@@ -19,6 +19,14 @@ class ResourceObject extends ResourceIdentifierObject {
 	public $relationships;
 	/** @var LinksObject */
 	public $links;
+	/** @var array */
+	private static $defaults = [
+		/**
+		 * set to false to allow using 'type' as a member in attributes or relationships
+		 * @note this is not allowed by the specification
+		 */
+		'enforceTypeFieldNamespace' => true,
+	];
 	
 	/**
 	 * human api
@@ -42,13 +50,16 @@ class ResourceObject extends ResourceIdentifierObject {
 	 * 
 	 * @param string $key
 	 * @param mixed  $value
+	 * @param array  $options optional {@see ResourceObject::$defaults}
 	 */
-	public function add($key, $value) {
+	public function add($key, $value, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		if ($this->attributes === null) {
 			$this->attributes = new AttributesObject();
 		}
 		
-		$this->validator->checkUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES);
+		$this->validator->checkUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
 		
 		$this->attributes->add($key, $value);
 		

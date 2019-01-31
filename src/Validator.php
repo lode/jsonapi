@@ -16,6 +16,13 @@ class Validator {
 	private $usedFields = [];
 	/** @var array */
 	private $usedResourceIdentifiers = [];
+	/** @var array */
+	private static $defaults = [
+		/**
+		 * @note this is not allowed by the specification
+		 */
+		'enforceTypeFieldNamespace' => true,
+	];
 	
 	/**
 	 * block if already existing in another object, otherwise just overwrite
@@ -24,14 +31,24 @@ class Validator {
 	 * 
 	 * @param  string $fieldName
 	 * @param  string $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
+	 * @param  array  $options         optional {@see Validator::$defaults}
 	 * 
 	 * @throws DuplicateException
 	 */
-	public function checkUsedField($fieldName, $objectContainer) {
+	public function checkUsedField($fieldName, $objectContainer, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		if (isset($this->usedFields[$fieldName]) === false) {
 			return;
 		}
 		if ($this->usedFields[$fieldName] === $objectContainer) {
+			return;
+		}
+		
+		/**
+		 * @note this is not allowed by the specification
+		 */
+		if ($this->usedFields[$fieldName] === Validator::OBJECT_CONTAINER_TYPE && $options['enforceTypeFieldNamespace'] === false) {
 			return;
 		}
 		

@@ -62,7 +62,7 @@ class CollectionDocument extends DataDocument {
 	 * adds included resources if found inside the resource's relationships, unless $options['skipIncluding'] is set to true
 	 * 
 	 * @param ResourceInterface $resource
-	 * @param array             $options  optional, {@see CollectionDocument::$defaults for defaults}
+	 * @param array             $options  optional {@see CollectionDocument::$defaults}
 	 * 
 	 * @throws InputException if the resource is empty
 	 */
