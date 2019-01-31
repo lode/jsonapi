@@ -20,8 +20,6 @@ abstract class Document implements DocumentInterface {
 	const CONTENT_TYPE_JSONP    = 'application/javascript';
 	const CONTENT_TYPE_DEFAULT  = Document::CONTENT_TYPE_OFFICIAL;
 	
-	const JSONP_CALLBACK_DEFAULT = 'JSONP_CALLBACK';
-	
 	const LEVEL_ROOT     = 'root';
 	const LEVEL_JSONAPI  = 'jsonapi';
 	const LEVEL_RESOURCE = 'resource';
@@ -34,6 +32,15 @@ abstract class Document implements DocumentInterface {
 	public $meta;
 	/** @var JsonapiObject */
 	public $jsonapi;
+	/** @var array */
+	private static $defaults = [
+		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
+		'prettyPrint'   => false,
+		'contentType'   => Document::CONTENT_TYPE_DEFAULT,
+		'array'         => null,
+		'json'          => null,
+		'jsonpCallback' => null,
+	];
 	
 	public function __construct() {
 		$this->setJsonapiObject(new JsonapiObject());
@@ -169,16 +176,22 @@ abstract class Document implements DocumentInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function toJson(array $array=null, $prettyPrint=false) {
-		$array         = $array ?: $this->toArray();
-		$encodeOptions = JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE;
-		if ($prettyPrint) {
-			$encodeOptions |= JSON_PRETTY_PRINT;
+	public function toJson(array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
+		$array = ($options['array'] !== null) ? $options['array'] : $this->toArray();
+		
+		if ($options['prettyPrint']) {
+			$options['encodeOptions'] |= JSON_PRETTY_PRINT;
 		}
 		
-		$json = json_encode($array, $encodeOptions);
+		$json = json_encode($array, $options['encodeOptions']);
 		if ($json === false) {
 			throw new Exception('failed to generate json: '.json_last_error_msg());
+		}
+		
+		if ($options['jsonpCallback'] !== null) {
+			$json = $options['jsonpCallback'].'('.$json.')';
 		}
 		
 		return $json;
@@ -187,27 +200,19 @@ abstract class Document implements DocumentInterface {
 	/**
 	 * @inheritDoc
 	 */
-	public function sendResponse($json=null, $contentType=Document::CONTENT_TYPE_DEFAULT, $prettyPrint=false) {
+	public function sendResponse(array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);
 			return;
 		}
 		
-		$json = $json ?: $this->toJson($array=null, $prettyPrint);
+		$json = ($options['json'] !== null) ? $options['json'] : $this->toJson($options);
 		
 		http_response_code($this->httpStatusCode);
-		header('Content-Type: '.$contentType);
+		header('Content-Type: '.$options['contentType']);
 		
 		echo $json;
-	}
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function sendJsonpResponse($callback=Document::JSONP_CALLBACK_DEFAULT, $json=null, $prettyPrint=false) {
-		$json = $json ?: $this->toJson($array=null, $prettyPrint);
-		$json = $callback.'('.$json.')';
-		
-		$this->sendResponse($json, $contentType=Document::CONTENT_TYPE_JSONP, $prettyPrint);
 	}
 }

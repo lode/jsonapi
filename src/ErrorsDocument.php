@@ -10,6 +10,11 @@ class ErrorsDocument extends Document {
 	public $errors = [];
 	/** @var array */
 	private $httpStatusCodes;
+	/** @var array */
+	private static $defaults = [
+		'exceptionExposeDetails' => false,
+		'exceptionSkipPrevious'  => false,
+	];
 	
 	/**
 	 * @param ErrorObject $errorObject optional
@@ -28,13 +33,14 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @param  \Exception $exception
-	 * @param  boolean    $expose       optional, defaults to false
-	 * @param  boolean    $skipPrevious optional, defaults to false
+	 * @param  array      $options   optional, {@see ErrorsDocument::$defaults for defaults}
 	 * @return ErrorsDocument
 	 */
-	public static function fromException(\Exception $exception, $expose=false, $skipPrevious=false) {
+	public static function fromException(\Exception $exception, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		$errorsDocument = new self();
-		$errorsDocument->addException($exception, $expose, $skipPrevious);
+		$errorsDocument->addException($exception, $options);
 		
 		return $errorsDocument;
 	}
@@ -45,16 +51,17 @@ class ErrorsDocument extends Document {
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
 	 * @param \Exception $exception
-	 * @param boolean    $expose       optional, defaults to false
-	 * @param boolean    $skipPrevious optional, defaults to false
+	 * @param array      $options   optional, {@see ErrorsDocument::$defaults for defaults}
 	 */
-	public function addException(\Exception $exception, $expose=false, $skipPrevious=false) {
+	public function addException(\Exception $exception, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		$this->addErrorObject(ErrorObject::fromException($exception));
 		
-		if ($skipPrevious === false) {
+		if ($options['exceptionSkipPrevious'] === false) {
 			$exception = $exception->getPrevious();
 			while ($exception !== null) {
-				$this->addException($exception, $expose);
+				$this->addException($exception, $options);
 				$exception = $exception->getPrevious();
 			}
 		}

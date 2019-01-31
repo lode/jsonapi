@@ -26,6 +26,10 @@ class ErrorObject implements ObjectInterface {
 	public $source = [];
 	/** @var MetaObject */
 	public $meta;
+	/** @var array */
+	private static $defaults = [
+		'exceptionExposeDetails' => false,
+	];
 	
 	/**
 	 * human api
@@ -33,13 +37,15 @@ class ErrorObject implements ObjectInterface {
 	
 	/**
 	 * @param  \Exception $exception
-	 * @param  boolean    $expose    optional, defaults to false
+	 * @param  array      $options   optional, {@see ErrorObject::$defaults for defaults}
 	 * @return ErrorObject
 	 */
-	public static function fromException(\Exception $exception, $expose=false) {
+	public static function fromException(\Exception $exception, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		$errorObject = new self();
 		
-		if ($expose) {
+		if ($options['exceptionExposeDetails']) {
 			$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
 			$errorObject->addMeta('exception', [
 				'message' => $exception->getMessage(),

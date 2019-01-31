@@ -11,6 +11,10 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 class CollectionDocument extends DataDocument {
 	/** @var ResourceInterface[] */
 	public $resources = [];
+	/** @var array */
+	private static $defaults = [
+		'skipIncluding' => false,
+	];
 	
 	/**
 	 * human api
@@ -55,17 +59,19 @@ class CollectionDocument extends DataDocument {
 	/**
 	 * add a resource to the collection
 	 * 
-	 * adds included resources if found inside the resource's relationships, unless $skipIncluding is set to true
+	 * adds included resources if found inside the resource's relationships, unless $options['skipIncluding'] is set to true
 	 * 
 	 * @param ResourceInterface $resource
-	 * @param boolean           $skipIncluding optional, defaults to false
+	 * @param array             $options  optional, {@see CollectionDocument::$defaults for defaults}
 	 * 
 	 * @throws InputException if the resource is empty
 	 */
-	public function addResource(ResourceInterface $resource, $skipIncluding=false) {
+	public function addResource(ResourceInterface $resource, array $options=[]) {
 		if ($resource->getResource()->isEmpty()) {
 			throw new InputException('does not make sense to add empty resources to a collection');
 		}
+		
+		$options = array_merge(self::$defaults, $options);
 		
 		$this->validator->checkUsedResourceIdentifier($resource);
 		
@@ -73,7 +79,7 @@ class CollectionDocument extends DataDocument {
 		
 		$this->validator->markUsedResourceIdentifier($resource);
 		
-		if ($skipIncluding === false && $resource instanceof ResourceObject) {
+		if ($options['skipIncluding'] === false && $resource instanceof ResourceObject) {
 			$this->addIncludedResourceObject(...$resource->getRelatedResourceObjects());
 		}
 	}
