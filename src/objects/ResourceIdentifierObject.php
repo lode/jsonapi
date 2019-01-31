@@ -75,6 +75,28 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasIdentification() {
+		return ($this->type !== null && $this->id !== null);
+	}
+	
+	/**
+	 * get a key to uniquely define this resource
+	 * 
+	 * @return string
+	 * 
+	 * @throws Exception if type or id is not set yet
+	 */
+	public function getIdentificationKey() {
+		if ($this->hasIdentification() === false) {
+			throw new Exception('resource has no identification yet');
+		}
+		
+		return $this->type.'|'.$this->id;
+	}
+	
+	/**
 	 * spec api
 	 */
 	

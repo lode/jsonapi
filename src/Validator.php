@@ -70,11 +70,11 @@ class Validator {
 	 * @throws DuplicateException if the combination of type and id has been set before
 	 */
 	public function checkUsedResourceIdentifier(ResourceInterface $resource) {
-		if ($resource->getResource()->type === null || $resource->getResource()->id === null) {
+		if ($resource->getResource()->hasIdentification() === false) {
 			throw new InputException('can not validate resource without identifier, set type and id first');
 		}
 		
-		$resourceKey = $resource->getResource()->type.'|'.$resource->getResource()->id;
+		$resourceKey = $resource->getResource()->getIdentificationKey();
 		if (isset($this->usedResourceIdentifiers[$resourceKey]) === false) {
 			return;
 		}
@@ -86,7 +86,7 @@ class Validator {
 	 * @param  ResourceInterface $resource
 	 */
 	public function markUsedResourceIdentifier(ResourceInterface $resource) {
-		$resourceKey = $resource->getResource()->type.'|'.$resource->getResource()->id;
+		$resourceKey = $resource->getResource()->getIdentificationKey();
 		$this->usedResourceIdentifiers[$resourceKey] = true;
 	}
 	

@@ -22,10 +22,10 @@ class RelationshipObject implements ObjectInterface {
 	public $meta;
 	/** @var string */
 	public $key;
+	/** @var ResourceInterface */
+	public $resource;
 	/** @var string one of the RelationshipObject::TO_* constants */
 	protected $type;
-	/** @var ResourceInterface */
-	protected $resource;
 	/** @var ResourceInterface[] */
 	protected $resources = [];
 	

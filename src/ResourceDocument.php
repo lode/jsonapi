@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
 	/** @var ResourceIdentifierObject|ResourceObject */
-	protected $resource;
+	public $resource;
 	/** @var array */
 	private static $defaults = [
 		'skipIncluding' => false,
