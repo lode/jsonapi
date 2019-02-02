@@ -91,19 +91,28 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
-		if ($options['skipIncluding'] === false && $this->resource instanceof ResourceObject) {
+		if ($options['skipIncluding'] === false) {
 			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
 		}
 	}
 	
 	/**
-	 * @todo add to included resources, and allow skip that via parameter
+	 * add a RelationshipObject to the resource
+	 * 
+	 * adds included resources if found inside the RelationshipObject, unless $options['skipIncluding'] is set to true
 	 * 
 	 * @param RelationshipObject $relationshipObject
 	 * @param string             $key                optional, required if $relationshipObject has no key defined
+	 * @param array              $options            optional {@see ResourceDocument::$defaults}
 	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null) {
+	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
 		$this->resource->addRelationshipObject($relationshipObject, $key);
+		
+		if ($options['skipIncluding'] === false) {
+			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
+		}
 	}
 	
 	/**
@@ -119,6 +128,16 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		else {
 			parent::addLink($key, $href, $meta, $level);
 		}
+	}
+	
+	/**
+	 * set the self link on the resource
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional
+	 */
+	public function setSelfLink($href, array $meta=[]) {
+		self::addLink('self', $href, $meta, $level=Document::LEVEL_RESOURCE);
 	}
 	
 	/**

@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\DataDocument;
+use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -50,6 +51,16 @@ class CollectionDocument extends DataDocument {
 		else {
 			$this->addResource(ResourceObject::fromArray($attributes, $type, $id));
 		}
+	}
+	
+	/**
+	 * set the self link on the document
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional
+	 */
+	public function setSelfLink($href, array $meta=[]) {
+		self::addLink('self', $href, $meta, $level=Document::LEVEL_ROOT);
 	}
 	
 	/**

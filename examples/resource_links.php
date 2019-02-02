@@ -1,6 +1,7 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\ResourceDocument;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -8,36 +9,29 @@ error_reporting(-1);
 require '../vendor/autoload.php';
 
 /**
- * settings which will change default from 2.x
- */
-jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
-
-/**
  * add links in different ways to a resource
  */
 
 require 'dataset.php';
 $user = new user(42);
-$jsonapi = new jsonapi\resource($type='user', $user->id);
-$jsonapi->fill_data($user);
+$jsonapi = ResourceDocument::fromObject($user, $type='user', $user->id);
 
 /**
  * self links are adding both at root and in data levels
  */
-$self_route_meta    = ['level' => jsonapi\resource::LINK_LEVEL_BOTH];
-$self_resource_meta = ['level' => jsonapi\resource::LINK_LEVEL_DATA];
-$backwards_meta     = ['level' => jsonapi\resource::LINK_LEVEL_DATA];
-$partner_meta       = ['level' => jsonapi\resource::LINK_LEVEL_DATA];
-$redirect_meta      = ['level' => jsonapi\resource::LINK_LEVEL_ROOT];
+$selfResourceMeta = ['level' => Document::LEVEL_RESOURCE];
+$partnerMeta      = ['level' => Document::LEVEL_RESOURCE];
+$redirectMeta     = ['level' => Document::LEVEL_ROOT];
 
-$jsonapi->set_self_link('/user/42?example=true', $self_route_meta);
-$jsonapi->add_link('self', '/user/42', $self_resource_meta);
-$jsonapi->add_link('backwards', '/compatible', $backwards_meta); // level = default = LINK_LEVEL_DATA
-$jsonapi->add_link('partner',   '/user/1',     $partner_meta,  $level=jsonapi\resource::LINK_LEVEL_DATA);
-$jsonapi->add_link('redirect',  '/login',      $redirect_meta, $level=jsonapi\resource::LINK_LEVEL_ROOT);
+$jsonapi->setSelfLink('/user/42',        $selfResourceMeta);
+$jsonapi->addLink('partner',  '/user/1', $partnerMeta,  $level=Document::LEVEL_RESOURCE);
+$jsonapi->addLink('redirect', '/login',  $redirectMeta, $level=Document::LEVEL_ROOT);
 
 /**
  * sending the response
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$jsonapi->toJson($options);

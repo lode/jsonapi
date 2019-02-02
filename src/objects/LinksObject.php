@@ -21,13 +21,13 @@ class LinksObject implements ObjectInterface {
 	 * @return LinksObject
 	 */
 	public static function fromArray(array $links) {
-		$linkObject = new self();
+		$linksObject = new self();
 		
 		foreach ($links as $key => $href) {
-			$linkObject->add($key, $href);
+			$linksObject->add($key, $href);
 		}
 		
-		return $linkObject;
+		return $linksObject;
 	}
 	
 	/**
