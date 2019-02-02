@@ -1,6 +1,6 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\ErrorsDocument;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -11,14 +11,22 @@ require '../vendor/autoload.php';
  * via an exception
  * 
  * @note previous exceptions will be added as well
- * @note exceptions only output file, line, trace if the display_errors directive is true
- *       you can tune it with that, or by setting jsonapi\base::$debug to false
+ * @note exceptions will expose the exception code, and use them as http status code if valid
+ *       message, file, line, trace will not not exposed, unless $options['exceptionExposeDetails'] is set to true
  */
 
 try {
-	throw new Exception('unknown user', jsonapi\response::STATUS_NOT_FOUND);
+	throw new Exception('unknown user', 404);
 }
 catch (Exception $e) {
-	$jsonapi = new jsonapi\errors($e);
-	$jsonapi->send_response();
+	$options = [
+		'exceptionExposeDetails' => true, // defaults to false
+		'exceptionSkipPrevious'  => false,
+	];
+	$jsonapi = ErrorsDocument::fromException($e, $options);
+	
+	$options = [
+		'prettyPrint' => true,
+	];
+	echo '<pre>'.$jsonapi->toJson($options);
 }

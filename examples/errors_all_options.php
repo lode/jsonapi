@@ -1,6 +1,7 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\ErrorsDocument;
+use alsvanzelf\jsonapi\objects\ErrorObject;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -11,66 +12,68 @@ require '../vendor/autoload.php';
  * setting all options
  */
 
-$error = new jsonapi\error($error_message='too much options', $friendly_message='Please, choose a bit less.', $about_link='www.example.com/options.html');
-
-// more details about the error, for the end user to comsume
-$error->set_friendly_detail($friendly_detail='Consult your ...');
+$error = new ErrorObject($applicationCode='Invalid input', $humanTitle='Too much options', $humanDetails='Please, choose a bit less. Consult your ...', $aboutLink='https://www.example.com/explanation.html');
 
 // mark the cause of the error
-$error->blame_post_body($post_body_pointer='/data/attributes/title');
-$error->blame_get_parameter($get_parameter_name='filter');
+$error->blameJsonPointer($pointer='/data/attributes/title');
+$error->blameQueryParameter($parameter='filter');
+$error->blamePostData($postKey='title');
 
 // an identifier useful for helpdesk purposes
-$error->set_identifier($identifier=42);
+$error->setUniqueIdentifier($id=42);
 
 // add meta data as you would on a normal json response
-$error->add_meta($key='foo', $meta_data='bar');
-$error->fill_meta($meta_data=['bar' => 'baz']);
+$error->addMeta($key='foo', $value='bar');
 
 // or as object
-$meta_object = new stdClass();
-$meta_object->property = 'value';
-$error->add_meta($key='object', $meta_object);
+$metaObject = new StdClass();
+$metaObject->property = 'value';
+$error->addMeta($key='object', $metaObject);
 
 // the http status code
 // @note it is better to set this on the jsonapi\errors object ..
 //       .. as only a single one can be consumed by the browser
-$error->set_http_status($http_status=jsonapi\response::STATUS_NOT_FOUND);
+$error->setHttpStatusCode($httpStatusCode=404);
 
 // if not set during construction, set them here
-$error->set_error_message($error_message='too much options');
-$error->set_friendly_message($friendly_message='Please, choose a bit less.');
-$error->set_about_link($about_link='www.example.com/options.html', ['foo'=>'bar']);
+$error->setApplicationCode($applicationCode='Invalid input');
+$error->setHumanTitle($humanTitle='Too much options');
+$error->setHumanDetails($humanDetails='Please, choose a bit less. Consult your ...');
+$error->setAboutLink($aboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
+$error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 
 /**
  * prepare multiple error objects for the errors response
  */
 
-$another_error  = new jsonapi\error('kiss', 'Error objects can be small and simple as well.');
-$some_exception = new Exception('please don\'t throw things', jsonapi\response::STATUS_INTERNAL_SERVER_ERROR);
+$anotherError  = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
+$someException = new Exception('please don\'t throw things', 500);
 
 /**
  * building up the json response
  * 
  * you can pass the $error object to the constructor ..
- * .. or add multiple errors via ->add_error() or ->add_exception()
+ * .. or add multiple errors via ->addErrorObject() or ->addException()
+ * 
+ * @note exceptions will expose the exception code, and use them as http status code if valid
+ *       message, file, line, trace will not not exposed, unless $options['exceptionExposeDetails'] is set to true
  * 
  * further you can force another http status code than what's in the errors
  */
 
-$jsonapi = new jsonapi\errors($error);
+$jsonapi = new ErrorsDocument($error);
 
-$jsonapi->add_error($another_error);
-$jsonapi->add_exception($some_exception);
-$jsonapi->add_link('redirect', '/login', ['label'=>'Log in']);
+$jsonapi->addErrorObject($anotherError);
+$jsonapi->addException($someException, $options=['exceptionExposeDetails'=>true]);
+$jsonapi->addLink('redirect', '/login', ['label'=>'Log in']);
 
-$jsonapi->set_http_status(jsonapi\response::STATUS_BAD_REQUEST);
+$jsonapi->setHttpStatusCode(400);
 
 /**
  * sending the response
- * 
- * @note the response includes debug information based on the display_errors directive
- *       you can tune it with that, or by setting jsonapi\base::$debug to false
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$jsonapi->toJson($options);

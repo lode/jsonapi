@@ -32,6 +32,21 @@ class ErrorObject implements ObjectInterface {
 	];
 	
 	/**
+	 * @param string|int $applicationCode     optional
+	 * @param string     $humanTitle          optional
+	 * @param string     $detailedExplanation optional
+	 * @param string     $aboutLink           optional
+	 */
+	public function __construct($applicationCode=null, $humanTitle=null, $detailedExplanation=null, $aboutLink=null) {
+		if ($applicationCode !== null) {
+			$this->setApplicationCode($applicationCode);
+		}
+		if ($humanTitle !== null) {
+			$this->setHumanExplanation($humanTitle, $detailedExplanation, $aboutLink);
+		}
+	}
+	
+	/**
 	 * human api
 	 */
 	
@@ -47,12 +62,12 @@ class ErrorObject implements ObjectInterface {
 		
 		if ($options['exceptionExposeDetails']) {
 			$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
-			$errorObject->addMeta('exception', [
+			$errorObject->setMetaObject(MetaObject::fromArray([
 				'message' => $exception->getMessage(),
 				'file'    => $exception->getFile(),
 				'line'    => $exception->getLine(),
 				'trace'   => $exception->getTrace(),
-			]);
+			]));
 		}
 		
 		if ($exception->getCode() !== 0) {
@@ -69,12 +84,12 @@ class ErrorObject implements ObjectInterface {
 	/**
 	 * explain this particular occurence of the error in a human friendly way
 	 * 
-	 * @param string     $title
+	 * @param string     $humanTitle
 	 * @param string     $detailedExplanation optional
 	 * @param string     $aboutLink           optional
 	 */
-	public function setHumanExplanation($title, $detailedExplanation=null, $aboutLink=null) {
-		$this->setHumanTitle($title);
+	public function setHumanExplanation($humanTitle, $detailedExplanation=null, $aboutLink=null) {
+		$this->setHumanTitle($humanTitle);
 		
 		if ($detailedExplanation !== null) {
 			$this->setHumanDetails($detailedExplanation);
@@ -206,16 +221,18 @@ class ErrorObject implements ObjectInterface {
 	 * @param string $value
 	 */
 	public function addSource($key, $value) {
+		Validator::checkMemberName($key);
+		
 		$this->source[$key] = $value;
 	}
 	
 	/**
 	 * a short human friendly explanation of the generic type of this error
 	 * 
-	 * @param string $title
+	 * @param string $humanTitle
 	 */
-	public function setHumanTitle($title) {
-		$this->title = $title;
+	public function setHumanTitle($humanTitle) {
+		$this->title = $humanTitle;
 	}
 	
 	/**

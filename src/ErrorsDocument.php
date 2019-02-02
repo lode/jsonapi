@@ -56,7 +56,7 @@ class ErrorsDocument extends Document {
 	public function addException(\Exception $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
-		$this->addErrorObject(ErrorObject::fromException($exception));
+		$this->addErrorObject(ErrorObject::fromException($exception, $options));
 		
 		if ($options['exceptionSkipPrevious'] === false) {
 			$exception = $exception->getPrevious();
@@ -69,14 +69,12 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @param string|int $applicationCode
-	 * @param string     $title
+	 * @param string     $humanTitle
 	 * @param string     $detailedExplanation optional
 	 * @param string     $aboutLink           optional
 	 */
-	public function add($applicationCode, $title, $detailedExplanation=null, $aboutLink=null) {
-		$errorObject = new ErrorObject();
-		$errorObject->setApplicationCode($applicationCode);
-		$errorObject->setHumanExplanation($title, $detailedExplanation, $aboutLink);
+	public function add($applicationCode, $humanTitle, $detailedExplanation=null, $aboutLink=null) {
+		$errorObject = new ErrorObject($applicationCode, $humanTitle, $detailedExplanation, $aboutLink);
 		
 		$this->addErrorObject($errorObject);
 	}
