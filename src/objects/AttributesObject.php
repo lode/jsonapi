@@ -39,6 +39,13 @@ class AttributesObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @return string[]
+	 */
+	public function getKeys() {
+		return array_keys($this->attributes);
+	}
+	
+	/**
 	 * spec api
 	 */
 	

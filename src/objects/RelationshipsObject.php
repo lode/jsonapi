@@ -2,12 +2,10 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
-use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -26,23 +24,9 @@ class RelationshipsObject implements ObjectInterface {
 	 * @param  array  $links    optional
 	 * @param  array  $meta     optional
 	 * @return RelationshipObject
-	 * 
-	 * @throws InputException if $relation is not one of the supported formats
 	 */
 	public function add($key, $relation, array $links=[], array $meta=[]) {
-		if (is_array($relation)) {
-			$relation = CollectionDocument::fromResources(...$relation);
-		}
-		
-		if ($relation instanceof ResourceInterface) {
-			$relationshipObject = RelationshipObject::fromResource($relation, $links, $meta);
-		}
-		elseif ($relation instanceof CollectionDocument) {
-			$relationshipObject = RelationshipObject::fromCollectionDocument($relation, $links, $meta);
-		}
-		else {
-			throw new InputException('unknown format of relation "'.gettype($relation).'"');
-		}
+		$relationshipObject = RelationshipObject::fromAnything($relation, $links, $meta);
 		
 		$this->addRelationshipObject($relationshipObject, $key);
 		
@@ -64,6 +48,13 @@ class RelationshipsObject implements ObjectInterface {
 		}
 		
 		return $resourceObjects;
+	}
+	
+	/**
+	 * @return string[]
+	 */
+	public function getKeys() {
+		return array_keys($this->relationships);
 	}
 	
 	/**

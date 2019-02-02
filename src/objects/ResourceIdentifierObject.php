@@ -34,6 +34,10 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		if ($id !== null) {
 			$this->setId($id);
 		}
+		
+		// always mark as used, as these keys are reserved
+		$this->validator->markUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
+		$this->validator->markUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
 	}
 	
 	/**
@@ -105,8 +109,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	public function setType($type) {
 		$this->type = $type;
-		
-		$this->validator->markUsedField($fieldName='type', Validator::OBJECT_CONTAINER_TYPE);
 	}
 	
 	/**
@@ -114,8 +116,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	public function setId($id) {
 		$this->id = (string) $id;
-		
-		$this->validator->markUsedField($fieldName='id', Validator::OBJECT_CONTAINER_ID);
 	}
 	
 	/**

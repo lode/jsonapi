@@ -34,14 +34,27 @@ class ResourceObject extends ResourceIdentifierObject {
 	 */
 	
 	/**
+	 * @note if an `id` is set inside $attributes, it is removed from there
+	 *       and if $id is null, it is filled with that value
+	 *       not doing so will cause an exception anyway
+	 * 
 	 * @param  array      $attributes
-	 * @param  string     $type optional
-	 * @param  string|int $id   optional
+	 * @param  string     $type       optional
+	 * @param  string|int $id         optional
+	 * @param  array      $options    optional {@see ResourceObject::$defaults}
 	 * @return ResourceObject
 	 */
-	public static function fromArray(array $attributes, $type=null, $id=null) {
+	public static function fromArray(array $attributes, $type=null, $id=null, array $options=[]) {
+		if (isset($attributes['id'])) {
+			if ($id === null) {
+				$id = $attributes['id'];
+			}
+			
+			unset($attributes['id']);
+		}
+		
 		$resourceObject = new self($type, $id);
-		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes));
+		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes), $options);
 		
 		return $resourceObject;
 	}
@@ -73,11 +86,11 @@ class ResourceObject extends ResourceIdentifierObject {
 			$this->attributes = new AttributesObject();
 		}
 		
-		$this->validator->checkUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->checkUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
 		
 		$this->attributes->add($key, $value);
 		
-		$this->validator->markUsedField($key, Validator::OBJECT_CONTAINER_ATTRIBUTES);
+		$this->validator->markUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES);
 	}
 	
 	/**
@@ -85,14 +98,15 @@ class ResourceObject extends ResourceIdentifierObject {
 	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
 	 * @param  array  $links    optional
 	 * @param  array  $meta     optional
+	 * @param  array  $options  optional {@see ResourceObject::$defaults}
 	 * @return RelationshipObject
 	 */
-	public function addRelationship($key, $relation, array $links=[], array $meta=[]) {
-		if ($this->relationships === null) {
-			$this->setRelationshipsObject(new RelationshipsObject());
-		}
+	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
+		$relationshipObject = RelationshipObject::fromAnything($relation, $links, $meta);
 		
-		return $this->relationships->add($key, $relation, $links, $meta);
+		$this->addRelationshipObject($relationshipObject, $key, $options);
+		
+		return $relationshipObject;
 	}
 	
 	/**
@@ -158,18 +172,26 @@ class ResourceObject extends ResourceIdentifierObject {
 	
 	/**
 	 * @param AttributesObject $attributesObject
+	 * @param array            $options          optional {@see ResourceObject::$defaults}
 	 */
-	public function setAttributesObject(AttributesObject $attributesObject) {
+	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
+		$newKeys = $attributesObject->getKeys();
+		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_ATTRIBUTES);
+		$this->validator->checkUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		
 		$this->attributes = $attributesObject;
+		
+		$this->validator->markUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES);
 	}
 	
 	/**
 	 * @param RelationshipObject $relationshipObject
 	 * @param string             $key                optional, required if $relationshipObject has no key defined
+	 * @param array              $options            optional {@see ResourceObject::$defaults}
 	 * 
 	 * @throws DuplicateException if the resource is contained as a resource in the relationship
 	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null) {
+	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
 		if ($relationshipObject->hasResource($this)) {
 			throw new DuplicateException('can not add relation to self');
 		}
@@ -178,14 +200,24 @@ class ResourceObject extends ResourceIdentifierObject {
 			$this->setRelationshipsObject(new RelationshipsObject());
 		}
 		
+		$this->validator->checkUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
+		
 		$this->relationships->addRelationshipObject($relationshipObject, $key);
+		
+		$this->validator->markUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 	}
 	
 	/**
 	 * @param RelationshipsObject $relationshipsObject
 	 */
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject) {
+		$newKeys = $relationshipsObject->getKeys();
+		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_RELATIONSHIPS);
+		$this->validator->checkUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
+		
 		$this->relationships = $relationshipsObject;
+		
+		$this->validator->markUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 	}
 	
 	/**

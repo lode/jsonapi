@@ -47,6 +47,34 @@ class RelationshipObject implements ObjectInterface {
 	 */
 	
 	/**
+	 * create a Relationshipobject from mixed input
+	 * 
+	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
+	 * @param  array  $links    optional
+	 * @param  array  $meta     optional
+	 * @return RelationshipObject
+	 * 
+	 * @throws InputException if $relation is not one of the supported formats
+	 */
+	public static function fromAnything($relation, array $links=[], array $meta=[]) {
+		if (is_array($relation)) {
+			$relation = CollectionDocument::fromResources(...$relation);
+		}
+		
+		if ($relation instanceof ResourceInterface) {
+			$relationshipObject = self::fromResource($relation, $links, $meta);
+		}
+		elseif ($relation instanceof CollectionDocument) {
+			$relationshipObject = self::fromCollectionDocument($relation, $links, $meta);
+		}
+		else {
+			throw new InputException('unknown format of relation "'.gettype($relation).'"');
+		}
+		
+		return $relationshipObject;
+	}
+	
+	/**
 	 * @param  ResourceInterface $resource
 	 * @param  array             $links    optional
 	 * @param  array             $meta     optional

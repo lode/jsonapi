@@ -29,38 +29,55 @@ class Validator {
 	 * 
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
-	 * @param  string $fieldName
-	 * @param  string $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
-	 * @param  array  $options         optional {@see Validator::$defaults}
+	 * @param  string[] $fieldName
+	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
+	 * @param  array    $options         optional {@see Validator::$defaults}
 	 * 
 	 * @throws DuplicateException
 	 */
-	public function checkUsedField($fieldName, $objectContainer, array $options=[]) {
+	public function checkUsedFields(array $fieldNames, $objectContainer, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
-		if (isset($this->usedFields[$fieldName]) === false) {
-			return;
+		foreach ($fieldNames as $fieldName) {
+			if (isset($this->usedFields[$fieldName]) === false) {
+				continue;
+			}
+			if ($this->usedFields[$fieldName] === $objectContainer) {
+				continue;
+			}
+			
+			/**
+			 * @note this is not allowed by the specification
+			 */
+			if ($this->usedFields[$fieldName] === Validator::OBJECT_CONTAINER_TYPE && $options['enforceTypeFieldNamespace'] === false) {
+				continue;
+			}
+			
+			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName].'"');
 		}
-		if ($this->usedFields[$fieldName] === $objectContainer) {
-			return;
-		}
-		
-		/**
-		 * @note this is not allowed by the specification
-		 */
-		if ($this->usedFields[$fieldName] === Validator::OBJECT_CONTAINER_TYPE && $options['enforceTypeFieldNamespace'] === false) {
-			return;
-		}
-		
-		throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName].'"');
 	}
 	
 	/**
-	 * @param  string $fieldName
-	 * @param  string $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
+	 * @param  string[] $fieldName
+	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
 	 */
-	public function markUsedField($fieldName, $objectContainer) {
-		$this->usedFields[$fieldName] = $objectContainer;
+	public function markUsedFields(array $fieldNames, $objectContainer) {
+		foreach ($fieldNames as $fieldName) {
+			$this->usedFields[$fieldName] = $objectContainer;
+		}
+	}
+	
+	/**
+	 * @param string $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
+	 */
+	public function clearUsedFields($objectContainerToClear) {
+		foreach ($this->usedFields as $fieldName => $containerFound) {
+			if ($containerFound !== $objectContainerToClear) {
+				continue;
+			}
+			
+			unset($this->usedFields[$fieldName]);
+		}
 	}
 	
 	/**
