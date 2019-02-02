@@ -8,7 +8,9 @@ use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
+use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
+use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
@@ -97,25 +99,6 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	}
 	
 	/**
-	 * add a RelationshipObject to the resource
-	 * 
-	 * adds included resources if found inside the RelationshipObject, unless $options['skipIncluding'] is set to true
-	 * 
-	 * @param RelationshipObject $relationshipObject
-	 * @param string             $key                optional, required if $relationshipObject has no key defined
-	 * @param array              $options            optional {@see ResourceDocument::$defaults}
-	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
-		$options = array_merge(self::$defaults, $options);
-		
-		$this->resource->addRelationshipObject($relationshipObject, $key);
-		
-		if ($options['skipIncluding'] === false) {
-			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
-		}
-	}
-	
-	/**
 	 * @param string $key
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
@@ -137,7 +120,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array  $meta optional
 	 */
 	public function setSelfLink($href, array $meta=[]) {
-		self::addLink('self', $href, $meta, $level=Document::LEVEL_RESOURCE);
+		$this->resource->setSelfLink($href, $meta);
 	}
 	
 	/**
@@ -152,6 +135,58 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		else {
 			parent::addMeta($key, $value, $level);
 		}
+	}
+	
+	/**
+	 * wrapping ResourceObject spec api
+	 */
+	
+	/**
+	 * @param string $type
+	 */
+	public function setType($type) {
+		$this->resource->setType($type);
+	}
+	
+	/**
+	 * @param string|int $id will be casted to a string
+	 */
+	public function setId($id) {
+		$this->resource->setId($id);
+	}
+	
+	/**
+	 * @param AttributesObject $attributesObject
+	 * @param array            $options          optional {@see ResourceObject::$defaults}
+	 */
+	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
+		$this->resource->setAttributesObject($attributesObject, $options);
+	}
+	
+	/**
+	 * add a RelationshipObject to the resource
+	 * 
+	 * adds included resources if found inside the RelationshipObject, unless $options['skipIncluding'] is set to true
+	 * 
+	 * @param RelationshipObject $relationshipObject
+	 * @param string             $key                optional, required if $relationshipObject has no key defined
+	 * @param array              $options            optional {@see ResourceDocument::$defaults}
+	 */
+	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
+		$options = array_merge(self::$defaults, $options);
+		
+		$this->resource->addRelationshipObject($relationshipObject, $key);
+		
+		if ($options['skipIncluding'] === false) {
+			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
+		}
+	}
+	
+	/**
+	 * @param RelationshipsObject $relationshipsObject
+	 */
+	public function setRelationshipsObject(RelationshipsObject $relationshipsObject) {
+		$this->resource->setRelationshipsObject($relationshipsObject);
 	}
 	
 	/**
