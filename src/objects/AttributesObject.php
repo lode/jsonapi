@@ -29,6 +29,16 @@ class AttributesObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @param  object $attributes
+	 * @return AttributesObject
+	 */
+	public static function fromObject($attributes) {
+		$array = Converter::objectToArray($attributes);
+		
+		return self::fromArray($array);
+	}
+	
+	/**
 	 * spec api
 	 */
 	

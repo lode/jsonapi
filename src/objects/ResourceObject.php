@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -43,6 +44,19 @@ class ResourceObject extends ResourceIdentifierObject {
 		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes));
 		
 		return $resourceObject;
+	}
+	
+	/**
+	 * @param  object     $attributes
+	 * @param  string     $type       optional
+	 * @param  string|int $id         optional
+	 * @param  array      $options    optional {@see ResourceObject::$defaults}
+	 * @return ResourceObject
+	 */
+	public static function fromObject($attributes, $type=null, $id=null, array $options=[]) {
+		$array = Converter::objectToArray($attributes);
+		
+		return self::fromArray($array, $type, $id, $options);
 	}
 	
 	/**

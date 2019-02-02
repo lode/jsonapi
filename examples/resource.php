@@ -1,16 +1,11 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\ResourceDocument;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
 
 require '../vendor/autoload.php';
-
-/**
- * settings which will change default from 2.x
- */
-jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
 
 /**
  * the resource you want to send out
@@ -29,14 +24,15 @@ $user = new user(42);
  * objects are converted into arrays using their public keys
  */
 
-$jsonapi = new jsonapi\resource($type='user', $user->id);
+$jsonapi = ResourceDocument::fromObject($user, $type='user', $user->id);
 
-$jsonapi->fill_data($user);
-
-$jsonapi->add_data('location', $user->get_current_location());
+$jsonapi->add('location', $user->get_current_location());
 
 /**
  * sending the response
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$jsonapi->toJson($options);

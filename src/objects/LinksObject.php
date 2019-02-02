@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
@@ -27,6 +28,16 @@ class LinksObject implements ObjectInterface {
 		}
 		
 		return $linkObject;
+	}
+	
+	/**
+	 * @param  object $links
+	 * @return LinksObject
+	 */
+	public static function fromObject($links) {
+		$array = Converter::objectToArray($links);
+		
+		return self::fromArray($array);
 	}
 	
 	/**

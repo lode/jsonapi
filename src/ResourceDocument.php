@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -37,11 +38,38 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 */
 	
 	/**
+	 * @param  array      $attributes
+	 * @param  string     $type       optional
+	 * @param  string|int $id         optional
+	 * @param  array      $options    optional {@see ResourceDocument::$defaults}
+	 * @return ResourceDocument
+	 */
+	public static function fromArray(array $attributes, $type=null, $id=null, array $options=[]) {
+		$resourceDocument = new self();
+		$resourceDocument->setPrimaryResource(ResourceObject::fromArray($attributes, $type, $id, $options), $options);
+		
+		return $resourceDocument;
+	}
+	
+	/**
+	 * @param  object     $attributes
+	 * @param  string     $type       optional
+	 * @param  string|int $id         optional
+	 * @param  array      $options    optional {@see ResourceDocument::$defaults}
+	 * @return ResourceDocument
+	 */
+	public static function fromObject($attributes, $type=null, $id=null, array $options=[]) {
+		$array = Converter::objectToArray($attributes);
+		
+		return self::fromArray($array, $type, $id, $options);
+	}
+	
+	/**
 	 * add key-value pairs to the resource's attributes
 	 * 
 	 * @param string $key
 	 * @param mixed  $value   objects will be converted using `get_object_vars()`
-	 * @param array  $options optional {@see ResourceObject::$defaults}
+	 * @param array  $options optional {@see ResourceDocument::$defaults}
 	 */
 	public function add($key, $value, array $options=[]) {
 		$this->resource->add($key, $value, $options);

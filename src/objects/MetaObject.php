@@ -29,6 +29,16 @@ class MetaObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @param  object $meta
+	 * @return MetaObject
+	 */
+	public static function fromObject($meta) {
+		$array = Converter::objectToArray($meta);
+		
+		return self::fromArray($array);
+	}
+	
+	/**
 	 * spec api
 	 */
 	
