@@ -15,10 +15,15 @@ class AttributesObject implements ObjectInterface {
 	 */
 	
 	/**
+	 * @note if an `id` is set inside $attributes, it is removed from there
+	 *       it is common to find it inside, and not doing so will cause an exception
+	 * 
 	 * @param  array $attributes
 	 * @return AttributesObject
 	 */
 	public static function fromArray(array $attributes) {
+		unset($attributes['id']);
+		
 		$attributesObject = new self();
 		
 		foreach ($attributes as $key => $value) {

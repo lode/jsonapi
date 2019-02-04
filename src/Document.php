@@ -151,6 +151,13 @@ abstract class Document implements DocumentInterface {
 	}
 	
 	/**
+	 * hide that this api supports jsonapi, or which version it is using
+	 */
+	public function unsetJsonapiObject() {
+		$this->jsonapi = null;
+	}
+	
+	/**
 	 * DocumentInterface
 	 */
 	

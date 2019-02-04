@@ -18,9 +18,10 @@ class LinkObject implements ObjectInterface {
 	 * @param string $href
 	 * @param array  $meta optional
 	 */
-	public function __construct($href, array $meta=[]) {
-		$this->setHref($href);
-		
+	public function __construct($href=null, array $meta=[]) {
+		if ($href !== null) {
+			$this->setHref($href);
+		}
 		if ($meta !== []) {
 			$this->setMetaObject(MetaObject::fromArray($meta));
 		}

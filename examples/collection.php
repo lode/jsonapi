@@ -3,26 +3,15 @@
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
+require 'bootstrap_examples.php';
 
-require '../vendor/autoload.php';
+$users = ExampleDataset::findEntities('user');
 
 /**
- * the collection you want to send out
- * 
- * normally, you'd fetch this from a database
+ * send multiple entities, called a collection
  */
 
-require 'dataset.php';
-
-$users = array(
-	new user(1),
-	new user(2),
-	new user(42),
-);
-
-$collection = array();
+$collection = [];
 
 foreach ($users as $user) {
 	$resource = ResourceObject::fromObject($user, $type='user', $user->id);
@@ -36,20 +25,13 @@ foreach ($users as $user) {
 	$collection[] = $resource;
 }
 
-/**
- * building up the json response
- * 
- * you can set arrays, single data points, or whole objects
- * objects are converted into arrays using their public keys
- */
-
-$jsonapi = CollectionDocument::fromResources(...$collection);
+$document = CollectionDocument::fromResources(...$collection);
 
 /**
- * sending the response
+ * get the json
  */
 
 $options = [
 	'prettyPrint' => true,
 ];
-echo '<pre>'.$jsonapi->toJson($options);
+echo '<pre>'.$document->toJson($options);

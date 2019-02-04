@@ -36,7 +36,7 @@ class ResourceObject extends ResourceIdentifierObject {
 	/**
 	 * @note if an `id` is set inside $attributes, it is removed from there
 	 *       and if $id is null, it is filled with that value
-	 *       not doing so will cause an exception anyway
+	 *       it is common to find it inside, and not doing so will cause an exception
 	 * 
 	 * @param  array      $attributes
 	 * @param  string     $type       optional

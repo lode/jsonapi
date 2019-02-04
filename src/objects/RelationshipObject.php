@@ -338,6 +338,9 @@ class RelationshipObject implements ObjectInterface {
 	public function toArray() {
 		$array = [];
 		
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			$array['links'] = $this->links->toArray();
+		}
 		if ($this->type === RelationshipObject::TO_ONE && $this->resource !== null) {
 			$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
 		}
@@ -345,9 +348,6 @@ class RelationshipObject implements ObjectInterface {
 			foreach ($this->resources as $resource) {
 				$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
 			}
-		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
-			$array['links'] = $this->links->toArray();
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();

@@ -10,7 +10,7 @@ require '../vendor/autoload.php';
 /**
  * via an exception
  * 
- * @note previous exceptions will be added as well
+ * @note previous exceptions will be added as well, unless $options['exceptionSkipPrevious'] is set to true
  * @note exceptions will expose the exception code, and use them as http status code if valid
  *       message, file, line, trace will not not exposed, unless $options['exceptionExposeDetails'] is set to true
  */
