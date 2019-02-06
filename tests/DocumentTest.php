@@ -46,7 +46,12 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(1, $array['links']);
 		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertInternalType('string', $array['links']['foo']);
+		if (method_exists($this, 'assertIsString')) {
+			$this->assertIsString($array['links']['foo']);
+		}
+		else {
+			$this->assertInternalType('string', $array['links']['foo']);
+		}
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
 	
@@ -57,7 +62,12 @@ class DocumentTest extends TestCase {
 		$array = $document->toArray();
 		
 		$this->assertCount(1, $array['links']);
-		$this->assertInternalType('array', $array['links']['foo']);
+		if (method_exists($this, 'assertIsArray')) {
+			$this->assertIsArray($array['links']['foo']);
+		}
+		else {
+			$this->assertInternalType('array', $array['links']['foo']);
+		}
 		$this->assertCount(2, $array['links']['foo']);
 		$this->assertArrayHasKey('href', $array['links']['foo']);
 		$this->assertArrayHasKey('meta', $array['links']['foo']);
@@ -107,7 +117,12 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array);
 		$this->assertCount(1, $array['meta']);
 		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertInternalType('string', $array['meta']['foo']);
+		if (method_exists($this, 'assertIsString')) {
+			$this->assertIsString($array['meta']['foo']);
+		}
+		else {
+			$this->assertInternalType('string', $array['meta']['foo']);
+		}
 		$this->assertSame('bar', $array['meta']['foo']);
 	}
 	
@@ -126,7 +141,12 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['meta']);
 		$this->assertArrayHasKey('foo', $array['jsonapi']['meta']);
-		$this->assertInternalType('string', $array['jsonapi']['meta']['foo']);
+		if (method_exists($this, 'assertIsString')) {
+			$this->assertIsString($array['jsonapi']['meta']['foo']);
+		}
+		else {
+			$this->assertInternalType('string', $array['jsonapi']['meta']['foo']);
+		}
 		$this->assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}
 	
