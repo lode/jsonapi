@@ -68,13 +68,13 @@ class ErrorsDocument extends Document {
 	}
 	
 	/**
-	 * @param string|int $applicationCode
-	 * @param string     $humanTitle
-	 * @param string     $detailedExplanation optional
-	 * @param string     $aboutLink           optional
+	 * @param string|int $genericCode       developer-friendly code of the generic type of error
+	 * @param string     $genericTitle      human-friendly title of the generic type of error
+	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
+	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
 	 */
-	public function add($applicationCode, $humanTitle, $detailedExplanation=null, $aboutLink=null) {
-		$errorObject = new ErrorObject($applicationCode, $humanTitle, $detailedExplanation, $aboutLink);
+	public function add($genericCode, $genericTitle, $specificDetails=null, $specificAboutLink=null) {
+		$errorObject = new ErrorObject($genericCode, $genericTitle, $specificDetails, $specificAboutLink);
 		
 		$this->addErrorObject($errorObject);
 	}

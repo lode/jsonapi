@@ -3,18 +3,13 @@
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
+require 'bootstrap_examples.php';
 
-require '../vendor/autoload.php';
+$userEntity = ExampleDataset::getEntity('user', 42);
 
 /**
  * preparing base data and nesting relationships
  */
-
-require 'dataset.php';
-
-$user = new user(42);
 
 $flap = new ResourceObject('flap', 1);
 $flap->add('color', 'orange');
@@ -31,8 +26,8 @@ $ship->addRelationship('wing', $wing);
  * building up the json response
  */
 
-$jsonapi = ResourceDocument::fromObject($user, $type='user', $user->id);
-$jsonapi->addRelationship('ship', $ship);
+$document = ResourceDocument::fromObject($userEntity, $type='user', $userEntity->id);
+$document->addRelationship('ship', $ship);
 
 /**
  * sending the response
@@ -41,4 +36,4 @@ $jsonapi->addRelationship('ship', $ship);
 $options = [
 	'prettyPrint' => true,
 ];
-echo '<pre>'.$jsonapi->toJson($options);
+echo '<pre>'.$document->toJson($options);

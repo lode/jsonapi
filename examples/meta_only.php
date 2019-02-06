@@ -2,10 +2,7 @@
 
 use alsvanzelf\jsonapi\DataDocument;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
+require 'bootstrap_examples.php';
 
 /**
  * there are a few use-cases for sending meta-only responses
@@ -14,8 +11,8 @@ require '../vendor/autoload.php';
  * prefer to actually send out a resource, error or collection
  */
 
-$jsonapi = new DataDocument();
-$jsonapi->addMeta('foo', 'bar');
+$document = new DataDocument();
+$document->addMeta('foo', 'bar');
 
 /**
  * sending the response
@@ -24,4 +21,4 @@ $jsonapi->addMeta('foo', 'bar');
 $options = [
 	'prettyPrint' => true,
 ];
-echo '<pre>'.$jsonapi->toJson($options);
+echo '<pre>'.$document->toJson($options);

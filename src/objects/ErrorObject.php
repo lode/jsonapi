@@ -32,17 +32,17 @@ class ErrorObject implements ObjectInterface {
 	];
 	
 	/**
-	 * @param string|int $applicationCode     optional
-	 * @param string     $humanTitle          optional
-	 * @param string     $detailedExplanation optional
-	 * @param string     $aboutLink           optional
+	 * @param string|int $genericCode       developer-friendly code of the generic type of error
+	 * @param string     $genericTitle      human-friendly title of the generic type of error
+	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
+	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
 	 */
-	public function __construct($applicationCode=null, $humanTitle=null, $detailedExplanation=null, $aboutLink=null) {
-		if ($applicationCode !== null) {
-			$this->setApplicationCode($applicationCode);
+	public function __construct($genericCode=null, $genericTitle=null, $specificDetails=null, $specificAboutLink=null) {
+		if ($genericCode !== null) {
+			$this->setApplicationCode($genericCode);
 		}
-		if ($humanTitle !== null) {
-			$this->setHumanExplanation($humanTitle, $detailedExplanation, $aboutLink);
+		if ($genericTitle !== null) {
+			$this->setHumanExplanation($genericTitle, $specificDetails, $specificAboutLink);
 		}
 	}
 	
@@ -61,7 +61,9 @@ class ErrorObject implements ObjectInterface {
 		$errorObject = new self();
 		
 		if ($options['exceptionExposeDetails']) {
-			$errorObject->setHumanExplanation(Converter::camelCaseToWords(get_class($exception)));
+			$genericTitle = Converter::camelCaseToWords(get_class($exception));
+			$errorObject->setHumanExplanation($genericTitle);
+			
 			$errorObject->setMetaObject(MetaObject::fromArray([
 				'message' => $exception->getMessage(),
 				'file'    => $exception->getFile(),
@@ -82,20 +84,20 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * explain this particular occurence of the error in a human friendly way
+	 * explain this particular occurence of the error in a human-friendly way
 	 * 
-	 * @param string     $humanTitle
-	 * @param string     $detailedExplanation optional
-	 * @param string     $aboutLink           optional
+	 * @param string $genericTitle      title of the generic type of error
+	 * @param string $specificDetails   optional, explanation of the specific error
+	 * @param string $specificAboutLink optional, explanation of the specific error
 	 */
-	public function setHumanExplanation($humanTitle, $detailedExplanation=null, $aboutLink=null) {
-		$this->setHumanTitle($humanTitle);
+	public function setHumanExplanation($genericTitle, $specificDetails=null, $specificAboutLink=null) {
+		$this->setHumanTitle($genericTitle);
 		
-		if ($detailedExplanation !== null) {
-			$this->setHumanDetails($detailedExplanation);
+		if ($specificDetails !== null) {
+			$this->setHumanDetails($specificDetails);
 		}
-		if ($aboutLink !== null) {
-			$this->setAboutLink($aboutLink);
+		if ($specificAboutLink !== null) {
+			$this->setAboutLink($specificAboutLink);
 		}
 	}
 	
@@ -113,7 +115,7 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * set the link about this particular occurence of the error
+	 * set the link about this specific occurence of the error, explained in a human-friendly way
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
@@ -123,7 +125,7 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * set the link where the end user can act to solve this particular occurence of the error
+	 * set the link where the end user can act to solve this error
 	 * 
 	 * @note this is not a part of the official specification
 	 * 
@@ -182,7 +184,7 @@ class ErrorObject implements ObjectInterface {
 	 */
 	
 	/**
-	 * a unique identifier for this particular occurrence of the error
+	 * a unique identifier for this specific occurrence of the error
 	 * 
 	 * @param string|int $id
 	 */
@@ -206,12 +208,13 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * an application-specific error code, expressed as a string value
+	 * a code expressing the generic type of this error
+	 * it should be application-specific and aimed at developers
 	 * 
-	 * @param string|int $applicationCode will be casted to a string
+	 * @param string|int $genericCode will be casted to a string
 	 */
-	public function setApplicationCode($applicationCode) {
-		$this->code = (string) $applicationCode;
+	public function setApplicationCode($genericCode) {
+		$this->code = (string) $genericCode;
 	}
 	
 	/**
@@ -227,21 +230,21 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * a short human friendly explanation of the generic type of this error
+	 * a short human-friendly explanation of the generic type of this error
 	 * 
-	 * @param string $humanTitle
+	 * @param string $genericTitle
 	 */
-	public function setHumanTitle($humanTitle) {
-		$this->title = $humanTitle;
+	public function setHumanTitle($genericTitle) {
+		$this->title = $genericTitle;
 	}
 	
 	/**
-	 * a human friendly explanation of this particular occurrence of the error
+	 * a human-friendly explanation of this specific occurrence of the error
 	 * 
-	 * @param string $detailedExplanation
+	 * @param string $specificDetails
 	 */
-	public function setHumanDetails($detailedExplanation) {
-		$this->detail = $detailedExplanation;
+	public function setHumanDetails($specificDetails) {
+		$this->detail = $specificDetails;
 	}
 	
 	/**

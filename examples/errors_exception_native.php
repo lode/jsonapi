@@ -2,10 +2,7 @@
 
 use alsvanzelf\jsonapi\ErrorsDocument;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
+require 'bootstrap_examples.php';
 
 /**
  * via an exception
@@ -23,10 +20,10 @@ catch (Exception $e) {
 		'exceptionExposeDetails' => true, // defaults to false
 		'exceptionSkipPrevious'  => false,
 	];
-	$jsonapi = ErrorsDocument::fromException($e, $options);
+	$document = ErrorsDocument::fromException($e, $options);
 	
 	$options = [
 		'prettyPrint' => true,
 	];
-	echo '<pre>'.$jsonapi->toJson($options);
+	echo '<pre>'.$document->toJson($options);
 }

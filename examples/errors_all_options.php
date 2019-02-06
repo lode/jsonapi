@@ -3,16 +3,13 @@
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
+require 'bootstrap_examples.php';
 
 /**
  * setting all options
  */
 
-$error = new ErrorObject($applicationCode='Invalid input', $humanTitle='Too much options', $humanDetails='Please, choose a bit less. Consult your ...', $aboutLink='https://www.example.com/explanation.html');
+$error = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
 
 // mark the cause of the error
 $error->blameJsonPointer($pointer='/data/attributes/title');
@@ -36,10 +33,10 @@ $error->addMeta($key='object', $metaObject);
 $error->setHttpStatusCode($httpStatusCode=404);
 
 // if not set during construction, set them here
-$error->setApplicationCode($applicationCode='Invalid input');
-$error->setHumanTitle($humanTitle='Too much options');
-$error->setHumanDetails($humanDetails='Please, choose a bit less. Consult your ...');
-$error->setAboutLink($aboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
+$error->setApplicationCode($genericCode='Invalid input');
+$error->setHumanTitle($genericTitle='Too much options');
+$error->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
+$error->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
 $error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 
 /**
@@ -61,13 +58,13 @@ $someException = new Exception('please don\'t throw things', 500);
  * further you can force another http status code than what's in the errors
  */
 
-$jsonapi = new ErrorsDocument($error);
+$document = new ErrorsDocument($error);
 
-$jsonapi->addErrorObject($anotherError);
-$jsonapi->addException($someException, $options=['exceptionExposeDetails'=>true]);
-$jsonapi->addLink('redirect', '/login', ['label'=>'Log in']);
+$document->addErrorObject($anotherError);
+$document->addException($someException, $options=['exceptionExposeDetails'=>true]);
+$document->addLink('redirect', '/login', ['label'=>'Log in']);
 
-$jsonapi->setHttpStatusCode(400);
+$document->setHttpStatusCode(400);
 
 /**
  * sending the response
@@ -76,4 +73,4 @@ $jsonapi->setHttpStatusCode(400);
 $options = [
 	'prettyPrint' => true,
 ];
-echo '<pre>'.$jsonapi->toJson($options);
+echo '<pre>'.$document->toJson($options);

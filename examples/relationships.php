@@ -5,16 +5,13 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
+require 'bootstrap_examples.php';
 
 /**
  * the different ways of adding relationships to a resource
  */
 
-$jsonapi = new ResourceDocument('user', 1);
+$document = new ResourceDocument('user', 1);
 
 $ship1Resource = new ResourceObject('ship', 24);
 $ship1Resource->add('foo', 'bar');
@@ -35,14 +32,14 @@ $dockResource->add('bar', 'baf');
  * to-one relationship
  */
 
-$jsonapi->addRelationship('included-ship', $ship1Resource);
+$document->addRelationship('included-ship', $ship1Resource);
 
 /**
  * to-one relationship, without included resource
  */
 
 $options = ['skipIncluding' => true];
-$jsonapi->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
+$document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
 
 /**
  * to-many relationship, one-by-one
@@ -52,7 +49,7 @@ $relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
 $relationshipObject->addResource($friend1Resource);
 $relationshipObject->addResource($friend2Resource);
 
-$jsonapi->addRelationshipObject($relationshipObject, 'one-by-one-friends');
+$document->addRelationshipObject($relationshipObject, 'one-by-one-friends');
 
 /**
  * to-many relationship, all-at-once
@@ -62,7 +59,7 @@ $friends = new CollectionDocument();
 $friends->addResource($friend1Resource);
 $friends->addResource($friend2Resource);
 
-$jsonapi->addRelationship('included-friends', $friends);
+$document->addRelationship('included-friends', $friends);
 
 /**
  * to-many relationship, different types
@@ -72,7 +69,7 @@ $relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
 $relationshipObject->addResource($ship1Resource);
 $relationshipObject->addResource($dockResource);
 
-$jsonapi->addRelationshipObject($relationshipObject, 'one-by-one-neighbours');
+$document->addRelationshipObject($relationshipObject, 'one-by-one-neighbours');
 
 /**
  * sending the response
@@ -81,4 +78,4 @@ $jsonapi->addRelationshipObject($relationshipObject, 'one-by-one-neighbours');
 $options = [
 	'prettyPrint' => true,
 ];
-echo '<pre>'.$jsonapi->toJson($options);
+echo '<pre>'.$document->toJson($options);
