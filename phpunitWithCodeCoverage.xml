@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true">
+	<testsuite name="all">
+		<directory>tests</directory>
+	</testsuite>
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">src</directory>
+			<exclude>
+				<directory suffix=".php">src/interfaces</directory>
+				<file>src/base.php</file>
+				<file>src/collection.php</file>
+				<file>src/error.php</file>
+				<file>src/errors.php</file>
+				<file>src/exception.php</file>
+				<file>src/resource.php</file>
+				<file>src/response.php</file>
+			</exclude>
+		</whitelist>
+	</filter>
+	<logging>
+		<log type="coverage-html" target="tests/report" lowUpperBound="35" highLowerBound="70"/>
+		<log type="coverage-text" target="php://stdout" showUncoveredFiles="true"/>
+	</logging>
+</phpunit>

@@ -33,7 +33,7 @@ class DataDocument extends Document {
 	public function addIncludedResourceObject(ResourceObject ...$resourceObjects) {
 		foreach ($resourceObjects as $resourceObject) {
 			try {
-				$this->validator->checkUsedResourceIdentifier($resourceObject);
+				$this->validator->claimUsedResourceIdentifier($resourceObject);
 			}
 			catch (DuplicateException $e) {
 				// silently skip duplicates
@@ -41,8 +41,6 @@ class DataDocument extends Document {
 			}
 			
 			$this->includedResources[] = $resourceObject;
-			
-			$this->validator->markUsedResourceIdentifier($resourceObject);
 		}
 	}
 	

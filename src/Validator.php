@@ -35,11 +35,12 @@ class Validator {
 	 * 
 	 * @throws DuplicateException
 	 */
-	public function checkUsedFields(array $fieldNames, $objectContainer, array $options=[]) {
+	public function claimUsedFields(array $fieldNames, $objectContainer, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		foreach ($fieldNames as $fieldName) {
 			if (isset($this->usedFields[$fieldName]) === false) {
+				$this->usedFields[$fieldName] = $objectContainer;
 				continue;
 			}
 			if ($this->usedFields[$fieldName] === $objectContainer) {
@@ -54,16 +55,6 @@ class Validator {
 			}
 			
 			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName].'"');
-		}
-	}
-	
-	/**
-	 * @param  string[] $fieldName
-	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
-	 */
-	public function markUsedFields(array $fieldNames, $objectContainer) {
-		foreach ($fieldNames as $fieldName) {
-			$this->usedFields[$fieldName] = $objectContainer;
 		}
 	}
 	
@@ -86,25 +77,18 @@ class Validator {
 	 * @throws InputException if no type or id has been set on the resource
 	 * @throws DuplicateException if the combination of type and id has been set before
 	 */
-	public function checkUsedResourceIdentifier(ResourceInterface $resource) {
+	public function claimUsedResourceIdentifier(ResourceInterface $resource) {
 		if ($resource->getResource()->hasIdentification() === false) {
 			throw new InputException('can not validate resource without identifier, set type and id first');
 		}
 		
 		$resourceKey = $resource->getResource()->getIdentificationKey();
 		if (isset($this->usedResourceIdentifiers[$resourceKey]) === false) {
+			$this->usedResourceIdentifiers[$resourceKey] = true;
 			return;
 		}
 		
 		throw new DuplicateException('can not have multiple resources with the same identification');
-	}
-	
-	/**
-	 * @param  ResourceInterface $resource
-	 */
-	public function markUsedResourceIdentifier(ResourceInterface $resource) {
-		$resourceKey = $resource->getResource()->getIdentificationKey();
-		$this->usedResourceIdentifiers[$resourceKey] = true;
 	}
 	
 	/**

@@ -105,11 +105,9 @@ class CollectionDocument extends DataDocument {
 		
 		$options = array_merge(self::$defaults, $options);
 		
-		$this->validator->checkUsedResourceIdentifier($resource);
+		$this->validator->claimUsedResourceIdentifier($resource);
 		
 		$this->resources[] = $resource;
-		
-		$this->validator->markUsedResourceIdentifier($resource);
 		
 		if ($options['skipIncluding'] === false && $resource instanceof ResourceObject) {
 			$this->addIncludedResourceObject(...$resource->getRelatedResourceObjects());

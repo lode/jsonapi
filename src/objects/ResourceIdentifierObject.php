@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
@@ -36,8 +37,8 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		}
 		
 		// always mark as used, as these keys are reserved
-		$this->validator->markUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
-		$this->validator->markUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
+		$this->validator->claimUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
+		$this->validator->claimUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
 	}
 	
 	/**

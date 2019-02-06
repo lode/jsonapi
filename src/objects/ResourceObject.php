@@ -86,11 +86,9 @@ class ResourceObject extends ResourceIdentifierObject {
 			$this->attributes = new AttributesObject();
 		}
 		
-		$this->validator->checkUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
 		
 		$this->attributes->add($key, $value);
-		
-		$this->validator->markUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES);
 	}
 	
 	/**
@@ -177,11 +175,9 @@ class ResourceObject extends ResourceIdentifierObject {
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
 		$newKeys = $attributesObject->getKeys();
 		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_ATTRIBUTES);
-		$this->validator->checkUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
 		
 		$this->attributes = $attributesObject;
-		
-		$this->validator->markUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES);
 	}
 	
 	/**
@@ -200,11 +196,9 @@ class ResourceObject extends ResourceIdentifierObject {
 			$this->setRelationshipsObject(new RelationshipsObject());
 		}
 		
-		$this->validator->checkUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
+		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
 		
 		$this->relationships->addRelationshipObject($relationshipObject, $key);
-		
-		$this->validator->markUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 	}
 	
 	/**
@@ -213,11 +207,9 @@ class ResourceObject extends ResourceIdentifierObject {
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject) {
 		$newKeys = $relationshipsObject->getKeys();
 		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_RELATIONSHIPS);
-		$this->validator->checkUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
+		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 		
 		$this->relationships = $relationshipsObject;
-		
-		$this->validator->markUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 	}
 	
 	/**
