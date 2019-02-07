@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests;
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ResourceObject;

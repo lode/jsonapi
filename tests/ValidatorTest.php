@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests;
+
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;

@@ -21,7 +21,7 @@ $user42 = ExampleDataset::getEntity('user', 42);
  */
 
 $document = ResourceDocument::fromObject($user1, $type='user', $user1->id);
-$document->add('location', $user42->getCurrentLocation());
+$document->add('location', $user1->getCurrentLocation());
 $document->addLink('homepage', 'https://jsonapi.org');
 $document->addMeta('difference', 'is in the code to generate this');
 

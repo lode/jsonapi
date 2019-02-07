@@ -29,6 +29,7 @@ class ErrorObject implements ObjectInterface {
 	/** @var array */
 	private static $defaults = [
 		'exceptionExposeDetails' => false,
+		'exceptionExposeTrace'   => true,
 	];
 	
 	/**
@@ -64,12 +65,17 @@ class ErrorObject implements ObjectInterface {
 			$genericTitle = Converter::camelCaseToWords(get_class($exception));
 			$errorObject->setHumanExplanation($genericTitle);
 			
-			$errorObject->setMetaObject(MetaObject::fromArray([
+			$metaObject = MetaObject::fromArray([
 				'message' => $exception->getMessage(),
 				'file'    => $exception->getFile(),
 				'line'    => $exception->getLine(),
-				'trace'   => $exception->getTrace(),
-			]));
+			]);
+			
+			if ($options['exceptionExposeTrace']) {
+				$metaObject->add('trace', $exception->getTrace());
+			}
+			
+			$errorObject->setMetaObject($metaObject);
 		}
 		
 		if ($exception->getCode() !== 0) {

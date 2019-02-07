@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests\objects;
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -65,7 +67,7 @@ class RelationshipObjectTest extends TestCase {
 	}
 	
 	public function testFromAnything_WithUnknownType() {
-		$fakeResource = new StdClass();
+		$fakeResource = new \StdClass();
 		$fakeResource->type = 'user';
 		$fakeResource->id = 42;
 		

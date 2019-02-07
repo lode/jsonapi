@@ -13,6 +13,7 @@ class ErrorsDocument extends Document {
 	/** @var array */
 	private static $defaults = [
 		'exceptionExposeDetails' => false,
+		'exceptionExposeTrace'   => true,
 		'exceptionSkipPrevious'  => false,
 	];
 	

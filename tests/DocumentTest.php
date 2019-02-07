@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests;
+
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\Exception;

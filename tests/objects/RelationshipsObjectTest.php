@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests\objects;
+
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\RelationshipObject;

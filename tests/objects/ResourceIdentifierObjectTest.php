@@ -1,5 +1,7 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests\objects;
+
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use PHPUnit\Framework\TestCase;

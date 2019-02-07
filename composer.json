@@ -17,7 +17,8 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"alsvanzelf\\jsonapi\\": "src/"
+			"alsvanzelf\\jsonapi\\": "src/",
+			"alsvanzelf\\jsonapiTests\\": "tests/"
 		}
 	},
 	"require-dev": {

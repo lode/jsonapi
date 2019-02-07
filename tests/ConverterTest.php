@@ -1,11 +1,13 @@
 <?php
 
+namespace alsvanzelf\jsonapiTests;
+
 use alsvanzelf\jsonapi\Converter;
 use PHPUnit\Framework\TestCase;
 
 class ConverterTest extends TestCase {
 	public function testObjectToArray_HappyPath() {
-		$object = new StdClass();
+		$object = new \StdClass();
 		$object->foo = 'bar';
 		$object->baz = 42;
 		
