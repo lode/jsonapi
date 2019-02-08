@@ -43,8 +43,9 @@ $error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['lab
  * prepare multiple error objects for the errors response
  */
 
-$anotherError  = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
-$someException = new Exception('please don\'t throw things', 500);
+$anotherError      = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
+$previousException = new Exception('something went wrong!', 501);
+$someException     = new Exception('please don\'t throw things', 503, $previousException);
 
 /**
  * building up the json response
@@ -62,6 +63,7 @@ $document = new ErrorsDocument($error);
 
 $document->addErrorObject($anotherError);
 $document->addException($someException, $options=['exceptionExposeDetails'=>true]);
+$document->add($genericCode='Authentication error', $genericTitle='Not logged in');
 $document->addLink('redirect', '/login', ['label'=>'Log in']);
 
 $document->setHttpStatusCode(400);

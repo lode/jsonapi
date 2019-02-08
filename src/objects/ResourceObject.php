@@ -221,7 +221,7 @@ class ResourceObject extends ResourceIdentifierObject {
 			$this->setLinksObject(new LinksObject());
 		}
 		
-		$this->links->addLinkObject($linkObject);
+		$this->links->addLinkObject($linkObject, $key);
 	}
 	
 	/**

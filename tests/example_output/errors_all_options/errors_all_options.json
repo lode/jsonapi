@@ -50,6 +50,10 @@
 		{
 			"status": "500",
 			"code": "500"
+		},
+		{
+			"code": "Authentication error",
+			"title": "Not logged in"
 		}
 	]
 }

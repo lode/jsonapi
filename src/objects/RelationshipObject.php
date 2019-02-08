@@ -214,6 +214,8 @@ class RelationshipObject implements ObjectInterface {
 				}
 			}
 		}
+		
+		return false;
 	}
 	
 	/**

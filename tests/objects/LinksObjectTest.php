@@ -8,6 +8,19 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use PHPUnit\Framework\TestCase;
 
 class LinksObjectTest extends TestCase {
+	public function testFromObject_HappyPath() {
+		$object = new \StdClass();
+		$object->foo = 'https://jsonapi.org';
+		
+		$linksObject = LinksObject::fromObject($object);
+		
+		$array = $linksObject->toArray();
+		
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertSame('https://jsonapi.org', $array['foo']);
+	}
+	
 	public function testAddLinkObject_HappyPath() {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		

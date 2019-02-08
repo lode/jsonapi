@@ -4,6 +4,9 @@ namespace alsvanzelf\jsonapiTests;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group OutputOnly
+ */
 class ExampleOutputTest extends TestCase {
 	private static $defaults = [
 		'prettyPrint' => true,

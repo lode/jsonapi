@@ -9,20 +9,19 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase {
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testClaimUsedFields_HappyPath() {
 		$validator = new Validator();
 		
 		$fieldNames      = ['foo'];
 		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
-		$result          = $validator->claimUsedFields($fieldNames, $objectContainer);
-		
-		$this->assertNull($result);
+		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$fieldNames      = ['bar'];
 		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
-		$result          = $validator->claimUsedFields($fieldNames, $objectContainer);
-		
-		$this->assertNull($result);
+		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
 	public function testClaimUsedFields_EnforceNamespace() {
@@ -38,6 +37,9 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testClaimUsedFields_AllowSameContainer() {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
@@ -49,6 +51,9 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testClaimUsedFields_OptionForReusingTypeField() {
 		$validator  = new Validator();
 		$fieldNames = ['type'];
@@ -61,6 +66,9 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer, $options);
 	}
 	
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testClearUsedFields_HappyPath() {
 		$validator       = new Validator();
 		
@@ -107,16 +115,17 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
+	/**
+	 * @doesNotPerformAssertions
+	 */
 	public function testClaimUsedResourceIdentifier_HappyPath() {
 		$validator = new Validator();
 		
 		$resource = new ResourceObject('foo', 1);
-		$result   = $validator->claimUsedResourceIdentifier($resource);
-		$this->assertNull($result);
+		$validator->claimUsedResourceIdentifier($resource);
 		
 		$resource = new ResourceObject('foo', 2);
-		$result   = $validator->claimUsedResourceIdentifier($resource);
-		$this->assertNull($result);
+		$validator->claimUsedResourceIdentifier($resource);
 	}
 	
 	public function testClaimUsedResourceIdentifier_RequiresIdentification() {
@@ -143,6 +152,7 @@ class ValidatorTest extends TestCase {
 	
 	/**
 	 * @dataProvider dataProviderCheckMemberName_HappyPath
+	 * @doesNotPerformAssertions
 	 */
 	public function testCheckMemberName_HappyPath($memberName) {
 		Validator::checkMemberName($memberName);

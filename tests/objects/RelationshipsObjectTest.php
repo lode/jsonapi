@@ -10,6 +10,21 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipsObjectTest extends TestCase {
+	public function testAdd_HappyPath() {
+		$relationshipsObject = new RelationshipsObject();
+		$relationshipsObject->add('foo', new ResourceObject('user', 42));
+		
+		$array = $relationshipsObject->toArray();
+		
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertArrayHasKey('data', $array['foo']);
+		$this->assertArrayHasKey('type', $array['foo']['data']);
+		$this->assertArrayHasKey('id', $array['foo']['data']);
+		$this->assertSame('user', $array['foo']['data']['type']);
+		$this->assertSame('42', $array['foo']['data']['id']);
+	}
+	
 	public function testAddRelationshipObject_HappyPath() {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
@@ -77,5 +92,17 @@ class RelationshipsObjectTest extends TestCase {
 		$this->expectException(DuplicateException::class);
 		
 		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+	}
+	
+	public function testToArray_EmptyRelationship() {
+		$relationshipObject  = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipsObject = new RelationshipsObject();
+		
+		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+		
+		$array = $relationshipsObject->toArray();
+		
+		$this->assertFalse($relationshipsObject->isEmpty());
+		$this->assertCount(0, $array);
 	}
 }

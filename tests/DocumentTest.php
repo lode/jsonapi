@@ -183,6 +183,31 @@ class DocumentTest extends TestCase {
 		$this->assertSame('{"foo":42}', $document->toJson($options));
 	}
 	
+	public function testToJson_PrettyPrint() {
+		$document = new DataDocument();
+		$document->unsetJsonapiObject();
+		
+		$options = ['prettyPrint' => true];
+		$expectedJson = '{'.PHP_EOL.'    "data": null'.PHP_EOL.'}';
+		$this->assertSame($expectedJson, $document->toJson($options));
+	}
+	
+	public function testToJson_JsonEncodeOptions() {
+		$document = new DataDocument();
+		
+		$options = ['encodeOptions' => JSON_FORCE_OBJECT, 'array' => ['foo' => [4,2]]];
+		$this->assertSame('{"foo":{"0":4,"1":2}}', $document->toJson($options));
+	}
+	
+	public function testToJson_JsonpCallback() {
+		$document = new DataDocument();
+		$document->addMeta('foo', 'bar');
+		
+		$options = ['jsonpCallback' => 'baz'];
+		$json    = $document->toJson($options);
+		$this->assertSame('baz({"jsonapi":{"version":"1.0"},"meta":{"foo":"bar"},"data":null})', $json);
+	}
+	
 	public function testToJson_InvalidUtf8() {
 		$document = new DataDocument();
 		

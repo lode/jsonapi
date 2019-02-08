@@ -25,12 +25,14 @@ class errors_all_options {
 		$metaObject->property = 'value';
 		$error->addMeta($key='object', $metaObject);
 		
-		$anotherError  = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
-		$someException = new \Exception('please don\'t throw things', 500);
+		$anotherError      = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
+		$previousException = new \Exception('something went wrong!');
+		$someException     = new \Exception('please don\'t throw things', 500, $previousException);
 		
 		$document = new ErrorsDocument($error);
 		$document->addErrorObject($anotherError);
 		$document->addException($someException, $options=['exceptionExposeDetails'=>false]);
+		$document->add($genericCode='Authentication error', $genericTitle='Not logged in');
 		$document->addLink('redirect', '/login', ['label'=>'Log in']);
 		$document->setHttpStatusCode(400);
 		
