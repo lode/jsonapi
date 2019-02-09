@@ -12,4 +12,4 @@ install:
   - composer install --prefer-dist --no-interaction --no-progress
 
 script:
-  - vendor/bin/phpunit
+  - php script/test.php

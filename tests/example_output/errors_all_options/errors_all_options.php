@@ -21,7 +21,7 @@ class errors_all_options {
 		$error->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
 		$error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 		
-		$metaObject = new \StdClass();
+		$metaObject = new \stdClass();
 		$metaObject->property = 'value';
 		$error->addMeta($key='object', $metaObject);
 		

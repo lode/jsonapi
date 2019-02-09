@@ -68,7 +68,7 @@ class RelationshipObjectTest extends TestCase {
 	}
 	
 	public function testFromAnything_WithUnknownType() {
-		$fakeResource = new \StdClass();
+		$fakeResource = new \stdClass();
 		$fakeResource->type = 'user';
 		$fakeResource->id = 42;
 		

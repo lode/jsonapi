@@ -3,9 +3,46 @@
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\ErrorsDocument;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use PHPUnit\Framework\TestCase;
 
 class ErrorsDocumentTest extends TestCase {
+	public function testFromException_HappyPath() {
+		$document = ErrorsDocument::fromException(new \Exception('foo', 42));
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('errors', $array);
+		$this->assertCount(1, $array['errors']);
+		$this->assertArrayHasKey('code', $array['errors'][0]);
+		$this->assertSame('42', $array['errors'][0]['code']);
+	}
+	
+	/**
+	 * @group non-php5
+	 */
+	public function testFromException_AllowsThrowable() {
+		if (PHP_MAJOR_VERSION < 7) {
+			$this->markTestSkipped('can not run in php5');
+			return;
+		}
+		
+		$document = ErrorsDocument::fromException(new \Error('foo', 42));
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('errors', $array);
+		$this->assertCount(1, $array['errors']);
+		$this->assertArrayHasKey('code', $array['errors'][0]);
+		$this->assertSame('42', $array['errors'][0]['code']);
+	}
+	
+	public function testFromException_BlocksNonException() {
+		$this->expectException(InputException::class);
+		
+		ErrorsDocument::fromException(new \stdClass());
+	}
+	
 	public function testAddException_WithPrevious() {
 		$exception = new \Exception('foo', 1, new \Exception('bar', 2));
 		
@@ -35,6 +72,14 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertCount(1, $array['errors']);
 		$this->assertArrayHasKey('code', $array['errors'][0]);
 		$this->assertSame('1', $array['errors'][0]['code']);
+	}
+	
+	public function testAddException_BlocksNonException() {
+		$document = new ErrorsDocument();
+		
+		$this->expectException(InputException::class);
+		
+		$document->addException(new \stdClass());
 	}
 	
 	/**

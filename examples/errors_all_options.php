@@ -23,7 +23,7 @@ $error->setUniqueIdentifier($id=42);
 $error->addMeta($key='foo', $value='bar');
 
 // or as object
-$metaObject = new StdClass();
+$metaObject = new \stdClass();
 $metaObject->property = 'value';
 $error->addMeta($key='object', $metaObject);
 

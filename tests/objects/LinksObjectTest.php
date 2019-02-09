@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class LinksObjectTest extends TestCase {
 	public function testFromObject_HappyPath() {
-		$object = new \StdClass();
+		$object = new \stdClass();
 		$object->foo = 'https://jsonapi.org';
 		
 		$linksObject = LinksObject::fromObject($object);

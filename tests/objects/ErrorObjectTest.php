@@ -64,6 +64,12 @@ class ErrorObjectTest extends TestCase {
 		$this->assertArrayNotHasKey('trace', $array['meta']);
 	}
 	
+	public function testFromException_BlocksNonException() {
+		$this->expectException(InputException::class);
+		
+		ErrorObject::fromException(new \stdClass());
+	}
+	
 	public function testSetHttpStatusCode_HappyPath() {
 		$errorObject = new ErrorObject();
 		

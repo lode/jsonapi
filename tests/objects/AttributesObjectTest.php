@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class AttributesObjectTest extends TestCase {
 	public function testFromObject_HappyPath() {
-		$object = new \StdClass();
+		$object = new \stdClass();
 		$object->foo = 'bar';
 		
 		$attributesObject = AttributesObject::fromObject($object);
@@ -31,7 +31,7 @@ class AttributesObjectTest extends TestCase {
 	}
 	
 	public function testAdd_WithObject() {
-		$object = new \StdClass();
+		$object = new \stdClass();
 		$object->bar = 'baz';
 		
 		$attributesObject = new AttributesObject();

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class MetaObjectTest extends TestCase {
 	public function testFromObject_HappyPath() {
-		$object = new \StdClass();
+		$object = new \stdClass();
 		$object->foo = 'bar';
 		
 		$metaObject = MetaObject::fromObject($object);
