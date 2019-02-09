@@ -15,7 +15,7 @@ class ExampleOutputTest extends TestCase {
 	/**
 	 * @dataProvider dataProviderTestOutput
 	 */
-	public function testOutput($generator, $expectedJson, array $options=[]) {
+	public function testOutput($generator, $expectedJson, array $options=[], $testName=null) {
 		$options = array_merge(self::$defaults, $options);
 		
 		$document   = $generator::createJsonapiDocument();
@@ -23,6 +23,14 @@ class ExampleOutputTest extends TestCase {
 		
 		// adhere to editorconfig
 		$actualJson = str_replace('    ', "\t", $actualJson).PHP_EOL;
+		
+		// create new cases
+		$actualJsonPath = __DIR__.'/example_output/'.$testName.'/'.$testName.'.json';
+		if ($expectedJson === null && file_exists($actualJsonPath) === false) {
+			file_put_contents($actualJsonPath, $actualJson);
+			$this->markTestSkipped('no stored json to test against, try again');
+			return;
+		}
 		
 		$this->assertSame($expectedJson, $actualJson);
 	}
@@ -48,7 +56,7 @@ class ExampleOutputTest extends TestCase {
 				$options = json_decode(file_get_contents($directory.'/options.txt'), true);
 			}
 			
-			$testCases[$testName] = [$generator, $expectedJson, $options];
+			$testCases[$testName] = [$generator, $expectedJson, $options, $testName];
 		}
 		
 		return $testCases;
