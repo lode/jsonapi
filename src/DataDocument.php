@@ -7,7 +7,7 @@ use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class DataDocument extends Document {
+abstract class DataDocument extends Document {
 	/** @var ResourceObject[] */
 	public $includedResources = [];
 	/** @var Validator */

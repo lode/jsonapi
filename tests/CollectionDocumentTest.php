@@ -8,6 +8,15 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class CollectionDocumentTest extends TestCase {
+	public function testConstructor_NoResources() {
+		$document = new CollectionDocument();
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertSame([], $array['data']);
+	}
+	
 	public function testAdd_WithIdentifiers() {
 		$document = new CollectionDocument();
 		

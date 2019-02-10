@@ -11,6 +11,15 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceDocumentTest extends TestCase {
+	public function testConstructor_NoResource() {
+		$document = new ResourceDocument();
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertNull($array['data']);
+	}
+	
 	public function testAddRelationship_WithIncluded() {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');

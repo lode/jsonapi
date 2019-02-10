@@ -2,15 +2,23 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\DataDocument;
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
 use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase {
+	public function testConstructor_NoContent() {
+		$document = new Document();
+		
+		$array = $document->toArray();
+		
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('jsonapi', $array);
+	}
+	
 	public function testSetHttpStatusCode_HappyPath() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->assertSame(200, $document->httpStatusCode);
 		
@@ -20,7 +28,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testSetHttpStatusCode_InvalidForHttp() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		
@@ -28,7 +36,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$document->setHttpStatusCode(299);
 		
@@ -36,7 +44,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_HappyPath() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$array = $document->toArray();
 		$this->assertArrayNotHasKey('links', $array);
@@ -58,7 +66,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_WithMeta() {
-		$document = new DataDocument();
+		$document = new Document();
 		$document->addLink('foo', 'https://jsonapi.org', $meta=['bar' => 'baz']);
 		
 		$array = $document->toArray();
@@ -80,7 +88,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_BlocksJsonapiLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
@@ -89,7 +97,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_BlocksResourceLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
@@ -98,7 +106,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_BlocksUnknownLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('unknown level "foo"');
@@ -107,7 +115,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddMeta_HappyPath() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$array = $document->toArray();
 		$this->assertArrayNotHasKey('meta', $array);
@@ -129,7 +137,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddMeta_AtJsonapiLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$array = $document->toArray();
 		$this->assertArrayHasKey('jsonapi', $array);
@@ -153,7 +161,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddMeta_BlocksResourceLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
@@ -162,7 +170,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddMeta_BlocksUnknownLevel() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('unknown level "foo"');
@@ -171,45 +179,44 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testToJson_HappyPath() {
-		$document = new DataDocument();
+		$document = new Document();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.0"},"data":null}', $document->toJson());
+		$this->assertSame('{"jsonapi":{"version":"1.0"}}', $document->toJson());
 	}
 	
 	public function testToJson_CustomArray() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$options = ['array' => ['foo' => 42]];
 		$this->assertSame('{"foo":42}', $document->toJson($options));
 	}
 	
 	public function testToJson_PrettyPrint() {
-		$document = new DataDocument();
-		$document->unsetJsonapiObject();
+		$document = new Document();
 		
 		$options = ['prettyPrint' => true];
-		$expectedJson = '{'.PHP_EOL.'    "data": null'.PHP_EOL.'}';
+		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.0"'.PHP_EOL.'    }'.PHP_EOL.'}';
 		$this->assertSame($expectedJson, $document->toJson($options));
 	}
 	
 	public function testToJson_JsonEncodeOptions() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$options = ['encodeOptions' => JSON_FORCE_OBJECT, 'array' => ['foo' => [4,2]]];
 		$this->assertSame('{"foo":{"0":4,"1":2}}', $document->toJson($options));
 	}
 	
 	public function testToJson_JsonpCallback() {
-		$document = new DataDocument();
+		$document = new Document();
 		$document->addMeta('foo', 'bar');
 		
 		$options = ['jsonpCallback' => 'baz'];
 		$json    = $document->toJson($options);
-		$this->assertSame('baz({"jsonapi":{"version":"1.0"},"meta":{"foo":"bar"},"data":null})', $json);
+		$this->assertSame('baz({"jsonapi":{"version":"1.0"},"meta":{"foo":"bar"}})', $json);
 	}
 	
 	public function testToJson_InvalidUtf8() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		$options = ['array' => ['foo' => "\xB1\x31"]];
 		

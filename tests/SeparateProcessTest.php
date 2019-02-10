@@ -2,8 +2,7 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\DataDocument;
-use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,20 +13,20 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_HappyPath() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		ob_start();
 		$document->sendResponse();
 		$output = ob_get_clean();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.0"},"data":null}', $output);
+		$this->assertSame('{"jsonapi":{"version":"1.0"}}', $output);
 	}
 	
 	/**
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_NoContent() {
-		$document = new DataDocument();
+		$document = new Document();
 		$document->setHttpStatusCode(204);
 		
 		ob_start();
@@ -42,7 +41,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_ContentTypeHeader() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		ob_start();
 		$document->sendResponse();
@@ -72,7 +71,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_StatusCodeHeader() {
-		$document = new DataDocument();
+		$document = new Document();
 		
 		ob_start();
 		$document->sendResponse();
@@ -102,7 +101,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_CustomJson() {
-		$document = new DataDocument();
+		$document = new Document();
 		$options  = ['json' => '{"foo":42}'];
 		
 		ob_start();

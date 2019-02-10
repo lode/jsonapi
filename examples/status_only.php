@@ -1,6 +1,6 @@
 <?php
 
-use alsvanzelf\jsonapi\DataDocument;
+use alsvanzelf\jsonapi\MetaDocument;
 
 require 'bootstrap_examples.php';
 
@@ -8,6 +8,6 @@ require 'bootstrap_examples.php';
  * use jsonapi to send out a status code
  */
 
-$document = new DataDocument();
+$document = new MetaDocument();
 $document->setHttpStatusCode(201);
 $document->sendResponse();
