@@ -20,27 +20,8 @@ class DocumentTest extends TestCase {
 	public function testSetHttpStatusCode_HappyPath() {
 		$document = new Document();
 		
-		$this->assertSame(200, $document->httpStatusCode);
-		
-		$document->setHttpStatusCode(204);
-		
-		$this->assertSame(204, $document->httpStatusCode);
-	}
-	
-	public function testSetHttpStatusCode_InvalidForHttp() {
-		$document = new Document();
-		
-		$this->expectException(InputException::class);
-		
-		$document->setHttpStatusCode(42);
-	}
-	
-	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
-		$document = new Document();
-		
-		$document->setHttpStatusCode(299);
-		
-		$this->assertSame(299, $document->httpStatusCode);
+		$this->assertTrue($document->hasHttpStatusCode());
+		$this->assertSame(200, $document->getHttpStatusCode());
 	}
 	
 	public function testAddLink_HappyPath() {

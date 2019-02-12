@@ -5,12 +5,15 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 abstract class Document implements DocumentInterface {
+	use ManageHttpStatusCode;
+	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.0';
 	const JSONAPI_VERSION_DEFAULT = Document::JSONAPI_VERSION_1_0;
@@ -24,8 +27,6 @@ abstract class Document implements DocumentInterface {
 	const LEVEL_JSONAPI  = 'jsonapi';
 	const LEVEL_RESOURCE = 'resource';
 	
-	/** @var int */
-	public $httpStatusCode = 200;
 	/** @var LinksObject */
 	public $links;
 	/** @var MetaObject */
@@ -43,24 +44,8 @@ abstract class Document implements DocumentInterface {
 	];
 	
 	public function __construct() {
+		$this->setHttpStatusCode(200);
 		$this->setJsonapiObject(new JsonapiObject());
-	}
-	
-	/**
-	 * options
-	 */
-	
-	/**
-	 * @param string|int $statusCode
-	 * 
-	 * @throws InputException if an invalid code is used
-	 */
-	public function setHttpStatusCode($statusCode) {
-		if (Validator::checkHttpStatusCode($statusCode) === false) {
-			throw new InputException('can not use an invalid http status code');
-		}
-		
-		$this->httpStatusCode = (int) $statusCode;
 	}
 	
 	/**

@@ -70,32 +70,6 @@ class ErrorObjectTest extends TestCase {
 		ErrorObject::fromException(new \stdClass());
 	}
 	
-	public function testSetHttpStatusCode_HappyPath() {
-		$errorObject = new ErrorObject();
-		
-		$this->assertNull($errorObject->status);
-		
-		$errorObject->setHttpStatusCode(204);
-		
-		$this->assertSame('204', $errorObject->status);
-	}
-	
-	public function testSetHttpStatusCode_InvalidForHttp() {
-		$errorObject = new ErrorObject();
-		
-		$this->expectException(InputException::class);
-		
-		$errorObject->setHttpStatusCode(42);
-	}
-	
-	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
-		$errorObject = new ErrorObject();
-		
-		$errorObject->setHttpStatusCode(299);
-		
-		$this->assertSame('299', $errorObject->status);
-	}
-	
 	public function testIsEmpty_All() {
 		$errorObject = new ErrorObject();
 		$this->assertTrue($errorObject->isEmpty());

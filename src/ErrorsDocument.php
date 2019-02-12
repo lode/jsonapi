@@ -105,8 +105,8 @@ class ErrorsDocument extends Document {
 	public function addErrorObject(ErrorObject $errorObject) {
 		$this->errors[] = $errorObject;
 		
-		if ($errorObject->status !== null) {
-			$this->setHttpStatusCode($this->determineHttpStatusCode($errorObject->status));
+		if ($errorObject->hasHttpStatusCode()) {
+			$this->setHttpStatusCode($this->determineHttpStatusCode($errorObject->getHttpStatusCode()));
 		}
 	}
 	

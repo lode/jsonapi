@@ -6,14 +6,15 @@ use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
+	use ManageHttpStatusCode;
+	
 	/** @var string */
 	public $id;
-	/** @var string */
-	public $status;
 	/** @var string */
 	public $code;
 	/** @var string */
@@ -205,21 +206,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * the HTTP status code applicable to this problem
-	 * 
-	 * @param string|int $httpStatusCode will be casted to a string
-	 * 
-	 * @throws InputException if an invalid code is used
-	 */
-	public function setHttpStatusCode($httpStatusCode) {
-		if (Validator::checkHttpStatusCode($httpStatusCode) === false) {
-			throw new InputException('can not use an invalid http status code');
-		}
-		
-		$this->status = (string) $httpStatusCode;
-	}
-	
-	/**
 	 * a code expressing the generic type of this error
 	 * it should be application-specific and aimed at developers
 	 * 
@@ -284,7 +270,7 @@ class ErrorObject implements ObjectInterface {
 		if ($this->id !== null) {
 			return false;
 		}
-		if ($this->status !== null) {
+		if ($this->hasHttpStatusCode()) {
 			return false;
 		}
 		if ($this->code !== null) {
@@ -318,8 +304,8 @@ class ErrorObject implements ObjectInterface {
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
 		}
-		if ($this->status !== null) {
-			$array['status'] = $this->status;
+		if ($this->hasHttpStatusCode()) {
+			$array['status'] = (string) $this->getHttpStatusCode();
 		}
 		if ($this->code !== null) {
 			$array['code'] = $this->code;
