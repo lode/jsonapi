@@ -4,7 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
-use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
@@ -50,7 +50,7 @@ class LinksObject implements ObjectInterface {
 			$this->addLinkString($key, $href);
 		}
 		else {
-			$this->addLinkObject(new LinkObject($href, $meta), $key);
+			$this->addLinkObject($key, new LinkObject($href, $meta));
 		}
 	}
 	
@@ -61,28 +61,30 @@ class LinksObject implements ObjectInterface {
 	/**
 	 * @param string $key
 	 * @param string $href
+	 * 
+	 * @throws DuplicateException if another link is already using that $key
 	 */
 	public function addLinkString($key, $href) {
 		Validator::checkMemberName($key);
+		
+		if (isset($this->links[$key])) {
+			throw new DuplicateException('link with key "'.$key.'" already set');
+		}
 		
 		$this->links[$key] =  $href;
 	}
 	
 	/**
+	 * @param string     $key
 	 * @param LinkObject $linkObject
-	 * @param string     $key        optional, required if $linkObject has no key defined
 	 * 
-	 * @throws InputException if $key is not given and $linkObject has no key defined
+	 * @throws DuplicateException if another link is already using that $key
 	 */
-	public function addLinkObject(LinkObject $linkObject, $key=null) {
-		if ($key === null && $linkObject->key === null) {
-			throw new InputException('key not given nor defined inside the LinkObject');
-		}
-		elseif ($key === null) {
-			$key = $linkObject->key;
-		}
-		else {
-			Validator::checkMemberName($key);
+	public function addLinkObject($key, LinkObject $linkObject) {
+		Validator::checkMemberName($key);
+		
+		if (isset($this->links[$key])) {
+			throw new DuplicateException('link with key "'.$key.'" already set');
 		}
 		
 		$this->links[$key] = $linkObject;

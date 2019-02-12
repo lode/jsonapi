@@ -2,7 +2,6 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -11,8 +10,6 @@ class LinkObject implements ObjectInterface {
 	public $href;
 	/** @var MetaObject */
 	public $meta;
-	/** @var string */
-	public $key;
 	
 	/**
 	 * @param string $href
@@ -41,17 +38,6 @@ class LinkObject implements ObjectInterface {
 		}
 		
 		$this->meta->add($key, $value);
-	}
-	
-	/**
-	 * define the key used when adding the LinkObject to the LinksObject
-	 * 
-	 * @param  string $key
-	 */
-	public function defineKey($key) {
-		Validator::checkMemberName($key);
-		
-		$this->key = $key;
 	}
 	
 	/**

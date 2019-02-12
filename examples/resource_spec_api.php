@@ -43,9 +43,8 @@ $resource->setAttributesObject($attributes42);
 
 $relationship = new RelationshipObject(RelationshipObject::TO_ONE);
 $relationship->setResource($resource);
-$relationship->defineKey('friend');
 $relationships = new RelationshipsObject();
-$relationships->addRelationshipObject($relationship);
+$relationships->addRelationshipObject('friend', $relationship);
 
 $document = new ResourceDocument();
 $document->setId($user1->id);

@@ -12,6 +12,14 @@
 	},
 	"errors": [
 		{
+			"code": "Invalid input",
+			"title": "Too much options",
+			"detail": "Please, choose a bit less. Consult your ...",
+			"links": {
+				"about": "https://www.example.com/explanation.html"
+			}
+		},
+		{
 			"id": 42,
 			"status": "404",
 			"code": "Invalid input",

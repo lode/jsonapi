@@ -261,7 +261,7 @@ class RelationshipObjectTest extends TestCase {
 		
 		$this->assertTrue($relationshipObject->isEmpty());
 		
-		$relationshipObject->addLinkObject(new LinkObject('https://jsonapi.org'), 'foo');
+		$relationshipObject->addLinkObject('foo', new LinkObject('https://jsonapi.org'));
 		
 		$this->assertFalse($relationshipObject->isEmpty());
 		

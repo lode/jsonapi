@@ -9,35 +9,35 @@ require 'bootstrap_examples.php';
  * setting all options
  */
 
-$error = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
+$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
 
 // mark the cause of the error
-$error->blameJsonPointer($pointer='/data/attributes/title');
-$error->blameQueryParameter($parameter='filter');
-$error->blamePostData($postKey='title');
+$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
+$errorSpecApi->blameQueryParameter($parameter='filter');
+$errorSpecApi->blamePostData($postKey='title');
 
 // an identifier useful for helpdesk purposes
-$error->setUniqueIdentifier($id=42);
+$errorSpecApi->setUniqueIdentifier($id=42);
 
 // add meta data as you would on a normal json response
-$error->addMeta($key='foo', $value='bar');
+$errorSpecApi->addMeta($key='foo', $value='bar');
 
 // or as object
 $metaObject = new \stdClass();
 $metaObject->property = 'value';
-$error->addMeta($key='object', $metaObject);
+$errorSpecApi->addMeta($key='object', $metaObject);
 
 // the http status code
 // @note it is better to set this on the jsonapi\errors object ..
 //       .. as only a single one can be consumed by the browser
-$error->setHttpStatusCode($httpStatusCode=404);
+$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
 
 // if not set during construction, set them here
-$error->setApplicationCode($genericCode='Invalid input');
-$error->setHumanTitle($genericTitle='Too much options');
-$error->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
-$error->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-$error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
+$errorSpecApi->setApplicationCode($genericCode='Invalid input');
+$errorSpecApi->setHumanTitle($genericTitle='Too much options');
+$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
+$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
+$errorSpecApi->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 
 /**
  * prepare multiple error objects for the errors response
@@ -59,8 +59,9 @@ $someException     = new Exception('please don\'t throw things', 503, $previousE
  * further you can force another http status code than what's in the errors
  */
 
-$document = new ErrorsDocument($error);
+$document = new ErrorsDocument($errorHumanApi);
 
+$document->addErrorObject($errorSpecApi);
 $document->addErrorObject($anotherError);
 $document->addException($someException, $options=['exceptionExposeDetails'=>true]);
 $document->add($genericCode='Authentication error', $genericTitle='Not logged in');

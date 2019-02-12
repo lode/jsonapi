@@ -29,7 +29,7 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
@@ -44,10 +44,9 @@ class RelationshipsObjectTest extends TestCase {
 	
 	public function testAddRelationshipObject_WithPredefinedKey() {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
-		$relationshipObject->defineKey('foo');
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
@@ -60,21 +59,21 @@ class RelationshipsObjectTest extends TestCase {
 		$this->assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_WithoutKey() {
+	public function testAddRelationshipObject_InvalidKey() {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
 		$this->expectException(InputException::class);
 		
-		$relationshipsObject->addRelationshipObject($relationshipObject);
+		$relationshipsObject->addRelationshipObject($key='-foo', $relationshipObject);
 	}
 	
 	public function testAddRelationshipObject_MultipleRelationships() {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='bar');
+		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject($key='bar', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
@@ -87,18 +86,18 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
 		
 		$this->expectException(DuplicateException::class);
 		
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
 	}
 	
 	public function testToArray_EmptyRelationship() {
 		$relationshipObject  = new RelationshipObject(RelationshipObject::TO_ONE);
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($relationshipObject, $key='foo');
+		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		

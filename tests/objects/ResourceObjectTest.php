@@ -106,14 +106,14 @@ class ResourceObjectTest extends TestCase {
 		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
-		$resourceObject->addLinkObject(new LinkObject(), 'foo');
+		$resourceObject->addLinkObject('foo', new LinkObject());
 		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$resourceObject->addRelationship('baz', new ResourceObject('user', 24));
 		$resourceObject->addLink('foo', 'https://jsonapi.org');
-		$resourceObject->addLinkObject(new LinkObject(), 'foo');
+		$resourceObject->addLinkObject('bar', new LinkObject());
 		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 	}
 	
@@ -122,7 +122,7 @@ class ResourceObjectTest extends TestCase {
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$resourceObject = new ResourceObject('user', 24);
-		$resourceObject->addRelationshipObject($relationshipObject, 'foo');
+		$resourceObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $resourceObject->toArray();
 		
@@ -149,7 +149,7 @@ class ResourceObjectTest extends TestCase {
 		
 		$this->expectException(DuplicateException::class);
 		
-		$resourceObject->addRelationshipObject($relationshipObject, 'foo');
+		$resourceObject->addRelationshipObject('foo', $relationshipObject);
 	}
 	
 	public function testIsEmpty_All() {

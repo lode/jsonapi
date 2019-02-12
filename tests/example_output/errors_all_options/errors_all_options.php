@@ -7,29 +7,31 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class errors_all_options {
 	public static function createJsonapiDocument() {
-		$error = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
+		$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
 		
-		$error->blameJsonPointer($pointer='/data/attributes/title');
-		$error->blameQueryParameter($parameter='filter');
-		$error->blamePostData($postKey='title');
-		$error->setUniqueIdentifier($id=42);
-		$error->addMeta($key='foo', $value='bar');
-		$error->setHttpStatusCode($httpStatusCode=404);
-		$error->setApplicationCode($genericCode='Invalid input');
-		$error->setHumanTitle($genericTitle='Too much options');
-		$error->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
-		$error->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-		$error->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
+		$errorSpecApi = new ErrorObject();
+		$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
+		$errorSpecApi->blameQueryParameter($parameter='filter');
+		$errorSpecApi->blamePostData($postKey='title');
+		$errorSpecApi->setUniqueIdentifier($id=42);
+		$errorSpecApi->addMeta($key='foo', $value='bar');
+		$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
+		$errorSpecApi->setApplicationCode($genericCode='Invalid input');
+		$errorSpecApi->setHumanTitle($genericTitle='Too much options');
+		$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
+		$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
+		$errorSpecApi->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 		
 		$metaObject = new \stdClass();
 		$metaObject->property = 'value';
-		$error->addMeta($key='object', $metaObject);
+		$errorSpecApi->addMeta($key='object', $metaObject);
 		
 		$anotherError      = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
 		$previousException = new \Exception('something went wrong!');
 		$someException     = new \Exception('please don\'t throw things', 500, $previousException);
 		
-		$document = new ErrorsDocument($error);
+		$document = new ErrorsDocument($errorHumanApi);
+		$document->addErrorObject($errorSpecApi);
 		$document->addErrorObject($anotherError);
 		$document->addException($someException, $options=['exceptionExposeDetails'=>false]);
 		$document->add($genericCode='Authentication error', $genericTitle='Not logged in');

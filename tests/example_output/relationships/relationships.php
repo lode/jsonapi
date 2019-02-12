@@ -47,7 +47,7 @@ class relationships {
 		$relationshipObject->addResource($friend1Resource);
 		$relationshipObject->addResource($friend2Resource);
 		
-		$document->addRelationshipObject($relationshipObject, 'one-by-one-friends');
+		$document->addRelationshipObject('one-by-one-friends', $relationshipObject);
 		
 		/**
 		 * to-many relationship, all-at-once
@@ -67,7 +67,7 @@ class relationships {
 		$relationshipObject->addResource($ship1Resource);
 		$relationshipObject->addResource($dockResource);
 		
-		$document->addRelationshipObject($relationshipObject, 'one-by-one-neighbours');
+		$document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
 		
 		return $document;
 	}

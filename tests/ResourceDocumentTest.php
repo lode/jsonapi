@@ -100,7 +100,7 @@ class ResourceDocumentTest extends TestCase {
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
 		
 		$document = new ResourceDocument();
-		$document->addRelationshipObject($relationshipObject, 'foo');
+		$document->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $document->toArray();
 		
@@ -115,7 +115,7 @@ class ResourceDocumentTest extends TestCase {
 		$options = ['skipIncluding' => true];
 		
 		$document = new ResourceDocument();
-		$document->addRelationshipObject($relationshipObject, 'foo', $options);
+		$document->addRelationshipObject('foo', $relationshipObject, $options);
 		
 		$array = $document->toArray();
 		
@@ -128,7 +128,7 @@ class ResourceDocumentTest extends TestCase {
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($relationshipObject, 'foo');
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$document = new ResourceDocument();
 		$document->setRelationshipsObject($relationshipsObject);
@@ -144,7 +144,7 @@ class ResourceDocumentTest extends TestCase {
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($relationshipObject, 'foo');
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$options = ['skipIncluding' => true];
 		

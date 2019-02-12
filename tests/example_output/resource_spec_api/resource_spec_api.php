@@ -45,9 +45,8 @@ class resource_spec_api {
 		
 		$relationship = new RelationshipObject(RelationshipObject::TO_ONE);
 		$relationship->setResource($resource);
-		$relationship->defineKey('friend');
 		$relationships = new RelationshipsObject();
-		$relationships->addRelationshipObject($relationship);
+		$relationships->addRelationshipObject('friend', $relationship);
 		
 		$document = new ResourceDocument();
 		$document->setId($user1->id);

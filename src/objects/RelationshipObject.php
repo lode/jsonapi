@@ -3,7 +3,6 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -20,8 +19,6 @@ class RelationshipObject implements ObjectInterface {
 	public $links;
 	/** @var MetaObject */
 	public $meta;
-	/** @var string */
-	public $key;
 	/** @var ResourceInterface */
 	public $resource;
 	/** @var string one of the RelationshipObject::TO_* constants */
@@ -187,17 +184,6 @@ class RelationshipObject implements ObjectInterface {
 	}
 	
 	/**
-	 * define the key used when adding the LinkObject to the LinksObject
-	 * 
-	 * @param  string $key
-	 */
-	public function defineKey($key) {
-		Validator::checkMemberName($key);
-		
-		$this->key = $key;
-	}
-	
-	/**
 	 * whether or not the $otherResource is (one of) the resource(s) inside the relationship
 	 * 
 	 * @param  ResourceInterface $otherResource
@@ -285,15 +271,15 @@ class RelationshipObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @param string     $key
 	 * @param LinkObject $linkObject
-	 * @param string     $key        optional, required if $linkObject has no key defined
 	 */
-	public function addLinkObject(LinkObject $linkObject, $key=null) {
+	public function addLinkObject($key, LinkObject $linkObject) {
 		if ($this->links === null) {
 			$this->setLinksObject(new LinksObject());
 		}
 		
-		$this->links->addLinkObject($linkObject, $key);
+		$this->links->addLinkObject($key, $linkObject);
 	}
 	
 	/**

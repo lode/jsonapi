@@ -168,14 +168,14 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * 
 	 * adds included resources if found inside the RelationshipObject, unless $options['skipIncluding'] is set to true
 	 * 
+	 * @param string             $key
 	 * @param RelationshipObject $relationshipObject
-	 * @param string             $key                optional, required if $relationshipObject has no key defined
 	 * @param array              $options            optional {@see ResourceDocument::$defaults}
 	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
+	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
-		$this->resource->addRelationshipObject($relationshipObject, $key);
+		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
 		if ($options['skipIncluding'] === false) {
 			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());

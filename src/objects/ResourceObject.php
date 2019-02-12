@@ -102,7 +102,7 @@ class ResourceObject extends ResourceIdentifierObject {
 	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
 		$relationshipObject = RelationshipObject::fromAnything($relation, $links, $meta);
 		
-		$this->addRelationshipObject($relationshipObject, $key, $options);
+		$this->addRelationshipObject($key, $relationshipObject, $options);
 		
 		return $relationshipObject;
 	}
@@ -181,13 +181,13 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
+	 * @param string             $key
 	 * @param RelationshipObject $relationshipObject
-	 * @param string             $key                optional, required if $relationshipObject has no key defined
 	 * @param array              $options            optional {@see ResourceObject::$defaults}
 	 * 
 	 * @throws DuplicateException if the resource is contained as a resource in the relationship
 	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null, array $options=[]) {
+	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
 		if ($relationshipObject->hasResource($this)) {
 			throw new DuplicateException('can not add relation to self');
 		}
@@ -198,7 +198,7 @@ class ResourceObject extends ResourceIdentifierObject {
 		
 		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
 		
-		$this->relationships->addRelationshipObject($relationshipObject, $key);
+		$this->relationships->addRelationshipObject($key, $relationshipObject);
 	}
 	
 	/**
@@ -213,15 +213,15 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
+	 * @param string     $key
 	 * @param LinkObject $linkObject
-	 * @param string     $key        optional, required if $linkObject has no key defined
 	 */
-	public function addLinkObject(LinkObject $linkObject, $key=null) {
+	public function addLinkObject($key, LinkObject $linkObject) {
 		if ($this->links === null) {
 			$this->setLinksObject(new LinksObject());
 		}
 		
-		$this->links->addLinkObject($linkObject, $key);
+		$this->links->addLinkObject($key, $linkObject);
 	}
 	
 	/**

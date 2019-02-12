@@ -4,7 +4,6 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
@@ -28,7 +27,7 @@ class RelationshipsObject implements ObjectInterface {
 	public function add($key, $relation, array $links=[], array $meta=[]) {
 		$relationshipObject = RelationshipObject::fromAnything($relation, $links, $meta);
 		
-		$this->addRelationshipObject($relationshipObject, $key);
+		$this->addRelationshipObject($key, $relationshipObject);
 		
 		return $relationshipObject;
 	}
@@ -62,22 +61,13 @@ class RelationshipsObject implements ObjectInterface {
 	 */
 	
 	/**
+	 * @param string             $key
 	 * @param RelationshipObject $relationshipObject
-	 * @param string             $key                optional, required if $relationshipObject has no key defined
 	 * 
-	 * @throws InputException     if $key is not given and $relationshipObject has no key defined
 	 * @throws DuplicateException if another relationship is already using that $key
 	 */
-	public function addRelationshipObject(RelationshipObject $relationshipObject, $key=null) {
-		if ($key === null && $relationshipObject->key === null) {
-			throw new InputException('key not given nor defined inside the RelationshipObject');
-		}
-		elseif ($key === null) {
-			$key = $relationshipObject->key;
-		}
-		else {
-			Validator::checkMemberName($key);
-		}
+	public function addRelationshipObject($key, RelationshipObject $relationshipObject) {
+		Validator::checkMemberName($key);
 		
 		if (isset($this->relationships[$key])) {
 			throw new DuplicateException('relationship with key "'.$key.'" already set');
