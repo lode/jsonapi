@@ -5,11 +5,12 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class RelationshipsObject implements ObjectInterface {
+class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
 	/** @var RelationshipObject[] */
 	public $relationships = [];
 	
@@ -33,17 +34,13 @@ class RelationshipsObject implements ObjectInterface {
 	}
 	
 	/**
-	 * get ResourceObjects from inside all RelationshipObjects which are not only a ResourceIdentifierObject
-	 * 
-	 * this can be used to add included ResourceObjects on a DataDocument
-	 * 
-	 * @return ResourceObject[]
+	 * @inheritDoc
 	 */
-	public function getRelatedResourceObjects() {
+	public function getNestedContainedResourceObjects() {
 		$resourceObjects = [];
 		
 		foreach ($this->relationships as $relationship) {
-			$resourceObjects = array_merge($resourceObjects, $relationship->getRelatedResourceObjects());
+			$resourceObjects = array_merge($resourceObjects, $relationship->getNestedContainedResourceObjects());
 		}
 		
 		return $resourceObjects;

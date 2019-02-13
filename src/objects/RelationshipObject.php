@@ -5,13 +5,14 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class RelationshipObject implements ObjectInterface {
+class RelationshipObject implements ObjectInterface, RecursiveResourceContainerInterface {
 	const TO_ONE  = 'one';
 	const TO_MANY = 'many';
 	
@@ -107,7 +108,7 @@ class RelationshipObject implements ObjectInterface {
 	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]) {
 		$relationshipObject = new self(RelationshipObject::TO_MANY);
 		
-		foreach ($collectionDocument->resources as $resource) {
+		foreach ($collectionDocument->getContainedResources() as $resource) {
 			$relationshipObject->addResource($resource);
 		}
 		
@@ -205,15 +206,9 @@ class RelationshipObject implements ObjectInterface {
 	}
 	
 	/**
-	 * get ResourceObjects from inside which are not only a ResourceIdentifierObject
-	 * 
-	 * this can be used to add included ResourceObjects on a DataDocument
-	 * 
-	 * @note also recursively gets ResourceObjects from the relationships of the ResourceObjects found
-	 * 
-	 * @return ResourceObject[]
+	 * @inheritDoc
 	 */
-	public function getRelatedResourceObjects() {
+	public function getNestedContainedResourceObjects() {
 		$resources       = ($this->type === RelationshipObject::TO_ONE) ? [$this->resource] : $this->resources;
 		$resourceObjects = [];
 		
@@ -225,12 +220,12 @@ class RelationshipObject implements ObjectInterface {
 			/** @var ResourceObject */
 			$resourceObject = $resource->getResource();
 			
-			if ($resource->getResource()->hasIdentifierPropertiesOnly()) {
+			if ($resourceObject->hasIdentifierPropertiesOnly()) {
 				continue;
 			}
 			
 			$resourceObjects[] = $resourceObject;
-			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getRelatedResourceObjects());
+			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getNestedContainedResourceObjects());
 		}
 		
 		return $resourceObjects;

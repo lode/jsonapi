@@ -197,4 +197,28 @@ class CollectionDocumentTest extends TestCase {
 		
 		$document->addResource(new ResourceObject('user'));
 	}
+	
+	public function testGetContainedResources_HappyPath() {
+		$document = new CollectionDocument();
+		
+		$this->assertCount(0, $document->getContainedResources());
+		
+		$document->add('user', 42);
+		
+		$this->assertCount(1, $document->getContainedResources());
+		
+		$document->add('user', 24);
+		
+		$this->assertCount(2, $document->getContainedResources());
+	}
+	
+	public function testGetContainedResources_NoNestedResources() {
+		$document = new CollectionDocument();
+		
+		$resourceObject = new ResourceObject('user', 42);
+		$resourceObject->addRelationship('foo', new ResourceObject('user', 24));
+		$document->addResource($resourceObject);
+		
+		$this->assertCount(1, $document->getContainedResources());
+	}
 }

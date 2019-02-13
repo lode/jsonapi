@@ -204,26 +204,26 @@ class RelationshipObjectTest extends TestCase {
 		$this->assertFalse($relationshipObject->hasResource(new ResourceObject('user', 24)));
 	}
 	
-	public function testGetRelatedResourceObjects_SkipsResourceIdentifierObjects() {
+	public function testGetContainedResources_SkipsResourceIdentifierObjects() {
 		$relationshipObject           = new RelationshipObject(RelationshipObject::TO_MANY);
 		$resourceIdentifierObject     = new ResourceIdentifierObject('user', 24);
 		$resourceObjectIdentifierOnly = new ResourceObject('user', 42);
 		$resourceObjectWithAttributes = new ResourceObject('user', 42);
 		$resourceObjectWithAttributes->add('foo', 'bar');
 		
-		$this->assertCount(0, $relationshipObject->getRelatedResourceObjects());
+		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceIdentifierObject);
 		
-		$this->assertCount(0, $relationshipObject->getRelatedResourceObjects());
+		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceObjectIdentifierOnly);
 		
-		$this->assertCount(0, $relationshipObject->getRelatedResourceObjects());
+		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceObjectWithAttributes);
 		
-		$this->assertCount(1, $relationshipObject->getRelatedResourceObjects());
+		$this->assertCount(1, $relationshipObject->getNestedContainedResourceObjects());
 	}
 	
 	public function testSetResource_HappyPath() {

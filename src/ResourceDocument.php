@@ -7,6 +7,7 @@ use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
@@ -94,7 +95,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
 		if ($options['skipIncluding'] === false) {
-			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
+			$this->addIncludedResourceObject(...$relationshipObject->getNestedContainedResourceObjects());
 		}
 	}
 	
@@ -178,7 +179,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
 		if ($options['skipIncluding'] === false) {
-			$this->addIncludedResourceObject(...$relationshipObject->getRelatedResourceObjects());
+			$this->addIncludedResourceObject(...$relationshipObject->getNestedContainedResourceObjects());
 		}
 	}
 	
@@ -196,7 +197,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		$this->resource->setRelationshipsObject($relationshipsObject);
 		
 		if ($options['skipIncluding'] === false) {
-			$this->addIncludedResourceObject(...$relationshipsObject->getRelatedResourceObjects());
+			$this->addIncludedResourceObject(...$relationshipsObject->getNestedContainedResourceObjects());
 		}
 	}
 	
@@ -223,8 +224,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$this->resource = $resource;
 		
-		if ($options['skipIncluding'] === false && $this->resource instanceof ResourceObject) {
-			$this->addIncludedResourceObject(...$this->resource->getRelatedResourceObjects());
+		if ($options['skipIncluding'] === false && $this->resource instanceof RecursiveResourceContainerInterface) {
+			$this->addIncludedResourceObject(...$this->resource->getNestedContainedResourceObjects());
 		}
 	}
 	

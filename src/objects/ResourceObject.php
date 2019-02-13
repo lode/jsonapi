@@ -6,6 +6,7 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
@@ -13,7 +14,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
-class ResourceObject extends ResourceIdentifierObject {
+class ResourceObject extends ResourceIdentifierObject implements RecursiveResourceContainerInterface {
 	/** @var AttributesObject */
 	public $attributes;
 	/** @var RelationshipsObject */
@@ -150,18 +151,14 @@ class ResourceObject extends ResourceIdentifierObject {
 	}
 	
 	/**
-	 * get ResourceObjects from inside all RelationshipsObjects which are not only a ResourceIdentifierObject
-	 * 
-	 * this can be used to add included ResourceObjects on a DataDocument
-	 * 
-	 * @return ResourceObject[]
+	 * @inheritDoc
 	 */
-	public function getRelatedResourceObjects() {
+	public function getNestedContainedResourceObjects() {
 		if ($this->relationships === null) {
 			return [];
 		}
 		
-		return $this->relationships->getRelatedResourceObjects();
+		return $this->relationships->getNestedContainedResourceObjects();
 	}
 	
 	/**

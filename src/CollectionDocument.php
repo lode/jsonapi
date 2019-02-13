@@ -5,11 +5,13 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
+use alsvanzelf\jsonapi\interfaces\ResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
-class CollectionDocument extends DataDocument {
+class CollectionDocument extends DataDocument implements ResourceContainerInterface {
 	/** @var ResourceInterface[] */
 	public $resources = [];
 	/** @var array */
@@ -109,8 +111,8 @@ class CollectionDocument extends DataDocument {
 		
 		$this->resources[] = $resource;
 		
-		if ($options['skipIncluding'] === false && $resource instanceof ResourceObject) {
-			$this->addIncludedResourceObject(...$resource->getRelatedResourceObjects());
+		if ($options['skipIncluding'] === false && $resource instanceof RecursiveResourceContainerInterface) {
+			$this->addIncludedResourceObject(...$resource->getNestedContainedResourceObjects());
 		}
 	}
 	
@@ -130,5 +132,16 @@ class CollectionDocument extends DataDocument {
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * ResourceContainerInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getContainedResources() {
+		return $this->resources;
 	}
 }
