@@ -127,17 +127,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	}
 	
 	/**
-	 * ResourceInterface
-	 */
-	
-	/**
-	 * @inheritDoc
-	 */
-	public function getResource($identifierOnly=false) {
-		return $this;
-	}
-	
-	/**
 	 * ObjectInterface
 	 */
 	
@@ -169,5 +158,16 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * ResourceInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getResource($identifierOnly=false) {
+		return $this;
 	}
 }

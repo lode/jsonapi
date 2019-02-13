@@ -34,19 +34,6 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 	}
 	
 	/**
-	 * @inheritDoc
-	 */
-	public function getNestedContainedResourceObjects() {
-		$resourceObjects = [];
-		
-		foreach ($this->relationships as $relationship) {
-			$resourceObjects = array_merge($resourceObjects, $relationship->getNestedContainedResourceObjects());
-		}
-		
-		return $resourceObjects;
-	}
-	
-	/**
 	 * @return string[]
 	 */
 	public function getKeys() {
@@ -99,5 +86,22 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * RecursiveResourceContainerInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getNestedContainedResourceObjects() {
+		$resourceObjects = [];
+		
+		foreach ($this->relationships as $relationship) {
+			$resourceObjects = array_merge($resourceObjects, $relationship->getNestedContainedResourceObjects());
+		}
+		
+		return $resourceObjects;
 	}
 }

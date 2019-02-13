@@ -151,17 +151,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	}
 	
 	/**
-	 * @inheritDoc
-	 */
-	public function getNestedContainedResourceObjects() {
-		if ($this->relationships === null) {
-			return [];
-		}
-		
-		return $this->relationships->getNestedContainedResourceObjects();
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -284,5 +273,20 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * RecursiveResourceContainerInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getNestedContainedResourceObjects() {
+		if ($this->relationships === null) {
+			return [];
+		}
+		
+		return $this->relationships->getNestedContainedResourceObjects();
 	}
 }

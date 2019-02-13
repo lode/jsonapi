@@ -206,32 +206,6 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	}
 	
 	/**
-	 * @inheritDoc
-	 */
-	public function getNestedContainedResourceObjects() {
-		$resources       = ($this->type === RelationshipObject::TO_ONE) ? [$this->resource] : $this->resources;
-		$resourceObjects = [];
-		
-		foreach ($resources as $resource) {
-			if ($resource->getResource() instanceof ResourceObject === false) {
-				continue;
-			}
-			
-			/** @var ResourceObject */
-			$resourceObject = $resource->getResource();
-			
-			if ($resourceObject->hasIdentifierPropertiesOnly()) {
-				continue;
-			}
-			
-			$resourceObjects[] = $resourceObject;
-			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getNestedContainedResourceObjects());
-		}
-		
-		return $resourceObjects;
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -337,5 +311,35 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * RecursiveResourceContainerInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function getNestedContainedResourceObjects() {
+		$resources       = ($this->type === RelationshipObject::TO_ONE) ? [$this->resource] : $this->resources;
+		$resourceObjects = [];
+		
+		foreach ($resources as $resource) {
+			if ($resource->getResource() instanceof ResourceObject === false) {
+				continue;
+			}
+			
+			/** @var ResourceObject */
+			$resourceObject = $resource->getResource();
+			
+			if ($resourceObject->hasIdentifierPropertiesOnly()) {
+				continue;
+			}
+			
+			$resourceObjects[] = $resourceObject;
+			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getNestedContainedResourceObjects());
+		}
+		
+		return $resourceObjects;
 	}
 }
