@@ -17,6 +17,31 @@ class MetaDocumentTest extends TestCase {
 		$this->assertSame('{"jsonapi":{"version":"1.0"},"meta":{}}', $json);
 	}
 	
+	public function testFromArray_HappyPath() {
+		$document = MetaDocument::fromArray(['foo' => 'bar']);
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('meta', $array);
+		$this->assertCount(1, $array['meta']);
+		$this->assertArrayHasKey('foo', $array['meta']);
+		$this->assertSame('bar', $array['meta']['foo']);
+	}
+	
+	public function testFromObject_HappyPath() {
+		$object = new \stdClass();
+		$object->foo = 'bar';
+		
+		$document = MetaDocument::fromObject($object);
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('meta', $array);
+		$this->assertCount(1, $array['meta']);
+		$this->assertArrayHasKey('foo', $array['meta']);
+		$this->assertSame('bar', $array['meta']['foo']);
+	}
+	
 	public function testAddMeta_HappyPath() {
 		$document = new MetaDocument();
 		$document->addMeta('foo', 'bar');

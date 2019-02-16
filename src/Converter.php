@@ -2,12 +2,18 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+
 class Converter {
 	/**
 	 * @param  object $object
 	 * @return array
 	 */
 	public static function objectToArray($object) {
+		if ($object instanceof ObjectInterface) {
+			return $object->toArray();
+		}
+		
 		return get_object_vars($object);
 	}
 	

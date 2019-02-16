@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\objects\ErrorObject;
 use PHPUnit\Framework\TestCase;
 
 class ErrorsDocumentTest extends TestCase {
@@ -111,5 +112,25 @@ class ErrorsDocumentTest extends TestCase {
 			[500, [500]],
 			[302, [302]],
 		];
+	}
+	
+	public function testDetermineHttpStatusCode_Override() {
+		$document = new ErrorsDocument();
+		
+		$this->assertSame(200, $document->getHttpStatusCode());
+		
+		$allErrorCodes = [422, 404, 501, 503];
+		foreach ($allErrorCodes as $errorCode) {
+			$errorObject = new ErrorObject();
+			$errorObject->setHttpStatusCode($errorCode);
+			
+			$document->addErrorObject($errorObject);
+		}
+		
+		$this->assertSame(500, $document->getHttpStatusCode());
+		
+		$document->setHttpStatusCode(422);
+		
+		$this->assertSame(422, $document->getHttpStatusCode());
 	}
 }

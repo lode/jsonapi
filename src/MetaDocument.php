@@ -2,12 +2,35 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\objects\MetaObject;
 
 class MetaDocument extends Document {
 	/**
 	 * human api
 	 */
+	
+	/**
+	 * @param  array $meta
+	 * @return MetaDocument
+	 */
+	public static function fromArray(array $meta) {
+		$metaDocument = new self();
+		$metaDocument->setMetaObject(MetaObject::fromArray($meta));
+		
+		return $metaDocument;
+	}
+	
+	/**
+	 * @param  object $meta
+	 * @return MetaDocument
+	 */
+	public static function fromObject($meta) {
+		$array = Converter::objectToArray($meta);
+		
+		return self::fromArray($array);
+	}
 	
 	/**
 	 * wrapper for Document::addMeta() to the primary data of this document available via `add()`

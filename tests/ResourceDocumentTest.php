@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapiTests;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -18,6 +19,20 @@ class ResourceDocumentTest extends TestCase {
 		
 		$this->assertArrayHasKey('data', $array);
 		$this->assertNull($array['data']);
+	}
+	
+	public function testFromObject_WithAttributesObject() {
+		$attributesObject = new AttributesObject();
+		$attributesObject->add('foo', 'bar');
+		
+		$document = ResourceDocument::fromObject($attributesObject);
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertArrayHasKey('attributes', $array['data']);
+		$this->assertArrayHasKey('foo', $array['data']['attributes']);
+		$this->assertSame('bar', $array['data']['attributes']['foo']);
 	}
 	
 	public function testAddRelationship_WithIncluded() {

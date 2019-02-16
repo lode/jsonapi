@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\Converter;
+use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\TestCase;
 
 class ConverterTest extends TestCase {
@@ -29,6 +30,19 @@ class ConverterTest extends TestCase {
 		$this->assertArrayHasKey('baz', $array);
 		$this->assertArrayNotHasKey('secret', $array);
 		$this->assertArrayNotHasKey('method', $array);
+	}
+	
+	public function testObjectToArray_FromInternalObject() {
+		$values = ['foo'=>'bar', 'baz'=>42];
+		$attributesObject = AttributesObject::fromArray($values);
+		
+		$array = Converter::objectToArray($attributesObject);
+		
+		$this->assertCount(2, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertArrayHasKey('baz', $array);
+		$this->assertSame('bar', $array['foo']);
+		$this->assertSame(42, $array['baz']);
 	}
 	
 	/**

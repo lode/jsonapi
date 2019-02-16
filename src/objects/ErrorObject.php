@@ -31,6 +31,7 @@ class ErrorObject implements ObjectInterface {
 	private static $defaults = [
 		'exceptionExposeDetails' => false,
 		'exceptionExposeTrace'   => true,
+		'exceptionStripBasePath' => null,
 	];
 	
 	/**
@@ -72,14 +73,28 @@ class ErrorObject implements ObjectInterface {
 			$genericTitle = Converter::camelCaseToWords(get_class($exception));
 			$errorObject->setHumanExplanation($genericTitle);
 			
+			$filePath = $exception->getFile();
+			if ($options['exceptionStripBasePath'] !== null) {
+				$filePath = str_replace($options['exceptionStripBasePath'], '', $filePath);
+			}
+			
 			$metaObject = MetaObject::fromArray([
 				'message' => $exception->getMessage(),
-				'file'    => $exception->getFile(),
+				'file'    => $filePath,
 				'line'    => $exception->getLine(),
 			]);
 			
 			if ($options['exceptionExposeTrace']) {
-				$metaObject->add('trace', $exception->getTrace());
+				$trace = $exception->getTrace();
+				if ($options['exceptionStripBasePath'] !== null) {
+					foreach ($trace as &$traceElement) {
+						if (isset($traceElement['file'])) {
+							$traceElement['file'] = str_replace($options['exceptionStripBasePath'], '', $traceElement['file']);
+						}
+					}
+				}
+				
+				$metaObject->add('trace', $trace);
 			}
 			
 			$errorObject->setMetaObject($metaObject);

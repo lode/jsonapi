@@ -64,6 +64,23 @@ class ErrorObjectTest extends TestCase {
 		$this->assertArrayNotHasKey('trace', $array['meta']);
 	}
 	
+	public function testFromException_StripFilePath() {
+		$exception   = new \Exception('foo', 1);
+		$basePath    = realpath(__DIR__.'/../../').'/';
+		$options     = ['exceptionExposeDetails' => true, 'exceptionStripBasePath' => $basePath];
+		$errorObject = ErrorObject::fromException($exception, $options);
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('meta', $array);
+		$this->assertArrayHasKey('file', $array['meta']);
+		$this->assertArrayHasKey('trace', $array['meta']);
+		$this->assertSame('tests/objects/ErrorObjectTest.php', $array['meta']['file']);
+		$this->assertGreaterThan(2, $array['meta']['trace']);
+		$this->assertArrayHasKey('file', $array['meta']['trace'][1]);
+		$this->assertSame('vendor/phpunit/phpunit/src/Framework/TestCase.php', $array['meta']['trace'][1]['file']);
+	}
+	
 	public function testFromException_BlocksNonException() {
 		$this->expectException(InputException::class);
 		
