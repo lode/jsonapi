@@ -17,11 +17,11 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	const TO_MANY = 'many';
 	
 	/** @var LinksObject */
-	public $links;
+	protected $links;
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	/** @var ResourceInterface */
-	public $resource;
+	protected $resource;
 	/** @var string one of the RelationshipObject::TO_* constants */
 	protected $type;
 	/** @var ResourceInterface[] */
@@ -185,27 +185,6 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	}
 	
 	/**
-	 * whether or not the $otherResource is (one of) the resource(s) inside the relationship
-	 * 
-	 * @param  ResourceInterface $otherResource
-	 * @return boolean
-	 */
-	public function hasResource(ResourceInterface $otherResource) {
-		if ($this->type === RelationshipObject::TO_ONE) {
-			return $this->resource->getResource()->equals($otherResource->getResource());
-		}
-		if ($this->type === RelationshipObject::TO_MANY) {
-			foreach ($this->resources as $ownResource) {
-				if ($ownResource->getResource()->equals($otherResource->getResource())) {
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -263,6 +242,33 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 */
 	public function setMetaObject(MetaObject $metaObject) {
 		$this->meta = $metaObject;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * whether or not the $otherResource is (one of) the resource(s) inside the relationship
+	 * 
+	 * @internal
+	 * 
+	 * @param  ResourceInterface $otherResource
+	 * @return boolean
+	 */
+	public function hasResource(ResourceInterface $otherResource) {
+		if ($this->type === RelationshipObject::TO_ONE) {
+			return $this->resource->getResource()->equals($otherResource->getResource());
+		}
+		if ($this->type === RelationshipObject::TO_MANY) {
+			foreach ($this->resources as $ownResource) {
+				if ($ownResource->getResource()->equals($otherResource->getResource())) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	/**

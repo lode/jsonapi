@@ -1,11 +1,14 @@
 <?php
 
-namespace alsvanzelf\jsonapi;
+namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
+/**
+ * @internal
+ */
 class Validator {
 	const OBJECT_CONTAINER_TYPE          = 'type';
 	const OBJECT_CONTAINER_ID            = 'id';
@@ -13,11 +16,11 @@ class Validator {
 	const OBJECT_CONTAINER_RELATIONSHIPS = 'relationships';
 	
 	/** @var array */
-	private $usedFields = [];
+	protected $usedFields = [];
 	/** @var array */
-	private $usedResourceIdentifiers = [];
+	protected $usedResourceIdentifiers = [];
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		/**
 		 * @note this is not allowed by the specification
 		 */

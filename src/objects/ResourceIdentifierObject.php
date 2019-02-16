@@ -2,19 +2,19 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	/** @var string */
-	public $type;
+	protected $type;
 	/** @var string */
-	public $id;
+	protected $id;
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	/** @var Validator */
 	protected $validator;
 	
@@ -46,20 +46,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	
 	/**
-	 * @param  ResourceObject $resourceObject
-	 * @return ResourceIdentifierObject
-	 */
-	public static function fromResourceObject(ResourceObject $resourceObject) {
-		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->id);
-		
-		if ($resourceObject->meta !== null) {
-			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
-		}
-		
-		return $resourceIdentifierObject;
-	}
-	
-	/**
 	 * @param string $key
 	 * @param mixed  $value
 	 */
@@ -69,36 +55,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		}
 		
 		$this->meta->add($key, $value);
-	}
-	
-	/**
-	 * @param  ResourceInterface $resource
-	 * @return boolean
-	 */
-	public function equals(ResourceInterface $resource) {
-		return ($this->type === $resource->type && $this->id === $resource->id);
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function hasIdentification() {
-		return ($this->type !== null && $this->id !== null);
-	}
-	
-	/**
-	 * get a key to uniquely define this resource
-	 * 
-	 * @return string
-	 * 
-	 * @throws Exception if type or id is not set yet
-	 */
-	public function getIdentificationKey() {
-		if ($this->hasIdentification() === false) {
-			throw new Exception('resource has no identification yet');
-		}
-		
-		return $this->type.'|'.$this->id;
 	}
 	
 	/**
@@ -124,6 +80,62 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	public function setMetaObject(MetaObject $metaObject) {
 		$this->meta = $metaObject;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
+	 * @param  ResourceObject $resourceObject
+	 * @return ResourceIdentifierObject
+	 */
+	public static function fromResourceObject(ResourceObject $resourceObject) {
+		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->id);
+		
+		if ($resourceObject->meta !== null) {
+			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
+		}
+		
+		return $resourceIdentifierObject;
+	}
+	
+	/**
+	 * @internal
+	 * 
+	 * @param  ResourceInterface $resource
+	 * @return boolean
+	 */
+	public function equals(ResourceInterface $resource) {
+		return ($this->type === $resource->type && $this->id === $resource->id);
+	}
+	
+	/**
+	 * @internal
+	 * 
+	 * @return boolean
+	 */
+	public function hasIdentification() {
+		return ($this->type !== null && $this->id !== null);
+	}
+	
+	/**
+	 * get a key to uniquely define this resource
+	 * 
+	 * @internal
+	 * 
+	 * @return string
+	 * 
+	 * @throws Exception if type or id is not set yet
+	 */
+	public function getIdentificationKey() {
+		if ($this->hasIdentification() === false) {
+			throw new Exception('resource has no identification yet');
+		}
+		
+		return $this->type.'|'.$this->id;
 	}
 	
 	/**

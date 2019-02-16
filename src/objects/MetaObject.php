@@ -2,13 +2,13 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Converter;
-use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class MetaObject implements ObjectInterface {
 	/** @var array */
-	public $meta = [];
+	protected $meta = [];
 	
 	/**
 	 * human api

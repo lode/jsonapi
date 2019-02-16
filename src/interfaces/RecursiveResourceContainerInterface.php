@@ -14,6 +14,8 @@ interface RecursiveResourceContainerInterface {
 	 * if the object itself is a resource, this should *not* be returned
 	 * @see ResourceInterface to get the resource itself
 	 * 
+	 * @internal
+	 * 
 	 * @return ResourceObjects[]
 	 */
 	public function getNestedContainedResourceObjects();

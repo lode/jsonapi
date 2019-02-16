@@ -2,9 +2,9 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 

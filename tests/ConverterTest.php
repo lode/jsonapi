@@ -2,7 +2,7 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\Converter;
+use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\TestCase;
 

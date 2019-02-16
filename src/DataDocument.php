@@ -3,13 +3,13 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 abstract class DataDocument extends Document {
 	/** @var ResourceObject[] */
-	public $includedResources = [];
+	protected $includedResources = [];
 	/** @var Validator */
 	protected $validator;
 	
@@ -28,6 +28,12 @@ abstract class DataDocument extends Document {
 	 */
 	
 	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
 	 * @param ResourceObject ...$resourceObjects
 	 */
 	public function addIncludedResourceObject(ResourceObject ...$resourceObjects) {

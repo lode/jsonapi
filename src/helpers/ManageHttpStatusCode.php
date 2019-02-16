@@ -2,12 +2,16 @@
 
 namespace alsvanzelf\jsonapi\helpers;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\Validator;
 
 trait ManageHttpStatusCode {
 	/** @var int */
 	protected $httpStatusCode;
+	
+	/**
+	 * spec api
+	 */
 	
 	/**
 	 * @param int $httpStatusCode
@@ -23,6 +27,12 @@ trait ManageHttpStatusCode {
 	}
 	
 	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
 	 * @return boolean
 	 */
 	public function hasHttpStatusCode() {
@@ -30,6 +40,8 @@ trait ManageHttpStatusCode {
 	}
 	
 	/**
+	 * @internal
+	 * 
 	 * @return int
 	 */
 	public function getHttpStatusCode() {

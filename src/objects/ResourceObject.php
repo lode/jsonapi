@@ -3,9 +3,9 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
-use alsvanzelf\jsonapi\Converter;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -16,13 +16,13 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 class ResourceObject extends ResourceIdentifierObject implements RecursiveResourceContainerInterface {
 	/** @var AttributesObject */
-	public $attributes;
+	protected $attributes;
 	/** @var RelationshipsObject */
-	public $relationships;
+	protected $relationships;
 	/** @var LinksObject */
-	public $links;
+	protected $links;
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		/**
 		 * set to false to allow using 'type' as a member in attributes or relationships
 		 * @note this is not allowed by the specification
@@ -130,27 +130,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	}
 	
 	/**
-	 * whether the ResourceObject is empty except for the ResourceIdentifierObject
-	 * 
-	 * this can be used to determine if a Relationship's resource could be added as included resource
-	 * 
-	 * @return boolean
-	 */
-	public function hasIdentifierPropertiesOnly() {
-		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
-			return false;
-		}
-		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
-			return false;
-		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -215,6 +194,33 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	 */
 	public function setLinksObject(LinksObject $linksObject) {
 		$this->links = $linksObject;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * whether the ResourceObject is empty except for the ResourceIdentifierObject
+	 * 
+	 * this can be used to determine if a Relationship's resource could be added as included resource
+	 * 
+	 * @internal
+	 * 
+	 * @return boolean
+	 */
+	public function hasIdentifierPropertiesOnly() {
+		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+			return false;
+		}
+		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
+			return false;
+		}
+		if ($this->links !== null && $this->links->isEmpty() === false) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**

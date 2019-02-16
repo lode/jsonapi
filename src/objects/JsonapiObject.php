@@ -8,9 +8,9 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject implements ObjectInterface {
 	/** @var string */
-	public $version;
+	protected $version;
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	
 	/**
 	 * @param string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_DEFAULT

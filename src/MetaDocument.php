@@ -2,8 +2,8 @@
 
 namespace alsvanzelf\jsonapi;
 
-use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class MetaDocument extends Document {

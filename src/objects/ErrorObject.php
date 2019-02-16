@@ -2,11 +2,11 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
@@ -14,21 +14,21 @@ class ErrorObject implements ObjectInterface {
 	use ManageHttpStatusCode;
 	
 	/** @var string */
-	public $id;
+	protected $id;
 	/** @var string */
-	public $code;
+	protected $code;
 	/** @var string */
-	public $title;
+	protected $title;
 	/** @var string */
-	public $detail;
+	protected $detail;
 	/** @var LinksObject */
-	public $links;
+	protected $links;
 	/** @var array */
-	public $source = [];
+	protected $source = [];
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		'exceptionExposeDetails' => false,
 		'exceptionExposeTrace'   => true,
 		'exceptionStripBasePath' => null,

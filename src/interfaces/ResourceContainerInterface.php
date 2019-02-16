@@ -15,6 +15,8 @@ interface ResourceContainerInterface {
 	 * if the object itself is a resource, this should *not* be returned
 	 * @see ResourceInterface to get the resource itself
 	 * 
+	 * @internal
+	 * 
 	 * @return array with a mix of ResourceIdentifierObject and ResourceObject
 	 */
 	public function getContainedResources();

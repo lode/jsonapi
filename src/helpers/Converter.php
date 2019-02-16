@@ -1,9 +1,12 @@
 <?php
 
-namespace alsvanzelf\jsonapi;
+namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
+/**
+ * @internal
+ */
 class Converter {
 	/**
 	 * @param  object $object

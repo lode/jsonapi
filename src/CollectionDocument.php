@@ -13,9 +13,9 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 class CollectionDocument extends DataDocument implements ResourceContainerInterface {
 	/** @var ResourceInterface[] */
-	public $resources = [];
+	protected $resources = [];
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		'skipIncluding' => false,
 	];
 	

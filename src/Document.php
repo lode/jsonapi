@@ -2,10 +2,10 @@
 
 namespace alsvanzelf\jsonapi;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
@@ -28,13 +28,13 @@ abstract class Document implements DocumentInterface {
 	const LEVEL_RESOURCE = 'resource';
 	
 	/** @var LinksObject */
-	public $links;
+	protected $links;
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	/** @var JsonapiObject */
-	public $jsonapi;
+	protected $jsonapi;
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
 		'prettyPrint'   => false,
 		'contentType'   => Document::CONTENT_TYPE_DEFAULT,

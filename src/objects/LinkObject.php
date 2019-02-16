@@ -7,9 +7,9 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 
 class LinkObject implements ObjectInterface {
 	/** @var string */
-	public $href;
+	protected $href;
 	/** @var MetaObject */
-	public $meta;
+	protected $meta;
 	
 	/**
 	 * @param string $href

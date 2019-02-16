@@ -2,8 +2,8 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
 	/** @var RelationshipObject[] */
-	public $relationships = [];
+	protected $relationships = [];
 	
 	/**
 	 * human api
@@ -34,13 +34,6 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 	}
 	
 	/**
-	 * @return string[]
-	 */
-	public function getKeys() {
-		return array_keys($this->relationships);
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -58,6 +51,19 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 		}
 		
 		$this->relationships[$key] = $relationshipObject;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
+	 * @return string[]
+	 */
+	public function getKeys() {
+		return array_keys($this->relationships);
 	}
 	
 	/**

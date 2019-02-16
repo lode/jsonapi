@@ -3,10 +3,10 @@
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\CollectionDocument;
-use alsvanzelf\jsonapi\Converter;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -16,9 +16,9 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class ResourceDocument extends DataDocument implements ResourceInterface {
 	/** @var ResourceIdentifierObject|ResourceObject */
-	public $resource;
+	protected $resource;
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		'skipIncluding' => false,
 	];
 	

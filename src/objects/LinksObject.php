@@ -2,15 +2,15 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Converter;
-use alsvanzelf\jsonapi\Validator;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
 class LinksObject implements ObjectInterface {
 	/** @var array with string|LinkObject */
-	public $links = [];
+	protected $links = [];
 	
 	/**
 	 * human api

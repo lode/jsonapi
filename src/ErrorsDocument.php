@@ -8,11 +8,11 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
-	public $errors = [];
+	protected $errors = [];
 	/** @var array */
-	private $httpStatusCodes;
+	protected $httpStatusCodes;
 	/** @var array */
-	private static $defaults = [
+	protected static $defaults = [
 		'exceptionExposeDetails' => false,
 		'exceptionExposeTrace'   => true,
 		'exceptionSkipPrevious'  => false,
@@ -137,10 +137,12 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
+	 * @internal
+	 * 
 	 * @param  string|int $httpStatusCode
 	 * @return int
 	 */
-	private function determineHttpStatusCode($httpStatusCode) {
+	protected function determineHttpStatusCode($httpStatusCode) {
 		// add the new code
 		$category = substr($httpStatusCode, 0, 1);
 		$this->httpStatusCodes[$category][$httpStatusCode] = true;

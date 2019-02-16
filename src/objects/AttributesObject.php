@@ -2,13 +2,13 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Converter;
-use alsvanzelf\jsonapi\Validator;
+use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class AttributesObject implements ObjectInterface {
 	/** @var array */
-	public $attributes = [];
+	protected $attributes = [];
 	
 	/**
 	 * human api
@@ -44,13 +44,6 @@ class AttributesObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @return string[]
-	 */
-	public function getKeys() {
-		return array_keys($this->attributes);
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -66,6 +59,19 @@ class AttributesObject implements ObjectInterface {
 		}
 		
 		$this->attributes[$key] = $value;
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
+	 * @return string[]
+	 */
+	public function getKeys() {
+		return array_keys($this->attributes);
 	}
 	
 	/**

@@ -7,6 +7,8 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 
 interface ResourceInterface {
 	/**
+	 * @internal
+	 * 
 	 * @param  boolean $identifierOnly optional, defaults to false
 	 * @return ResourceIdentifierObject|ResourceObject
 	 */
