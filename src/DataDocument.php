@@ -7,6 +7,9 @@ use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
+/**
+ * @see ResourceDocument or CollectionDocument
+ */
 abstract class DataDocument extends Document {
 	/** @var ResourceObject[] */
 	protected $includedResources = [];

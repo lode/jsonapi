@@ -14,6 +14,11 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
+/**
+ * this document represents an entity or other resource of the api
+ * it can contain other Resources as relationships
+ * a CollectionDocument should be used if the primary Resource is (or can be) a set
+ */
 class ResourceDocument extends DataDocument implements ResourceInterface {
 	/** @var ResourceIdentifierObject|ResourceObject */
 	protected $resource;
@@ -44,7 +49,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param  array      $attributes
 	 * @param  string     $type       optional
 	 * @param  string|int $id         optional
-	 * @param  array      $options    optional {@see ResourceDocument::$defaults}
+	 * @param  array      $options    optional {@see ResourceDocument::$defaults} {@see ResourceObject::$defaults}
 	 * @return ResourceDocument
 	 */
 	public static function fromArray(array $attributes, $type=null, $id=null, array $options=[]) {

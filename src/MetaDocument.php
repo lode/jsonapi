@@ -6,6 +6,10 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
+/**
+ * this document can be used if neither data nor errors need to be set
+ * meta can also be added to ResourceDocument, CollectionDocument and ErrorsDocument via `addMeta()`
+ */
 class MetaDocument extends Document {
 	/**
 	 * human api

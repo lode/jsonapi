@@ -6,6 +6,9 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
+/**
+ * this document is used to send one or multiple errors
+ */
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
 	protected $errors = [];

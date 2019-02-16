@@ -11,6 +11,9 @@ use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
+/**
+ * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
+ */
 abstract class Document implements DocumentInterface {
 	use ManageHttpStatusCode;
 	

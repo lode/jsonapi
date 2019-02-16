@@ -14,7 +14,6 @@
 - [Removed](#removed)
   - [`\jsonapi\exception` class](#jsonapiexception-class)
   - [`LINK_LEVEL_BOTH` constant](#link_level_both-constant)
-  - [`set_redirect_location()` method](#set_redirect_location-method)
   - [`fill_*()` methods](#fill_-methods)
   - [Debug mode](#debug-mode)
   - [Links are not auto generated anymore](#links-are-not-auto-generated-anymore)
@@ -24,6 +23,7 @@
   - [`LEVEL_JSONAPI` constant](#level_jsonapi-constant)
   - [Unit and output tests](#unit-and-output-tests)
   - [php7 ready](#php7-ready)
+- [Reference of changes](#reference-of-changes)
 
 ---
 
@@ -329,11 +329,6 @@ $document->addLink('foo',  'https://jsonapi.org', $meta, $level=Document::LEVEL_
 $document->addLink('foo',  'https://jsonapi.org', $meta, $level=Document::LEVEL_ROOT);
 ```
 
-### `set_redirect_location()` method
-
-Setting a redirect location and http status code via `set_redirect_location()` is removed.
-Set this header manually before calling `$document->sendResponse()`.
-
 ### `fill_*()` methods
 
 Adding data via `fill_data()` and other `fill_*()` methods is removed.
@@ -569,3 +564,76 @@ Tests are added to:
 ### php7 ready
 
 The code is tested against php7. But will continue to support php5.
+
+## Reference of changes
+
+Old | New
+--- | ---
+**base** | n/a
+`base::$debug;` | See [Debug mode](#debug-mode)
+`base::$appRoot;`<br><br><br><br>&nbsp; | Use `$options['exceptionStripBasePath'=>'...']`<br>on `ErrorObject::fromException()`<br>or `ErrorsDocument::fromException()`<br>or `$errorsDocument = new ErrorsDocument(); $errorsDocument->addException()`
+&nbsp; | &nbsp;
+**collection** | **CollectionDocument**
+`$collection = new collection();` | `$collectionDocument = new CollectionDocument();`
+`$collection->add_resource();` | `$collectionDocument->addResource();`
+`$collection->fill_collection();` | `$collectionDocument = CollectionDocument::fromResources();`
+&nbsp; | &nbsp;
+**error** | **ErrorObject**
+`$error = new error();`<br>&nbsp; | `$errorObject = new ErrorObject();`<br>Same arguments, same order, skipping the third argument.
+`$error->set_http_status();` | `$errorObject->setHttpStatusCode();`
+`$error->set_error_message();` | `$errorObject->setApplicationCode();`
+`$error->set_friendly_message();` | `$errorObject->setHumanTitle();`
+`$error->set_friendly_detail();` | `$errorObject->setHumanDetails();`
+`$error->blame_post_body();`<br>&nbsp; | `$errorObject->blameJsonPointer();`<br>Or `$errorObject->blamePostData();`
+`$error->blame_get_parameter();` | `$errorObject->blameQueryParameter();`
+`$error->set_about_link();` | `$errorObject->setAboutLink();`
+`$error->set_identifier();` | `$errorObject->setUniqueIdentifier();`
+`$error->add_meta();` | `$errorObject->addMeta();`
+`$error->fill_meta();` | `$errorObject->setMetaObject(MetaObject::fromArray());`
+&nbsp; | &nbsp;
+**errors** | **ErrorsDocument**
+`$errors = new errors();`<br>&nbsp; | `$errorsDocument = new ErrorsDocument(); $errorsDocument->add();`<br>Same arguments, same order, skipping the third argument
+`$errors->send_response();`<br>&nbsp; | `$errorsDocument->sendResponse();`<br>See [Change logic via single options argument](#change-logic-via-single-options-argument).
+`$errors->set_http_status();` | `$errorsDocument->setHttpStatusCode();`
+`$errors->add_error();`<br>&nbsp; | `$errorsDocument->add();`<br>Same arguments, same order, skipping the third argument.
+`$errors->fill_errors();` | Removed.
+`$errors->add_exception();` | `$errorsDocument->addException();`
+&nbsp; | &nbsp;
+**exception** | _Removed, see [Removed - `\jsonapi\exception` class](#jsonapiexception-class)._
+&nbsp; | &nbsp;
+**resource** | **ResourceDocument**
+`resource::RELATION_TO_MANY` | `RelationshipObject::TO_MANY;`
+`resource::RELATION_TO_ONE` | `RelationshipObject::TO_ONE;`
+`resource::RELATION_LINKS_`<br>`resource::LINK_LEVEL_`<br>`resource::SELF_LINK_`<br>`resource::$self_link_data_level`<br>`resource::$relation_links` | See [Links are not auto generated anymore](#links-are-not-auto-generated-anymore).<br><br><br><br>&nbsp;
+`$resource = new resource();` | `$resourceDocument = new ResourceDocument();`
+`$resource->add_data();` | `$resourceDocument->add();`
+`$resource->fill_data();` | `$resourceDocument = ResourceDocument::fromArray();`
+`$resource->add_relation();`<br>&nbsp; | `$resourceDocument->addRelationship();`<br>See [Change logic via single options argument](#change-logic-via-single-options-argument).
+`$resource->fill_relations();` | No direct replacement.
+`$resource->add_link();` | `$resourceDocument->addLink();`
+`$resource->set_self_link();` | `$resourceDocument->setSelfLink();`
+`$resource->add_self_link_meta();`<br>&nbsp; | `$resourceDocument->setSelfLink();`<br>Also see [Links are not auto generated anymore](#links-are-not-auto-generated-anymore).
+`$resource->add_meta();` | `$resourceDocument->addMeta();`
+`$resource->fill_meta();` | `$resourceDocument->setMetaObject(MetaObject::fromArray());`
+&nbsp; | &nbsp;
+**response** | **Document**, **MetaDocument** or **ResourceDocument**
+`response::STATUS_*` | Use own supplied hard-coded http status codes.
+`response::CONTENT_TYPE_OFFICIAL;` | `Document::CONTENT_TYPE_OFFICIAL;`
+`response::CONTENT_TYPE_DEBUG;` | `Document::CONTENT_TYPE_DEBUG;`
+`response::CONTENT_TYPE_JSONP ` | `Document::CONTENT_TYPE_JSONP;`
+`response::ENCODE_DEFAULT;`<br><br>&nbsp; | Use `$options['encodeOptions'=>JSON_UNESCAPED_SLASHES \| JSON_UNESCAPED_UNICODE]`<br>on `sendResponse()` or `toJson()`
+`response::ENCODE_DEBUG;`<br><br>&nbsp; | Use `$options['encodeOptions'=>JSON_UNESCAPED_SLASHES \| JSON_UNESCAPED_UNICODE \| JSON_PRETTY_PRINT]`<br>on `sendResponse()` or `toJson()`
+`response::JSONP_CALLBACK_DEFAULT`<br>&nbsp; | Use `$options['jsonpCallback'=>'...']`<br>on `sendResponse()` or `toJson()`
+`response::$send_status_headers` | Removed, instead don't call `sendResponse()`
+`$response = new response();` | `$metaDocument = new MetaDocument();`
+`$response->__toString();` | `$metaDocument->toJson();`
+`$response->get_json();`<br>&nbsp; | `$metaDocument->toJson();`<br>See [Change logic via single options argument](#change-logic-via-single-options-argument).
+`$response->send_response();`<br>&nbsp; | `$metaDocument->sendResponse();`<br>See [Change logic via single options argument](#change-logic-via-single-options-argument).
+`$response->set_http_status();` | `$metaDocument->setHttpStatusCode();`
+`$response->set_redirect_location();` | Removed, set redirect headers manually.
+`$response->add_link();` | `$metaDocument->addLink();`
+`$response->fill_links();` | `$metaDocument->setLinksObject(LinksObject::fromArray());`
+`$response->set_self_link();` | `$resourceDocument->setSelfLink();`
+`$response->add_self_link_meta();`<br>&nbsp; | `$resourceDocument->setSelfLink();`<br>Also see [Links are not auto generated anymore](#links-are-not-auto-generated-anymore).
+`$response->add_meta();` | `$metaDocument->addMeta();`
+`$response->fill_meta();` | `$metaDocument = MetaDocument::fromArray();`

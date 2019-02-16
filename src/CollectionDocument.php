@@ -11,6 +11,10 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
+/**
+ * this document is a set of Resources
+ * this document should be used if there could be multiple, also if only one or even none is returned
+ */
 class CollectionDocument extends DataDocument implements ResourceContainerInterface {
 	/** @var ResourceInterface[] */
 	protected $resources = [];
