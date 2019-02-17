@@ -9,9 +9,23 @@ The JSON:API standard makes it easy for clients to fetch multiple resources in o
 Read more about it at [jsonapi.org](https://jsonapi.org/).
 
 
+## Installation
+
+[Use Composer](http://getcomposer.org/) require to get the latest stable version:
+
+```
+composer require alsvanzelf/jsonapi
+```
+
+#### Upgrading from v1
+
+If you used v1 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on how to upgrade.
+
+
+
 ## Getting started
 
-A small example:
+#### A small resource example
 
 ```php
 use alsvanzelf\jsonapi\ResourceDocument;
@@ -40,23 +54,87 @@ Which will result in:
 }
 ```
 
-You can also send collections (where `data` is an array of resources) or errors (even automatically by exceptions).
+#### A collection of resources
+
+```php
+use alsvanzelf\jsonapi\CollectionDocument;
+
+$document = new CollectionDocument();
+$document->add('user', 42, ['name' => 'Zaphod Beeblebrox']);
+$document->add('user', 1, ['name' => 'Ford Prefect']);
+$document->add('user', 2, ['name' => 'Arthur Dent']);
+$document->sendResponse();
+```
+
+Which will result in:
+
+```json
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"data": [
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"name": "Zaphod Beeblebrox"
+			}
+		},
+		{
+			"type": "user",
+			"id": "1",
+			"attributes": {
+				"name": "Ford Prefect"
+			}
+		},
+		{
+			"type": "user",
+			"id": "2",
+			"attributes": {
+				"name": "Arthur Dent"
+			}
+		}
+	]
+}
+```
+
+#### Turning an exception into jsonapi
+
+```php
+use alsvanzelf\jsonapi\ErrorsDocument;
+
+$exception = new Exception('something went wrong', 422);
+
+$options = ['exceptionExposeDetails' => true]; // defaults to false
+$document = ErrorsDocument::fromException($exception, $options);
+$document->sendResponse();
+```
+
+Which will result in:
+
+```json
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"errors": [
+		{
+			"status": "422",
+			"code": "422",
+			"title": "Exception",
+			"meta": {
+				"message": "something went wrong",
+				"file": "README.md",
+				"line": 107,
+				"trace": []
+			}
+		}
+	]
+}
+```
 
 Examples for all kind of responses are in the [/examples](/examples) directory.
-
-
-## Upgrading from v1
-
-If you used v1 of this library, see [/UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on how to upgrade.
-
-
-## Installation
-
-[Use Composer](http://getcomposer.org/). And use require to get the latest stable version:
-
-```
-composer require alsvanzelf/jsonapi
-```
 
 
 ## Features
