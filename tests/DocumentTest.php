@@ -206,4 +206,13 @@ class DocumentTest extends TestCase {
 		
 		$document->toJson($options);
 	}
+	
+	public function testJsonSerialize_HappyPath() {
+		$document = new Document();
+		$document->addMeta('foo', 'bar');
+		
+		$json = $document->toJson();
+		
+		$this->assertSame($json, json_encode($document));
+	}
 }

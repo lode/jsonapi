@@ -14,7 +14,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
-abstract class Document implements DocumentInterface {
+abstract class Document implements DocumentInterface, \JsonSerializable {
 	use ManageHttpStatusCode;
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
@@ -209,5 +209,13 @@ abstract class Document implements DocumentInterface {
 		header('Content-Type: '.$options['contentType']);
 		
 		echo $json;
+	}
+	
+	/**
+	 * JsonSerializable
+	 */
+	
+	public function jsonSerialize() {
+		return $this->toArray();
 	}
 }
