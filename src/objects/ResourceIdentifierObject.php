@@ -3,12 +3,15 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\helpers\AtMembers;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
+	use AtMembers;
+	
 	/** @var string */
 	protected $type;
 	/** @var string */
@@ -152,6 +155,9 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -160,7 +166,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		$array['type'] = $this->type;
 		

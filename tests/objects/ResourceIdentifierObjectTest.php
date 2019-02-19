@@ -70,4 +70,14 @@ class ResourceIdentifierObjectTest extends TestCase {
 		
 		$resourceIdentifierObject->getIdentificationKey();
 	}
+	
+	public function testIsEmpty_WithAtMembers() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		
+		$this->assertTrue($resourceIdentifierObject->isEmpty());
+		
+		$resourceIdentifierObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($resourceIdentifierObject->isEmpty());
+	}
 }

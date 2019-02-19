@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\AtMembers;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -13,6 +14,8 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipObject implements ObjectInterface, RecursiveResourceContainerInterface {
+	use AtMembers;
+	
 	const TO_ONE  = 'one';
 	const TO_MANY = 'many';
 	
@@ -291,6 +294,9 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -299,7 +305,7 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		if ($this->links !== null && $this->links->isEmpty() === false) {
 			$array['links'] = $this->links->toArray();

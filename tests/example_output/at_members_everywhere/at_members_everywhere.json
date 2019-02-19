@@ -1,0 +1,86 @@
+{
+	"@context": "test",
+	"jsonapi": {
+		"@context": "test",
+		"version": "1.0",
+		"meta": {
+			"@context": "test"
+		}
+	},
+	"links": {
+		"@context": "test",
+		"foo": {
+			"@context": "test",
+			"href": "https://jsonapi.org",
+			"meta": {
+				"@context": "test"
+			}
+		}
+	},
+	"meta": {
+		"@context": "test"
+	},
+	"data": {
+		"@context": "test",
+		"type": "user",
+		"id": "42",
+		"meta": {
+			"@context": "test"
+		},
+		"attributes": {
+			"@context": "test"
+		},
+		"relationships": {
+			"@context": "test",
+			"foo": {
+				"@context": "test",
+				"links": {
+					"@context": "test"
+				},
+				"data": {
+					"type": "user",
+					"id": "1"
+				},
+				"meta": {
+					"@context": "test"
+				}
+			},
+			"bar": {
+				"@context": "test",
+				"data": {
+					"@context": "test",
+					"type": "user",
+					"id": "2"
+				}
+			}
+		},
+		"links": {
+			"@context": "test",
+			"foo": {
+				"@context": "test",
+				"href": "https://jsonapi.org",
+				"meta": {
+					"@context": "test"
+				}
+			}
+		}
+	},
+	"included": [
+		{
+			"@context": "test",
+			"type": "user",
+			"id": "1",
+			"attributes": {
+				"@context": "test"
+			}
+		},
+		{
+			"@context": "test",
+			"type": "user",
+			"id": "3",
+			"relationships": {
+				"@context": "test"
+			}
+		}
+	]
+}

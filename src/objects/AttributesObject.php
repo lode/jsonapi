@@ -2,11 +2,14 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\helpers\AtMembers;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class AttributesObject implements ObjectInterface {
+	use AtMembers;
+	
 	/** @var array */
 	protected $attributes = [];
 	
@@ -82,13 +85,13 @@ class AttributesObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		return ($this->attributes === []);
+		return ($this->attributes === [] && $this->hasAtMembers() === false);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		return $this->attributes;
+		return array_merge($this->getAtMembers(), $this->attributes);
 	}
 }

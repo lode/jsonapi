@@ -122,5 +122,9 @@ class ErrorObjectTest extends TestCase {
 		$errorObject = new ErrorObject();
 		$errorObject->addMeta('foo', 'bar');
 		$this->assertFalse($errorObject->isEmpty());
+		
+		$errorObject = new ErrorObject();
+		$errorObject->addAtMember('context', 'test');
+		$this->assertFalse($errorObject->isEmpty());
 	}
 }
