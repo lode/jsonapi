@@ -47,9 +47,8 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$array = $resourceIdentifierObject->toArray();
 		
 		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('id', $array);
+		$this->assertArrayNotHasKey('id', $array);
 		$this->assertNull($array['type']);
-		$this->assertNull($array['id']);
 		$this->assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$this->expectException(Exception::class);
@@ -63,9 +62,8 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$array = $resourceIdentifierObject->toArray();
 		
 		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('id', $array);
+		$this->assertArrayNotHasKey('id', $array);
 		$this->assertSame('user', $array['type']);
-		$this->assertNull($array['id']);
 		$this->assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$this->expectException(Exception::class);

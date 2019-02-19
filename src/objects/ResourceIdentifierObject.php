@@ -160,10 +160,13 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [
-			'type' => $this->type,
-			'id'   => $this->id,
-		];
+		$array = [];
+		
+		$array['type'] = $this->type;
+		
+		if ($this->id !== null) {
+			$array['id'] = $this->id;
+		}
 		
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();

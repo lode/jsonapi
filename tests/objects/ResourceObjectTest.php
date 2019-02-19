@@ -12,6 +12,16 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceObjectTest extends TestCase {
+	public function testConstructor_ClientDocumentWithoutId() {
+		$resourceObject = new ResourceObject('user');
+		$resourceObject->add('foo', 'bar');
+		
+		$array = $resourceObject->toArray();
+		
+		$this->assertArrayNotHasKey('id', $array);
+		$this->assertArrayHasKey('attributes', $array);
+	}
+	
 	public function testFromArray_WithoutId() {
 		$type       = 'user';
 		$id         = null;
@@ -23,10 +33,9 @@ class ResourceObjectTest extends TestCase {
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayHasKey('id', $array);
+		$this->assertArrayNotHasKey('id', $array);
 		$this->assertArrayHasKey('attributes', $array);
 		$this->assertArrayHasKey('foo', $array['attributes']);
-		$this->assertNull($array['id']);
 		$this->assertSame('bar', $array['attributes']['foo']);
 	}
 	
