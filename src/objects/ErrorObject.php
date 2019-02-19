@@ -39,13 +39,14 @@ class ErrorObject implements ObjectInterface {
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
 	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
 	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
 	 */
-	public function __construct($genericCode=null, $genericTitle=null, $specificDetails=null, $specificAboutLink=null) {
+	public function __construct($genericCode=null, $genericTitle=null, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
 		if ($genericCode !== null) {
 			$this->setApplicationCode($genericCode);
 		}
 		if ($genericTitle !== null) {
-			$this->setHumanExplanation($genericTitle, $specificDetails, $specificAboutLink);
+			$this->setHumanExplanation($genericTitle, $specificDetails, $specificAboutLink, $genericTypeLink);
 		}
 	}
 	
@@ -117,8 +118,9 @@ class ErrorObject implements ObjectInterface {
 	 * @param string $genericTitle      title of the generic type of error
 	 * @param string $specificDetails   optional, explanation of the specific error
 	 * @param string $specificAboutLink optional, explanation of the specific error
+	 * @param string $genericTypeLink   optional, explanation of the generic type of error
 	 */
-	public function setHumanExplanation($genericTitle, $specificDetails=null, $specificAboutLink=null) {
+	public function setHumanExplanation($genericTitle, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
 		$this->setHumanTitle($genericTitle);
 		
 		if ($specificDetails !== null) {
@@ -126,6 +128,9 @@ class ErrorObject implements ObjectInterface {
 		}
 		if ($specificAboutLink !== null) {
 			$this->setAboutLink($specificAboutLink);
+		}
+		if ($genericTypeLink !== null) {
+			$this->setTypeLink($genericTypeLink);
 		}
 	}
 	
@@ -150,6 +155,16 @@ class ErrorObject implements ObjectInterface {
 	 */
 	public function setAboutLink($href, array $meta=[]) {
 		$this->addLink('about', $href, $meta);
+	}
+	
+	/**
+	 * set the link of the generic type of this error, explained in a human-friendly way
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setTypeLink($href, array $meta=[]) {
+		$this->addLink('type', $href, $meta);
 	}
 	
 	/**
