@@ -13,8 +13,9 @@ namespace alsvanzelf\jsonapi;
  * extra elements
  * - meta data @see ->add_meta() or ->fill_meta()
  * - included  although possible, you should set those via the resource
+ * 
+ * @deprecated {@see CollectionDocument}
  */
-
 class collection extends response {
 
 /**

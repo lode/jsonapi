@@ -1,24 +1,24 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\MetaDocument;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
+require 'bootstrap_examples.php';
 
 /**
  * there are a few use-cases for sending meta-only responses
- * in such cases, use the response class
+ * in such cases, use the MetaDocument
  * 
  * prefer to actually send out a resource, error or collection
  */
 
-$jsonapi = new jsonapi\response();
-$jsonapi->add_meta('foo', 'bar');
+$document = new MetaDocument();
+$document->addMeta('foo', 'bar');
 
 /**
  * sending the response
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$document->toJson($options);
