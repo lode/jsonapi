@@ -20,8 +20,9 @@ namespace alsvanzelf\jsonapi;
  * @note ease error handling by using a jsonapi\exception
  *       @see examples/errors_exception_direct.php
  *       @see jsonapi\exception::__toString() when you want to use your own exception handling
+ * 
+ * @deprecated {@see ErrorsDocument}
  */
-
 class errors extends response {
 
 /**

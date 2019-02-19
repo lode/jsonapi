@@ -1,59 +1,37 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
+require 'bootstrap_examples.php';
 
-require '../vendor/autoload.php';
-
-/**
- * settings which will change default from 2.x
- */
-jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
+$users = ExampleDataset::findEntities('user');
 
 /**
- * the collection you want to send out
- * 
- * normally, you'd fetch this from a database
+ * send multiple entities, called a collection
  */
 
-require 'dataset.php';
-
-$users = array(
-	new user(1),
-	new user(2),
-	new user(42),
-);
-
-$collection = array();
+$collection = [];
 
 foreach ($users as $user) {
-	$resource = new jsonapi\resource($type='user', $user->id);
-	$resource->fill_data($user);
+	$resource = ResourceObject::fromObject($user, $type='user', $user->id);
 	
 	if ($user->id == 42) {
-		$ship = new jsonapi\resource('ship', 5);
-		$ship->add_data('name', 'Heart of Gold');
-		$resource->add_relation('ship', $ship);
+		$ship = new ResourceObject('ship', 5);
+		$ship->add('name', 'Heart of Gold');
+		$resource->addRelationship('ship', $ship);
 	}
 	
 	$collection[] = $resource;
 }
 
-/**
- * building up the json response
- * 
- * you can set arrays, single data points, or whole objects
- * objects are converted into arrays using their public keys
- */
-
-$jsonapi = new jsonapi\collection($type='user');
-
-$jsonapi->fill_collection($collection);
+$document = CollectionDocument::fromResources(...$collection);
 
 /**
- * sending the response
+ * get the json
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$document->toJson($options);
