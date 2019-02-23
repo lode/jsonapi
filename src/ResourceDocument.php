@@ -125,8 +125,13 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param string $href
 	 * @param array  $meta optional
 	 */
-	public function setSelfLink($href, array $meta=[]) {
-		$this->resource->setSelfLink($href, $meta);
+	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_RESOURCE) {
+		if ($level === Document::LEVEL_RESOURCE) {
+			$this->resource->setSelfLink($href, $meta);
+		}
+		else {
+			parent::setSelfLink($href, $meta, $level);
+		}
 	}
 	
 	/**

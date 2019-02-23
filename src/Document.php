@@ -8,6 +8,7 @@ use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
+use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -83,6 +84,17 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	}
 	
 	/**
+	 * set the self link on the document
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 */
+	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_ROOT) {
+		$this->addLink('self', $href, $meta, $level);
+	}
+	
+	/**
 	 * @param string $key
 	 * @param mixed  $value
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
@@ -116,6 +128,18 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	/**
 	 * spec api
 	 */
+	
+	/**
+	 * @param string     $key
+	 * @param LinkObject $linkObject
+	 */
+	public function addLinkObject($key, LinkObject $linkObject) {
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$this->links->addLinkObject($key, $linkObject);
+	}
 	
 	/**
 	 * @param LinksObject $linksObject

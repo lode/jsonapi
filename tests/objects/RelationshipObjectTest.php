@@ -177,6 +177,14 @@ class RelationshipObjectTest extends TestCase {
 		$this->assertSame($baseUrl.'last', $array['links']['last']);
 	}
 	
+	public function testSetPaginationLinks_BlockedOnToOne() {
+		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		
+		$this->expectException(InputException::class);
+		
+		$relationshipObject->setPaginationLinks('foo');
+	}
+	
 	public function testAddMeta_HappyPath() {
 		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
 		
@@ -272,6 +280,29 @@ class RelationshipObjectTest extends TestCase {
 		$this->assertArrayHasKey('href', $array['links']['foo']);
 		$this->assertArrayNotHasKey('meta', $array['links']['foo']);
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+	}
+	
+	public function testToArray_EmptyResource() {
+		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		
+		$array = $relationshipObject->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertNull($array['data']);
+	}
+	
+	public function testToArray_EmptyResources() {
+		$relationshipObject = new RelationshipObject(RelationshipObject::TO_MANY);
+		
+		$array = $relationshipObject->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		if (method_exists($this, 'assertIsArray')) {
+			$this->assertIsArray($array['data']);
+		}
+		else {
+			$this->assertInternalType('array', $array['data']);
+		}
 	}
 	
 	private function validateToOneRelationshipArray(array $array) {
