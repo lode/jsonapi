@@ -429,7 +429,7 @@ New, with links:
 $document = new ResourceDocument('user', 42);
 
 $document->setSelfLink('https://example.org/user/42'); // default at LEVEL_RESOURCE only
-$document->addLink('self', 'https://example.org/user/42', $meta=[], Document::LEVEL_ROOT);
+$document->setSelfLink('https://example.org/user/42', $meta=[], Document::LEVEL_ROOT);
 
 $relationshipLinks = [
 	'self'    => 'https://example.org/user/42/relationships/foo',
