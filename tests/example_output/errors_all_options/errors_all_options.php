@@ -12,7 +12,6 @@ class errors_all_options {
 		$errorSpecApi = new ErrorObject();
 		$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
 		$errorSpecApi->blameQueryParameter($parameter='filter');
-		$errorSpecApi->blamePostData($postKey='title');
 		$errorSpecApi->setUniqueIdentifier($id=42);
 		$errorSpecApi->addMeta($key='foo', $value='bar');
 		$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
@@ -20,7 +19,6 @@ class errors_all_options {
 		$errorSpecApi->setHumanTitle($genericTitle='Too much options');
 		$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
 		$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-		$errorSpecApi->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 		
 		$metaObject = new \stdClass();
 		$metaObject->property = 'value';
