@@ -60,16 +60,6 @@ class CollectionDocument extends DataDocument implements ResourceContainerInterf
 	}
 	
 	/**
-	 * set the self link on the document
-	 * 
-	 * @param string $href
-	 * @param array  $meta optional
-	 */
-	public function setSelfLink($href, array $meta=[]) {
-		$this->addLink('self', $href, $meta, $level=Document::LEVEL_ROOT);
-	}
-	
-	/**
 	 * @param string $previousHref optional
 	 * @param string $nextHref     optional
 	 * @param string $firstHref    optional
