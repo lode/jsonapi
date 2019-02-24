@@ -111,7 +111,7 @@ class LinksObject implements ObjectInterface {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
 				$array[$key] = $link->toArray();
 			}
-			else {
+			elseif (is_string($link)) {
 				$array[$key] = $link;
 			}
 		}
