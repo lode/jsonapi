@@ -31,11 +31,8 @@ abstract class DataDocument extends Document {
 	 */
 	
 	/**
-	 * internal api
-	 */
-	
-	/**
-	 * @internal
+	 * mainly used when an `included` query parameter is passed
+	 * and resources are requested separate from what is standard for a response
 	 * 
 	 * @param ResourceObject ...$resourceObjects
 	 */
@@ -52,6 +49,10 @@ abstract class DataDocument extends Document {
 			$this->includedResources[] = $resourceObject;
 		}
 	}
+	
+	/**
+	 * internal api
+	 */
 	
 	/**
 	 * DocumentInterface

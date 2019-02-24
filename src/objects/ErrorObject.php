@@ -154,18 +154,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * set the link where the end user can act to solve this error
-	 * 
-	 * @note this is not a part of the official specification
-	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function setActionLink($href, array $meta=[]) {
-		$this->addLink('action', $href, $meta);
-	}
-	
-	/**
 	 * blame the json pointer from the request body causing this error
 	 * 
 	 * @see https://tools.ietf.org/html/rfc6901
@@ -183,17 +171,6 @@ class ErrorObject implements ObjectInterface {
 	 */
 	public function blameQueryParameter($parameter) {
 		$this->addSource('parameter', $parameter);
-	}
-	
-	/**
-	 * blame the key in POST data from the request causing this error
-	 * 
-	 * @note this is not a part of the official specification
-	 * 
-	 * @param  string $postKey
-	 */
-	public function blamePostData($postKey) {
-		$this->addSource('post', $postKey);
 	}
 	
 	/**
@@ -234,7 +211,7 @@ class ErrorObject implements ObjectInterface {
 	/**
 	 * add the source of the error
 	 * 
-	 * @param string $key   {@see ->blameJsonPointer(), ->blameQueryParameter(), ->blamePostData()}
+	 * @param string $key   {@see ->blameJsonPointer(), ->blameQueryParameter()}
 	 * @param string $value
 	 */
 	public function addSource($key, $value) {

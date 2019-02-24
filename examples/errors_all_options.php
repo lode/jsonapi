@@ -11,10 +11,11 @@ require 'bootstrap_examples.php';
 
 $errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
 
+$errorSpecApi = new ErrorObject();
+
 // mark the cause of the error
 $errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
 $errorSpecApi->blameQueryParameter($parameter='filter');
-$errorSpecApi->blamePostData($postKey='title');
 
 // an identifier useful for helpdesk purposes
 $errorSpecApi->setUniqueIdentifier($id=42);
@@ -37,7 +38,6 @@ $errorSpecApi->setApplicationCode($genericCode='Invalid input');
 $errorSpecApi->setHumanTitle($genericTitle='Too much options');
 $errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
 $errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-$errorSpecApi->setActionLink($actionLink='https://www.example.com/helpdesk.html', ['label'=>'Contact us']);
 
 /**
  * prepare multiple error objects for the errors response
