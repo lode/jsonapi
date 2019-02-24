@@ -1,0 +1,11 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"errors": [
+		{
+			"status": "404",
+			"code": "404"
+		}
+	]
+}
