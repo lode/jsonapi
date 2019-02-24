@@ -128,7 +128,7 @@ class ErrorObject implements ObjectInterface {
 			$this->setAboutLink($specificAboutLink);
 		}
 		if ($genericTypeLink !== null) {
-			$this->setTypeLink($genericTypeLink);
+			$this->appendTypeLink($genericTypeLink);
 		}
 	}
 	
@@ -143,13 +143,13 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * set the link of the generic type of this error, explained in a human-friendly way
+	 * append a link of the generic type of this error, explained in a human-friendly way
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setTypeLink($href, array $meta=[]) {
-		$this->addLink('type', $href, $meta);
+	public function appendTypeLink($href, array $meta=[]) {
+		$this->appendLink('type', $href, $meta);
 	}
 	
 	/**
