@@ -7,6 +7,7 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
+use alsvanzelf\jsonapi\objects\LinksArray;
 
 class LinksObject implements ObjectInterface {
 	/** @var array with string|LinkObject */
@@ -55,6 +56,30 @@ class LinksObject implements ObjectInterface {
 	}
 	
 	/**
+	 * appends a link to an array of links under a specific key
+	 * 
+	 * @see LinksArray for use cases
+	 * 
+	 * @param string $key
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * 
+	 * @throws DuplicateException if another link is already using that $key but is not an array
+	 */
+	public function append($key, $href, array $meta=[]) {
+		Validator::checkMemberName($key);
+		
+		if (isset($this->links[$key]) === false) {
+			$this->addLinksArray($key, new LinksArray());
+		}
+		elseif ($this->links[$key] instanceof LinksArray === false) {
+			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
+		}
+		
+		$this->links[$key]->add($href, $meta);
+	}
+	
+	/**
 	 * spec api
 	 */
 	
@@ -71,7 +96,7 @@ class LinksObject implements ObjectInterface {
 			throw new DuplicateException('link with key "'.$key.'" already set');
 		}
 		
-		$this->links[$key] =  $href;
+		$this->links[$key] = $href;
 	}
 	
 	/**
@@ -88,6 +113,41 @@ class LinksObject implements ObjectInterface {
 		}
 		
 		$this->links[$key] = $linkObject;
+	}
+	
+	/**
+	 * @param string     $key
+	 * @param LinksArray $linksArray
+	 * 
+	 * @throws DuplicateException if another link is already using that $key
+	 */
+	public function addLinksArray($key, LinksArray $linksArray) {
+		Validator::checkMemberName($key);
+		
+		if (isset($this->links[$key])) {
+			throw new DuplicateException('link with key "'.$key.'" already set');
+		}
+		
+		$this->links[$key] = $linksArray;
+	}
+	
+	/**
+	 * @param  string     $key
+	 * @param  LinkObject $linkObject
+	 * 
+	 * @throws DuplicateException if another link is already using that $key but is not an array
+	 */
+	public function appendLinkObject($key, LinkObject $linkObject) {
+		Validator::checkMemberName($key);
+		
+		if (isset($this->links[$key]) === false) {
+			$this->addLinksArray($key, new LinksArray());
+		}
+		elseif ($this->links[$key] instanceof LinksArray === false) {
+			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
+		}
+		
+		$this->links[$key]->addLinkObject($linkObject);
 	}
 	
 	/**
@@ -109,6 +169,9 @@ class LinksObject implements ObjectInterface {
 		
 		foreach ($this->links as $key => $link) {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
+				$array[$key] = $link->toArray();
+			}
+			elseif ($link instanceof LinksArray && $link->isEmpty() === false) {
 				$array[$key] = $link->toArray();
 			}
 			elseif (is_string($link)) {
