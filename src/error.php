@@ -7,8 +7,9 @@ namespace alsvanzelf\jsonapi;
  * 
  * @note this class does *not* serve as a complete response
  *       it is used, and can be used, to fill an errors collection
+ * 
+ * @deprecated {@see objects\ErrorObject}
  */
-
 class error extends base {
 
 /**
