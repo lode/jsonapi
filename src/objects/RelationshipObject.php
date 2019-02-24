@@ -45,7 +45,7 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 */
 	
 	/**
-	 * create a Relationshipobject from mixed input
+	 * create a RelationshipObject from mixed input
 	 * 
 	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
 	 * @param  array  $links    optional
@@ -156,8 +156,14 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 * @param string $nextHref     optional
 	 * @param string $firstHref    optional
 	 * @param string $lastHref     optional
+	 * 
+	 * @throws InputException if used on a to-one relationship
 	 */
 	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
+		if ($this->type === RelationshipObject::TO_ONE) {
+			throw new InputException('can not add pagination links to a to-one relationship');
+		}
+		
 		if ($previousHref !== null) {
 			$this->addLink('prev', $previousHref);
 		}
@@ -304,10 +310,14 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 		if ($this->links !== null && $this->links->isEmpty() === false) {
 			$array['links'] = $this->links->toArray();
 		}
-		if ($this->type === RelationshipObject::TO_ONE && $this->resource !== null) {
-			$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
+		if ($this->type === RelationshipObject::TO_ONE) {
+			$array['data'] = null;
+			if ($this->resource !== null) {
+				$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
+			}
 		}
-		if ($this->type === RelationshipObject::TO_MANY && $this->resources !== []) {
+		if ($this->type === RelationshipObject::TO_MANY) {
+			$array['data'] = [];
 			foreach ($this->resources as $resource) {
 				$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
 			}

@@ -38,18 +38,11 @@
 					"meta": {
 						"foo": "bar"
 					}
-				},
-				"action": {
-					"href": "https://www.example.com/helpdesk.html",
-					"meta": {
-						"label": "Contact us"
-					}
 				}
 			},
 			"source": {
 				"pointer": "/data/attributes/title",
-				"parameter": "filter",
-				"post": "title"
+				"parameter": "filter"
 			},
 			"meta": {
 				"foo": "bar",

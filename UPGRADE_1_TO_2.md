@@ -429,7 +429,7 @@ New, with links:
 $document = new ResourceDocument('user', 42);
 
 $document->setSelfLink('https://example.org/user/42'); // default at LEVEL_RESOURCE only
-$document->addLink('self', 'https://example.org/user/42', $meta=[], Document::LEVEL_ROOT);
+$document->setSelfLink('https://example.org/user/42', $meta=[], Document::LEVEL_ROOT);
 
 $relationshipLinks = [
 	'self'    => 'https://example.org/user/42/relationships/foo',
@@ -584,7 +584,7 @@ Old | New
 `$error->set_error_message();` | `$errorObject->setApplicationCode();`
 `$error->set_friendly_message();` | `$errorObject->setHumanTitle();`
 `$error->set_friendly_detail();` | `$errorObject->setHumanDetails();`
-`$error->blame_post_body();`<br>&nbsp; | `$errorObject->blameJsonPointer();`<br>Or `$errorObject->blamePostData();`
+`$error->blame_post_body();`<br>&nbsp; | `$errorObject->blameJsonPointer();`
 `$error->blame_get_parameter();` | `$errorObject->blameQueryParameter();`
 `$error->set_about_link();` | `$errorObject->setAboutLink();`
 `$error->set_identifier();` | `$errorObject->setUniqueIdentifier();`

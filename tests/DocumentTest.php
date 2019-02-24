@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
 use PHPUnit\Framework\TestCase;
 
@@ -157,6 +158,22 @@ class DocumentTest extends TestCase {
 		$this->expectExceptionMessage('unknown level "foo"');
 		
 		$document->addMeta('foo', 'bar', $level='foo');
+	}
+	
+	public function testAddLinkObject_HappyPath() {
+		$linkObject = new LinkObject('https://jsonapi.org');
+		
+		$document = new Document();
+		$document->addLinkObject($key='foo', $linkObject);
+		
+		$array = $document->toArray();
+		
+		$this->assertCount(2, $array);
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('links', $array);
+		$this->assertArrayHasKey('foo', $array['links']);
+		$this->assertArrayHasKey('href', $array['links']['foo']);
+		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
 	public function testToJson_HappyPath() {
