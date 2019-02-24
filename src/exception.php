@@ -7,8 +7,9 @@ namespace alsvanzelf\jsonapi;
  * echo'ing the exception (or using ->send_response()) output a errors collection response
  * 
  * @note throwing the exception alone doesn't give you json output
+ * 
+ * @deprecated {@see ErrorsDocument::fromException()}
  */
-
 class exception extends \Exception {
 
 /**

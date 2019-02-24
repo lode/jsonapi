@@ -1,0 +1,61 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"attributes": {
+			"name": "Zaphod Beeblebrox",
+			"heads": 2,
+			"unknown": null
+		},
+		"relationships": {
+			"ship": {
+				"data": {
+					"type": "ship",
+					"id": "5"
+				}
+			}
+		}
+	},
+	"included": [
+		{
+			"type": "ship",
+			"id": "5",
+			"attributes": {
+				"name": "Heart of Gold"
+			},
+			"relationships": {
+				"wing": {
+					"data": {
+						"type": "wing",
+						"id": "1"
+					}
+				}
+			}
+		},
+		{
+			"type": "wing",
+			"id": "1",
+			"attributes": {
+				"side": "top"
+			},
+			"relationships": {
+				"flap": {
+					"data": {
+						"type": "flap",
+						"id": "1"
+					}
+				}
+			}
+		},
+		{
+			"type": "flap",
+			"id": "1",
+			"attributes": {
+				"color": "orange"
+			}
+		}
+	]
+}

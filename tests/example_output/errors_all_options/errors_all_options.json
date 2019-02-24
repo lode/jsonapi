@@ -1,0 +1,60 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"links": {
+		"redirect": {
+			"href": "/login",
+			"meta": {
+				"label": "Log in"
+			}
+		}
+	},
+	"errors": [
+		{
+			"code": "Invalid input",
+			"title": "Too much options",
+			"detail": "Please, choose a bit less. Consult your ...",
+			"links": {
+				"about": "https://www.example.com/explanation.html"
+			}
+		},
+		{
+			"id": 42,
+			"status": "404",
+			"code": "Invalid input",
+			"title": "Too much options",
+			"detail": "Please, choose a bit less. Consult your ...",
+			"links": {
+				"about": {
+					"href": "https://www.example.com/explanation.html",
+					"meta": {
+						"foo": "bar"
+					}
+				}
+			},
+			"source": {
+				"pointer": "/data/attributes/title",
+				"parameter": "filter"
+			},
+			"meta": {
+				"foo": "bar",
+				"object": {
+					"property": "value"
+				}
+			}
+		},
+		{
+			"code": "kiss",
+			"title": "Error objects can be small and simple as well."
+		},
+		{
+			"status": "500",
+			"code": "500"
+		},
+		{
+			"code": "Authentication error",
+			"title": "Not logged in"
+		}
+	]
+}
