@@ -4,13 +4,17 @@ namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
+use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
+use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
@@ -35,6 +39,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	protected $meta;
 	/** @var JsonapiObject */
 	protected $jsonapi;
+	/** @var ProfileInterface[] */
+	protected $profiles = [];
 	/** @var array */
 	protected static $defaults = [
 		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
@@ -149,6 +155,33 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	}
 	
 	/**
+	 * apply a profile which adds the link and sets a correct content-type
+	 * 
+	 * note that the rules from the profile are not automatically enforced
+	 * applying the rules, and applying them correctly, is manual
+	 * however the $profile could have custom methods to help
+	 * 
+	 * @see https://jsonapi.org/format/1.1/#profiles
+	 * 
+	 * @param ProfileInterface $profile
+	 */
+	public function applyProfile(ProfileInterface $profile) {
+		$this->profiles[] = $profile;
+		
+		if ($this->links === null) {
+			$this->setLinksObject(new LinksObject());
+		}
+		
+		$link = $profile->getAliasedLink();
+		if ($link instanceof LinkObject) {
+			$this->links->appendLinkObject('profile', $link);
+		}
+		else {
+			$this->links->append('profile', $link);
+		}
+	}
+	
+	/**
 	 * DocumentInterface
 	 */
 	
@@ -209,7 +242,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 		$json = ($options['json'] !== null) ? $options['json'] : $this->toJson($options);
 		
 		http_response_code($this->httpStatusCode);
-		header('Content-Type: '.$options['contentType']);
+		
+		$contentType = Converter::mergeProfilesInContentType($options['contentType'], $this->profiles);
+		header('Content-Type: '.$contentType);
 		
 		echo $json;
 	}
