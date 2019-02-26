@@ -4,6 +4,8 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use alsvanzelf\jsonapi\objects\LinkObject;
+use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
 class ConverterTest extends TestCase {
@@ -60,6 +62,34 @@ class ConverterTest extends TestCase {
 			['VALUE',         'VALUE'],
 			['eclipseRCPExt', 'eclipse RCP Ext'],
 		];
+	}
+	
+	public function testMergeProfilesInContentType_HappyPath() {
+		$this->assertSame('foo', Converter::mergeProfilesInContentType('foo', []));
+	}
+	
+	public function testMergeProfilesInContentType_WithProfileStringLink() {
+		$profile = new TestProfile();
+		$profile->setAliasedLink('bar');
+		
+		$this->assertSame('foo;profile="bar", foo', Converter::mergeProfilesInContentType('foo', [$profile]));
+	}
+	
+	public function testMergeProfilesInContentType_WithProfileObjectLink() {
+		$profile = new TestProfile();
+		$profile->setAliasedLink(new LinkObject('bar'));
+		
+		$this->assertSame('foo;profile="bar", foo', Converter::mergeProfilesInContentType('foo', [$profile]));
+	}
+	
+	public function testMergeProfilesInContentType_WithMultipleProfiles() {
+		$profile1 = new TestProfile();
+		$profile1->setAliasedLink('bar');
+		
+		$profile2 = new TestProfile();
+		$profile2->setAliasedLink(new LinkObject('baz'));
+		
+		$this->assertSame('foo;profile="bar baz", foo', Converter::mergeProfilesInContentType('foo', [$profile1, $profile2]));
 	}
 }
 

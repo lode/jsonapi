@@ -5,7 +5,9 @@ namespace alsvanzelf\jsonapiTests;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\LinkObject;
+use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
+use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase {
@@ -174,6 +176,50 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('foo', $array['links']);
 		$this->assertArrayHasKey('href', $array['links']['foo']);
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+	}
+	
+	public function testApplyProfile_HappyPath() {
+		$profile = new TestProfile();
+		$profile->setAliasedLink('https://jsonapi.org');
+		
+		$document = new Document();
+		$document->applyProfile($profile);
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('profile', $array['links']);
+		$this->assertCount(1, $array['links']['profile']);
+		$this->assertArrayHasKey(0, $array['links']['profile']);
+		$this->assertSame('https://jsonapi.org', $array['links']['profile'][0]);
+	}
+	
+	public function testApplyProfile_WithLinkObject() {
+		$profile = new TestProfile();
+		$profile->setAliasedLink(new ProfileLinkObject('https://jsonapi.org', $aliases=['foo' => 'bar'], $meta=['baz' => 'baf']));
+		
+		$document = new Document();
+		$document->applyProfile($profile);
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('profile', $array['links']);
+		$this->assertCount(1, $array['links']['profile']);
+		$this->assertArrayHasKey(0, $array['links']['profile']);
+		$this->assertCount(3, $array['links']['profile'][0]);
+		$this->assertArrayHasKey('href', $array['links']['profile'][0]);
+		$this->assertArrayHasKey('aliases', $array['links']['profile'][0]);
+		$this->assertArrayHasKey('meta', $array['links']['profile'][0]);
+		$this->assertSame('https://jsonapi.org', $array['links']['profile'][0]['href']);
+		$this->assertCount(1, $array['links']['profile'][0]['aliases']);
+		$this->assertArrayHasKey('foo', $array['links']['profile'][0]['aliases']);
+		$this->assertSame('bar', $array['links']['profile'][0]['aliases']['foo']);
+		$this->assertCount(1, $array['links']['profile'][0]['meta']);
+		$this->assertArrayHasKey('baz', $array['links']['profile'][0]['meta']);
+		$this->assertSame('baf', $array['links']['profile'][0]['meta']['baz']);
 	}
 	
 	public function testToJson_HappyPath() {
