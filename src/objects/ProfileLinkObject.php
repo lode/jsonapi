@@ -2,7 +2,6 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 

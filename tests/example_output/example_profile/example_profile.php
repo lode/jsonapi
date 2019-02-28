@@ -1,11 +1,11 @@
 <?php
 
-namespace alsvanzelf\jsonapiTests\example_output\profiles;
+namespace alsvanzelf\jsonapiTests\example_output\example_profile;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapiTests\example_output\ExampleVersionProfile;
 
-class profiles {
+class example_profile {
 	public static function createJsonapiDocument() {
 		$profile = new ExampleVersionProfile(['version' => 'ref']);
 		
