@@ -20,17 +20,17 @@ class at_members_everywhere {
 		 */
 		
 		$document = new ResourceDocument('user', 42);
-		$document->addAtMember('context', 'test');
+		$document->addAtMember('context', '/@context');
 		
 		/**
 		 * jsonapi
 		 */
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/jsonapi/meta/@context');
 		
 		$jsonapiObject = new JsonapiObject();
-		$jsonapiObject->addAtMember('context', 'test');
+		$jsonapiObject->addAtMember('context', '/jsonapi/@context');
 		$jsonapiObject->setMetaObject($metaObject);
 		$document->setJsonapiObject($jsonapiObject);
 		
@@ -39,14 +39,14 @@ class at_members_everywhere {
 		 */
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/links/foo/meta/@context');
 		
 		$linkObject = new LinkObject('https://jsonapi.org');
-		$linkObject->addAtMember('context', 'test');
+		$linkObject->addAtMember('context', '/links/foo/@context');
 		$linkObject->setMetaObject($metaObject);
 		
 		$linksObject = new LinksObject();
-		$linksObject->addAtMember('context', 'test');
+		$linksObject->addAtMember('context', '/links/@context');
 		$linksObject->addLinkObject('foo', $linkObject);
 		$document->setLinksObject($linksObject);
 		
@@ -55,7 +55,7 @@ class at_members_everywhere {
 		 */
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/meta/@context');
 		$document->setMetaObject($metaObject);
 		
 		/**
@@ -72,23 +72,23 @@ class at_members_everywhere {
 		 */
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addAtMember('context', 'test');
+		$relationshipsObject->addAtMember('context', '/data/relationships/@context');
 		
 		$attributesObject = new AttributesObject();
-		$attributesObject->addAtMember('context', 'test');
+		$attributesObject->addAtMember('context', '/included/0/attributes/@context');
 		
 		$resourceObject = new ResourceObject('user', 1);
-		$resourceObject->addAtMember('context', 'test');
+		$resourceObject->addAtMember('context', '/included/0/@context');
 		$resourceObject->setAttributesObject($attributesObject);
 		
 		$linksObject = new LinksObject();
-		$linksObject->addAtMember('context', 'test');
+		$linksObject->addAtMember('context', '/data/relationships/foo/links/@context');
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/data/relationships/foo/meta/@context');
 		
 		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
-		$relationshipObject->addAtMember('context', 'test');
+		$relationshipObject->addAtMember('context', '/data/relationships/foo/@context');
 		$relationshipObject->setResource($resourceObject);
 		$relationshipObject->setLinksObject($linksObject);
 		$relationshipObject->setMetaObject($metaObject);
@@ -96,10 +96,10 @@ class at_members_everywhere {
 		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 2);
-		$resourceIdentifierObject->addAtMember('context', 'test');
+		$resourceIdentifierObject->addAtMember('context', '/data/relationships/bar/data/@context');
 		
 		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
-		$relationshipObject->addAtMember('context', 'test');
+		$relationshipObject->addAtMember('context', '/data/relationships/bar/@context');
 		$relationshipObject->setResource($resourceIdentifierObject);
 		
 		$relationshipsObject->addRelationshipObject('bar', $relationshipObject);
@@ -109,21 +109,21 @@ class at_members_everywhere {
 		 */
 		
 		$attributesObject = new AttributesObject();
-		$attributesObject->addAtMember('context', 'test');
+		$attributesObject->addAtMember('context', '/data/attributes/@context');
 		
 		/**
 		 * resource - links
 		 */
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/data/links/foo/meta/@context');
 		
 		$linkObject = new LinkObject('https://jsonapi.org');
-		$linkObject->addAtMember('context', 'test');
+		$linkObject->addAtMember('context', '/data/links/foo/@context');
 		$linkObject->setMetaObject($metaObject);
 		
 		$linksObject = new LinksObject();
-		$linksObject->addAtMember('context', 'test');
+		$linksObject->addAtMember('context', '/data/links/@context');
 		$linksObject->addLinkObject('foo', $linkObject);
 		
 		/**
@@ -131,14 +131,14 @@ class at_members_everywhere {
 		 */
 		
 		$metaObject = new MetaObject();
-		$metaObject->addAtMember('context', 'test');
+		$metaObject->addAtMember('context', '/data/meta/@context');
 		
 		/**
 		 * resource - resource
 		 */
 		
 		$resourceObject = new ResourceObject('user', 42);
-		$resourceObject->addAtMember('context', 'test');
+		$resourceObject->addAtMember('context', '/data/@context');
 		$resourceObject->setAttributesObject($attributesObject);
 		$resourceObject->setLinksObject($linksObject);
 		$resourceObject->setMetaObject($metaObject);
@@ -151,10 +151,10 @@ class at_members_everywhere {
 		 */
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addAtMember('context', 'test');
+		$relationshipsObject->addAtMember('context', '/included/1/relationships/@context');
 		
 		$resourceObject = new ResourceObject('user', 3);
-		$resourceObject->addAtMember('context', 'test');
+		$resourceObject->addAtMember('context', '/included/1/@context');
 		$resourceObject->setRelationshipsObject($relationshipsObject);
 		
 		$document->addIncludedResourceObject($resourceObject);

@@ -1,85 +1,85 @@
 {
-	"@context": "test",
+	"@context": "/@context",
 	"jsonapi": {
-		"@context": "test",
+		"@context": "/jsonapi/@context",
 		"version": "1.0",
 		"meta": {
-			"@context": "test"
+			"@context": "/jsonapi/meta/@context"
 		}
 	},
 	"links": {
-		"@context": "test",
+		"@context": "/links/@context",
 		"foo": {
-			"@context": "test",
+			"@context": "/links/foo/@context",
 			"href": "https://jsonapi.org",
 			"meta": {
-				"@context": "test"
+				"@context": "/links/foo/meta/@context"
 			}
 		}
 	},
 	"meta": {
-		"@context": "test"
+		"@context": "/meta/@context"
 	},
 	"data": {
-		"@context": "test",
+		"@context": "/data/@context",
 		"type": "user",
 		"id": "42",
 		"meta": {
-			"@context": "test"
+			"@context": "/data/meta/@context"
 		},
 		"attributes": {
-			"@context": "test"
+			"@context": "/data/attributes/@context"
 		},
 		"relationships": {
-			"@context": "test",
+			"@context": "/data/relationships/@context",
 			"foo": {
-				"@context": "test",
+				"@context": "/data/relationships/foo/@context",
 				"links": {
-					"@context": "test"
+					"@context": "/data/relationships/foo/links/@context"
 				},
 				"data": {
 					"type": "user",
 					"id": "1"
 				},
 				"meta": {
-					"@context": "test"
+					"@context": "/data/relationships/foo/meta/@context"
 				}
 			},
 			"bar": {
-				"@context": "test",
+				"@context": "/data/relationships/bar/@context",
 				"data": {
-					"@context": "test",
+					"@context": "/data/relationships/bar/data/@context",
 					"type": "user",
 					"id": "2"
 				}
 			}
 		},
 		"links": {
-			"@context": "test",
+			"@context": "/data/links/@context",
 			"foo": {
-				"@context": "test",
+				"@context": "/data/links/foo/@context",
 				"href": "https://jsonapi.org",
 				"meta": {
-					"@context": "test"
+					"@context": "/data/links/foo/meta/@context"
 				}
 			}
 		}
 	},
 	"included": [
 		{
-			"@context": "test",
+			"@context": "/included/0/@context",
 			"type": "user",
 			"id": "1",
 			"attributes": {
-				"@context": "test"
+				"@context": "/included/0/attributes/@context"
 			}
 		},
 		{
-			"@context": "test",
+			"@context": "/included/1/@context",
 			"type": "user",
 			"id": "3",
 			"relationships": {
-				"@context": "test"
+				"@context": "/included/1/relationships/@context"
 			}
 		}
 	]
