@@ -3,12 +3,12 @@
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitManageHttpStatusCode as ManageHttpStatusCode;
+use alsvanzelf\jsonapiTests\helpers\TestableNonTraitHttpStatusCodeManager as HttpStatusCodeManager;
 use PHPUnit\Framework\TestCase;
 
-class ManageHttpStatusCodeTest extends TestCase {
+class HttpStatusCodeManagerTest extends TestCase {
 	public function testSetHttpStatusCode_HappyPath() {
-		$helper = new ManageHttpStatusCode();
+		$helper = new HttpStatusCodeManager();
 		
 		$this->assertFalse($helper->hasHttpStatusCode());
 		$this->assertNull($helper->getHttpStatusCode());
@@ -20,7 +20,7 @@ class ManageHttpStatusCodeTest extends TestCase {
 	}
 	
 	public function testSetHttpStatusCode_InvalidForHttp() {
-		$helper = new ManageHttpStatusCode();
+		$helper = new HttpStatusCodeManager();
 		
 		$this->expectException(InputException::class);
 		
@@ -28,7 +28,7 @@ class ManageHttpStatusCodeTest extends TestCase {
 	}
 	
 	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
-		$helper = new ManageHttpStatusCode();
+		$helper = new HttpStatusCodeManager();
 		
 		$helper->setHttpStatusCode(299);
 		

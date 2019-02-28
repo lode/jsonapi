@@ -5,7 +5,7 @@ namespace alsvanzelf\jsonapi\helpers;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Validator;
 
-trait ManageHttpStatusCode {
+trait HttpStatusCodeManager {
 	/** @var int */
 	protected $httpStatusCode;
 	
