@@ -16,7 +16,10 @@
 			"title": "Too much options",
 			"detail": "Please, choose a bit less. Consult your ...",
 			"links": {
-				"about": "https://www.example.com/explanation.html"
+				"about": "https://www.example.com/explanation.html",
+				"type": [
+					"https://www.example.com/documentation.html"
+				]
 			}
 		},
 		{
@@ -31,7 +34,15 @@
 					"meta": {
 						"foo": "bar"
 					}
-				}
+				},
+				"type": [
+					{
+						"href": "https://www.example.com/documentation.html",
+						"meta": {
+							"foo": "bar"
+						}
+					}
+				]
 			},
 			"source": {
 				"pointer": "/data/attributes/title",

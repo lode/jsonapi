@@ -89,9 +89,10 @@ class ErrorsDocument extends Document {
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
 	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
 	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
 	 */
-	public function add($genericCode, $genericTitle, $specificDetails=null, $specificAboutLink=null) {
-		$errorObject = new ErrorObject($genericCode, $genericTitle, $specificDetails, $specificAboutLink);
+	public function add($genericCode, $genericTitle, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
+		$errorObject = new ErrorObject($genericCode, $genericTitle, $specificDetails, $specificAboutLink, $genericTypeLink);
 		
 		$this->addErrorObject($errorObject);
 	}
