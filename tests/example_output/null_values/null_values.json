@@ -1,0 +1,30 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"links": {
+		"foo": null,
+		"bar": null
+	},
+	"meta": {
+		"foo": null
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"attributes": {
+			"foo": null
+		},
+		"relationships": {
+			"bar": {
+				"data": null
+			},
+			"baz": {
+				"data": null
+			},
+			"baf": {
+				"data": []
+			}
+		}
+	}
+}
