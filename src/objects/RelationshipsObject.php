@@ -84,10 +84,6 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 		$array = [];
 		
 		foreach ($this->relationships as $key => $relationshipObject) {
-			if ($relationshipObject->isEmpty()) {
-				continue;
-			}
-			
 			$array[$key] = $relationshipObject->toArray();
 		}
 		

@@ -158,12 +158,14 @@ class LinksObjectTest extends TestCase {
 		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2'));
 	}
 	
-	public function testToArray_EmptyObject() {
+	public function testToArray_ExplicitlyEmpty() {
 		$linksObject = new LinksObject();
 		$linksObject->addLinkObject('foo', new LinkObject());
 		
 		$array = $linksObject->toArray();
 		
-		$this->assertCount(0, $array);
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertNull($array['foo']);
 	}
 }

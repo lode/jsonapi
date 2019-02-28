@@ -102,6 +102,9 @@ class RelationshipsObjectTest extends TestCase {
 		$array = $relationshipsObject->toArray();
 		
 		$this->assertFalse($relationshipsObject->isEmpty());
-		$this->assertCount(0, $array);
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertArrayHasKey('data', $array['foo']);
+		$this->assertNull($array['foo']['data']);
 	}
 }
