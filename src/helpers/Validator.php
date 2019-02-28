@@ -98,7 +98,6 @@ class Validator {
 	 * @see https://jsonapi.org/format/1.1/#document-member-names
 	 * 
 	 * @todo allow non-url safe chars
-	 * @todo allow @-members for JSON-LD {@see https://jsonapi.org/format/1.1/#document-member-names-at-members}
 	 * 
 	 * @param  string $memberName
 	 * 
