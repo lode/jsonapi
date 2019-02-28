@@ -85,4 +85,15 @@ class LinksObjectTest extends TestCase {
 		
 		$linksObject->addLinkObject($key='foo', $linkObject);
 	}
+	
+	public function testToArray_ExplicitlyEmpty() {
+		$linksObject = new LinksObject();
+		$linksObject->addLinkObject('foo', new LinkObject());
+		
+		$array = $linksObject->toArray();
+		
+		$this->assertCount(1, $array);
+		$this->assertArrayHasKey('foo', $array);
+		$this->assertNull($array['foo']);
+	}
 }
