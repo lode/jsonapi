@@ -5,7 +5,7 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMembers;
-use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
+use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
@@ -17,7 +17,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMembers, ManageHttpStatusCode;
+	use AtMembers, HttpStatusCodeManager;
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.0';

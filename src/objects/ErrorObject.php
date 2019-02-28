@@ -6,13 +6,13 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMembers;
 use alsvanzelf\jsonapi\helpers\Converter;
-use alsvanzelf\jsonapi\helpers\ManageHttpStatusCode;
+use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
-	use AtMembers, ManageHttpStatusCode;
+	use AtMembers, HttpStatusCodeManager;
 	
 	/** @var string */
 	protected $id;
