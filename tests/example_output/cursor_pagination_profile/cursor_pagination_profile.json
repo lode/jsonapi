@@ -1,0 +1,51 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"links": {
+		"profile": [
+			"https://jsonapi.org/profiles/ethanresnick/cursor-pagination/"
+		],
+		"prev": null,
+		"next": {
+			"href": "/users?sort=42&page[size]=10&page[after]=zaphod"
+		}
+	},
+	"meta": {
+		"page": {
+			"total": 3,
+			"estimatedTotal": {
+				"bestGuess": 10
+			}
+		}
+	},
+	"data": [
+		{
+			"type": "user",
+			"id": "1",
+			"meta": {
+				"page": {
+					"cursor": "ford"
+				}
+			}
+		},
+		{
+			"type": "user",
+			"id": "2",
+			"meta": {
+				"page": {
+					"cursor": "arthur"
+				}
+			}
+		},
+		{
+			"type": "user",
+			"id": "42",
+			"meta": {
+				"page": {
+					"cursor": "zaphod"
+				}
+			}
+		}
+	]
+}
