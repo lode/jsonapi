@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\PaginableInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -15,7 +16,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
  * this document is a set of Resources
  * this document should be used if there could be multiple, also if only one or even none is returned
  */
-class CollectionDocument extends DataDocument implements ResourceContainerInterface {
+class CollectionDocument extends DataDocument implements PaginableInterface, ResourceContainerInterface {
 	/** @var ResourceInterface[] */
 	protected $resources = [];
 	/** @var array */
@@ -60,10 +61,7 @@ class CollectionDocument extends DataDocument implements ResourceContainerInterf
 	}
 	
 	/**
-	 * @param string $previousHref optional
-	 * @param string $nextHref     optional
-	 * @param string $firstHref    optional
-	 * @param string $lastHref     optional
+	 * @inheritDoc
 	 */
 	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
 		if ($previousHref !== null) {

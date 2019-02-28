@@ -6,13 +6,14 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\PaginableInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class RelationshipObject implements ObjectInterface, RecursiveResourceContainerInterface {
+class RelationshipObject implements ObjectInterface, PaginableInterface, RecursiveResourceContainerInterface {
 	use LinksManager;
 	
 	const TO_ONE  = 'one';
@@ -142,10 +143,7 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	}
 	
 	/**
-	 * @param string $previousHref optional
-	 * @param string $nextHref     optional
-	 * @param string $firstHref    optional
-	 * @param string $lastHref     optional
+	 * @inheritDoc
 	 * 
 	 * @throws InputException if used on a to-one relationship
 	 */
