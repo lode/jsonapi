@@ -65,6 +65,9 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 		elseif ($relation instanceof CollectionDocument) {
 			$relationshipObject = self::fromCollectionDocument($relation, $links, $meta);
 		}
+		elseif ($relation === null) {
+			$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		}
 		else {
 			throw new InputException('unknown format of relation "'.gettype($relation).'"');
 		}
@@ -263,6 +266,9 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 * @return boolean
 	 */
 	public function hasResource(ResourceInterface $otherResource) {
+		if ($this->isEmpty()) {
+			return false;
+		}
 		if ($this->type === RelationshipObject::TO_ONE) {
 			return $this->resource->getResource()->equals($otherResource->getResource());
 		}
@@ -337,6 +343,10 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	 * @inheritDoc
 	 */
 	public function getNestedContainedResourceObjects() {
+		if ($this->isEmpty()) {
+			return [];
+		}
+		
 		$resources       = ($this->type === RelationshipObject::TO_ONE) ? [$this->resource] : $this->resources;
 		$resourceObjects = [];
 		
