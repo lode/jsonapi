@@ -3,12 +3,12 @@
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitAtMembers as AtMembers;
+use alsvanzelf\jsonapiTests\helpers\TestableNonTraitAtMemberManager as AtMemberManager;
 use PHPUnit\Framework\TestCase;
 
-class AtMembersTest extends TestCase {
+class AtMemberManagerTest extends TestCase {
 	public function testAddAtMember_HappyPath() {
-		$helper = new AtMembers();
+		$helper = new AtMemberManager();
 		
 		$this->assertFalse($helper->hasAtMembers());
 		$this->assertSame([], $helper->getAtMembers());
@@ -24,7 +24,7 @@ class AtMembersTest extends TestCase {
 	}
 	
 	public function testAddAtMember_WithoutAtSign() {
-		$helper = new AtMembers();
+		$helper = new AtMemberManager();
 		
 		$helper->addAtMember('foo', 'bar');
 		
@@ -34,7 +34,7 @@ class AtMembersTest extends TestCase {
 	}
 	
 	public function testAddAtMember_WithObjectValue() {
-		$helper = new AtMembers();
+		$helper = new AtMemberManager();
 		
 		$object = new \stdClass();
 		$object->bar = 'baz';
@@ -49,7 +49,7 @@ class AtMembersTest extends TestCase {
 	}
 	
 	public function testAddAtMember_InvalidDoubleAt() {
-		$helper = new AtMembers();
+		$helper = new AtMemberManager();
 		
 		$this->expectException(InputException::class);
 		

@@ -4,7 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapi\helpers\AtMembers;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -14,7 +14,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipObject implements ObjectInterface, RecursiveResourceContainerInterface {
-	use AtMembers;
+	use AtMemberManager;
 	
 	const TO_ONE  = 'one';
 	const TO_MANY = 'many';

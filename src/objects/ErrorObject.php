@@ -4,7 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapi\helpers\AtMembers;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\Validator;
@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
-	use AtMembers, HttpStatusCodeManager;
+	use AtMemberManager, HttpStatusCodeManager;
 	
 	/** @var string */
 	protected $id;

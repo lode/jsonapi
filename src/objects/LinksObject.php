@@ -3,14 +3,14 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
-use alsvanzelf\jsonapi\helpers\AtMembers;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
 class LinksObject implements ObjectInterface {
-	use AtMembers;
+	use AtMemberManager;
 	
 	/** @var array with string|LinkObject */
 	protected $links = [];

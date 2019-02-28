@@ -5,7 +5,7 @@ namespace alsvanzelf\jsonapi\helpers;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 
-trait AtMembers {
+trait AtMemberManager {
 	/** @var array */
 	protected $atMembers = [];
 	

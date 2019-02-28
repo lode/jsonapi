@@ -3,7 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
-use alsvanzelf\jsonapi\helpers\AtMembers;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
-	use AtMembers;
+	use AtMemberManager;
 	
 	/** @var RelationshipObject[] */
 	protected $relationships = [];

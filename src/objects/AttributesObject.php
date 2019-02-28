@@ -2,13 +2,13 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\helpers\AtMembers;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class AttributesObject implements ObjectInterface {
-	use AtMembers;
+	use AtMemberManager;
 	
 	/** @var array */
 	protected $attributes = [];
