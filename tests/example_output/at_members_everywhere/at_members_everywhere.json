@@ -50,7 +50,10 @@
 				"data": {
 					"@context": "/data/relationships/bar/data/@context",
 					"type": "user",
-					"id": "2"
+					"id": "2",
+					"meta": {
+						"@context": "/data/relationships/bar/data/meta/@context"
+					}
 				}
 			}
 		},

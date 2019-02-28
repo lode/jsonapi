@@ -95,8 +95,12 @@ class at_members_everywhere {
 		
 		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
+		$metaObject = new MetaObject();
+		$metaObject->addAtMember('context', '/data/relationships/bar/data/meta/@context');
+		
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 2);
 		$resourceIdentifierObject->addAtMember('context', '/data/relationships/bar/data/@context');
+		$resourceIdentifierObject->setMetaObject($metaObject);
 		
 		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
 		$relationshipObject->addAtMember('context', '/data/relationships/bar/@context');
