@@ -29,8 +29,17 @@ class ErrorObject implements ObjectInterface {
 	protected $meta;
 	/** @var array */
 	protected static $defaults = [
-		'exceptionExposeTrace'   => true,
-		'exceptionStripBasePath' => null,
+		/**
+		 * add the trace of exceptions when adding exceptions
+		 * in some cases it might be handy to disable if traces are too big
+		 */
+		'includeExceptionTrace' => true,
+		
+		/**
+		 * strip a base path from exception file and trace paths
+		 * set this to the applications root to have more readable exception responses
+		 */
+		'stripExceptionBasePath' => null,
 	];
 	
 	/**
@@ -77,8 +86,8 @@ class ErrorObject implements ObjectInterface {
 			$errorObject->setApplicationCode(Converter::camelCaseToWords($className));
 			
 			$filePath = $exception->getFile();
-			if ($options['exceptionStripBasePath'] !== null) {
-				$filePath = str_replace($options['exceptionStripBasePath'], '', $filePath);
+			if ($options['stripExceptionBasePath'] !== null) {
+				$filePath = str_replace($options['stripExceptionBasePath'], '', $filePath);
 			}
 			
 			$metaObject = MetaObject::fromArray([
@@ -89,12 +98,12 @@ class ErrorObject implements ObjectInterface {
 				'line'    => $exception->getLine(),
 			]);
 			
-			if ($options['exceptionExposeTrace']) {
+			if ($options['includeExceptionTrace']) {
 				$trace = $exception->getTrace();
-				if ($options['exceptionStripBasePath'] !== null) {
+				if ($options['stripExceptionBasePath'] !== null) {
 					foreach ($trace as &$traceElement) {
 						if (isset($traceElement['file'])) {
-							$traceElement['file'] = str_replace($options['exceptionStripBasePath'], '', $traceElement['file']);
+							$traceElement['file'] = str_replace($options['stripExceptionBasePath'], '', $traceElement['file']);
 						}
 					}
 				}

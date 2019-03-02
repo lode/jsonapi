@@ -17,8 +17,8 @@ try {
 }
 catch (Exception $e) {
 	$options = [
-		'exceptionExposeTrace'   => true,
-		'exceptionSkipPrevious'  => false,
+		'includeExceptionTrace'    => true,
+		'includeExceptionPrevious' => true,
 	];
 	$document = ErrorsDocument::fromException($e, $options);
 	

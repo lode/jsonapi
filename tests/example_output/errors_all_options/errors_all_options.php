@@ -31,7 +31,7 @@ class errors_all_options {
 		$document = new ErrorsDocument($errorHumanApi);
 		$document->addErrorObject($errorSpecApi);
 		$document->addErrorObject($anotherError);
-		$document->addException($someException, $options=['exceptionExposeTrace' => false, 'exceptionStripBasePath' => __DIR__]);
+		$document->addException($someException, $options=['includeExceptionTrace' => false, 'stripExceptionBasePath' => __DIR__]);
 		$document->add($genericCode='Authentication error', $genericTitle='Not logged in');
 		$document->addLink('redirect', '/login', ['label'=>'Log in']);
 		$document->setHttpStatusCode(400);

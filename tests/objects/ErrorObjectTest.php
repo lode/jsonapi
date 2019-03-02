@@ -39,7 +39,7 @@ class ErrorObjectTest extends TestCase {
 	public function testFromException_DoNotExposeTrace() {
 		$exception    = new \Exception('foo', 1);
 		$expectedLine = (__LINE__ - 1);
-		$options      = ['exceptionExposeTrace' => false];
+		$options      = ['includeExceptionTrace' => false];
 		$errorObject  = ErrorObject::fromException($exception, $options);
 		
 		$array = $errorObject->toArray();
@@ -58,7 +58,7 @@ class ErrorObjectTest extends TestCase {
 	public function testFromException_StripFilePath() {
 		$exception   = new \Exception('foo', 1);
 		$basePath    = realpath(__DIR__.'/../../').'/';
-		$options     = ['exceptionStripBasePath' => $basePath];
+		$options     = ['stripExceptionBasePath' => $basePath];
 		$errorObject = ErrorObject::fromException($exception, $options);
 		
 		$array = $errorObject->toArray();

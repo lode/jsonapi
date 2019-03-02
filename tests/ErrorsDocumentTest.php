@@ -69,7 +69,7 @@ class ErrorsDocumentTest extends TestCase {
 	
 	public function testAddException_SkipPrevious() {
 		$exception = new \Exception('foo', 1, new \Exception('bar', 2));
-		$options   = ['exceptionSkipPrevious' => true];
+		$options   = ['includeExceptionPrevious' => false];
 		
 		$document = new ErrorsDocument();
 		$document->addException($exception, $options);

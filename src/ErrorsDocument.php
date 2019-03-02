@@ -16,8 +16,16 @@ class ErrorsDocument extends Document {
 	protected $httpStatusCodes;
 	/** @var array */
 	protected static $defaults = [
-		'exceptionExposeTrace'   => true,
-		'exceptionSkipPrevious'  => false,
+		/**
+		 * add the trace of exceptions when adding exceptions
+		 * in some cases it might be handy to disable if traces are too big
+		 */
+		'includeExceptionTrace' => true,
+		
+		/**
+		 * add previous exceptions as separate errors when adding exceptions
+		 */
+		'includeExceptionPrevious' => true,
 	];
 	
 	/**
@@ -74,7 +82,7 @@ class ErrorsDocument extends Document {
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));
 		
-		if ($options['exceptionSkipPrevious'] === false) {
+		if ($options['includeExceptionPrevious']) {
 			$exception = $exception->getPrevious();
 			while ($exception !== null) {
 				$this->addException($exception, $options);
