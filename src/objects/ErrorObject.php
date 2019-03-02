@@ -77,45 +77,44 @@ class ErrorObject implements ObjectInterface {
 		
 		$errorObject = new self();
 		
-			$className = get_class($exception);
-			if (strpos($className, '\\')) {
-				$exploded  = explode('\\', $className);
-				$className = end($exploded);
-			}
-			
-			$errorObject->setApplicationCode(Converter::camelCaseToWords($className));
-			
-			$filePath = $exception->getFile();
+		$className = get_class($exception);
+		if (strpos($className, '\\')) {
+			$exploded  = explode('\\', $className);
+			$className = end($exploded);
+		}
+		$errorObject->setApplicationCode(Converter::camelCaseToWords($className));
+		
+		$filePath = $exception->getFile();
+		if ($options['stripExceptionBasePath'] !== null) {
+			$filePath = str_replace($options['stripExceptionBasePath'], '', $filePath);
+		}
+		
+		$metaObject = MetaObject::fromArray([
+			'type'    => get_class($exception),
+			'message' => $exception->getMessage(),
+			'code'    => $exception->getCode(),
+			'file'    => $filePath,
+			'line'    => $exception->getLine(),
+		]);
+		
+		if ($options['includeExceptionTrace']) {
+			$trace = $exception->getTrace();
 			if ($options['stripExceptionBasePath'] !== null) {
-				$filePath = str_replace($options['stripExceptionBasePath'], '', $filePath);
-			}
-			
-			$metaObject = MetaObject::fromArray([
-				'type'    => get_class($exception),
-				'message' => $exception->getMessage(),
-				'code'    => $exception->getCode(),
-				'file'    => $filePath,
-				'line'    => $exception->getLine(),
-			]);
-			
-			if ($options['includeExceptionTrace']) {
-				$trace = $exception->getTrace();
-				if ($options['stripExceptionBasePath'] !== null) {
-					foreach ($trace as &$traceElement) {
-						if (isset($traceElement['file'])) {
-							$traceElement['file'] = str_replace($options['stripExceptionBasePath'], '', $traceElement['file']);
-						}
+				foreach ($trace as &$traceElement) {
+					if (isset($traceElement['file'])) {
+						$traceElement['file'] = str_replace($options['stripExceptionBasePath'], '', $traceElement['file']);
 					}
 				}
-				
-				$metaObject->add('trace', $trace);
 			}
 			
-			$errorObject->setMetaObject($metaObject);
+			$metaObject->add('trace', $trace);
+		}
 		
-			if (Validator::checkHttpStatusCode($exception->getCode())) {
-				$errorObject->setHttpStatusCode($exception->getCode());
-			}
+		$errorObject->setMetaObject($metaObject);
+		
+		if (Validator::checkHttpStatusCode($exception->getCode())) {
+			$errorObject->setHttpStatusCode($exception->getCode());
+		}
 		
 		return $errorObject;
 	}
