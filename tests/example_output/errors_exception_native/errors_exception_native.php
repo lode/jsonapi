@@ -8,9 +8,9 @@ class errors_exception_native {
 	public static function createJsonapiDocument() {
 		$exception = new \Exception('unknown user', 404);
 		$options = [
-			'exceptionExposeDetails' => false,
 			'exceptionExposeTrace'   => false,
 			'exceptionSkipPrevious'  => false,
+			'exceptionStripBasePath' => __DIR__,
 		];
 		$document = ErrorsDocument::fromException($exception, $options);
 		

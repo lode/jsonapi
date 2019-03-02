@@ -53,8 +53,8 @@ $someException     = new Exception('please don\'t throw things', 503, $previousE
  * you can pass the $error object to the constructor ..
  * .. or add multiple errors via ->addErrorObject() or ->addException()
  * 
- * @note exceptions will expose the exception code, and use them as http status code if valid
- *       message, file, line, trace will not not exposed, unless $options['exceptionExposeDetails'] is set to true
+ * @note exceptions will expose the exception message, code, file, line and trace
+ *       also the code is used as http status code if valid
  * 
  * further you can force another http status code than what's in the errors
  */
@@ -63,7 +63,7 @@ $document = new ErrorsDocument($errorHumanApi);
 
 $document->addErrorObject($errorSpecApi);
 $document->addErrorObject($anotherError);
-$document->addException($someException, $options=['exceptionExposeDetails'=>true]);
+$document->addException($someException);
 $document->add($genericCode='Authentication error', $genericTitle='Not logged in');
 $document->addLink('redirect', '/login', ['label'=>'Log in']);
 

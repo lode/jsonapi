@@ -16,7 +16,12 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('errors', $array);
 		$this->assertCount(1, $array['errors']);
 		$this->assertArrayHasKey('code', $array['errors'][0]);
-		$this->assertSame('42', $array['errors'][0]['code']);
+		$this->assertArrayHasKey('meta', $array['errors'][0]);
+		$this->assertArrayHasKey('message', $array['errors'][0]['meta']);
+		$this->assertArrayHasKey('code', $array['errors'][0]['meta']);
+		$this->assertSame('Exception', $array['errors'][0]['code']);
+		$this->assertSame('foo', $array['errors'][0]['meta']['message']);
+		$this->assertSame(42, $array['errors'][0]['meta']['code']);
 	}
 	
 	/**
@@ -54,10 +59,12 @@ class ErrorsDocumentTest extends TestCase {
 		
 		$this->assertArrayHasKey('errors', $array);
 		$this->assertCount(2, $array['errors']);
-		$this->assertArrayHasKey('code', $array['errors'][0]);
-		$this->assertArrayHasKey('code', $array['errors'][1]);
-		$this->assertSame('1', $array['errors'][0]['code']);
-		$this->assertSame('2', $array['errors'][1]['code']);
+		$this->assertArrayHasKey('meta', $array['errors'][0]);
+		$this->assertArrayHasKey('meta', $array['errors'][1]);
+		$this->assertArrayHasKey('message', $array['errors'][0]['meta']);
+		$this->assertArrayHasKey('message', $array['errors'][1]['meta']);
+		$this->assertSame('foo', $array['errors'][0]['meta']['message']);
+		$this->assertSame('bar', $array['errors'][1]['meta']['message']);
 	}
 	
 	public function testAddException_SkipPrevious() {
@@ -71,8 +78,9 @@ class ErrorsDocumentTest extends TestCase {
 		
 		$this->assertArrayHasKey('errors', $array);
 		$this->assertCount(1, $array['errors']);
-		$this->assertArrayHasKey('code', $array['errors'][0]);
-		$this->assertSame('1', $array['errors'][0]['code']);
+		$this->assertArrayHasKey('meta', $array['errors'][0]);
+		$this->assertArrayHasKey('message', $array['errors'][0]['meta']);
+		$this->assertSame('foo', $array['errors'][0]['meta']['message']);
 	}
 	
 	public function testAddException_BlocksNonException() {
@@ -81,6 +89,19 @@ class ErrorsDocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		
 		$document->addException(new \stdClass());
+	}
+	
+	public function testToArray_EmptyErrorObject() {
+		$document = new ErrorsDocument();
+		$document->addErrorObject(new ErrorObject('foo'));
+		$document->addErrorObject(new ErrorObject());
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('errors', $array);
+		$this->assertCount(1, $array['errors']);
+		$this->assertArrayHasKey('code', $array['errors'][0]);
+		$this->assertSame('foo', $array['errors'][0]['code']);
 	}
 	
 	/**

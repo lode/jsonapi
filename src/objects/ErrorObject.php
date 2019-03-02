@@ -29,7 +29,6 @@ class ErrorObject implements ObjectInterface {
 	protected $meta;
 	/** @var array */
 	protected static $defaults = [
-		'exceptionExposeDetails' => false,
 		'exceptionExposeTrace'   => true,
 		'exceptionStripBasePath' => null,
 	];
@@ -69,9 +68,13 @@ class ErrorObject implements ObjectInterface {
 		
 		$errorObject = new self();
 		
-		if ($options['exceptionExposeDetails']) {
-			$genericTitle = Converter::camelCaseToWords(get_class($exception));
-			$errorObject->setHumanExplanation($genericTitle);
+			$className = get_class($exception);
+			if (strpos($className, '\\')) {
+				$exploded  = explode('\\', $className);
+				$className = end($exploded);
+			}
+			
+			$errorObject->setApplicationCode(Converter::camelCaseToWords($className));
 			
 			$filePath = $exception->getFile();
 			if ($options['exceptionStripBasePath'] !== null) {
@@ -79,7 +82,9 @@ class ErrorObject implements ObjectInterface {
 			}
 			
 			$metaObject = MetaObject::fromArray([
+				'type'    => get_class($exception),
 				'message' => $exception->getMessage(),
+				'code'    => $exception->getCode(),
 				'file'    => $filePath,
 				'line'    => $exception->getLine(),
 			]);
@@ -98,15 +103,10 @@ class ErrorObject implements ObjectInterface {
 			}
 			
 			$errorObject->setMetaObject($metaObject);
-		}
 		
-		if ($exception->getCode() !== 0) {
-			$errorObject->setApplicationCode($exception->getCode());
-			
 			if (Validator::checkHttpStatusCode($exception->getCode())) {
 				$errorObject->setHttpStatusCode($exception->getCode());
 			}
-		}
 		
 		return $errorObject;
 	}

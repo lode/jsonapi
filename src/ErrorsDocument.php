@@ -16,7 +16,6 @@ class ErrorsDocument extends Document {
 	protected $httpStatusCodes;
 	/** @var array */
 	protected static $defaults = [
-		'exceptionExposeDetails' => false,
 		'exceptionExposeTrace'   => true,
 		'exceptionSkipPrevious'  => false,
 	];
