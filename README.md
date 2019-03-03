@@ -156,7 +156,6 @@ Next to custom extensions, the following [official extensions](https://jsonapi.o
 
 Plans for the future include:
 
-- support v1.1 of the specification ([#40](https://github.com/lode/jsonapi/pull/40))
 - parse request options: sparse fields, sorting, pagination, filtering ([#44](https://github.com/lode/jsonapi/issues/44))
 - parse requests for creating, updating and deleting resources and relationships ([#5](https://github.com/lode/jsonapi/issues/5))
 
