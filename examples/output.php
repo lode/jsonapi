@@ -73,4 +73,4 @@ echo '<pre style="font-size: large;">$document->sendResponse();</pre>';
 echo '<pre>';
 $document->sendResponse($options);
 echo '</pre>';
-echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: '.var_export(headers_list(), true).'</em></p>';
+echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.']</em></p>';

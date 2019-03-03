@@ -32,6 +32,7 @@ class ErrorObjectTest extends TestCase {
 		$this->assertSame($expectedLine, $array['meta']['line']);
 		$this->assertGreaterThan(1, $array['meta']['trace']);
 		$this->assertArrayHasKey('function', $array['meta']['trace'][0]);
+		$this->assertArrayHasKey('class', $array['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['meta']['trace'][0]['function']);
 		$this->assertSame(__CLASS__, $array['meta']['trace'][0]['class']);
 	}
@@ -79,7 +80,31 @@ class ErrorObjectTest extends TestCase {
 		$array = $errorObject->toArray();
 		
 		$this->assertArrayHasKey('code', $array);
+		$this->assertArrayHasKey('meta', $array);
+		$this->assertArrayHasKey('type', $array['meta']);
 		$this->assertSame('Input Exception', $array['code']);
+		$this->assertSame('alsvanzelf\jsonapi\exceptions\InputException', $array['meta']['type']);
+	}
+	
+	/**
+	 * @group non-php5
+	 */
+	public function testFromException_NamespacedThrowable() {
+		if (PHP_MAJOR_VERSION < 7) {
+			$this->markTestSkipped('can not run in php5');
+			return;
+		}
+		
+		$exception   = new TestError();
+		$errorObject = ErrorObject::fromException($exception);
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('code', $array);
+		$this->assertArrayHasKey('meta', $array);
+		$this->assertArrayHasKey('type', $array['meta']);
+		$this->assertSame('Test Error', $array['code']);
+		$this->assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
 	}
 	
 	public function testFromException_BlocksNonException() {
@@ -124,4 +149,8 @@ class ErrorObjectTest extends TestCase {
 		$errorObject->addMeta('foo', 'bar');
 		$this->assertFalse($errorObject->isEmpty());
 	}
+}
+
+if (PHP_MAJOR_VERSION >= 7) {
+	class TestError extends \Error {}
 }
