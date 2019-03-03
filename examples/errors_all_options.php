@@ -9,7 +9,7 @@ require 'bootstrap_examples.php';
  * setting all options
  */
 
-$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html');
+$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html', $genericTypeLink='https://www.example.com/documentation.html');
 
 $errorSpecApi = new ErrorObject();
 
@@ -38,6 +38,7 @@ $errorSpecApi->setApplicationCode($genericCode='Invalid input');
 $errorSpecApi->setHumanTitle($genericTitle='Too much options');
 $errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
 $errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
+$errorSpecApi->appendTypeLink($genericTypeLink='https://www.example.com/documentation.html', ['foo'=>'bar']);
 
 /**
  * prepare multiple error objects for the errors response
