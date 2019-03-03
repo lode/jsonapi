@@ -50,7 +50,24 @@
 		},
 		{
 			"status": "500",
-			"code": "500"
+			"code": "Exception",
+			"meta": {
+				"type": "Exception",
+				"message": "please don't throw things",
+				"code": 500,
+				"file": "/errors_all_options.php",
+				"line": 29
+			}
+		},
+		{
+			"code": "Exception",
+			"meta": {
+				"type": "Exception",
+				"message": "something went wrong!",
+				"code": 0,
+				"file": "/errors_all_options.php",
+				"line": 28
+			}
 		},
 		{
 			"code": "Authentication error",

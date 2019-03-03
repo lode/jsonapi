@@ -20,12 +20,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.0';
-	const JSONAPI_VERSION_DEFAULT = Document::JSONAPI_VERSION_1_0;
+	const JSONAPI_VERSION_LATEST = Document::JSONAPI_VERSION_1_0;
 	
 	const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 	const CONTENT_TYPE_DEBUG    = 'application/json';
 	const CONTENT_TYPE_JSONP    = 'application/javascript';
-	const CONTENT_TYPE_DEFAULT  = Document::CONTENT_TYPE_OFFICIAL;
 	
 	const LEVEL_ROOT     = 'root';
 	const LEVEL_JSONAPI  = 'jsonapi';
@@ -37,11 +36,35 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	protected $jsonapi;
 	/** @var array */
 	protected static $defaults = [
+		/**
+		 * encode to json with these default options
+		 */
 		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
-		'prettyPrint'   => false,
-		'contentType'   => Document::CONTENT_TYPE_DEFAULT,
-		'array'         => null,
-		'json'          => null,
+		
+		/**
+		 * encode to human-readable json, useful when debugging
+		 */
+		'prettyPrint' => false,
+		
+		/**
+		 * send out the official jsonapi content-type header
+		 * overwrite for jsonp or if clients don't support it
+		 */
+		'contentType' => Document::CONTENT_TYPE_OFFICIAL,
+		
+		/**
+		 * overwrite the array to encode to json
+		 */
+		'array' => null,
+		
+		/**
+		 * overwrite the json to send as response
+		 */
+		'json' => null,
+		
+		/**
+		 * set the callback for jsonp responses
+		 */
 		'jsonpCallback' => null,
 	];
 	
