@@ -2,7 +2,7 @@
 
 A simple and human-friendly library for api servers (php serving json).
 
-It allows you to generate json output according to the [JSON:API](https://jsonapi.org/) standard,
+It allows you to generate json output according to the [JSON:API v1.1](https://jsonapi.org/) standard,
 while being easy to understand for people without knowledge of the jsonapi standard.
 
 The JSON:API standard makes it easy for clients to fetch multiple resources in one call and understand the relations between them.
@@ -41,7 +41,7 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"data": {
 		"type": "user",
@@ -71,7 +71,7 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"data": [
 		{
@@ -104,7 +104,7 @@ Which will result in:
 ```php
 use alsvanzelf\jsonapi\ErrorsDocument;
 
-$exception = new Exception('something went wrong', 422);
+$exception = new Exception('That is not valid', 422);
 
 $document = ErrorsDocument::fromException($exception);
 $document->sendResponse();
@@ -115,15 +115,16 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"errors": [
 		{
 			"status": "422",
-			"code": "422",
-			"title": "Exception",
+			"code": "Exception",
 			"meta": {
-				"message": "something went wrong",
+				"class": "Exception",
+				"message": "That is not valid",
+				"code": 422,
 				"file": "README.md",
 				"line": 107,
 				"trace": []
@@ -138,18 +139,26 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
 
 ## Features
 
-This library handles all the basics:
+This library supports [v1.1 of the JSON:API specification](https://jsonapi.org/format/1.1/).
 
-- generating single resource documents
-- generating resource collection documents
-- adding to-one and to-many relationships
-- generating errors documents (easily turning thrown exceptions into jsonapi output)
-- sending out the json response with the correct http headers
+It has support for generating & sending documents with:
+
+- single resources
+- resource collections
+- to-one and to-many relationships
+- errors (easily turning exceptions into jsonapi output)
+- v1.1 extensions via profiles
+- v1.1 @-members for JSON-LD and others
+
+Next to custom extensions, the following [official extensions](https://jsonapi.org/extensions/) are included:
+
+- Cursor Pagination ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
 
 Plans for the future include:
 
-- support v1.1 of the specification
-- handle creating, updating and deleting resources ([#5](https://github.com/lode/jsonapi/issues/5))
+- support v1.1 of the specification ([#40](https://github.com/lode/jsonapi/pull/40))
+- parse request options: sparse fields, sorting, pagination, filtering ([#44](https://github.com/lode/jsonapi/issues/44))
+- parse requests for creating, updating and deleting resources and relationships ([#5](https://github.com/lode/jsonapi/issues/5))
 
 
 ## Contributing
