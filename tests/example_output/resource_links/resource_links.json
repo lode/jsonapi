@@ -1,0 +1,36 @@
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"links": {
+		"redirect": {
+			"href": "/login",
+			"meta": {
+				"level": "root"
+			}
+		}
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"attributes": {
+			"name": "Zaphod Beeblebrox",
+			"heads": 2,
+			"unknown": null
+		},
+		"links": {
+			"self": {
+				"href": "/user/42",
+				"meta": {
+					"level": "resource"
+				}
+			},
+			"partner": {
+				"href": "/user/1",
+				"meta": {
+					"level": "resource"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"links": {
+		"self": "/articles/1/relationship/author",
+		"related": "/articles/1/author"
+	},
+	"data": {
+		"type": "author",
+		"id": "12"
+	}
+}

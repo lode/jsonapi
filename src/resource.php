@@ -15,8 +15,9 @@ namespace alsvanzelf\jsonapi;
  * - links     @see ->add_link() or ->fill_links()
  * - meta data @see ->add_meta() or ->fill_meta()
  * - included  @see ->add_included_resource() or ->fill_included_resources()
+ * 
+ * @deprecated {@see ResourceDocument}
  */
-
 class resource extends response {
 
 /**

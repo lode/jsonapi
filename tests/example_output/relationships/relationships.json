@@ -1,0 +1,89 @@
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"data": {
+		"type": "user",
+		"id": "1",
+		"relationships": {
+			"included-ship": {
+				"data": {
+					"type": "ship",
+					"id": "24"
+				}
+			},
+			"excluded-ship": {
+				"data": {
+					"type": "ship",
+					"id": "42"
+				}
+			},
+			"one-by-one-friends": {
+				"data": [
+					{
+						"type": "user",
+						"id": "24"
+					},
+					{
+						"type": "user",
+						"id": "42"
+					}
+				]
+			},
+			"included-friends": {
+				"data": [
+					{
+						"type": "user",
+						"id": "24"
+					},
+					{
+						"type": "user",
+						"id": "42"
+					}
+				]
+			},
+			"one-by-one-neighbours": {
+				"data": [
+					{
+						"type": "ship",
+						"id": "24"
+					},
+					{
+						"type": "dock",
+						"id": "3"
+					}
+				]
+			}
+		}
+	},
+	"included": [
+		{
+			"type": "ship",
+			"id": "24",
+			"attributes": {
+				"foo": "bar"
+			}
+		},
+		{
+			"type": "user",
+			"id": "24",
+			"attributes": {
+				"foo": "bar"
+			}
+		},
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"bar": "baz"
+			}
+		},
+		{
+			"type": "dock",
+			"id": "3",
+			"attributes": {
+				"bar": "baf"
+			}
+		}
+	]
+}

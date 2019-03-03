@@ -1,90 +1,168 @@
-# jsonapi
+# jsonapi [![Build Status](https://travis-ci.org/lode/jsonapi.svg?branch=master)](https://travis-ci.org/lode/jsonapi)
 
-Simple and friendly library for api servers (PHP serving out JSON).
+A simple and human-friendly library for api servers (php serving json).
 
-It generates json output according to the [jsonapi.org](http://jsonapi.org/) standard,
-but aims to be easy to understand for people without knowledge of the jsonapi standard.
+It allows you to generate json output according to the [JSON:API v1.1](https://jsonapi.org/) standard,
+while being easy to understand for people without knowledge of the jsonapi standard.
+
+The JSON:API standard makes it easy for clients to fetch multiple resources in one call and understand the relations between them.
+Read more about it at [jsonapi.org](https://jsonapi.org/).
+
+
+## Installation
+
+[Use Composer](http://getcomposer.org/) require to get the latest stable version:
+
+```
+composer require alsvanzelf/jsonapi
+```
+
+#### Upgrading from v1
+
+If you used v1 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on how to upgrade.
+
 
 
 ## Getting started
 
-A small example:
+#### A small resource example
 
 ```php
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\ResourceDocument;
 
-$user = new stdClass();
-$user->id = 42;
-$user->name = 'Zaphod Beeblebrox';
-$user->heads = 2;
-
-$jsonapi = new jsonapi\resource($type='user', $user->id);
-$jsonapi->fill_data($user);
-$jsonapi->send_response();
+$document = new ResourceDocument($type='user', $id=42);
+$document->add('name', 'Zaphod Beeblebrox');
+$document->add('heads', 2);
+$document->sendResponse();
 ```
 
 Which will result in:
 
 ```json
 {
-    "links": {
-        "self": "/examples/resource.php"
-    },
-    "data": {
-        "type": "user",
-        "id": 42,
-        "attributes": {
-            "name": "Zaphod Beeblebrox",
-            "heads": 2
-        },
-        "links": {
-            "self": "/examples/resource.php"
-        }
-    }
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"attributes": {
+			"name": "Zaphod Beeblebrox",
+			"heads": 2
+		}
+	}
 }
 ```
 
-For a collection response, data is an array of resources.
-Errors can also be send as response, even automatically by exceptions.
+#### A collection of resources
+
+```php
+use alsvanzelf\jsonapi\CollectionDocument;
+
+$document = new CollectionDocument();
+$document->add('user', 42, ['name' => 'Zaphod Beeblebrox']);
+$document->add('user', 1, ['name' => 'Ford Prefect']);
+$document->add('user', 2, ['name' => 'Arthur Dent']);
+$document->sendResponse();
+```
+
+Which will result in:
+
+```json
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"data": [
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"name": "Zaphod Beeblebrox"
+			}
+		},
+		{
+			"type": "user",
+			"id": "1",
+			"attributes": {
+				"name": "Ford Prefect"
+			}
+		},
+		{
+			"type": "user",
+			"id": "2",
+			"attributes": {
+				"name": "Arthur Dent"
+			}
+		}
+	]
+}
+```
+
+#### Turning an exception into jsonapi
+
+```php
+use alsvanzelf\jsonapi\ErrorsDocument;
+
+$exception = new Exception('That is not valid', 422);
+
+$document = ErrorsDocument::fromException($exception);
+$document->sendResponse();
+```
+
+Which will result in:
+
+```json
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"errors": [
+		{
+			"status": "422",
+			"code": "Exception",
+			"meta": {
+				"class": "Exception",
+				"message": "That is not valid",
+				"code": 422,
+				"file": "README.md",
+				"line": 107,
+				"trace": []
+			}
+		}
+	]
+}
+```
 
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 
-## Installation
+## Features
 
-[Use Composer](http://getcomposer.org/). And use require to get the latest stable version:
+This library supports [v1.1 of the JSON:API specification](https://jsonapi.org/format/1.1/).
 
-```
-composer require alsvanzelf/jsonapi
-```
+It has support for generating & sending documents with:
 
+- single resources
+- resource collections
+- to-one and to-many relationships
+- errors (easily turning exceptions into jsonapi output)
+- v1.1 extensions via profiles
+- v1.1 @-members for JSON-LD and others
 
-## To Do
+Next to custom extensions, the following [official extensions](https://jsonapi.org/extensions/) are included:
 
-Right now, this library handles all the basics:
+- Cursor Pagination ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
 
-- generating single resources
-- generating resource collections
-- adding to-one and to-many relationships
-- handling error responses
-- sending out the json response with correct http headers
+Plans for the future include:
 
-Plus some handy tools:
-
-- easy turning thrown exceptions into jsonapi responses
-- constants for easy setting http status codes
-- sending out redirect locations
-
-Plans for the [near](https://github.com/lode/jsonapi/labels/current%20focus)
-and [later](https://github.com/lode/jsonapi/issues?utf8=%E2%9C%93&q=is%3Aopen+-label%3A%22current+focus%22+) future include:
-
-- import a database array as a collection response ([#2](https://github.com/lode/jsonapi/issues/2))
-- handle creating, updating and deleting resources ([#5](https://github.com/lode/jsonapi/issues/5))
+- parse request options: sparse fields, sorting, pagination, filtering ([#44](https://github.com/lode/jsonapi/issues/44))
+- parse requests for creating, updating and deleting resources and relationships ([#5](https://github.com/lode/jsonapi/issues/5))
 
 
 ## Contributing
 
-Pull Requests or issues are welcome!
+[Pull Requests](https://github.com/lode/jsonapi/pulls) or [issues](https://github.com/lode/jsonapi/issues) are welcome!
 
 
 ## Licence

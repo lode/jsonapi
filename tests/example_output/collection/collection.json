@@ -1,0 +1,51 @@
+{
+	"jsonapi": {
+		"version": "1.1"
+	},
+	"data": [
+		{
+			"type": "user",
+			"id": "1",
+			"attributes": {
+				"name": "Ford Prefect",
+				"heads": 1,
+				"unknown": null
+			}
+		},
+		{
+			"type": "user",
+			"id": "2",
+			"attributes": {
+				"name": "Arthur Dent",
+				"heads": "1, but not always there",
+				"unknown": null
+			}
+		},
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"name": "Zaphod Beeblebrox",
+				"heads": 2,
+				"unknown": null
+			},
+			"relationships": {
+				"ship": {
+					"data": {
+						"type": "ship",
+						"id": "5"
+					}
+				}
+			}
+		}
+	],
+	"included": [
+		{
+			"type": "ship",
+			"id": "5",
+			"attributes": {
+				"name": "Heart of Gold"
+			}
+		}
+	]
+}
