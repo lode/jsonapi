@@ -14,7 +14,7 @@ class MetaDocumentTest extends TestCase {
 		
 		// verify meta is an object, not an array
 		$json = $document->toJson();
-		$this->assertSame('{"jsonapi":{"version":"1.0"},"meta":{}}', $json);
+		$this->assertSame('{"jsonapi":{"version":"1.1"},"meta":{}}', $json);
 	}
 	
 	public function testFromArray_HappyPath() {

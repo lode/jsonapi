@@ -9,6 +9,7 @@
   - [Adding multiple key-value pairs at construction only](#adding-multiple-key-value-pairs-at-construction-only)
   - [Change logic via single options argument](#change-logic-via-single-options-argument)
   - [Renamed methods](#renamed-methods)
+  - [Resource id output](#resource-id-output)
   - [Exception handling](#exception-handling)
   - [Levels of links (and meta)](#levels-of-links-and-meta)
 - [Removed](#removed)
@@ -19,6 +20,7 @@
   - [Links are not auto generated anymore](#links-are-not-auto-generated-anymore)
 - [Added](#added)
   - [Specification-based methods](#specification-based-methods)
+  - [Explicitly empty relationships](#explicitly-empty-relationships)
   - [Jsonapi object](#jsonapi-object)
   - [`LEVEL_JSONAPI` constant](#level_jsonapi-constant)
   - [Unit and output tests](#unit-and-output-tests)
@@ -33,7 +35,7 @@ Most of the interface and output stayed the same. However, v2 is breaking backwa
 
 - the jsonapi specification started to recommend CamelCase in their v1.1, thus all method names changed
 - php7 marks `resource` a reserved keyword, thus the main class name changed (php5 is still supported)
-- the current implementation offers too little flexibility, in v2 the output changed
+- the current implementation offers too little flexibility, in v2 the output changed a little
 
 The main feature v2 introduces is two different ways of building the json:
 
@@ -41,8 +43,6 @@ The main feature v2 introduces is two different ways of building the json:
 - a **specification-based way** (new in v2): to easier define the small details of each part of the output
 
 See the [README.md](/README.md) and the [examples](/examples) for more information.
-
-_Note: v2.0 of the library doesn't yet support v1.1 of the specification._
 
 ## Composer update
 
@@ -181,11 +181,50 @@ $document->toArray();
 $document->toJson();
 ```
 
+### Resource id output
+
+The id of a resource is now output as a string instead of an integer.
+
+Old
+
+```php
+$document = new resource('user', 42);
+$document->send_response();
+```
+
+```json
+{
+	"data": {
+		"type": "user",
+		"id": 42,
+	}
+}
+```
+
+New:
+
+```php
+$document = new ResourceDocument('user', 42);
+$document->sendResponse();
+```
+
+```json
+{
+	"data": {
+		"type": "user",
+		"id": "42"
+	}
+}
+```
+
 ### Exception handling
 
 Transforming an exception to jsonapi output changed.
-Only `$exception->getCode()` is used outside meta, `$exception->getMessage()` (and everything else) is now placed inside meta.
-Also, this is only done when `$options['exceptionExposeDetails']` is passed, previously `$debug` mode needed to be turned on.
+The error code (`/errors/0/code`) is now filled with the basename of the exception class (`get_class($exception)`) instead of the exception message.
+Other details of the exception (`$exception->getMessage()` and everything else) are now placed inside meta.
+
+Also, all exception details are passed to output, where previously `$debug` mode needed to be turned on.
+To not expose its details, manually add error details or error objects instead of adding exceptions.
 
 Old
 
@@ -203,7 +242,7 @@ $document->send_response();
 			"code": "user not found",
 			"meta": {
 				"file": "UPGRADE_1_TO_2.md",
-				"line": 177
+				"line": 232
 			}
 		}
 	]
@@ -223,12 +262,14 @@ $document->sendResponse();
 	"errors": [
 		{
 			"status": "404",
-			"code": "404",
-			"title": "Exception",
+			"code": "Exception",
 			"meta": {
+				"class": "Exception",
 				"message": "user not found",
+				"code": 404,
 				"file": "UPGRADE_1_TO_2.md",
-				"line": 177
+				"line": 255,
+				"trace": []
 			}
 		}
 	]
@@ -352,12 +393,12 @@ It was automatically guessed based on the `display_errors` directive, and managi
   // in v2, use:
   $document->sendResponse($options=['contentType' => Document::CONTENT_TYPE_DEBUG]);
   ```
-- output `code` from error objects, and exception details `file`, `line`, `trace` (hidden if debug was false)
+- output exception details, which were hidden if debug was false, is now default (see [Exception handling](#exception-handling))
   ```php
   // in v2, use one of:
-  $errorsDocument->addException($exception, $options=['exceptionExposeDetails' => true]);
-  ErrorsDocument::fromException($exception, $options=['exceptionExposeDetails' => true]);
-  ErrorObject::fromException($exception, $options=['exceptionExposeDetails' => true]);
+  $errorsDocument->addException($exception);
+  ErrorsDocument::fromException($exception);
+  ErrorObject::fromException($exception);
   ```
 
 ### Links are not auto generated anymore
@@ -481,6 +522,30 @@ But the specification-based ones are needed to adjust some parts and make you un
 
 See the [examples/resource_human_api](/examples//resource_human_api.php) and [examples/resource_spec_api](/examples//resource_spec_api.php).
 
+### Explicitly empty relationships
+
+Making clear a to-one relationship exists but is not set is now possible.
+
+```php
+$document = new ResourceDocument('user', 42);
+$document->addRelationship('foo', null);
+$document->sendResponse();
+```
+
+```json
+{
+	"data": {
+		"type": "user",
+		"id": "42",
+		"relationships": {
+			"foo": {
+				"data": null
+			}
+		}
+	}
+}
+```
+
 ### Jsonapi object
 
 Every document by defaults get a jsonapi object in the output:
@@ -488,7 +553,7 @@ Every document by defaults get a jsonapi object in the output:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	}
 }
 ```
@@ -499,7 +564,7 @@ The object can be changed:
 
 ```php
 $jsonapiObject = new JsonapiObject();
-$jsonapiObject->setVersion(Document::JSONAPI_VERSION_1_1);
+$jsonapiObject->setVersion(Document::JSONAPI_VERSION_1_0);
 $jsonapiObject->addMeta('foo', 'bar');
 $document->setJsonapiObject($jsonapiObject);
 ```
@@ -507,7 +572,7 @@ $document->setJsonapiObject($jsonapiObject);
 ```json
 {
 	"jsonapi": {
-		"version": "1.1",
+		"version": "1.0",
 		"meta": {
 			"foo": "bar"
 		}
@@ -535,7 +600,7 @@ $document->addMeta('foo', 'jsonapi', $level=Document::LEVEL_JSONAPI);
 ```json
 {
 	"jsonapi": {
-		"version": "1.0",
+		"version": "1.1",
 		"meta": {
 			"foo": "jsonapi"
 		}
@@ -557,13 +622,13 @@ $document->addMeta('foo', 'jsonapi', $level=Document::LEVEL_JSONAPI);
 
 Tests are added to:
 
-- exception are thrown when using the library incorrectly
-- options for changing logic are applied correctly
-- make sure the output is how it should be
+- assert exception are thrown when using the library incorrectly
+- assert options for changing logic are applied correctly
+- assert the output is how it should be
 
 ### php7 ready
 
-The code is tested against php7. But will continue to support php5.
+The code is tested against php7. It will continue to support php5.6 though.
 
 ## Reference of changes
 
@@ -622,7 +687,7 @@ Old | New
 `response::CONTENT_TYPE_DEBUG;` | `Document::CONTENT_TYPE_DEBUG;`
 `response::CONTENT_TYPE_JSONP ` | `Document::CONTENT_TYPE_JSONP;`
 `response::ENCODE_DEFAULT;`<br><br>&nbsp; | Use `$options['encodeOptions'=>JSON_UNESCAPED_SLASHES \| JSON_UNESCAPED_UNICODE]`<br>on `sendResponse()` or `toJson()`
-`response::ENCODE_DEBUG;`<br><br>&nbsp; | Use `$options['encodeOptions'=>JSON_UNESCAPED_SLASHES \| JSON_UNESCAPED_UNICODE \| JSON_PRETTY_PRINT]`<br>on `sendResponse()` or `toJson()`
+`response::ENCODE_DEBUG;`<br><br><br><br>&nbsp; | Use `$options['prettyPrint'=>true]`<br>on `sendResponse()` or `toJson()`<br>or `$options['encodeOptions'=>JSON_UNESCAPED_SLASHES \| JSON_UNESCAPED_UNICODE \| JSON_PRETTY_PRINT]`<br>on `sendResponse()` or `toJson()`
 `response::JSONP_CALLBACK_DEFAULT`<br>&nbsp; | Use `$options['jsonpCallback'=>'...']`<br>on `sendResponse()` or `toJson()`
 `response::$send_status_headers` | Removed, instead don't call `sendResponse()`
 `$response = new response();` | `$metaDocument = new MetaDocument();`

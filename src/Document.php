@@ -20,8 +20,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	use AtMemberManager, HttpStatusCodeManager;
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
-	const JSONAPI_VERSION_1_1 = '1.0';
-	const JSONAPI_VERSION_LATEST = Document::JSONAPI_VERSION_1_0;
+	const JSONAPI_VERSION_1_1 = '1.1';
+	const JSONAPI_VERSION_LATEST = Document::JSONAPI_VERSION_1_1;
 	
 	const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
 	const CONTENT_TYPE_DEBUG    = 'application/json';

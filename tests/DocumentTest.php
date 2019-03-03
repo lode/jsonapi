@@ -179,7 +179,7 @@ class DocumentTest extends TestCase {
 	public function testToJson_HappyPath() {
 		$document = new Document();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.0"}}', $document->toJson());
+		$this->assertSame('{"jsonapi":{"version":"1.1"}}', $document->toJson());
 	}
 	
 	public function testToJson_CustomArray() {
@@ -193,7 +193,7 @@ class DocumentTest extends TestCase {
 		$document = new Document();
 		
 		$options = ['prettyPrint' => true];
-		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.0"'.PHP_EOL.'    }'.PHP_EOL.'}';
+		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.1"'.PHP_EOL.'    }'.PHP_EOL.'}';
 		$this->assertSame($expectedJson, $document->toJson($options));
 	}
 	
@@ -210,7 +210,7 @@ class DocumentTest extends TestCase {
 		
 		$options = ['jsonpCallback' => 'baz'];
 		$json    = $document->toJson($options);
-		$this->assertSame('baz({"jsonapi":{"version":"1.0"},"meta":{"foo":"bar"}})', $json);
+		$this->assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
 	}
 	
 	public function testToJson_InvalidUtf8() {
