@@ -106,8 +106,7 @@ use alsvanzelf\jsonapi\ErrorsDocument;
 
 $exception = new Exception('something went wrong', 422);
 
-$options = ['exceptionExposeDetails' => true]; // defaults to false
-$document = ErrorsDocument::fromException($exception, $options);
+$document = ErrorsDocument::fromException($exception);
 $document->sendResponse();
 ```
 

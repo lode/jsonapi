@@ -7,9 +7,9 @@ require 'bootstrap_examples.php';
 /**
  * via an exception
  * 
- * @note previous exceptions will be added as well, unless $options['exceptionSkipPrevious'] is set to true
- * @note exceptions will expose the exception code, and use them as http status code if valid
- *       message, file, line, trace will not not exposed, unless $options['exceptionExposeDetails'] is set to true
+ * @note previous exceptions will be added as well, unless $options['includeExceptionPrevious'] is set to false
+ * @note exceptions will expose the exception message, code, file, line and trace
+ *       also the code is used as http status code if valid
  */
 
 try {
@@ -17,9 +17,8 @@ try {
 }
 catch (Exception $e) {
 	$options = [
-		'exceptionExposeDetails' => true, // defaults to false
-		'exceptionExposeTrace'   => true,
-		'exceptionSkipPrevious'  => false,
+		'includeExceptionTrace'    => true,
+		'includeExceptionPrevious' => true,
 	];
 	$document = ErrorsDocument::fromException($e, $options);
 	
