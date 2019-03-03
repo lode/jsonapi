@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\Validator;
@@ -11,7 +12,7 @@ use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
-	use HttpStatusCodeManager;
+	use AtMemberManager, HttpStatusCodeManager;
 	
 	/** @var string */
 	protected $id;
@@ -291,6 +292,9 @@ class ErrorObject implements ObjectInterface {
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -299,7 +303,7 @@ class ErrorObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
