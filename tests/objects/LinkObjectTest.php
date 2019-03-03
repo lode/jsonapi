@@ -21,4 +21,14 @@ class LinkObjectTest extends TestCase {
 		$this->assertArrayHasKey('foo', $array['meta']);
 		$this->assertSame('bar', $array['meta']['foo']);
 	}
+	
+	public function testIsEmpty_WithAtMembers() {
+		$linkObject = new LinkObject();
+		
+		$this->assertTrue($linkObject->isEmpty());
+		
+		$linkObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($linkObject->isEmpty());
+	}
 }

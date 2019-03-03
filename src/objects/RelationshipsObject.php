@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -11,6 +12,8 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
+	use AtMemberManager;
+	
 	/** @var RelationshipObject[] */
 	protected $relationships = [];
 	
@@ -74,14 +77,14 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		return ($this->relationships === []);
+		return ($this->relationships === [] && $this->hasAtMembers() === false);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		foreach ($this->relationships as $key => $relationshipObject) {
 			$array[$key] = $relationshipObject->toArray();

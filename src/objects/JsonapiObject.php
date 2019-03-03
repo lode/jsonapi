@@ -3,10 +3,13 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject implements ObjectInterface {
+	use AtMemberManager;
+	
 	/** @var string */
 	protected $version;
 	/** @var MetaObject */
@@ -69,6 +72,9 @@ class JsonapiObject implements ObjectInterface {
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -77,7 +83,7 @@ class JsonapiObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		if ($this->version !== null) {
 			$array['version'] = $this->version;
