@@ -270,8 +270,10 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 	
 	if (is_array($relation)) {
 		$this->primary_relationships[$key] = $relation;
+		return;
 	}
-	elseif ($relation instanceof \alsvanzelf\jsonapi\resource) {
+	
+	if ($relation instanceof \alsvanzelf\jsonapi\resource) {
 		// add whole resources as included resource, while keeping the relationship
 		if ($relation->has_data() && $skip_include == false) {
 			$this->add_included_resource($relation);
