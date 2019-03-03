@@ -2,7 +2,7 @@
 
 A simple and human-friendly library for api servers (php serving json).
 
-It allows you to generate json output according to the [JSON:API](https://jsonapi.org/) standard,
+It allows you to generate json output according to the [JSON:API v1.1](https://jsonapi.org/) standard,
 while being easy to understand for people without knowledge of the jsonapi standard.
 
 The JSON:API standard makes it easy for clients to fetch multiple resources in one call and understand the relations between them.
@@ -41,7 +41,7 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"data": {
 		"type": "user",
@@ -71,7 +71,7 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"data": [
 		{
@@ -115,7 +115,7 @@ Which will result in:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	},
 	"errors": [
 		{
@@ -139,7 +139,7 @@ Examples for all kind of responses are in the [/examples](/examples) directory.
 
 ## Features
 
-This library supports [v1.0 of the JSON:API specification](https://jsonapi.org/format/1.0/).
+This library supports [v1.1 of the JSON:API specification](https://jsonapi.org/format/1.1/).
 
 It has support for generating & sending documents with:
 
@@ -147,6 +147,8 @@ It has support for generating & sending documents with:
 - resource collections
 - to-one and to-many relationships
 - errors (easily turning exceptions into jsonapi output)
+- v1.1 extensions via profiles, including the cursor pagination profile
+- v1.1 @-members for JSON-LD and others
 
 Plans for the future include:
 

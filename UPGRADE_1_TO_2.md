@@ -553,7 +553,7 @@ Every document by defaults get a jsonapi object in the output:
 ```json
 {
 	"jsonapi": {
-		"version": "1.0"
+		"version": "1.1"
 	}
 }
 ```
@@ -564,7 +564,7 @@ The object can be changed:
 
 ```php
 $jsonapiObject = new JsonapiObject();
-$jsonapiObject->setVersion(Document::JSONAPI_VERSION_1_1);
+$jsonapiObject->setVersion(Document::JSONAPI_VERSION_1_0);
 $jsonapiObject->addMeta('foo', 'bar');
 $document->setJsonapiObject($jsonapiObject);
 ```
@@ -572,7 +572,7 @@ $document->setJsonapiObject($jsonapiObject);
 ```json
 {
 	"jsonapi": {
-		"version": "1.1",
+		"version": "1.0",
 		"meta": {
 			"foo": "bar"
 		}
@@ -600,7 +600,7 @@ $document->addMeta('foo', 'jsonapi', $level=Document::LEVEL_JSONAPI);
 ```json
 {
 	"jsonapi": {
-		"version": "1.0",
+		"version": "1.1",
 		"meta": {
 			"foo": "jsonapi"
 		}
