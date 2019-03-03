@@ -21,7 +21,7 @@ class SeparateProcessTest extends TestCase {
 		$document->sendResponse();
 		$output = ob_get_clean();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.0"}}', $output);
+		$this->assertSame('{"jsonapi":{"version":"1.1"}}', $output);
 	}
 	
 	/**
