@@ -16,9 +16,9 @@ class JsonapiObject implements ObjectInterface {
 	protected $meta;
 	
 	/**
-	 * @param string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_DEFAULT
+	 * @param string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_LATEST
 	 */
-	public function __construct($version=Document::JSONAPI_VERSION_DEFAULT) {
+	public function __construct($version=Document::JSONAPI_VERSION_LATEST) {
 		if ($version !== null) {
 			$this->setVersion($version);
 		}

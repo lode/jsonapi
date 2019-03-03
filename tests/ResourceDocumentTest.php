@@ -47,11 +47,11 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertArrayHasKey('included', $array);
 	}
 	
-	public function testAddRelationship_SkipIncluding() {
+	public function testAddRelationship_DoNotIncludeContainedResources() {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		
-		$options = ['skipIncluding' => true];
+		$options = ['includeContainedResources' => false];
 		
 		$document = new ResourceDocument();
 		$document->addRelationship('foo', $resourceObject, $links=[], $meta=[], $options);
@@ -122,12 +122,12 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertArrayHasKey('included', $array);
 	}
 	
-	public function testAddRelationshipObject_SkipIncluding() {
+	public function testAddRelationshipObject_DoNotIncludeContainedResources() {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
 		
-		$options = ['skipIncluding' => true];
+		$options = ['includeContainedResources' => false];
 		
 		$document = new ResourceDocument();
 		$document->addRelationshipObject('foo', $relationshipObject, $options);
@@ -153,7 +153,7 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertArrayHasKey('included', $array);
 	}
 	
-	public function testSetRelationshipsObject_SkipIncluding() {
+	public function testSetRelationshipsObject_DoNotIncludeContainedResources() {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
@@ -161,7 +161,7 @@ class ResourceDocumentTest extends TestCase {
 		$relationshipsObject = new RelationshipsObject();
 		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
-		$options = ['skipIncluding' => true];
+		$options = ['includeContainedResources' => false];
 		
 		$document = new ResourceDocument();
 		$document->setRelationshipsObject($relationshipsObject, $options);
@@ -200,14 +200,14 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertArrayHasKey('included', $array);
 	}
 	
-	public function testSetPrimaryResource_SkipIncluding() {
+	public function testSetPrimaryResource_DoNotIncludeContainedResources() {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addRelationship('foo', $relatedResourceObject);
 		
-		$options = ['skipIncluding' => true];
+		$options = ['includeContainedResources' => false];
 		
 		$document = new ResourceDocument();
 		$document->setPrimaryResource($resourceObject, $options);

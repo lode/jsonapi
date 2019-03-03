@@ -151,7 +151,7 @@ $document->send_response($content_type='application/json', $encode_options=JSON_
 New:
 
 ```php
-$document->addRelationship($key, $relatedResource, $links=[], $meta=[], $options=['skipIncluding' => true]);
+$document->addRelationship($key, $relatedResource, $links=[], $meta=[], $options=['includeContainedResources' => false]);
 $document->toJson($options['encodeOptions' => JSON_PRETTY_PRINT]);
 $document->sendResponse($options[
 	'contentType'   => 'application/json',
@@ -571,7 +571,7 @@ Old | New
 --- | ---
 **base** | n/a
 `base::$debug;` | See [Debug mode](#debug-mode)
-`base::$appRoot;`<br><br><br><br>&nbsp; | Use `$options['exceptionStripBasePath'=>'...']`<br>on `ErrorObject::fromException()`<br>or `ErrorsDocument::fromException()`<br>or `$errorsDocument = new ErrorsDocument(); $errorsDocument->addException()`
+`base::$appRoot;`<br><br><br><br>&nbsp; | Use `$options['stripExceptionBasePath'=>'...']`<br>on `ErrorObject::fromException()`<br>or `ErrorsDocument::fromException()`<br>or `$errorsDocument = new ErrorsDocument(); $errorsDocument->addException()`
 &nbsp; | &nbsp;
 **collection** | **CollectionDocument**
 `$collection = new collection();` | `$collectionDocument = new CollectionDocument();`

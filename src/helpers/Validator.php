@@ -22,7 +22,9 @@ class Validator {
 	/** @var array */
 	protected static $defaults = [
 		/**
-		 * @note this is not allowed by the specification
+		 * blocks 'type' as a keyword inside attributes or relationships
+		 * the specification doesn't allow this as 'type' is already set at the root of a resource
+		 * set to true if migrating to jsonapi and currently using 'type' as attribute or relationship
 		 */
 		'enforceTypeFieldNamespace' => true,
 	];
