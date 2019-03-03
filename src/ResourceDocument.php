@@ -24,7 +24,10 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	protected $resource;
 	/** @var array */
 	protected static $defaults = [
-		'skipIncluding' => false,
+		/**
+		 * add resources inside relationships to /included when adding resources to the collection
+		 */
+		'includeContainedResources' => true,
 	];
 	
 	/**
@@ -86,7 +89,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * add a relation to the resource
 	 * 
-	 * adds included resources if found inside the relation, unless $options['skipIncluding'] is set to true
+	 * adds included resources if found inside the relation, unless $options['includeContainedResources'] is set to false
 	 * 
 	 * @param string  $key
 	 * @param mixed   $relation ResourceInterface | ResourceInterface[] | CollectionDocument
@@ -99,7 +102,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
-		if ($options['skipIncluding'] === false) {
+		if ($options['includeContainedResources']) {
 			$this->addIncludedResourceObject(...$relationshipObject->getNestedContainedResourceObjects());
 		}
 	}
@@ -177,7 +180,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * add a RelationshipObject to the resource
 	 * 
-	 * adds included resources if found inside the RelationshipObject, unless $options['skipIncluding'] is set to true
+	 * adds included resources if found inside the RelationshipObject, unless $options['includeContainedResources'] is set to false
 	 * 
 	 * @param string             $key
 	 * @param RelationshipObject $relationshipObject
@@ -188,7 +191,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
-		if ($options['skipIncluding'] === false) {
+		if ($options['includeContainedResources']) {
 			$this->addIncludedResourceObject(...$relationshipObject->getNestedContainedResourceObjects());
 		}
 	}
@@ -196,7 +199,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * set the RelationshipsObject to the resource
 	 * 
-	 * adds included resources if found inside the RelationshipObjects inside the RelationshipsObject, unless $options['skipIncluding'] is set to true
+	 * adds included resources if found inside the RelationshipObjects inside the RelationshipsObject, unless $options['includeContainedResources'] is set to false
 	 * 
 	 * @param RelationshipsObject $relationshipsObject
 	 * @param array               $options             optional {@see ResourceDocument::$defaults}
@@ -206,7 +209,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$this->resource->setRelationshipsObject($relationshipsObject);
 		
-		if ($options['skipIncluding'] === false) {
+		if ($options['includeContainedResources']) {
 			$this->addIncludedResourceObject(...$relationshipsObject->getNestedContainedResourceObjects());
 		}
 	}
@@ -218,7 +221,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	/**
 	 * overwrites the primary resource
 	 * 
-	 * adds included resources if found inside the resource's relationships, unless $options['skipIncluding'] is set to true
+	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
 	 * @param ResourceInterface $resource
 	 * @param array             $options  optional {@see ResourceDocument::$defaults}
@@ -234,7 +237,7 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		$this->resource = $resource;
 		
-		if ($options['skipIncluding'] === false && $this->resource instanceof RecursiveResourceContainerInterface) {
+		if ($options['includeContainedResources'] && $this->resource instanceof RecursiveResourceContainerInterface) {
 			$this->addIncludedResourceObject(...$this->resource->getNestedContainedResourceObjects());
 		}
 	}

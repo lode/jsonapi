@@ -161,14 +161,14 @@ class CollectionDocumentTest extends TestCase {
 		$this->assertSame('24', $array['included'][0]['id']);
 	}
 	
-	public function testAddResource_SkipIncluding() {
+	public function testAddResource_DoNotIncludeContainedResources() {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addRelationship('foo', $relatedResourceObject);
 		
-		$options = ['skipIncluding' => true];
+		$options = ['includeContainedResources' => false];
 		
 		$document = new CollectionDocument();
 		$document->addResource($resourceObject, $options);
