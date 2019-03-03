@@ -44,8 +44,6 @@ The main feature v2 introduces is two different ways of building the json:
 
 See the [README.md](/README.md) and the [examples](/examples) for more information.
 
-_Note: v2.0 of the library doesn't yet support v1.1 of the specification._
-
 ## Composer update
 
 As v2 uses completely new files the files for v1 could be left intact.
@@ -244,7 +242,7 @@ $document->send_response();
 			"code": "user not found",
 			"meta": {
 				"file": "UPGRADE_1_TO_2.md",
-				"line": 234
+				"line": 232
 			}
 		}
 	]
@@ -270,7 +268,7 @@ $document->sendResponse();
 				"message": "user not found",
 				"code": 404,
 				"file": "UPGRADE_1_TO_2.md",
-				"line": 257,
+				"line": 255,
 				"trace": []
 			}
 		}
