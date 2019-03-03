@@ -1,0 +1,18 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"errors": [
+		{
+			"status": "404",
+			"code": "Exception",
+			"meta": {
+				"type": "Exception",
+				"message": "unknown user",
+				"code": 404,
+				"file": "/errors_exception_native.php",
+				"line": 9
+			}
+		}
+	]
+}

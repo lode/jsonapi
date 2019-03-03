@@ -2,6 +2,9 @@
 
 namespace alsvanzelf\jsonapi;
 
+/**
+ * @deprecated {@see MetaDocument}
+ */
 class response extends base {
 
 /**

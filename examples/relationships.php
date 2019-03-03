@@ -1,89 +1,81 @@
 <?php
 
-use alsvanzelf\jsonapi;
+use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\objects\RelationshipObject;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
-ini_set('display_errors', 1);
-error_reporting(-1);
-
-require '../vendor/autoload.php';
-
-/**
- * settings which will change default from 2.x
- */
-jsonapi\resource::$self_link_data_level = jsonapi\resource::SELF_LINK_TYPE;
+require 'bootstrap_examples.php';
 
 /**
  * the different ways of adding relationships to a resource
  */
 
-$jsonapi = new jsonapi\resource('user', 1);
+$document = new ResourceDocument('user', 1);
 
-$ship1_resource = new jsonapi\resource('ship', 24);
-$ship1_resource->add_data('foo', 'bar');
+$ship1Resource = new ResourceObject('ship', 24);
+$ship1Resource->add('foo', 'bar');
 
-$ship2_resource = new jsonapi\resource('ship', 42);
-$ship2_resource->add_data('bar', 'baz');
+$ship2Resource = new ResourceObject('ship', 42);
+$ship2Resource->add('bar', 'baz');
 
-$friend1_resource = new jsonapi\resource('user', 24);
-$friend1_resource->add_data('foo', 'bar');
+$friend1Resource = new ResourceObject('user', 24);
+$friend1Resource->add('foo', 'bar');
 
-$friend2_resource = new jsonapi\resource('user', 42);
-$friend2_resource->add_data('bar', 'baz');
+$friend2Resource = new ResourceObject('user', 42);
+$friend2Resource->add('bar', 'baz');
 
-$dock_resource = new jsonapi\resource('dock', 3);
-$dock_resource->add_data('bar', 'baf');
+$dockResource = new ResourceObject('dock', 3);
+$dockResource->add('bar', 'baf');
 
 /**
  * to-one relationship
  */
 
-$jsonapi->add_relation('implicit-ship', $ship1_resource);
-
-/**
- * to-one relationship, explicit variant
- * doesn't add functionality
- */
-
-$jsonapi->add_relation('explicit-ship', $ship1_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_ONE);
+$document->addRelationship('included-ship', $ship1Resource);
 
 /**
  * to-one relationship, without included resource
  */
 
-$jsonapi->add_relation('excluded-ship', $ship2_resource, $skip_include=true);
+$options = ['includeContainedResources' => false];
+$document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
 
 /**
  * to-many relationship, one-by-one
  */
 
-$jsonapi->add_relation('one-by-one-friends', $friend1_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
-$jsonapi->add_relation('one-by-one-friends', $friend2_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
+$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject->addResource($friend1Resource);
+$relationshipObject->addResource($friend2Resource);
+
+$document->addRelationshipObject('one-by-one-friends', $relationshipObject);
 
 /**
  * to-many relationship, all-at-once
  */
 
-$friends = new jsonapi\collection('friends');
-$friends->add_resource($friend1_resource);
-$friends->add_resource($friend2_resource);
+$friends = new CollectionDocument();
+$friends->addResource($friend1Resource);
+$friends->addResource($friend2Resource);
 
-$jsonapi->add_relation('implicit-friends', $friends);
-
-/**
- * to-many relationship, explicit variant
- */
-
-$jsonapi->add_relation('explicit-friends', $friends, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
+$document->addRelationship('included-friends', $friends);
 
 /**
  * to-many relationship, different types
  */
 
-$jsonapi->add_relation('one-by-one-neighbours', $ship1_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
-$jsonapi->add_relation('one-by-one-neighbours', $dock_resource, $skip_include=false, $type=jsonapi\resource::RELATION_TO_MANY);
+$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject->addResource($ship1Resource);
+$relationshipObject->addResource($dockResource);
+
+$document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
 
 /**
  * sending the response
  */
 
-$jsonapi->send_response();
+$options = [
+	'prettyPrint' => true,
+];
+echo '<pre>'.$document->toJson($options);

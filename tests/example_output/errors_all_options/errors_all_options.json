@@ -1,0 +1,77 @@
+{
+	"jsonapi": {
+		"version": "1.0"
+	},
+	"links": {
+		"redirect": {
+			"href": "/login",
+			"meta": {
+				"label": "Log in"
+			}
+		}
+	},
+	"errors": [
+		{
+			"code": "Invalid input",
+			"title": "Too much options",
+			"detail": "Please, choose a bit less. Consult your ...",
+			"links": {
+				"about": "https://www.example.com/explanation.html"
+			}
+		},
+		{
+			"id": 42,
+			"status": "404",
+			"code": "Invalid input",
+			"title": "Too much options",
+			"detail": "Please, choose a bit less. Consult your ...",
+			"links": {
+				"about": {
+					"href": "https://www.example.com/explanation.html",
+					"meta": {
+						"foo": "bar"
+					}
+				}
+			},
+			"source": {
+				"pointer": "/data/attributes/title",
+				"parameter": "filter"
+			},
+			"meta": {
+				"foo": "bar",
+				"object": {
+					"property": "value"
+				}
+			}
+		},
+		{
+			"code": "kiss",
+			"title": "Error objects can be small and simple as well."
+		},
+		{
+			"status": "500",
+			"code": "Exception",
+			"meta": {
+				"type": "Exception",
+				"message": "please don't throw things",
+				"code": 500,
+				"file": "/errors_all_options.php",
+				"line": 29
+			}
+		},
+		{
+			"code": "Exception",
+			"meta": {
+				"type": "Exception",
+				"message": "something went wrong!",
+				"code": 0,
+				"file": "/errors_all_options.php",
+				"line": 28
+			}
+		},
+		{
+			"code": "Authentication error",
+			"title": "Not logged in"
+		}
+	]
+}
