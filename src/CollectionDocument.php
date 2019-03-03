@@ -21,7 +21,10 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	protected $resources = [];
 	/** @var array */
 	protected static $defaults = [
-		'skipIncluding' => false,
+		/**
+		 * add resources inside relationships to /included when adding resources to the collection
+		 */
+		'includeContainedResources' => true,
 	];
 	
 	/**
@@ -85,7 +88,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	/**
 	 * add a resource to the collection
 	 * 
-	 * adds included resources if found inside the resource's relationships, unless $options['skipIncluding'] is set to true
+	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
 	 * @param ResourceInterface $resource
 	 * @param array             $options  optional {@see CollectionDocument::$defaults}
@@ -103,7 +106,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 		
 		$this->resources[] = $resource;
 		
-		if ($options['skipIncluding'] === false && $resource instanceof RecursiveResourceContainerInterface) {
+		if ($options['includeContainedResources'] && $resource instanceof RecursiveResourceContainerInterface) {
 			$this->addIncludedResourceObject(...$resource->getNestedContainedResourceObjects());
 		}
 	}

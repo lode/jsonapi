@@ -38,7 +38,7 @@ $document->addRelationship('included-ship', $ship1Resource);
  * to-one relationship, without included resource
  */
 
-$options = ['skipIncluding' => true];
+$options = ['includeContainedResources' => false];
 $document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
 
 /**

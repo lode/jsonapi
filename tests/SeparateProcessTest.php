@@ -48,7 +48,7 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_DEFAULT], xdebug_get_headers());
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL], xdebug_get_headers());
 		
 		$options = ['contentType' => Document::CONTENT_TYPE_OFFICIAL];
 		ob_start();
