@@ -4,14 +4,15 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
-use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
-	use HttpStatusCodeManager;
+	use AtMemberManager, HttpStatusCodeManager, LinksManager;
 	
 	/** @var string */
 	protected $id;
@@ -21,8 +22,6 @@ class ErrorObject implements ObjectInterface {
 	protected $title;
 	/** @var string */
 	protected $detail;
-	/** @var LinksObject */
-	protected $links;
 	/** @var array */
 	protected $source = [];
 	/** @var MetaObject */
@@ -47,13 +46,14 @@ class ErrorObject implements ObjectInterface {
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
 	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
 	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
 	 */
-	public function __construct($genericCode=null, $genericTitle=null, $specificDetails=null, $specificAboutLink=null) {
+	public function __construct($genericCode=null, $genericTitle=null, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
 		if ($genericCode !== null) {
 			$this->setApplicationCode($genericCode);
 		}
 		if ($genericTitle !== null) {
-			$this->setHumanExplanation($genericTitle, $specificDetails, $specificAboutLink);
+			$this->setHumanExplanation($genericTitle, $specificDetails, $specificAboutLink, $genericTypeLink);
 		}
 	}
 	
@@ -125,8 +125,9 @@ class ErrorObject implements ObjectInterface {
 	 * @param string $genericTitle      title of the generic type of error
 	 * @param string $specificDetails   optional, explanation of the specific error
 	 * @param string $specificAboutLink optional, explanation of the specific error
+	 * @param string $genericTypeLink   optional, explanation of the generic type of error
 	 */
-	public function setHumanExplanation($genericTitle, $specificDetails=null, $specificAboutLink=null) {
+	public function setHumanExplanation($genericTitle, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
 		$this->setHumanTitle($genericTitle);
 		
 		if ($specificDetails !== null) {
@@ -135,19 +136,9 @@ class ErrorObject implements ObjectInterface {
 		if ($specificAboutLink !== null) {
 			$this->setAboutLink($specificAboutLink);
 		}
-	}
-	
-	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function addLink($key, $href, array $meta=[]) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
+		if ($genericTypeLink !== null) {
+			$this->appendTypeLink($genericTypeLink);
 		}
-		
-		$this->links->add($key, $href, $meta);
 	}
 	
 	/**
@@ -158,6 +149,16 @@ class ErrorObject implements ObjectInterface {
 	 */
 	public function setAboutLink($href, array $meta=[]) {
 		$this->addLink('about', $href, $meta);
+	}
+	
+	/**
+	 * append a link of the generic type of this error, explained in a human-friendly way
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function appendTypeLink($href, array $meta=[]) {
+		$this->appendLink('type', $href, $meta);
 	}
 	
 	/**
@@ -246,13 +247,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
-	}
-	
-	/**
 	 * @param MetaObject $metaObject
 	 */
 	public function setMetaObject(MetaObject $metaObject) {
@@ -291,6 +285,9 @@ class ErrorObject implements ObjectInterface {
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -299,7 +296,7 @@ class ErrorObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		if ($this->id !== null) {
 			$array['id'] = $this->id;

@@ -305,6 +305,16 @@ class RelationshipObjectTest extends TestCase {
 		}
 	}
 	
+	public function testIsEmpty_WithAtMembers() {
+		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		
+		$this->assertTrue($relationshipObject->isEmpty());
+		
+		$relationshipObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($relationshipObject->isEmpty());
+	}
+	
 	private function validateToOneRelationshipArray(array $array) {
 		$this->assertNotEmpty($array);
 		$this->assertArrayHasKey('data', $array);
