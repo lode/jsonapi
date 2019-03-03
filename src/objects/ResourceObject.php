@@ -5,22 +5,22 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
-use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 class ResourceObject extends ResourceIdentifierObject implements RecursiveResourceContainerInterface {
+	use LinksManager;
+	
 	/** @var AttributesObject */
 	protected $attributes;
 	/** @var RelationshipsObject */
 	protected $relationships;
-	/** @var LinksObject */
-	protected $links;
 	/** @var array */
 	protected static $defaults = [
 		/**
@@ -110,19 +110,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function addLink($key, $href, array $meta=[]) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->add($key, $href, $meta);
-	}
-	
-	/**
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 */
@@ -176,25 +163,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
 		
 		$this->relationships = $relationshipsObject;
-	}
-	
-	/**
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->addLinkObject($key, $linkObject);
-	}
-	
-	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
 	}
 	
 	/**

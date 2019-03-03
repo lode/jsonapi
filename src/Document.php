@@ -6,10 +6,10 @@ use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
-use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -17,7 +17,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMemberManager, HttpStatusCodeManager;
+	use AtMemberManager, HttpStatusCodeManager, LinksManager;
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.1';
@@ -31,8 +31,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	const LEVEL_JSONAPI  = 'jsonapi';
 	const LEVEL_RESOURCE = 'resource';
 	
-	/** @var LinksObject */
-	protected $links;
 	/** @var MetaObject */
 	protected $meta;
 	/** @var JsonapiObject */
@@ -152,25 +150,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	/**
 	 * spec api
 	 */
-	
-	/**
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->addLinkObject($key, $linkObject);
-	}
-	
-	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
-	}
 	
 	/**
 	 * @param MetaObject $metaObject

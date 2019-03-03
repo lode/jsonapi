@@ -7,12 +7,12 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
-use alsvanzelf\jsonapi\objects\LinksObject;
 
 class ErrorObject implements ObjectInterface {
-	use AtMemberManager, HttpStatusCodeManager;
+	use AtMemberManager, HttpStatusCodeManager, LinksManager;
 	
 	/** @var string */
 	protected $id;
@@ -22,8 +22,6 @@ class ErrorObject implements ObjectInterface {
 	protected $title;
 	/** @var string */
 	protected $detail;
-	/** @var LinksObject */
-	protected $links;
 	/** @var array */
 	protected $source = [];
 	/** @var MetaObject */
@@ -139,19 +137,6 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function addLink($key, $href, array $meta=[]) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->add($key, $href, $meta);
-	}
-	
-	/**
 	 * set the link about this specific occurence of the error, explained in a human-friendly way
 	 * 
 	 * @param string $href
@@ -244,13 +229,6 @@ class ErrorObject implements ObjectInterface {
 	 */
 	public function setHumanDetails($specificDetails) {
 		$this->detail = $specificDetails;
-	}
-	
-	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
 	}
 	
 	/**

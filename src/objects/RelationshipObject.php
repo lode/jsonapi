@@ -5,22 +5,20 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
-use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipObject implements ObjectInterface, RecursiveResourceContainerInterface {
-	use AtMemberManager;
+	use AtMemberManager, LinksManager;
 	
 	const TO_ONE  = 'one';
 	const TO_MANY = 'many';
 	
-	/** @var LinksObject */
-	protected $links;
 	/** @var MetaObject */
 	protected $meta;
 	/** @var ResourceInterface */
@@ -129,19 +127,6 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function addLink($key, $href, array $meta=[]) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->add($key, $href, $meta);
-	}
-	
-	/**
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 */
@@ -228,25 +213,6 @@ class RelationshipObject implements ObjectInterface, RecursiveResourceContainerI
 		}
 		
 		$this->resources[] = $resource;
-	}
-	
-	/**
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$this->links->addLinkObject($key, $linkObject);
-	}
-	
-	/**
-	 * @param LinksObject $linksObject
-	 */
-	public function setLinksObject(LinksObject $linksObject) {
-		$this->links = $linksObject;
 	}
 	
 	/**
