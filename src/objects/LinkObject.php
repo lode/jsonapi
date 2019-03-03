@@ -2,10 +2,13 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class LinkObject implements ObjectInterface {
+	use AtMemberManager;
+	
 	/** @var string */
 	protected $href;
 	/** @var MetaObject */
@@ -72,6 +75,9 @@ class LinkObject implements ObjectInterface {
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -80,9 +86,9 @@ class LinkObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [
-			'href' => $this->href,
-		];
+		$array = $this->getAtMembers();
+		
+		$array['href'] = $this->href;
 		
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
