@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
@@ -10,6 +11,8 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksArray;
 
 class LinksObject implements ObjectInterface {
+	use AtMemberManager;
+	
 	/** @var array with string|LinkObject */
 	protected $links = [];
 	
@@ -158,14 +161,14 @@ class LinksObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		return ($this->links === []);
+		return ($this->links === [] && $this->hasAtMembers() === false);
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = [];
+		$array = $this->getAtMembers();
 		
 		foreach ($this->links as $key => $link) {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
