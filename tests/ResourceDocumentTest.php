@@ -4,10 +4,12 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
+use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
@@ -33,6 +35,27 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertArrayHasKey('attributes', $array['data']);
 		$this->assertArrayHasKey('foo', $array['data']['attributes']);
 		$this->assertSame('bar', $array['data']['attributes']['foo']);
+	}
+	
+	public function testAdd_HappyPath() {
+		$document = new ResourceDocument('user', 42);
+		$document->add('foo', 'bar');
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertArrayHasKey('attributes', $array['data']);
+		$this->assertArrayHasKey('foo', $array['data']['attributes']);
+		$this->assertSame('bar', $array['data']['attributes']['foo']);
+	}
+	
+	public function testAdd_IdentifierOnlyObject() {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		
+		$document->add('foo', 'bar');
 	}
 	
 	public function testAddRelationship_WithIncluded() {
