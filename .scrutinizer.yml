@@ -1,0 +1,12 @@
+filter:
+    paths:
+        - src/
+
+    excluded_paths:
+        - src/base.php
+        - src/collection.php
+        - src/error.php
+        - src/errors.php
+        - src/exception.php
+        - src/resource.php
+        - src/response.php
