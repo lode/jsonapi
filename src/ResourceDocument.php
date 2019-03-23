@@ -12,6 +12,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
+use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 /**

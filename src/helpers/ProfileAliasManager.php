@@ -60,6 +60,16 @@ abstract class ProfileAliasManager {
 	/**
 	 * @inheritDoc
 	 */
+	abstract public function getOfficialKeywords();
+	
+	/**
+	 * @inheritDoc
+	 */
+	abstract public function getOfficialLink();
+	
+	/**
+	 * @inheritDoc
+	 */
 	public function getAliasedLink() {
 		if ($this->aliasMapping === []) {
 			return $this->getOfficialLink();

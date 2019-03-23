@@ -44,7 +44,7 @@ class MetaDocument extends Document {
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
 	public function add($key, $value, $level=Document::LEVEL_ROOT) {
-		return parent::addMeta($key, $value, $level);
+		parent::addMeta($key, $value, $level);
 	}
 	
 	/**
