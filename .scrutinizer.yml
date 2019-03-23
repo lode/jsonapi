@@ -1,12 +1,21 @@
-filter:
-    paths:
-        - src/
+build:
+  nodes:
+    coverage:
+      tests:
+        override:
+          - command: php ./script/test_with_coverage.php
+            coverage:
+              file: tests/report/clover.xml
+              format: clover
 
-    excluded_paths:
-        - src/base.php
-        - src/collection.php
-        - src/error.php
-        - src/errors.php
-        - src/exception.php
-        - src/resource.php
-        - src/response.php
+filter:
+  paths:
+    - src/
+  excluded_paths:
+    - src/base.php
+    - src/collection.php
+    - src/error.php
+    - src/errors.php
+    - src/exception.php
+    - src/resource.php
+    - src/response.php

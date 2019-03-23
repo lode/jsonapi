@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -12,6 +13,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
+use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 /**
@@ -83,6 +85,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array  $options optional {@see ResourceDocument::$defaults}
 	 */
 	public function add($key, $value, array $options=[]) {
+		$this->ensureResourceObject();
+		
 		$this->resource->add($key, $value, $options);
 	}
 	
@@ -98,6 +102,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array   $options  optional {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
+		$this->ensureResourceObject();
+		
 		$options = array_merge(self::$defaults, $options);
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
@@ -114,6 +120,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
 	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
+		$this->ensureResourceObject();
+		
 		if ($level === Document::LEVEL_RESOURCE) {
 			$this->resource->addLink($key, $href, $meta);
 		}
@@ -129,6 +137,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array  $meta optional
 	 */
 	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_RESOURCE) {
+		$this->ensureResourceObject();
+		
 		if ($level === Document::LEVEL_RESOURCE) {
 			$this->resource->setSelfLink($href, $meta);
 		}
@@ -174,6 +184,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array            $options          optional {@see ResourceObject::$defaults}
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
+		$this->ensureResourceObject();
+		
 		$this->resource->setAttributesObject($attributesObject, $options);
 	}
 	
@@ -187,6 +199,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array              $options            optional {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
+		$this->ensureResourceObject();
+		
 		$options = array_merge(self::$defaults, $options);
 		
 		$this->resource->addRelationshipObject($key, $relationshipObject);
@@ -205,6 +219,8 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array               $options             optional {@see ResourceDocument::$defaults}
 	 */
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject, array $options=[]) {
+		$this->ensureResourceObject();
+		
 		$options = array_merge(self::$defaults, $options);
 		
 		$this->resource->setRelationshipsObject($relationshipsObject);
@@ -239,6 +255,21 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		
 		if ($options['includeContainedResources'] && $this->resource instanceof RecursiveResourceContainerInterface) {
 			$this->addIncludedResourceObject(...$this->resource->getNestedContainedResourceObjects());
+		}
+	}
+	
+	/**
+	 * internal api
+	 */
+	
+	/**
+	 * @internal
+	 * 
+	 * @throws Exception
+	 */
+	private function ensureResourceObject() {
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
 		}
 	}
 	

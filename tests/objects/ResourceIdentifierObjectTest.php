@@ -7,6 +7,24 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
+	public function testEquals_HappyPath() {
+		$one = new ResourceIdentifierObject('test', 1);
+		$two = new ResourceIdentifierObject('test', 2);
+		$new = new ResourceIdentifierObject('test', 1);
+		
+		$this->assertFalse($one->equals($two));
+		$this->assertTrue($one->equals($new));
+	}
+	
+	public function testEquals_WithoutIdentification() {
+		$one = new ResourceIdentifierObject('test', 1);
+		$two = new ResourceIdentifierObject();
+		
+		$this->expectException(Exception::class);
+		
+		$one->equals($two);
+	}
+	
 	public function testGetIdentificationKey_HappyPath() {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 42);
 		
