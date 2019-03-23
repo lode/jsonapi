@@ -39,7 +39,7 @@ class ResourceDocumentTest extends TestCase {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		
-		$document = new ResourceDocument();
+		$document = new ResourceDocument('test', 1);
 		$document->addRelationship('foo', $resourceObject);
 		
 		$array = $document->toArray();
@@ -53,7 +53,7 @@ class ResourceDocumentTest extends TestCase {
 		
 		$options = ['includeContainedResources' => false];
 		
-		$document = new ResourceDocument();
+		$document = new ResourceDocument('test', 1);
 		$document->addRelationship('foo', $resourceObject, $links=[], $meta=[], $options);
 		
 		$array = $document->toArray();
@@ -114,7 +114,7 @@ class ResourceDocumentTest extends TestCase {
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
 		
-		$document = new ResourceDocument();
+		$document = new ResourceDocument('test', 1);
 		$document->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $document->toArray();
@@ -129,7 +129,7 @@ class ResourceDocumentTest extends TestCase {
 		
 		$options = ['includeContainedResources' => false];
 		
-		$document = new ResourceDocument();
+		$document = new ResourceDocument('test', 1);
 		$document->addRelationshipObject('foo', $relationshipObject, $options);
 		
 		$array = $document->toArray();

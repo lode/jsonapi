@@ -110,9 +110,15 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * 
 	 * @param  ResourceInterface $resource
 	 * @return boolean
+	 * 
+	 * @throws Exception if one or both are missing identification
 	 */
 	public function equals(ResourceInterface $resource) {
-		return ($this->type === $resource->type && $this->id === $resource->id);
+		if ($this->hasIdentification() === false || $resource->getResource()->hasIdentification() === false) {
+			throw new Exception('can not compare resources if identification is missing');
+		}
+		
+		return ($this->getIdentificationKey() === $resource->getResource()->getIdentificationKey());
 	}
 	
 	/**

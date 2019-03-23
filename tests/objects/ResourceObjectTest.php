@@ -172,7 +172,7 @@ class ResourceObjectTest extends TestCase {
 		$resourceObject->add('foo', 'bar');
 		$this->assertFalse($resourceObject->isEmpty());
 		
-		$resourceObject = new ResourceObject();
+		$resourceObject = new ResourceObject('test', 1);
 		$resourceObject->addRelationship('foo', new ResourceObject('user', 24));
 		$this->assertFalse($resourceObject->isEmpty());
 		
