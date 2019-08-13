@@ -2,7 +2,6 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
@@ -74,7 +73,7 @@ class SeparateProcessTest extends TestCase {
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
 		$profile = new TestProfile();
-		$profile->setAliasedLink('https://jsonapi.org');
+		$profile->setOfficialLink('https://jsonapi.org');
 		
 		$document = new Document();
 		$document->applyProfile($profile);
@@ -85,7 +84,7 @@ class SeparateProcessTest extends TestCase {
 		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.';profile="https://jsonapi.org", '.Document::CONTENT_TYPE_OFFICIAL], xdebug_get_headers());
 		
 		$profile = new TestProfile();
-		$profile->setAliasedLink('https://jsonapi.org/2');
+		$profile->setOfficialLink('https://jsonapi.org/2');
 		$document->applyProfile($profile);
 		
 		ob_start();

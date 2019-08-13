@@ -4,7 +4,6 @@ namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
-use alsvanzelf\jsonapi\objects\LinkObject;
 
 /**
  * @internal
@@ -48,8 +47,7 @@ class Converter {
 		
 		$profileLinks = [];
 		foreach ($profiles as $profile) {
-			$link = $profile->getAliasedLink();
-			$profileLinks[] = ($link instanceof LinkObject) ? $link->toArray()['href'] : $link;
+			$profileLinks[] = $profile->getOfficialLink();
 		}
 		$profileLinks = implode(' ', $profileLinks);
 		
