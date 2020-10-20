@@ -118,7 +118,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @return ResourceIdentifierObject
 	 */
 	public static function fromResourceObject(ResourceObject $resourceObject) {
-		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->id);
+		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->primaryId());
 		
 		if ($resourceObject->meta !== null) {
 			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
@@ -149,7 +149,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @return boolean
 	 */
 	public function hasIdentification() {
-		return ($this->type !== null && $this->id !== null);
+		return ($this->type !== null && $this->primaryId() !== null);
 	}
 	
 	/**
@@ -166,7 +166,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 			throw new Exception('resource has no identification yet');
 		}
 		
-		return $this->type.'|'.$this->id;
+		return $this->type.'|'.$this->primaryId();
 	}
 	
 	/**
@@ -177,7 +177,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		if ($this->type !== null || $this->id !== null) {
+		if ($this->type !== null || $this->primaryId() !== null) {
 			return false;
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
@@ -221,5 +221,17 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	public function getResource($identifierOnly=false) {
 		return $this;
+	}
+	
+	/**
+	 * @internal
+	 */
+	
+	private function primaryId() {
+		if ($this->lid !== null) {
+			return $this->lid;
+		}
+		
+		return $this->id;
 	}
 }
