@@ -11,6 +11,16 @@ class LinkObject implements ObjectInterface {
 	
 	/** @var string */
 	protected $href;
+	/** @var string */
+	protected $rel;
+	/** @var LinkObject */
+	protected $describedby;
+	/** @var string */
+	protected $title;
+	/** @var string */
+	protected $type;
+	/** @var string[] */
+	protected $hreflang;
 	/** @var MetaObject */
 	protected $meta;
 	
@@ -30,6 +40,25 @@ class LinkObject implements ObjectInterface {
 	/**
 	 * human api
 	 */
+	
+	/**
+	 * @param string $href
+	 */
+	public function setDescribedBy($href) {
+		$this->setDescribedByLinkObject(new LinkObject($href));
+	}
+	
+	/**
+	 * @param string $language
+	 */
+	public function addLanguage($language) {
+		if ($this->hreflang === null) {
+			$this->setHreflang($language);
+		}
+		else {
+			$this->setHreflang(...$this->hreflang, $language);
+		}
+	}
 	
 	/**
 	 * @param string $key
@@ -52,6 +81,41 @@ class LinkObject implements ObjectInterface {
 	 */
 	public function setHref($href) {
 		$this->href = $href;
+	}
+	
+	/**
+	 * @param string $relationType
+	 */
+	public function setRelationType($relationType) {
+		$this->rel = $relationType;
+	}
+	
+	/**
+	 * @param LinkObject $describedBy
+	 */
+	public function setDescribedByLinkObject(LinkObject $describedBy) {
+		$this->describedby = $describedBy;
+	}
+	
+	/**
+	 * @param string $friendlyTitle
+	 */
+	public function setHumanTitle($humanTitle) {
+		$this->title = $humanTitle;
+	}
+	
+	/**
+	 * @param string $mediaType
+	 */
+	public function setMediaType($mediaType) {
+		$this->type = $mediaType;
+	}
+	
+	/**
+	 * @param string ...$hreflang
+	 */
+	public function setHreflang(...$hreflang) {
+		$this->hreflang = $hreflang;
 	}
 	
 	/**
@@ -90,6 +154,26 @@ class LinkObject implements ObjectInterface {
 		
 		$array['href'] = $this->href;
 		
+		if ($this->rel) {
+			$array['rel'] = $this->rel;
+		}
+		if ($this->title) {
+			$array['title'] = $this->title;
+		}
+		if ($this->type) {
+			$array['type'] = $this->type;
+		}
+		if ($this->hreflang) {
+			if (count($this->hreflang) === 1) {
+				$array['hreflang'] = $this->hreflang[0];
+			}
+			else {
+				$array['hreflang'] = $this->hreflang;
+			}
+		}
+		if ($this->describedby !== null && $this->describedby->isEmpty() === false) {
+			$array['describedby'] = $this->describedby->toArray();
+		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
