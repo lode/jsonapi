@@ -16,6 +16,8 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	protected $type;
 	/** @var string */
 	protected $id;
+	/** @var string */
+	protected $lid;
 	/** @var MetaObject */
 	protected $meta;
 	/** @var Validator */
@@ -42,6 +44,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		// always mark as used, as these keys are reserved
 		$this->validator->claimUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
 		$this->validator->claimUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
+		$this->validator->claimUsedFields($fieldNames=['lid'], Validator::OBJECT_CONTAINER_LID);
 	}
 	
 	/**
@@ -73,9 +76,28 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	
 	/**
 	 * @param string|int $id will be casted to a string
+	 * 
+	 * @throws DuplicateException if localId is already set
 	 */
 	public function setId($id) {
+		if ($this->lid !== null) {
+			throw new DuplicateException('id is not allowed when localId is already set');
+		}
+		
 		$this->id = (string) $id;
+	}
+	
+	/**
+	 * @param string|int $localId will be casted to a string
+	 * 
+	 * @throws DuplicateException if normal id is already set
+	 */
+	public function setLocalId($localId) {
+		if ($this->id !== null) {
+			throw new DuplicateException('localId is not allowed when id is already set');
+		}
+		
+		$this->lid = (string) $localId;
 	}
 	
 	/**
@@ -178,6 +200,9 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
+		}
+		elseif ($this->lid !== null) {
+			$array['lid'] = $this->lid;
 		}
 		
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {

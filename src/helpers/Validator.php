@@ -12,6 +12,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 class Validator {
 	const OBJECT_CONTAINER_TYPE          = 'type';
 	const OBJECT_CONTAINER_ID            = 'id';
+	const OBJECT_CONTAINER_LID           = 'lid';
 	const OBJECT_CONTAINER_ATTRIBUTES    = 'attributes';
 	const OBJECT_CONTAINER_RELATIONSHIPS = 'relationships';
 	
