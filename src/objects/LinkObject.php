@@ -163,7 +163,7 @@ class LinkObject implements ObjectInterface {
 		if ($this->type) {
 			$array['type'] = $this->type;
 		}
-		if ($this->hreflang) {
+		if ($this->hreflang !== []) {
 			if (count($this->hreflang) === 1) {
 				$array['hreflang'] = $this->hreflang[0];
 			}
