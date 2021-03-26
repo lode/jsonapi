@@ -22,6 +22,10 @@
 		}
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^5.7|^6.5|^7.5|^8.0"
+		"phpunit/phpunit": "^5.7|^6.5|^7.5|^8.0",
+		"psr/http-message": "^1.0"
+	},
+	"suggests": {
+		"psr/http-message": "Allows constructing requests from Psr RequestInterface"
 	}
 }
