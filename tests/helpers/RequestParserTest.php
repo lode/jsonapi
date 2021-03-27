@@ -1,9 +1,11 @@
 <?php
 
-namespace alsvanzelf\jsonapiTests;
+namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\helpers\RequestParser;
+use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
+use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase {
@@ -83,9 +85,86 @@ class RequestParserTest extends TestCase {
 		$this->assertSame($_POST, $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest() {
-		// @todo
-		$this->markTestIncomplete();
+	public function testFromPsrRequest_WithRequestInterface() {
+		$queryParameters = [
+			'include' => 'ship,ship.wing',
+			'fields' => [
+				'user' => 'name,location',
+			],
+			'sort' => 'name,-location',
+			'page' => [
+				'number' => '2',
+				'size'   => '10',
+			],
+			'filter' => '42',
+		];
+		$selfLink = 'https://example.org/user/42?'.http_build_query($queryParameters);
+		$document = [
+			'data' => [
+				'type'       => 'user',
+				'id'         => '42',
+				'attributes' => [
+					'name' => 'Foo',
+				],
+				'relationships' => [
+					'ship' => [
+						'data' => [
+							'type' => 'ship',
+							'id'   => '42',
+						],
+					],
+				],
+			],
+			'meta' => [
+				'lock' => true,
+			],
+		];
+		
+		$request = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$requestParser = RequestParser::fromPsrRequest($request);
+		
+		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
+		
+		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertTrue($requestParser->hasSparseFieldset('user'));
+		$this->assertTrue($requestParser->hasSortFields());
+		$this->assertTrue($requestParser->hasPagination());
+		$this->assertTrue($requestParser->hasFilter());
+		
+		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
+		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
+		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
+		$this->assertSame('42', $requestParser->getFilter());
+		
+		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertTrue($requestParser->hasSparseFieldset('user'));
+		$this->assertTrue($requestParser->hasAttribute('name'));
+		$this->assertTrue($requestParser->hasRelationship('ship'));
+		$this->assertTrue($requestParser->hasMeta('lock'));
+		
+		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
+		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
+		$this->assertSame('Foo', $requestParser->getAttribute('name'));
+		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
+		$this->assertSame(true, $requestParser->getMeta('lock'));
+		
+		$this->assertSame($document, $requestParser->getDocument());
+	}
+	
+	public function testFromPsrRequest_WithServerRequestInterface() {
+		$queryParameters = [
+			'sort' => 'name,-location',
+		];
+		$selfLink = 'https://example.org/user/42?'.http_build_query($queryParameters);
+		$document = [];
+		
+		$request = new TestableNonInterfaceServerRequestInterface($selfLink, $queryParameters, $document);
+		$requestParser = RequestParser::fromPsrRequest($request);
+		
+		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
+		$this->assertTrue($requestParser->hasSortFields());
+		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 	}
 	
 	public function testGetSelfLink() {

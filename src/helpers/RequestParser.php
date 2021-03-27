@@ -54,11 +54,16 @@ class RequestParser {
 			$queryParameters = $request->getQueryParams();
 		}
 		else {
-			$queryParameters = '';
+			$queryParameters = [];
 			parse_str($request->getUri()->getQuery(), $queryParameters);
 		}
 		
-		$document = json_decode($request->getBody()->getContents(), true);
+		if ($request->getBody()->getContents() === null) {
+			$document = [];
+		}
+		else {
+			$document = json_decode($request->getBody()->getContents(), true);
+		}
 		
 		return new self($selfLink, $queryParameters, $document);
 	}
