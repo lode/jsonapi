@@ -5,7 +5,7 @@ namespace alsvanzelf\jsonapi\helpers;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Request {
+class RequestParser {
 	const SORT_ASCENDING  = 'ascending';
 	const SORT_DESCENDING = 'descending';
 	
@@ -118,7 +118,7 @@ class Request {
 	 * 
 	 * @return array {
 	 *         @var string $field the sort field, without any minus sign for descending sort order
-	 *         @var string $order one of the Request::SORT_* constants
+	 *         @var string $order one of the RequestParser::SORT_* constants
 	 * }
 	 */
 	public function getSortFields() {
@@ -126,11 +126,11 @@ class Request {
 		
 		$sort = [];
 		foreach ($fields as $field) {
-			$order = Request::SORT_ASCENDING;
+			$order = RequestParser::SORT_ASCENDING;
 			
 			if (strpos($name, '-') === 0) {
 				$field = substr($field, 1);
-				$order = Request::SORT_DESCENDING;
+				$order = RequestParser::SORT_DESCENDING;
 			}
 			
 			$sort[] = [
