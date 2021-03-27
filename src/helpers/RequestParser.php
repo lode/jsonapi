@@ -103,6 +103,10 @@ class RequestParser {
 	 * @return string[]
 	 */
 	public function getSparseFieldset($type) {
+		if ($this->queryParameters['fields'][$type] === '') {
+			return [];
+		}
+		
 		return explode(',', $this->queryParameters['fields'][$type]);
 	}
 	
@@ -128,7 +132,7 @@ class RequestParser {
 		foreach ($fields as $field) {
 			$order = RequestParser::SORT_ASCENDING;
 			
-			if (strpos($name, '-') === 0) {
+			if (strpos($field, '-') === 0) {
 				$field = substr($field, 1);
 				$order = RequestParser::SORT_DESCENDING;
 			}
@@ -178,7 +182,7 @@ class RequestParser {
 	 * @return boolean
 	 */
 	public function hasAttribute($fieldName) {
-		return array_key_exists($fieldName, $this->document['data']['attributes']);
+		return isset($this->document['data']['attributes']) && array_key_exists($fieldName, $this->document['data']['attributes']);
 	}
 	
 	/**
@@ -194,7 +198,7 @@ class RequestParser {
 	 * @return boolean
 	 */
 	public function hasRelationship($fieldName) {
-		return array_key_exists($fieldName, $this->document['data']['relationships']);
+		return isset($this->document['data']['relationships']) && array_key_exists($fieldName, $this->document['data']['relationships']);
 	}
 	
 	/**
@@ -212,7 +216,7 @@ class RequestParser {
 	 * @return boolean
 	 */
 	public function hasMeta($metaKey) {
-		return array_key_exists($metaKey, $this->document['meta']);
+		return isset($this->document['meta']) && array_key_exists($metaKey, $this->document['meta']);
 	}
 	
 	/**
