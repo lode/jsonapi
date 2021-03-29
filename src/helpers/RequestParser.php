@@ -72,7 +72,7 @@ class RequestParser {
 			parse_str($request->getUri()->getQuery(), $queryParameters);
 		}
 		
-		if ($request->getBody()->getContents() === null) {
+		if ($request->getBody()->getContents() === '') {
 			$document = [];
 		}
 		else {

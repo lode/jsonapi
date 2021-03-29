@@ -16,7 +16,7 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 	 */
 	
 	public function getContents() {
-		return json_encode($this->document);
+		return (string) json_encode($this->document);
 	}
 	
 	// not used in current implementation
