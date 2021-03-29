@@ -9,7 +9,7 @@ use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase {
-	public function setUp() {
+	protected function setUp() {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/';
