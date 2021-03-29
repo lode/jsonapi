@@ -64,20 +64,16 @@ class RequestParserTest extends TestCase {
 		$this->assertTrue($requestParser->hasPagination());
 		$this->assertTrue($requestParser->hasFilter());
 		
-		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
+		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
 		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
 		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 		$this->assertSame('42', $requestParser->getFilter());
 		
-		$this->assertTrue($requestParser->hasIncludePaths());
-		$this->assertTrue($requestParser->hasSparseFieldset('user'));
 		$this->assertTrue($requestParser->hasAttribute('name'));
 		$this->assertTrue($requestParser->hasRelationship('ship'));
 		$this->assertTrue($requestParser->hasMeta('lock'));
 		
-		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
-		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
 		$this->assertSame('Foo', $requestParser->getAttribute('name'));
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
 		$this->assertSame(true, $requestParser->getMeta('lock'));
@@ -131,20 +127,16 @@ class RequestParserTest extends TestCase {
 		$this->assertTrue($requestParser->hasPagination());
 		$this->assertTrue($requestParser->hasFilter());
 		
-		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
+		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
 		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
 		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 		$this->assertSame('42', $requestParser->getFilter());
 		
-		$this->assertTrue($requestParser->hasIncludePaths());
-		$this->assertTrue($requestParser->hasSparseFieldset('user'));
 		$this->assertTrue($requestParser->hasAttribute('name'));
 		$this->assertTrue($requestParser->hasRelationship('ship'));
 		$this->assertTrue($requestParser->hasMeta('lock'));
 		
-		$this->assertSame(['ship', 'ship.wing'], $requestParser->getIncludePaths());
-		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
 		$this->assertSame('Foo', $requestParser->getAttribute('name'));
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
 		$this->assertSame(true, $requestParser->getMeta('lock'));
@@ -191,12 +183,21 @@ class RequestParserTest extends TestCase {
 		$this->assertTrue($requestParser->hasIncludePaths());
 	}
 	
-	public function testGetIncludePaths() {
+	public function testGetIncludePaths_Reformatted() {
 		$_GET = ['include' => 'foo,bar,baz.baf'];
 		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
 		
 		$requestParser = RequestParser::fromSuperglobals();
-		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths());
+		$this->assertSame(['foo' => [], 'bar' => [], 'baz' => ['baf' => []]], $requestParser->getIncludePaths());
+	}
+	
+	public function testGetIncludePaths_Raw() {
+		$_GET = ['include' => 'foo,bar,baz.baf'];
+		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		
+		$requestParser = RequestParser::fromSuperglobals();
+		$options = ['useNestedIncludePaths' => false];
+		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
 	public function testHasSparseFieldset() {
@@ -239,7 +240,7 @@ class RequestParserTest extends TestCase {
 		$this->assertTrue($requestParser->hasSortFields());
 	}
 	
-	public function testGetSortFields() {
+	public function testGetSortFields_Reformatted() {
 		$_GET = ['sort' => 'foo'];
 		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
 		
@@ -257,6 +258,15 @@ class RequestParserTest extends TestCase {
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+	}
+	
+	public function testGetSortFields_Raw() {
+		$_GET = ['sort' => 'foo,-bar'];
+		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		
+		$requestParser = RequestParser::fromSuperglobals();
+		$options = ['useAnnotatedSortFields' => false];
+		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
 	
 	public function testHasPagination() {

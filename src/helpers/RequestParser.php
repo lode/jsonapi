@@ -9,6 +9,20 @@ class RequestParser {
 	const SORT_ASCENDING  = 'ascending';
 	const SORT_DESCENDING = 'descending';
 	
+	/** @var array */
+	protected static $defaults = [
+		/**
+		 * reformat the include query parameter paths to nested arrays
+		 * this allows easier processing on each step of the chain
+		 */
+		'useNestedIncludePaths' => true,
+		
+		/**
+		 * reformat the sort query parameter paths to separate the sort order
+		 * this allows easier processing of sort orders and field names
+		 */
+		'useAnnotatedSortFields' => true,
+	];
 	/** @var string */
 	private $selfLink = '';
 	/** @var array */
@@ -87,12 +101,36 @@ class RequestParser {
 	}
 	
 	/**
-	 * @todo optionally, return a nested array based on the path
+	 * returns a nested array based on the path, or the raw paths
 	 * 
-	 * @return string[]
+	 * the nested format allows easier processing on each step of the chain
+	 * the raw format allows for custom processing
+	 * 
+	 * @param  array $options optional {@see RequestParser::$defaults}
+	 * @return string[]|array
 	 */
-	public function getIncludePaths() {
-		return explode(',', $this->queryParameters['include']);
+	public function getIncludePaths(array $options=[]) {
+		$includePaths = explode(',', $this->queryParameters['include']);
+		
+		$options = array_merge(self::$defaults, $options);
+		if ($options['useNestedIncludePaths'] === false) {
+			return $includePaths;
+		}
+		
+		$restructured = [];
+		foreach ($includePaths as $path) {
+			$steps = explode('.', $path);
+			
+			$wrapped = [];
+			while ($steps !== []) {
+				$lastStep = array_pop($steps);
+				$wrapped  = [$lastStep => $wrapped];
+			}
+			
+			$restructured = array_merge($restructured, $wrapped);
+		}
+		
+		return $restructured;
 	}
 	
 	/**
@@ -123,15 +161,26 @@ class RequestParser {
 	}
 	
 	/**
+	 * returns an array with sort order annotations, or the raw sort fields with minus signs
+	 * 
+	 * the annotated format allows easier processing of sort orders and field names
+	 * the raw format allows for custom processing
+	 * 
 	 * @todo return some kind of SortFieldObject
 	 * 
-	 * @return array {
+	 * @param  array $options optional {@see RequestParser::$defaults}
+	 * @return string[]|array {
 	 *         @var string $field the sort field, without any minus sign for descending sort order
 	 *         @var string $order one of the RequestParser::SORT_* constants
 	 * }
 	 */
-	public function getSortFields() {
+	public function getSortFields(array $options=[]) {
 		$fields = explode(',', $this->queryParameters['sort']);
+		
+		$options = array_merge(self::$defaults, $options);
+		if ($options['useAnnotatedSortFields'] === false) {
+			return $fields;
+		}
 		
 		$sort = [];
 		foreach ($fields as $field) {
