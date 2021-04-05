@@ -347,4 +347,15 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$this->assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
 	}
+	
+	/**
+	 * test method while it is part of the interface
+	 */
+	public function testGetKeyword_HappyPath() {
+		$profile = new CursorPaginationProfile();
+		
+		$keyword = $profile->getKeyword('page');
+		
+		$this->assertSame('page', $keyword);
+	}
 }
