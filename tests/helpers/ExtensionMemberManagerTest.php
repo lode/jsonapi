@@ -8,21 +8,15 @@ use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ExtensionMemberManagerTest extends TestCase {
-	protected $extension;
-	
-	protected function setUp() {
-		$this->extension = new TestExtension();
-		$this->extension->setNamespace('test');
-		$this->extension->setOfficialLink('https://example.org');
-	}
-	
 	public function testAddExtensionMember_HappyPath() {
-		$helper = new ExtensionMemberManager();
+		$helper    = new ExtensionMemberManager();
+		$extension = new TestExtension();
+		$extension->setNamespace('test');
 		
 		$this->assertFalse($helper->hasExtensionMembers());
 		$this->assertSame([], $helper->getExtensionMembers());
 		
-		$helper->addExtensionMember($this->extension, 'foo', 'bar');
+		$helper->addExtensionMember($extension, 'foo', 'bar');
 		
 		$array = $helper->getExtensionMembers();
 		
@@ -33,9 +27,11 @@ class ExtensionMemberManagerTest extends TestCase {
 	}
 	
 	public function testAddExtensionMember_WithNamespacePrefixed() {
-		$helper = new ExtensionMemberManager();
+		$helper    = new ExtensionMemberManager();
+		$extension = new TestExtension();
+		$extension->setNamespace('test');
 		
-		$helper->addExtensionMember($this->extension, 'test:foo', 'bar');
+		$helper->addExtensionMember($extension, 'test:foo', 'bar');
 		
 		$array = $helper->getExtensionMembers();
 		
@@ -43,12 +39,14 @@ class ExtensionMemberManagerTest extends TestCase {
 	}
 	
 	public function testAddExtensionMember_WithObjectValue() {
-		$helper = new ExtensionMemberManager();
+		$helper    = new ExtensionMemberManager();
+		$extension = new TestExtension();
+		$extension->setNamespace('test');
 		
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
-		$helper->addExtensionMember($this->extension, 'foo', $object);
+		$helper->addExtensionMember($extension, 'foo', $object);
 		
 		$array = $helper->getExtensionMembers();
 		
@@ -58,10 +56,12 @@ class ExtensionMemberManagerTest extends TestCase {
 	}
 	
 	public function testAddExtensionMember_InvalidNamespaceOrCharacter() {
-		$helper = new ExtensionMemberManager();
+		$helper    = new ExtensionMemberManager();
+		$extension = new TestExtension();
+		$extension->setNamespace('test');
 		
 		$this->expectException(InputException::class);
 		
-		$helper->addExtensionMember($this->extension, 'foo:bar', 'baz');
+		$helper->addExtensionMember($extension, 'foo:bar', 'baz');
 	}
 }
