@@ -107,12 +107,12 @@ class ExampleVersionExtension implements ExtensionInterface {
 	 * the required method
 	 */
 	
-	public function getNamespace() {
-		return 'version';
-	}
-	
 	public function getOfficialLink() {
 		return 'https://jsonapi.org/format/1.1/#extension-rules';
+	}
+	
+	public function getNamespace() {
+		return 'version';
 	}
 	
 	/**
