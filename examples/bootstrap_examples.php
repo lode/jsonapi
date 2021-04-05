@@ -149,10 +149,10 @@ class ExampleTimestampsProfile implements ProfileInterface {
 		
 		$timestamps = [];
 		if ($created !== null) {
-			$timestamps['created'] = $created->format(\DateTimeInterface::ISO8601);
+			$timestamps['created'] = $created->format(\DateTime::ISO8601);
 		}
 		if ($updated !== null) {
-			$timestamps['updated'] = $updated->format(\DateTimeInterface::ISO8601);
+			$timestamps['updated'] = $updated->format(\DateTime::ISO8601);
 		}
 		
 		$resource->add('timestamps', $timestamps);
