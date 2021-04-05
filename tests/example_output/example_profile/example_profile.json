@@ -1,8 +1,6 @@
 {
 	"jsonapi": {
-		"version": "1.1"
-	},
-	"links": {
+		"version": "1.1",
 		"profile": [
 			"https://jsonapi.org/format/1.1/#profile-keywords"
 		]

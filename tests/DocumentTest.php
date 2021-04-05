@@ -186,12 +186,13 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('profile', $array['links']);
-		$this->assertCount(1, $array['links']['profile']);
-		$this->assertArrayHasKey(0, $array['links']['profile']);
-		$this->assertSame('https://jsonapi.org', $array['links']['profile'][0]);
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertCount(2, $array['jsonapi']);
+		$this->assertSame('1.1', $array['jsonapi']['version']);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertArrayHasKey(0, $array['jsonapi']['profile']);
+		$this->assertSame('https://jsonapi.org', $array['jsonapi']['profile'][0]);
 	}
 	
 	public function testToJson_HappyPath() {

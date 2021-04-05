@@ -71,7 +71,7 @@ class ConverterTest extends TestCase {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('bar');
 		
-		$this->assertSame('foo;profile="bar", foo', Converter::mergeProfilesInContentType('foo', [$profile]));
+		$this->assertSame('foo; profile="bar"', Converter::mergeProfilesInContentType('foo', [$profile]));
 	}
 	
 	public function testMergeProfilesInContentType_WithMultipleProfiles() {
@@ -81,7 +81,7 @@ class ConverterTest extends TestCase {
 		$profile2 = new TestProfile();
 		$profile2->setOfficialLink('baz');
 		
-		$this->assertSame('foo;profile="bar baz", foo', Converter::mergeProfilesInContentType('foo', [$profile1, $profile2]));
+		$this->assertSame('foo; profile="bar baz"', Converter::mergeProfilesInContentType('foo', [$profile1, $profile2]));
 	}
 }
 
