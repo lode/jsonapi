@@ -111,6 +111,17 @@ class ConverterTest extends TestCase {
 		
 		$this->assertSame('foo; ext="bar baz"; profile="bar baz"', Converter::prepareContentType('foo', [$extension1, $extension2], [$profile1, $profile2]));
 	}
+	
+	/**
+	 * test method while it is part of the interface
+	 * @group Profiles
+	 */
+	public function testMergeProfilesInContentType_HappyPath() {
+		$profile = new TestProfile();
+		$profile->setOfficialLink('bar');
+		
+		$this->assertSame('foo; profile="bar"', Converter::mergeProfilesInContentType('foo', [$profile]));
+	}
 }
 
 class TestObject {

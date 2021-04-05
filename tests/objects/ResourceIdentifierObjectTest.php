@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
@@ -95,6 +96,16 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$this->assertTrue($resourceIdentifierObject->isEmpty());
 		
 		$resourceIdentifierObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($resourceIdentifierObject->isEmpty());
+	}
+	
+	public function testIsEmpty_WithExtensionMembers() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		
+		$this->assertTrue($resourceIdentifierObject->isEmpty());
+		
+		$resourceIdentifierObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
 		
 		$this->assertFalse($resourceIdentifierObject->isEmpty());
 	}
