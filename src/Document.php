@@ -10,6 +10,7 @@ use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
@@ -37,6 +38,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	protected $meta;
 	/** @var JsonapiObject */
 	protected $jsonapi;
+	/** @var ExtensionInterface[] */
+	protected $extensions = [];
 	/** @var ProfileInterface[] */
 	protected $profiles = [];
 	/** @var array */
@@ -177,24 +180,41 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	}
 	
 	/**
+	 * apply a extension which adds the link and sets a correct content-type
+	 * 
+	 * note that the rules from the extension are not automatically enforced
+	 * applying the rules, and applying them correctly, is manual
+	 * however the $extension could have custom methods to help
+	 * 
+	 * @see https://jsonapi.org/extensions/#extensions
+	 * 
+	 * @param ExtensionInterface $extension
+	 */
+	public function applyExtension(ExtensionInterface $extension) {
+		$this->extensions[] = $extension;
+		
+		if ($this->jsonapi !== null) {
+			$this->jsonapi->addExtension($extension);
+		}
+	}
+	
+	/**
 	 * apply a profile which adds the link and sets a correct content-type
 	 * 
 	 * note that the rules from the profile are not automatically enforced
 	 * applying the rules, and applying them correctly, is manual
 	 * however the $profile could have custom methods to help
 	 * 
-	 * @see https://jsonapi.org/format/1.1/#profiles
+	 * @see https://jsonapi.org/extensions/#profiles
 	 * 
 	 * @param ProfileInterface $profile
 	 */
 	public function applyProfile(ProfileInterface $profile) {
 		$this->profiles[] = $profile;
 		
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
+		if ($this->jsonapi !== null) {
+			$this->jsonapi->addProfile($profile);
 		}
-		
-		$this->links->append('profile', $profile->getOfficialLink());
 	}
 	
 	/**
@@ -259,7 +279,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 		
 		http_response_code($this->httpStatusCode);
 		
-		$contentType = Converter::mergeProfilesInContentType($options['contentType'], $this->profiles);
+		$contentType = Converter::prepareContentType($options['contentType'], $this->extensions, $this->profiles);
 		header('Content-Type: '.$contentType);
 		
 		echo $json;

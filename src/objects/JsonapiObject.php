@@ -4,7 +4,9 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject implements ObjectInterface {
@@ -12,6 +14,10 @@ class JsonapiObject implements ObjectInterface {
 	
 	/** @var string */
 	protected $version;
+	/** @var ExtensionInterface[] */
+	protected $extensions = [];
+	/** @var ProfileInterface */
+	protected $profiles = [];
 	/** @var MetaObject */
 	protected $meta;
 	
@@ -52,6 +58,20 @@ class JsonapiObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @param ExtensionInterface $extension
+	 */
+	public function addExtension(ExtensionInterface $extension) {
+		$this->extensions[] = $extension;
+	}
+	
+	/**
+	 * @param ProfileInterface $profile
+	 */
+	public function addProfile(ProfileInterface $profile) {
+		$this->profiles[] = $profile;
+	}
+	
+	/**
 	 * @param MetaObject $metaObject
 	 */
 	public function setMetaObject(MetaObject $metaObject) {
@@ -67,6 +87,12 @@ class JsonapiObject implements ObjectInterface {
 	 */
 	public function isEmpty() {
 		if ($this->version !== null) {
+			return false;
+		}
+		if ($this->extensions !== []) {
+			return false;
+		}
+		if ($this->profiles !== []) {
 			return false;
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
@@ -87,6 +113,18 @@ class JsonapiObject implements ObjectInterface {
 		
 		if ($this->version !== null) {
 			$array['version'] = $this->version;
+		}
+		if ($this->extensions !== []) {
+			$array['ext'] = [];
+			foreach ($this->extensions as $extension) {
+				$array['ext'][] = $extension->getOfficialLink();
+			}
+		}
+		if ($this->profiles !== []) {
+			$array['profile'] = [];
+			foreach ($this->profiles as $profile) {
+				$array['profile'][] = $profile->getOfficialLink();
+			}
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
