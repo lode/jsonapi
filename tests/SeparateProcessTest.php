@@ -75,6 +75,7 @@ class SeparateProcessTest extends TestCase {
 	 */
 	public function testSendResponse_ContentTypeHeaderWithExtensions() {
 		$extension = new TestExtension();
+		$extension->setNamespace('one');
 		$extension->setOfficialLink('https://jsonapi.org');
 		
 		$document = new Document();
@@ -86,6 +87,7 @@ class SeparateProcessTest extends TestCase {
 		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; ext="https://jsonapi.org"'], xdebug_get_headers());
 		
 		$extension = new TestExtension();
+		$extension->setNamespace('two');
 		$extension->setOfficialLink('https://jsonapi.org/2');
 		$document->applyExtension($extension);
 		

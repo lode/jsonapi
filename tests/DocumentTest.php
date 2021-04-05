@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapiTests;
 
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -201,6 +202,37 @@ class DocumentTest extends TestCase {
 		$this->assertSame('https://jsonapi.org', $array['jsonapi']['ext'][0]);
 		$this->assertArrayHasKey('test:foo', $array);
 		$this->assertSame('bar', $array['test:foo']);
+	}
+	
+	public function testApplyExtension_InvalidNamespace() {
+		$document  = new Document();
+		$extension = new TestExtension();
+		$extension->setNamespace('foo-bar');
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('invalid namespace "foo-bar"');
+		
+		$document->applyExtension($extension);
+	}
+	
+	public function testApplyExtension_ConflictingNamespace() {
+		$document  = new Document();
+		
+		$extension1 = new TestExtension();
+		$extension1->setNamespace('foo');
+		$document->applyExtension($extension1);
+		
+		$extension2 = new TestExtension();
+		$extension2->setNamespace('bar');
+		$document->applyExtension($extension2);
+		
+		$extension3 = new TestExtension();
+		$extension3->setNamespace('foo');
+		
+		$this->expectException(DuplicateException::class);
+		$this->expectExceptionMessage('an extension with namespace "foo" is already applied');
+		
+		$document->applyExtension($extension3);
 	}
 	
 	/**

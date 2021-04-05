@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
@@ -190,9 +191,20 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 * @see https://jsonapi.org/extensions/#extensions
 	 * 
 	 * @param ExtensionInterface $extension
+	 * 
+	 * @throws Exception if namespace uses illegal characters
+	 * @throws DuplicateException if namespace conflicts with another applied extension
 	 */
 	public function applyExtension(ExtensionInterface $extension) {
-		$this->extensions[] = $extension;
+		$namespace = $extension->getNamespace();
+		if (strlen($namespace) < 1 || preg_match('{[^a-zA-Z0-9]}', $namespace) === 1) {
+			throw new Exception('invalid namespace "'.$namespace.'"');
+		}
+		if (isset($this->extensions[$namespace])) {
+			throw new DuplicateException('an extension with namespace "'.$namespace.'" is already applied');
+		}
+		
+		$this->extensions[$namespace] = $extension;
 		
 		if ($this->jsonapi !== null) {
 			$this->jsonapi->addExtension($extension);
