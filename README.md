@@ -147,7 +147,7 @@ It has support for generating & sending documents with:
 - resource collections
 - to-one and to-many relationships
 - errors (easily turning exceptions into jsonapi output)
-- v1.1 extensions via profiles
+- v1.1 extensions and profiles
 - v1.1 @-members for JSON-LD and others
 
 Next to custom extensions/profiles, the following [official extensions/profiles](https://jsonapi.org/extensions/) are included:
