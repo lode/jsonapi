@@ -4,11 +4,12 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class MetaObject implements ObjectInterface {
-	use AtMemberManager;
+	use AtMemberManager, ExtensionMemberManager;
 	
 	/** @var array */
 	protected $meta = [];
@@ -67,13 +68,32 @@ class MetaObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		return ($this->meta === [] && $this->hasAtMembers() === false);
+		if ($this->meta !== []) {
+			return false;
+		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		return array_merge($this->getAtMembers(), $this->meta);
+		$array = [];
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
+		
+		return array_merge($array, $this->meta);
 	}
 }

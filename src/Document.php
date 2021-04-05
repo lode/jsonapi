@@ -6,6 +6,7 @@ use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
@@ -20,7 +21,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMemberManager, HttpStatusCodeManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager;
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.1';
@@ -225,7 +226,14 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		
 		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();

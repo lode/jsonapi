@@ -4,13 +4,14 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
-	use AtMemberManager;
+	use AtMemberManager, ExtensionMemberManager;
 	
 	/** @var string */
 	protected $type;
@@ -164,6 +165,9 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		if ($this->hasAtMembers()) {
 			return false;
 		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -172,12 +176,19 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
 		
 		$array['type'] = $this->type;
 		
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
+		}
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {

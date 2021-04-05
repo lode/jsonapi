@@ -4,13 +4,14 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject implements ObjectInterface {
-	use AtMemberManager;
+	use AtMemberManager, ExtensionMemberManager;
 	
 	/** @var string */
 	protected $version;
@@ -101,6 +102,9 @@ class JsonapiObject implements ObjectInterface {
 		if ($this->hasAtMembers()) {
 			return false;
 		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -109,8 +113,14 @@ class JsonapiObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
 		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		if ($this->version !== null) {
 			$array['version'] = $this->version;
 		}
