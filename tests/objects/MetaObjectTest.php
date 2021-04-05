@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\objects\MetaObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class MetaObjectTest extends TestCase {
@@ -17,5 +18,25 @@ class MetaObjectTest extends TestCase {
 		$this->assertCount(1, $array);
 		$this->assertArrayHasKey('foo', $array);
 		$this->assertSame('bar', $array['foo']);
+	}
+	
+	public function testIsEmpty_WithAtMembers() {
+		$metaObject = new MetaObject();
+		
+		$this->assertTrue($metaObject->isEmpty());
+		
+		$metaObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($metaObject->isEmpty());
+	}
+	
+	public function testIsEmpty_WithExtensionMembers() {
+		$metaObject = new MetaObject();
+		
+		$this->assertTrue($metaObject->isEmpty());
+		
+		$metaObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		
+		$this->assertFalse($metaObject->isEmpty());
 	}
 }

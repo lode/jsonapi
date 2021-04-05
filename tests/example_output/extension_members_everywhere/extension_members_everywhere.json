@@ -1,0 +1,89 @@
+{
+	"everywhere:key": "/key",
+	"jsonapi": {
+		"everywhere:key": "/jsonapi/key",
+		"version": "1.1",
+		"meta": {
+			"everywhere:key": "/jsonapi/meta/key"
+		}
+	},
+	"links": {
+		"everywhere:key": "/links/key",
+		"foo": {
+			"everywhere:key": "/links/foo/key",
+			"href": "https://jsonapi.org",
+			"meta": {
+				"everywhere:key": "/links/foo/meta/key"
+			}
+		}
+	},
+	"meta": {
+		"everywhere:key": "/meta/key"
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"everywhere:key": "/data/key",
+		"meta": {
+			"everywhere:key": "/data/meta/key"
+		},
+		"attributes": {
+			"everywhere:key": "/data/attributes/key"
+		},
+		"relationships": {
+			"everywhere:key": "/data/relationships/key",
+			"foo": {
+				"everywhere:key": "/data/relationships/foo/key",
+				"links": {
+					"everywhere:key": "/data/relationships/foo/links/key"
+				},
+				"data": {
+					"type": "user",
+					"id": "1"
+				},
+				"meta": {
+					"everywhere:key": "/data/relationships/foo/meta/key"
+				}
+			},
+			"bar": {
+				"everywhere:key": "/data/relationships/bar/key",
+				"data": {
+					"type": "user",
+					"id": "2",
+					"everywhere:key": "/data/relationships/bar/data/key",
+					"meta": {
+						"everywhere:key": "/data/relationships/bar/data/meta/key"
+					}
+				}
+			}
+		},
+		"links": {
+			"everywhere:key": "/data/links/key",
+			"foo": {
+				"everywhere:key": "/data/links/foo/key",
+				"href": "https://jsonapi.org",
+				"meta": {
+					"everywhere:key": "/data/links/foo/meta/key"
+				}
+			}
+		}
+	},
+	"included": [
+		{
+			"type": "user",
+			"id": "1",
+			"everywhere:key": "/included/0/key",
+			"attributes": {
+				"everywhere:key": "/included/0/attributes/key"
+			}
+		},
+		{
+			"type": "user",
+			"id": "3",
+			"everywhere:key": "/included/1/key",
+			"relationships": {
+				"everywhere:key": "/included/1/relationships/key"
+			}
+		}
+	]
+}

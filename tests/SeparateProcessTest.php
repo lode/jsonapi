@@ -2,8 +2,8 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
@@ -71,10 +71,39 @@ class SeparateProcessTest extends TestCase {
 	
 	/**
 	 * @runInSeparateProcess
+	 * @group Extensions
+	 */
+	public function testSendResponse_ContentTypeHeaderWithExtensions() {
+		$extension = new TestExtension();
+		$extension->setNamespace('one');
+		$extension->setOfficialLink('https://jsonapi.org');
+		
+		$document = new Document();
+		$document->applyExtension($extension);
+		
+		ob_start();
+		$document->sendResponse();
+		ob_end_clean();
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; ext="https://jsonapi.org"'], xdebug_get_headers());
+		
+		$extension = new TestExtension();
+		$extension->setNamespace('two');
+		$extension->setOfficialLink('https://jsonapi.org/2');
+		$document->applyExtension($extension);
+		
+		ob_start();
+		$document->sendResponse();
+		ob_end_clean();
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; ext="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
+	}
+	
+	/**
+	 * @runInSeparateProcess
+	 * @group Profiles
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
 		$profile = new TestProfile();
-		$profile->setAliasedLink('https://jsonapi.org');
+		$profile->setOfficialLink('https://jsonapi.org');
 		
 		$document = new Document();
 		$document->applyProfile($profile);
@@ -82,16 +111,16 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.';profile="https://jsonapi.org", '.Document::CONTENT_TYPE_OFFICIAL], xdebug_get_headers());
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; profile="https://jsonapi.org"'], xdebug_get_headers());
 		
 		$profile = new TestProfile();
-		$profile->setAliasedLink('https://jsonapi.org/2');
+		$profile->setOfficialLink('https://jsonapi.org/2');
 		$document->applyProfile($profile);
 		
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.';profile="https://jsonapi.org https://jsonapi.org/2", '.Document::CONTENT_TYPE_OFFICIAL], xdebug_get_headers());
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; profile="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
 	}
 	
 	/**

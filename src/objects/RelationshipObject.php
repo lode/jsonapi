@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\PaginableInterface;
@@ -15,7 +16,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipObject implements ObjectInterface, PaginableInterface, RecursiveResourceContainerInterface {
-	use AtMemberManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, LinksManager;
 	
 	const TO_ONE  = 'one';
 	const TO_MANY = 'many';
@@ -273,6 +274,9 @@ class RelationshipObject implements ObjectInterface, PaginableInterface, Recursi
 		if ($this->hasAtMembers()) {
 			return false;
 		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -281,7 +285,14 @@ class RelationshipObject implements ObjectInterface, PaginableInterface, Recursi
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		
 		if ($this->links !== null && $this->links->isEmpty() === false) {
 			$array['links'] = $this->links->toArray();

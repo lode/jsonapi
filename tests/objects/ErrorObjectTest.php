@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ErrorObjectTest extends TestCase {
@@ -152,6 +153,25 @@ class ErrorObjectTest extends TestCase {
 		$errorObject = new ErrorObject();
 		$errorObject->addAtMember('context', 'test');
 		$this->assertFalse($errorObject->isEmpty());
+		
+		$errorObject = new ErrorObject();
+		$errorObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$this->assertFalse($errorObject->isEmpty());
+	}
+	
+	public function testToArray_WithExtensionMembers() {
+		$errorObject = new ErrorObject();
+		$extension   = new TestExtension();
+		$extension->setNamespace('test');
+		
+		$this->assertSame([], $errorObject->toArray());
+		
+		$errorObject->addExtensionMember($extension, 'foo', 'bar');
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('test:foo', $array);
+		$this->assertSame('bar', $array['test:foo']);
 	}
 }
 
