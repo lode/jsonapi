@@ -150,9 +150,10 @@ It has support for generating & sending documents with:
 - v1.1 extensions via profiles
 - v1.1 @-members for JSON-LD and others
 
-Next to custom extensions, the following [official extensions](https://jsonapi.org/extensions/) are included:
+Next to custom extensions/profiles, the following [official extensions/profiles](https://jsonapi.org/extensions/) are included:
 
-- Cursor Pagination ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
+- Atomic Operations extension ([example code](/examples/atomic_operations_extension.php), [specification](https://jsonapi.org/ext/atomic/))
+- Cursor Pagination profile ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
 
 Plans for the future include:
 
