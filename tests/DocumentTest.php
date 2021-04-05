@@ -6,6 +6,7 @@ use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
@@ -177,6 +178,34 @@ class DocumentTest extends TestCase {
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
+	/**
+	 * @group Extensions
+	 */
+	public function testApplyExtension_HappyPath() {
+		$extension = new TestExtension();
+		$extension->setNamespace('test');
+		$extension->setOfficialLink('https://jsonapi.org');
+		
+		$document = new Document();
+		$document->applyExtension($extension);
+		$document->addExtensionMember($extension, 'foo', 'bar');
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertCount(2, $array['jsonapi']);
+		$this->assertSame('1.1', $array['jsonapi']['version']);
+		$this->assertArrayHasKey('ext', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['ext']);
+		$this->assertArrayHasKey(0, $array['jsonapi']['ext']);
+		$this->assertSame('https://jsonapi.org', $array['jsonapi']['ext'][0]);
+		$this->assertArrayHasKey('test:foo', $array);
+		$this->assertSame('bar', $array['test:foo']);
+	}
+	
+	/**
+	 * @group Profiles
+	 */
 	public function testApplyProfile_HappyPath() {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('https://jsonapi.org');

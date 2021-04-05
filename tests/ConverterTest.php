@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
@@ -63,25 +64,52 @@ class ConverterTest extends TestCase {
 		];
 	}
 	
-	public function testMergeProfilesInContentType_HappyPath() {
-		$this->assertSame('foo', Converter::mergeProfilesInContentType('foo', []));
+	/**
+	 * @group Extensions
+	 * @group Profiles
+	 */
+	public function testPrepareContentType_HappyPath() {
+		$this->assertSame('foo', Converter::prepareContentType('foo', [], []));
 	}
 	
-	public function testMergeProfilesInContentType_WithProfileStringLink() {
+	/**
+	 * @group Extensions
+	 */
+	public function testPrepareContentType_WithExtensionStringLink() {
+		$extension = new TestExtension();
+		$extension->setOfficialLink('bar');
+		
+		$this->assertSame('foo; ext="bar"', Converter::prepareContentType('foo', [$extension], []));
+	}
+	
+	/**
+	 * @group Profiles
+	 */
+	public function testPrepareContentType_WithProfileStringLink() {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('bar');
 		
-		$this->assertSame('foo; profile="bar"', Converter::mergeProfilesInContentType('foo', [$profile]));
+		$this->assertSame('foo; profile="bar"', Converter::prepareContentType('foo', [], [$profile]));
 	}
 	
-	public function testMergeProfilesInContentType_WithMultipleProfiles() {
+	/**
+	 * @group Extensions
+	 * @group Profiles
+	 */
+	public function testPrepareContentType_WithMultipleExtensionsAndProfiles() {
+		$extension1 = new TestExtension();
+		$extension1->setOfficialLink('bar');
+		
+		$extension2 = new TestExtension();
+		$extension2->setOfficialLink('baz');
+		
 		$profile1 = new TestProfile();
 		$profile1->setOfficialLink('bar');
 		
 		$profile2 = new TestProfile();
 		$profile2->setOfficialLink('baz');
 		
-		$this->assertSame('foo; profile="bar baz"', Converter::mergeProfilesInContentType('foo', [$profile1, $profile2]));
+		$this->assertSame('foo; ext="bar baz"; profile="bar baz"', Converter::prepareContentType('foo', [$extension1, $extension2], [$profile1, $profile2]));
 	}
 }
 

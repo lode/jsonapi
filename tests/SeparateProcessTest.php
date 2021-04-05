@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
@@ -70,6 +71,33 @@ class SeparateProcessTest extends TestCase {
 	
 	/**
 	 * @runInSeparateProcess
+	 * @group Extensions
+	 */
+	public function testSendResponse_ContentTypeHeaderWithExtensions() {
+		$extension = new TestExtension();
+		$extension->setOfficialLink('https://jsonapi.org');
+		
+		$document = new Document();
+		$document->applyExtension($extension);
+		
+		ob_start();
+		$document->sendResponse();
+		ob_end_clean();
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; ext="https://jsonapi.org"'], xdebug_get_headers());
+		
+		$extension = new TestExtension();
+		$extension->setOfficialLink('https://jsonapi.org/2');
+		$document->applyExtension($extension);
+		
+		ob_start();
+		$document->sendResponse();
+		ob_end_clean();
+		$this->assertSame(['Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.'; ext="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
+	}
+	
+	/**
+	 * @runInSeparateProcess
+	 * @group Profiles
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
 		$profile = new TestProfile();
