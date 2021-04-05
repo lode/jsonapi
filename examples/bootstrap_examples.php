@@ -2,6 +2,7 @@
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
@@ -101,25 +102,59 @@ class ExampleUser {
 	}
 }
 
-class ExampleVersionProfile implements ProfileInterface {
+class ExampleVersionExtension implements ExtensionInterface {
+	/**
+	 * the required method
+	 */
+	
+	public function getNamespace() {
+		return 'version';
+	}
+	
+	public function getOfficialLink() {
+		return 'https://jsonapi.org/format/1.1/#extension-rules';
+	}
+	
+	/**
+	 * optionally helpers for the specific extension
+	 */
+	
+	public function setVersion(ResourceInterface $resource, $version) {
+		if ($resource instanceof ResourceDocument) {
+			$resource->getResource()->addExtensionMember($this, 'id', $version);
+		}
+		else {
+			$resource->addExtensionMember($this, 'id', $version);
+		}
+	}
+}
+
+class ExampleTimestampsProfile implements ProfileInterface {
 	/**
 	 * the required method
 	 */
 	
 	public function getOfficialLink() {
-		return 'https://jsonapi.org/format/1.1/#profile-keywords';
+		return 'https://jsonapi.org/recommendations/#authoring-profiles';
 	}
 	
 	/**
 	 * optionally helpers for the specific profile
 	 */
 	
-	public function setVersion(ResourceInterface $resource, $version) {
-		if ($resource instanceof ResourceDocument) {
-			$resource->addMeta('version', $version, $level=Document::LEVEL_RESOURCE);
+	public function setTimestamps(ResourceInterface $resource, \DateTimeInterface $created=null, \DateTimeInterface $updated=null) {
+		if ($resource instanceof ResourceIdentifierObject) {
+			throw new Exception('cannot add attributes to identifier objects');
 		}
-		else {
-			$resource->addMeta('version', $version);
+		
+		$timestamps = [];
+		if ($created !== null) {
+			$timestamps['created'] = $created->format(\DateTimeInterface::ISO8601);
 		}
+		if ($updated !== null) {
+			$timestamps['updated'] = $updated->format(\DateTimeInterface::ISO8601);
+		}
+		
+		$resource->add('timestamps', $timestamps);
 	}
 }
