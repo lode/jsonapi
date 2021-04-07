@@ -9,19 +9,7 @@ use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase {
-	private function prepareSuperglobals() {
-		$_SERVER['REQUEST_SCHEME'] = 'https';
-		$_SERVER['HTTP_HOST']      = 'example.org';
-		$_SERVER['REQUEST_URI']    = '/';
-		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
-		
-		$_GET  = [];
-		$_POST = [];
-	}
-	
 	public function testFromSuperglobals() {
-		$this->prepareSuperglobals();
-		
 		$_GET = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -34,7 +22,12 @@ class RequestParserTest extends TestCase {
 			],
 			'filter' => '42',
 		];
-		$_SERVER['REQUEST_URI'] = '/user/42?'.http_build_query($_GET);
+		
+		$_SERVER['REQUEST_SCHEME'] = 'https';
+		$_SERVER['HTTP_HOST']      = 'example.org';
+		$_SERVER['REQUEST_URI']    = '/user/42?'.http_build_query($_GET);
+		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		
 		$_POST = [
 			'data' => [
 				'type'       => 'user',
@@ -84,8 +77,6 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testFromPsrRequest_WithRequestInterface() {
-		$this->prepareSuperglobals();
-		
 		$queryParameters = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -149,8 +140,6 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testFromPsrRequest_WithServerRequestInterface() {
-		$this->prepareSuperglobals();
-		
 		$queryParameters = [
 			'sort' => 'name,-location',
 		];
@@ -166,197 +155,159 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testGetSelfLink() {
-		$this->prepareSuperglobals();
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser('https://example.org/');
 		$this->assertSame('https://example.org/', $requestParser->getSelfLink());
 		
-		$_GET = ['foo' => 'bar'];
-		$_SERVER['REQUEST_URI'] = '/user/42?'.http_build_query($_GET);
+		$queryParameters = ['foo' => 'bar'];
+		$selfLink        = 'https://example.org/user/42?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
-		$this->assertSame('https://example.org/user/42?foo=bar', $requestParser->getSelfLink());
+		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$this->assertSame($selfLink, $requestParser->getSelfLink());
 	}
 	
 	public function testHasIncludePaths() {
-		$this->prepareSuperglobals();
-		
-		$_GET = [];
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasIncludePaths());
 		
-		$_GET = ['include' => 'foo,bar,baz.baf'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['include' => 'foo,bar,baz.baf'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertTrue($requestParser->hasIncludePaths());
 	}
 	
 	public function testGetIncludePaths_Reformatted() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['include' => 'foo,bar,baz.baf'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['include' => 'foo,bar,baz.baf'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame(['foo' => [], 'bar' => [], 'baz' => ['baf' => []]], $requestParser->getIncludePaths());
 	}
 	
 	public function testGetIncludePaths_Raw() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['include' => 'foo,bar,baz.baf'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['include' => 'foo,bar,baz.baf'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$options = ['useNestedIncludePaths' => false];
 		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
 	public function testHasSparseFieldset() {
-		$this->prepareSuperglobals();
-		
-		$_GET = [];
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasSparseFieldset('foo'));
 		
-		$_GET = ['fields' => ['foo' => 'bar']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['fields' => ['foo' => 'bar']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertTrue($requestParser->hasSparseFieldset('foo'));
 	}
 	
 	public function testGetSparseFieldset() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['fields' => ['foo' => 'bar,baz']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['fields' => ['foo' => 'bar,baz']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame(['bar', 'baz'], $requestParser->getSparseFieldset('foo'));
 		
-		$_GET = ['fields' => ['foo' => '']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['fields' => ['foo' => '']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame([], $requestParser->getSparseFieldset('foo'));
 	}
 	
 	public function testHasSortFields() {
-		$this->prepareSuperglobals();
-		
-		$_GET = [];
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasSortFields());
 		
-		$_GET = ['sort' => 'foo'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['sort' => 'foo'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertTrue($requestParser->hasSortFields());
 	}
 	
 	public function testGetSortFields_Reformatted() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['sort' => 'foo'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['sort' => 'foo'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING]], $requestParser->getSortFields());
 		
-		$_GET = ['sort' => '-bar'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['sort' => '-bar'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame([['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 		
-		$_GET = ['sort' => 'foo,-bar'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['sort' => 'foo,-bar'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 	}
 	
 	public function testGetSortFields_Raw() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['sort' => 'foo,-bar'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['sort' => 'foo,-bar'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$options = ['useAnnotatedSortFields' => false];
 		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
 	
 	public function testHasPagination() {
-		$this->prepareSuperglobals();
-		
-		$_GET = [];
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasPagination());
 		
-		$_GET = ['page' => ['number' => '2', 'size' => '10']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertTrue($requestParser->hasPagination());
 	}
 	
 	public function testGetPagination() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['page' => ['number' => '2', 'size' => '10']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 	}
 	
 	public function testHasFilter() {
-		$this->prepareSuperglobals();
-		
-		$_GET = [];
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasFilter());
 		
-		$_GET = ['filter' => 'foo'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['filter' => 'foo'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertTrue($requestParser->hasFilter());
 	}
 	
 	public function testGetFilter() {
-		$this->prepareSuperglobals();
+		$queryParameters = ['filter' => 'foo'];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$_GET = ['filter' => 'foo'];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame('foo', $requestParser->getFilter());
 		
-		$_GET = ['filter' => ['foo' => 'bar']];
-		$_SERVER['REQUEST_URI'] = '/?'.http_build_query($_GET);
+		$queryParameters = ['filter' => ['foo' => 'bar']];
+		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink, $queryParameters);
 		$this->assertSame(['foo' => 'bar'], $requestParser->getFilter());
 	}
 	
 	public function testHasAttribute() {
-		$this->prepareSuperglobals();
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasAttribute('foo'));
 		$this->assertFalse($requestParser->hasAttribute('bar'));
 		
-		$_POST = [
+		$document = [
 			'data' => [
 				'attributes' => [
 					'foo' => 'bar',
@@ -364,15 +315,13 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertTrue($requestParser->hasAttribute('foo'));
 		$this->assertFalse($requestParser->hasAttribute('bar'));
 	}
 	
 	public function testGetAttribute() {
-		$this->prepareSuperglobals();
-		
-		$_POST = [
+		$document = [
 			'data' => [
 				'attributes' => [
 					'foo' => 'bar',
@@ -380,18 +329,16 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertSame('bar', $requestParser->getAttribute('foo'));
 	}
 	
 	public function testHasRelationship() {
-		$this->prepareSuperglobals();
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasRelationship('foo'));
 		$this->assertFalse($requestParser->hasRelationship('bar'));
 		
-		$_POST = [
+		$document = [
 			'data' => [
 				'relationships' => [
 					'foo' => [
@@ -404,15 +351,13 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertTrue($requestParser->hasRelationship('foo'));
 		$this->assertFalse($requestParser->hasRelationship('bar'));
 	}
 	
 	public function testGetRelationship() {
-		$this->prepareSuperglobals();
-		
-		$_POST = [
+		$document = [
 			'data' => [
 				'relationships' => [
 					'foo' => [
@@ -425,45 +370,39 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertSame(['data' => ['type' => 'bar', 'id' => '42']], $requestParser->getRelationship('foo'));
 	}
 	
 	public function testHasMeta() {
-		$this->prepareSuperglobals();
-		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasMeta('foo'));
 		$this->assertFalse($requestParser->hasMeta('bar'));
 		
-		$_POST = [
+		$document = [
 			'meta' => [
 				'foo' => 'bar',
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertTrue($requestParser->hasMeta('foo'));
 		$this->assertFalse($requestParser->hasMeta('bar'));
 	}
 	
 	public function testGetMeta() {
-		$this->prepareSuperglobals();
-		
-		$_POST = [
+		$document = [
 			'meta' => [
 				'foo' => 'bar',
 			],
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
 		$this->assertSame('bar', $requestParser->getMeta('foo'));
 	}
 	
 	public function testGetDocument() {
-		$this->prepareSuperglobals();
-		
-		$_POST = [
+		$document = [
 			'data' => [
 				'attributes' => [
 					'foo' => 'bar',
@@ -483,7 +422,7 @@ class RequestParserTest extends TestCase {
 			'foo' => 'bar',
 		];
 		
-		$requestParser = RequestParser::fromSuperglobals();
-		$this->assertSame($_POST, $requestParser->getDocument());
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$this->assertSame($document, $requestParser->getDocument());
 	}
 }
