@@ -170,25 +170,19 @@ class RequestParserTest extends TestCase {
 		$this->assertFalse($requestParser->hasIncludePaths());
 		
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertTrue($requestParser->hasIncludePaths());
 	}
 	
 	public function testGetIncludePaths_Reformatted() {
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame(['foo' => [], 'bar' => [], 'baz' => ['baf' => []]], $requestParser->getIncludePaths());
 	}
 	
 	public function testGetIncludePaths_Raw() {
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useNestedIncludePaths' => false];
 		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
@@ -198,23 +192,17 @@ class RequestParserTest extends TestCase {
 		$this->assertFalse($requestParser->hasSparseFieldset('foo'));
 		
 		$queryParameters = ['fields' => ['foo' => 'bar']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertTrue($requestParser->hasSparseFieldset('foo'));
 	}
 	
 	public function testGetSparseFieldset() {
 		$queryParameters = ['fields' => ['foo' => 'bar,baz']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame(['bar', 'baz'], $requestParser->getSparseFieldset('foo'));
 		
 		$queryParameters = ['fields' => ['foo' => '']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame([], $requestParser->getSparseFieldset('foo'));
 	}
 	
@@ -223,37 +211,27 @@ class RequestParserTest extends TestCase {
 		$this->assertFalse($requestParser->hasSortFields());
 		
 		$queryParameters = ['sort' => 'foo'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertTrue($requestParser->hasSortFields());
 	}
 	
 	public function testGetSortFields_Reformatted() {
 		$queryParameters = ['sort' => 'foo'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => '-bar'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame([['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => 'foo,-bar'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
 	}
 	
 	public function testGetSortFields_Raw() {
 		$queryParameters = ['sort' => 'foo,-bar'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useAnnotatedSortFields' => false];
 		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
@@ -263,17 +241,13 @@ class RequestParserTest extends TestCase {
 		$this->assertFalse($requestParser->hasPagination());
 		
 		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertTrue($requestParser->hasPagination());
 	}
 	
 	public function testGetPagination() {
 		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 	}
 	
@@ -282,23 +256,17 @@ class RequestParserTest extends TestCase {
 		$this->assertFalse($requestParser->hasFilter());
 		
 		$queryParameters = ['filter' => 'foo'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertTrue($requestParser->hasFilter());
 	}
 	
 	public function testGetFilter() {
 		$queryParameters = ['filter' => 'foo'];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame('foo', $requestParser->getFilter());
 		
 		$queryParameters = ['filter' => ['foo' => 'bar']];
-		$selfLink        = 'https://example.org/?'.http_build_query($queryParameters);
-		
-		$requestParser = new RequestParser($selfLink, $queryParameters);
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertSame(['foo' => 'bar'], $requestParser->getFilter());
 	}
 	
