@@ -232,37 +232,51 @@ class RequestParser {
 	}
 	
 	/**
-	 * @param  string $fieldName
+	 * @param  string $attributeName
 	 * @return boolean
 	 */
-	public function hasAttribute($fieldName) {
-		return isset($this->document['data']['attributes']) && array_key_exists($fieldName, $this->document['data']['attributes']);
+	public function hasAttribute($attributeName) {
+		if (isset($this->document['data']['attributes']) === false) {
+			return false;
+		}
+		if (array_key_exists($attributeName, $this->document['data']['attributes']) === false) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
-	 * @param  string $fieldName
+	 * @param  string $attributeName
 	 * @return mixed
 	 */
-	public function getAttribute($fieldName) {
-		return $this->document['data']['attributes'][$fieldName];
+	public function getAttribute($attributeName) {
+		return $this->document['data']['attributes'][$attributeName];
 	}
 	
 	/**
-	 * @param  string $fieldName
+	 * @param  string $relationshipName
 	 * @return boolean
 	 */
-	public function hasRelationship($fieldName) {
-		return isset($this->document['data']['relationships']) && array_key_exists($fieldName, $this->document['data']['relationships']);
+	public function hasRelationship($relationshipName) {
+		if (isset($this->document['data']['relationships']) === false) {
+			return false;
+		}
+		if (array_key_exists($relationshipName, $this->document['data']['relationships']) === false) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * @todo return some kind of read-only ResourceIdentifierObject
 	 * 
-	 * @param  string $fieldName
+	 * @param  string $relationshipName
 	 * @return array
 	 */
-	public function getRelationship($fieldName) {
-		return $this->document['data']['relationships'][$fieldName];
+	public function getRelationship($relationshipName) {
+		return $this->document['data']['relationships'][$relationshipName];
 	}
 	
 	/**
@@ -270,7 +284,14 @@ class RequestParser {
 	 * @return boolean
 	 */
 	public function hasMeta($metaKey) {
-		return isset($this->document['meta']) && array_key_exists($metaKey, $this->document['meta']);
+		if (isset($this->document['meta']) === false) {
+			return false;
+		}
+		if (array_key_exists($metaKey, $this->document['meta']) === false) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
