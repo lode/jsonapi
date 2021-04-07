@@ -90,6 +90,16 @@ class RequestParserTest extends TestCase {
 		$this->assertSame([], $requestParser->getDocument());
 	}
 	
+	public function testFromSuperglobals_WithoutServerContext() {
+		$_SERVER = [];
+		$_GET    = [];
+		$_POST   = [];
+		
+		$requestParser = RequestParser::fromSuperglobals();
+		
+		$this->assertSame([], $requestParser->getDocument());
+	}
+	
 	public function testFromPsrRequest_WithRequestInterface() {
 		$queryParameters = [
 			'include' => 'ship,ship.wing',

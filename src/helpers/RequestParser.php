@@ -46,12 +46,15 @@ class RequestParser {
 	 * @return self
 	 */
 	public static function fromSuperglobals() {
-		$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		$selfLink = '';
+		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		}
 		
 		$queryParameters = $_GET;
 		
 		$document = $_POST;
-		if ($document === []) {
+		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
 			$documentIsJsonapi = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL) !== false);
 			$documentIsJson    = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG)    !== false);
 			
