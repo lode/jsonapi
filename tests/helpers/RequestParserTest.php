@@ -91,7 +91,11 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testFromSuperglobals_WithoutServerContext() {
-		$_SERVER = [];
+		unset($_SERVER['REQUEST_SCHEME']);
+		unset($_SERVER['HTTP_HOST']);
+		unset($_SERVER['REQUEST_URI']);
+		unset($_SERVER['CONTENT_TYPE']);
+		
 		$_GET    = [];
 		$_POST   = [];
 		
