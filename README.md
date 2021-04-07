@@ -150,14 +150,19 @@ It has support for generating & sending documents with:
 - v1.1 extensions via profiles
 - v1.1 @-members for JSON-LD and others
 
+Also there's tools to help processing of incoming requests:
+
+- parse request options (include paths, sparse fieldsets, sort fields, pagination, filtering)
+- parse request documents for creating, updating and deleting resources and relationships
+
 Next to custom extensions, the following [official extensions](https://jsonapi.org/extensions/) are included:
 
 - Cursor Pagination ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
 
 Plans for the future include:
 
-- parse request options: sparse fields, sorting, pagination, filtering ([#44](https://github.com/lode/jsonapi/issues/44))
-- parse requests for creating, updating and deleting resources and relationships ([#5](https://github.com/lode/jsonapi/issues/5))
+- validate request options ([#58](https://github.com/lode/jsonapi/issues/58))
+- validate request documents ([#57](https://github.com/lode/jsonapi/issues/57))
 
 
 ## Contributing
