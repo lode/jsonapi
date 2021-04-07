@@ -16,6 +16,10 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 	 */
 	
 	public function getContents() {
+		if ($this->document === null) {
+			return '';
+		}
+		
 		return (string) json_encode($this->document);
 	}
 	

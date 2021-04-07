@@ -9,7 +9,7 @@ use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
 
 class RequestParserTest extends TestCase {
-	public function testFromSuperglobals() {
+	public function testFromSuperglobals_HappyPath() {
 		$_GET = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -76,6 +76,20 @@ class RequestParserTest extends TestCase {
 		$this->assertSame($_POST, $requestParser->getDocument());
 	}
 	
+	public function testFromSuperglobals_WithPhpInputStream() {
+		$_SERVER['REQUEST_SCHEME'] = 'https';
+		$_SERVER['HTTP_HOST']      = 'example.org';
+		$_SERVER['REQUEST_URI']    = '/';
+		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		
+		$_GET  = [];
+		$_POST = [];
+		
+		$requestParser = RequestParser::fromSuperglobals();
+		
+		$this->assertSame([], $requestParser->getDocument());
+	}
+	
 	public function testFromPsrRequest_WithRequestInterface() {
 		$queryParameters = [
 			'include' => 'ship,ship.wing',
@@ -137,6 +151,17 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(true, $requestParser->getMeta('lock'));
 		
 		$this->assertSame($document, $requestParser->getDocument());
+	}
+	
+	public function testFromPsrRequest_WithEmptyDocument() {
+		$selfLink        = '';
+		$queryParameters = [];
+		$document        = null;
+		
+		$request       = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$requestParser = RequestParser::fromPsrRequest($request);
+		
+		$this->assertSame([], $requestParser->getDocument());
 	}
 	
 	public function testFromPsrRequest_WithServerRequestInterface() {

@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\Document;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -50,8 +51,17 @@ class RequestParser {
 		$queryParameters = $_GET;
 		
 		$document = $_POST;
-		if ($document === [] && strpos($_SERVER['CONTENT_TYPE'], 'application/json') === 0) {
-			$document = json_decode(file_get_contents('php://input'), true);
+		if ($document === []) {
+			$documentIsJsonapi = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL) !== false);
+			$documentIsJson    = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG)    !== false);
+			
+			if ($documentIsJsonapi || $documentIsJson) {
+				$document = json_decode(file_get_contents('php://input'), true);
+				
+				if ($document === null) {
+					$document = [];
+				}
+			}
 		}
 		
 		return new self($selfLink, $queryParameters, $document);
@@ -77,6 +87,10 @@ class RequestParser {
 		}
 		else {
 			$document = json_decode($request->getBody()->getContents(), true);
+			
+			if ($document === null) {
+				$document = [];
+			}
 		}
 		
 		return new self($selfLink, $queryParameters, $document);
