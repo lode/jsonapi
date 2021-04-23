@@ -144,7 +144,7 @@ class RequestParser {
 				$wrapped  = [$lastStep => $wrapped];
 			}
 			
-			$restructured = array_merge($restructured, $wrapped);
+			$restructured = array_merge_recursive($restructured, $wrapped);
 		}
 		
 		return $restructured;

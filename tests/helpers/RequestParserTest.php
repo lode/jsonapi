@@ -218,12 +218,26 @@ class RequestParserTest extends TestCase {
 			'foo',
 			'bar',
 			'baz.baf',
+			'baz.bat',
+			'user.ship.wing',
+			'user.ship.nose.window',
+			'user.friends',
 		];
 		$expected = [
 			'foo' => [],
 			'bar' => [],
 			'baz' => [
 				'baf' => [],
+				'bat' => [],
+			],
+			'user' => [
+				'ship' => [
+					'wing' => [],
+					'nose' => [
+						'window' => [],
+					],
+				],
+				'friends' => [],
 			],
 		];
 		
