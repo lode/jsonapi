@@ -214,9 +214,22 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testGetIncludePaths_Reformatted() {
-		$queryParameters = ['include' => 'foo,bar,baz.baf'];
+		$paths = [
+			'foo',
+			'bar',
+			'baz.baf',
+		];
+		$expected = [
+			'foo' => [],
+			'bar' => [],
+			'baz' => [
+				'baf' => [],
+			],
+		];
+		
+		$queryParameters = ['include' => implode(',', $paths)];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame(['foo' => [], 'bar' => [], 'baz' => ['baf' => []]], $requestParser->getIncludePaths());
+		$this->assertSame($expected, $requestParser->getIncludePaths());
 	}
 	
 	public function testGetIncludePaths_Raw() {
