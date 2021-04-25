@@ -56,15 +56,26 @@ Which will result in:
 }
 ```
 
-#### A collection of resources
+#### A collection of resources with relationships
 
 ```php
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
-$document = new CollectionDocument();
-$document->add('user', 42, ['name' => 'Zaphod Beeblebrox']);
-$document->add('user', 1, ['name' => 'Ford Prefect']);
-$document->add('user', 2, ['name' => 'Arthur Dent']);
+$arthur      = new ResourceObject('user', 1);
+$ford        = new ResourceObject('user', 2);
+$zaphod      = new ResourceObject('user', 42);
+$heartOfGold = new ResourceObject('starship', 2001);
+
+$arthur->add('name', 'Arthur Dent');
+$ford->add('name', 'Ford Prefect');
+$zaphod->add('name', 'Zaphod Beeblebrox');
+$heartOfGold->add('name', 'Heart of Gold');
+
+$zaphod->addRelationship('drives', $heartOfGold);
+
+$users    = [$arthur, $ford, $zaphod];
+$document = CollectionDocument::fromResources(...$users);
 $document->sendResponse();
 ```
 
@@ -78,23 +89,40 @@ Which will result in:
 	"data": [
 		{
 			"type": "user",
-			"id": "42",
-			"attributes": {
-				"name": "Zaphod Beeblebrox"
-			}
-		},
-		{
-			"type": "user",
 			"id": "1",
 			"attributes": {
-				"name": "Ford Prefect"
+				"name": "Arthur Dent"
 			}
 		},
 		{
 			"type": "user",
 			"id": "2",
 			"attributes": {
-				"name": "Arthur Dent"
+				"name": "Ford Prefect"
+			}
+		},
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"name": "Zaphod Beeblebrox"
+			},
+			"relationships": {
+				"drives": {
+					"data": {
+						"type": "starship",
+						"id": "2001"
+					}
+				}
+			}
+		}
+	],
+	"included": [
+		{
+			"type": "starship",
+			"id": "2001",
+			"attributes": {
+				"name": "Heart of Gold"
 			}
 		}
 	]
@@ -136,6 +164,10 @@ Which will result in:
 }
 ```
 
+This can be useful for development. For production usage, you can better construct an `ErrorsDocument` with only specific values.
+
+#### Other examples
+
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 
@@ -169,7 +201,9 @@ Plans for the future include:
 
 ## Contributing
 
-[Pull Requests](https://github.com/lode/jsonapi/pulls) or [issues](https://github.com/lode/jsonapi/issues) are welcome!
+If you use the library, please ask questions or share what can be improved by [creating an issue](https://github.com/lode/jsonapi/issues).
+
+For bugs [issues](https://github.com/lode/jsonapi/issues) or [Pull Requests](https://github.com/lode/jsonapi/pulls) are welcome!
 
 
 ## Licence
