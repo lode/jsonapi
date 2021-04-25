@@ -17,6 +17,8 @@ Read more about it at [jsonapi.org](https://jsonapi.org/).
 composer require alsvanzelf/jsonapi
 ```
 
+The library supports, and is is tested on, php versions 5.6, 7 and 8.
+
 #### Upgrading from v1
 
 If you used v1 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on how to upgrade.
