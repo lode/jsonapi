@@ -62,7 +62,7 @@ class RequestParser {
 			$selfLink .= $_SERVER['HTTP_HOST'];
 		}
 		elseif (isset($_SERVER['SCRIPT_URI'])) {
-			$startOfDomain  = strpos($_SERVER['SCRIPT_URI'], '://');
+			$startOfDomain  = strpos($_SERVER['SCRIPT_URI'], '://') + strlen('://');
 			$endOfDomain    = strpos($_SERVER['SCRIPT_URI'], '/', $startOfDomain);
 			$lengthOfDomain = ($endOfDomain - $startOfDomain);
 			$selfLink      .= substr($_SERVER['SCRIPT_URI'], $startOfDomain, $lengthOfDomain);

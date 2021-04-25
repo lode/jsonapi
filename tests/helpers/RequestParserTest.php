@@ -54,6 +54,7 @@ class RequestParserTest extends TestCase {
 		$this->assertSame('https://example.org/user/42?'.http_build_query($_GET), $requestParser->getSelfLink());
 		
 		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertTrue($requestParser->hasAnySparseFieldset());
 		$this->assertTrue($requestParser->hasSparseFieldset('user'));
 		$this->assertTrue($requestParser->hasSortFields());
 		$this->assertTrue($requestParser->hasPagination());
@@ -73,6 +74,10 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
 		$this->assertSame(true, $requestParser->getMeta('lock'));
 		
+		$this->assertTrue($requestParser->hasQueryParameters());
+		$this->assertTrue($requestParser->hasDocument());
+		
+		$this->assertSame($_GET, $requestParser->getQueryParameters());
 		$this->assertSame($_POST, $requestParser->getDocument());
 	}
 	
@@ -90,10 +95,33 @@ class RequestParserTest extends TestCase {
 		$this->assertSame([], $requestParser->getDocument());
 	}
 	
-	public function testFromSuperglobals_WithoutServerContext() {
+	public function testFromSuperglobals_WithForwarding() {
 		unset($_SERVER['REQUEST_SCHEME']);
 		unset($_SERVER['HTTP_HOST']);
 		unset($_SERVER['REQUEST_URI']);
+		unset($_SERVER['CONTENT_TYPE']);
+		
+		$_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+		$_SERVER['SCRIPT_URI']             = 'http://example.org/users';
+		$_SERVER['PATH_INFO']              = '/users';
+		$_SERVER['QUERY_STRING']           = 'include=foo';
+		
+		$_GET  = [];
+		$_POST = [];
+		
+		$requestParser = RequestParser::fromSuperglobals();
+		
+		$this->assertSame('https://example.org/users?include=foo', $requestParser->getSelfLink());
+	}
+	
+	public function testFromSuperglobals_WithoutServerContext() {
+		unset($_SERVER['HTTP_X_FORWARDED_PROTO']);
+		unset($_SERVER['REQUEST_SCHEME']);
+		unset($_SERVER['HTTP_HOST']);
+		unset($_SERVER['SCRIPT_URI']);
+		unset($_SERVER['REQUEST_URI']);
+		unset($_SERVER['PATH_INFO']);
+		unset($_SERVER['QUERY_STRING']);
 		unset($_SERVER['CONTENT_TYPE']);
 		
 		$_GET    = [];
@@ -145,6 +173,7 @@ class RequestParserTest extends TestCase {
 		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
 		
 		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertTrue($requestParser->hasAnySparseFieldset());
 		$this->assertTrue($requestParser->hasSparseFieldset('user'));
 		$this->assertTrue($requestParser->hasSortFields());
 		$this->assertTrue($requestParser->hasPagination());
@@ -164,6 +193,10 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
 		$this->assertSame(true, $requestParser->getMeta('lock'));
 		
+		$this->assertTrue($requestParser->hasQueryParameters());
+		$this->assertTrue($requestParser->hasDocument());
+		
+		$this->assertSame($queryParameters, $requestParser->getQueryParameters());
 		$this->assertSame($document, $requestParser->getDocument());
 	}
 	
@@ -251,6 +284,20 @@ class RequestParserTest extends TestCase {
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useNestedIncludePaths' => false];
 		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
+	}
+	
+	public function testHasAnySparseFieldset() {
+		$queryParameters = [];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$this->assertFalse($requestParser->hasAnySparseFieldset());
+		
+		$queryParameters = ['fields' => []];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$this->assertFalse($requestParser->hasAnySparseFieldset());
+		
+		$queryParameters = ['fields' => ['foo' => 'bar', 'baf' => 'baz']];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$this->assertTrue($requestParser->hasAnySparseFieldset());
 	}
 	
 	public function testHasSparseFieldset() {
@@ -433,6 +480,50 @@ class RequestParserTest extends TestCase {
 		
 		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertSame('bar', $requestParser->getMeta('foo'));
+	}
+	
+	public function testHasQueryParameters() {
+		$queryParameters = [];
+		$requestParser = new RequestParser($selfLink='', $queryParameters, $document=[]);
+		$this->assertFalse($requestParser->hasQueryParameters());
+		
+		$queryParameters = [
+			'filter' => '42',
+		];
+		$requestParser = new RequestParser($selfLink='', $queryParameters, $document=[]);
+		$this->assertTrue($requestParser->hasQueryParameters());
+	}
+	
+	public function testGetQueryParameters() {
+		$queryParameters = [
+			'include' => 'ship,ship.wing',
+			'fields' => [
+				'user' => 'name,location',
+			],
+			'sort' => 'name,-location',
+			'page' => [
+				'number' => '2',
+				'size'   => '10',
+			],
+			'filter' => '42',
+		];
+		
+		$requestParser = new RequestParser($selfLink='', $queryParameters, $document=[]);
+		$this->assertSame($queryParameters, $requestParser->getQueryParameters());
+	}
+	
+	public function testHasDocument() {
+		$document = [];
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
+		$this->assertFalse($requestParser->hasDocument());
+		
+		$document = [
+			'meta' => [
+				'foo' => 'bar',
+			],
+		];
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
+		$this->assertTrue($requestParser->hasDocument());
 	}
 	
 	public function testGetDocument() {
