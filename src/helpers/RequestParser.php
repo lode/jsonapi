@@ -25,11 +25,11 @@ class RequestParser {
 		'useAnnotatedSortFields' => true,
 	];
 	/** @var string */
-	private $selfLink = '';
+	protected $selfLink = '';
 	/** @var array */
-	private $queryParameters = [];
+	protected $queryParameters = [];
 	/** @var array */
-	private $document = [];
+	protected $document = [];
 	
 	/**
 	 * @param string $selfLink        the uri used to make this request {@see getSelfLink()}
