@@ -151,6 +151,20 @@ class RequestParser {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasAnySparseFieldset() {
+		if (isset($this->queryParameters['fields']) === false) {
+			return false;
+		}
+		if ($this->queryParameters['fields'] === []) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * @param  string $type
 	 * @return boolean
 	 */
@@ -317,6 +331,27 @@ class RequestParser {
 	 */
 	public function getMeta($metaKey) {
 		return $this->document['meta'][$metaKey];
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasQueryParameters() {
+		return ($this->queryParameters !== []);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getQueryParameters() {
+		return $this->queryParameters;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasDocument() {
+		return ($this->document !== []);
 	}
 	
 	/**
