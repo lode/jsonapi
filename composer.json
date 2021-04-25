@@ -9,11 +9,12 @@
 		{
 			"name": "Lode Claassen",
 			"email": "lode@alsvanzelf.nl",
-			"homepage": "http://www.lodeclaassen.nl/"
+			"homepage": "https://www.lodeclaassen.nl/"
 		}
 	],
 	"require": {
-		"php": ">=5.6"
+		"php": ">=5.6",
+		"ext-json": "*"
 	},
 	"autoload": {
 		"psr-4": {
@@ -22,6 +23,10 @@
 		}
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^5.7|^6.5|^7.5|^8.0"
+		"phpunit/phpunit": "^5.7|^6.5|^7.5|^8.0",
+		"psr/http-message": "^1.0"
+	},
+	"suggest": {
+		"psr/http-message": "Allows constructing requests from Psr RequestInterface"
 	}
 }

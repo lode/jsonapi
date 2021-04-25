@@ -1,4 +1,4 @@
-# jsonapi [![Build Status](https://travis-ci.org/lode/jsonapi.svg?branch=master)](https://travis-ci.org/lode/jsonapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lode/jsonapi/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/lode/jsonapi/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=master)
+# jsonapi [![Build Status](https://travis-ci.org/lode/jsonapi.svg?branch=main)](https://travis-ci.org/lode/jsonapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lode/jsonapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main) [![Code Coverage](https://scrutinizer-ci.com/g/lode/jsonapi/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main)
 
 A simple and human-friendly library for api servers (php serving json).
 
@@ -16,6 +16,8 @@ Read more about it at [jsonapi.org](https://jsonapi.org/).
 ```
 composer require alsvanzelf/jsonapi
 ```
+
+The library supports, and is is tested on, php versions 5.6, 7 and 8.
 
 #### Upgrading from v1
 
@@ -54,15 +56,26 @@ Which will result in:
 }
 ```
 
-#### A collection of resources
+#### A collection of resources with relationships
 
 ```php
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
-$document = new CollectionDocument();
-$document->add('user', 42, ['name' => 'Zaphod Beeblebrox']);
-$document->add('user', 1, ['name' => 'Ford Prefect']);
-$document->add('user', 2, ['name' => 'Arthur Dent']);
+$arthur      = new ResourceObject('user', 1);
+$ford        = new ResourceObject('user', 2);
+$zaphod      = new ResourceObject('user', 42);
+$heartOfGold = new ResourceObject('starship', 2001);
+
+$arthur->add('name', 'Arthur Dent');
+$ford->add('name', 'Ford Prefect');
+$zaphod->add('name', 'Zaphod Beeblebrox');
+$heartOfGold->add('name', 'Heart of Gold');
+
+$zaphod->addRelationship('drives', $heartOfGold);
+
+$users    = [$arthur, $ford, $zaphod];
+$document = CollectionDocument::fromResources(...$users);
 $document->sendResponse();
 ```
 
@@ -76,23 +89,40 @@ Which will result in:
 	"data": [
 		{
 			"type": "user",
-			"id": "42",
-			"attributes": {
-				"name": "Zaphod Beeblebrox"
-			}
-		},
-		{
-			"type": "user",
 			"id": "1",
 			"attributes": {
-				"name": "Ford Prefect"
+				"name": "Arthur Dent"
 			}
 		},
 		{
 			"type": "user",
 			"id": "2",
 			"attributes": {
-				"name": "Arthur Dent"
+				"name": "Ford Prefect"
+			}
+		},
+		{
+			"type": "user",
+			"id": "42",
+			"attributes": {
+				"name": "Zaphod Beeblebrox"
+			},
+			"relationships": {
+				"drives": {
+					"data": {
+						"type": "starship",
+						"id": "2001"
+					}
+				}
+			}
+		}
+	],
+	"included": [
+		{
+			"type": "starship",
+			"id": "2001",
+			"attributes": {
+				"name": "Heart of Gold"
 			}
 		}
 	]
@@ -134,6 +164,10 @@ Which will result in:
 }
 ```
 
+This can be useful for development. For production usage, you can better construct an `ErrorsDocument` with only specific values.
+
+#### Other examples
+
 Examples for all kind of responses are in the [/examples](/examples) directory.
 
 
@@ -150,19 +184,26 @@ It has support for generating & sending documents with:
 - v1.1 extensions via profiles
 - v1.1 @-members for JSON-LD and others
 
+Also there's tools to help processing of incoming requests:
+
+- parse request options (include paths, sparse fieldsets, sort fields, pagination, filtering)
+- parse request documents for creating, updating and deleting resources and relationships
+
 Next to custom extensions, the following [official extensions](https://jsonapi.org/extensions/) are included:
 
 - Cursor Pagination ([example code](/examples/cursor_pagination_profile.php), [specification](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/))
 
 Plans for the future include:
 
-- parse request options: sparse fields, sorting, pagination, filtering ([#44](https://github.com/lode/jsonapi/issues/44))
-- parse requests for creating, updating and deleting resources and relationships ([#5](https://github.com/lode/jsonapi/issues/5))
+- validate request options ([#58](https://github.com/lode/jsonapi/issues/58))
+- validate request documents ([#57](https://github.com/lode/jsonapi/issues/57))
 
 
 ## Contributing
 
-[Pull Requests](https://github.com/lode/jsonapi/pulls) or [issues](https://github.com/lode/jsonapi/issues) are welcome!
+If you use the library, please ask questions or share what can be improved by [creating an issue](https://github.com/lode/jsonapi/issues).
+
+For bugs [issues](https://github.com/lode/jsonapi/issues) or [Pull Requests](https://github.com/lode/jsonapi/pulls) are welcome!
 
 
 ## Licence
