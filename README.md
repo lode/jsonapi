@@ -1,4 +1,4 @@
-# jsonapi [![Build Status](https://travis-ci.com/lode/jsonapi.svg?branch=main)](https://travis-ci.org/lode/jsonapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lode/jsonapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main) [![Code Coverage](https://scrutinizer-ci.com/g/lode/jsonapi/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main)
+# jsonapi [![Build Status](https://travis-ci.com/lode/jsonapi.svg?branch=main)](https://travis-ci.com/lode/jsonapi) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lode/jsonapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main) [![Code Coverage](https://scrutinizer-ci.com/g/lode/jsonapi/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main)
 
 A simple and human-friendly library for api servers (php serving json).
 
