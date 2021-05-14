@@ -1,4 +1,6 @@
 build:
+  environment:
+    php: 7.3.0
   nodes:
     coverage:
       tests:
@@ -7,6 +9,10 @@ build:
             coverage:
               file: tests/report/clover.xml
               format: clover
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
 
 filter:
   paths:
