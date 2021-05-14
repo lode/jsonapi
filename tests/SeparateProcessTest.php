@@ -43,6 +43,10 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_ContentTypeHeader() {
+		if (extension_loaded('xdebug') === false) {
+			$this->markTestSkipped('can not run without xdebug');
+		}
+		
 		$document = new Document();
 		
 		ob_start();
@@ -102,6 +106,10 @@ class SeparateProcessTest extends TestCase {
 	 * @group Profiles
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
+		if (extension_loaded('xdebug') === false) {
+			$this->markTestSkipped('can not run without xdebug');
+		}
+		
 		$profile = new TestProfile();
 		$profile->setOfficialLink('https://jsonapi.org');
 		
