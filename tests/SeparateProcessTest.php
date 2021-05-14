@@ -43,7 +43,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_ContentTypeHeader() {
-		if (function_exists('xdebug_get_headers') === false) {
+		if (extension_loaded('xdebug') === false) {
 			$this->markTestSkipped('can not run without xdebug');
 		}
 		
@@ -77,7 +77,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
-		if (function_exists('xdebug_get_headers') === false) {
+		if (extension_loaded('xdebug') === false) {
 			$this->markTestSkipped('can not run without xdebug');
 		}
 		
