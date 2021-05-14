@@ -88,6 +88,10 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	}
 	
 	/**
+	 * set a local id to connect resources to each other when created on the client
+	 * 
+	 * @note this should not be used to send back from the server to the client
+	 * 
 	 * @param string|int $localId will be casted to a string
 	 * 
 	 * @throws DuplicateException if normal id is already set

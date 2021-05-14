@@ -85,7 +85,7 @@ class Validator {
 	 */
 	public function claimUsedResourceIdentifier(ResourceInterface $resource) {
 		if ($resource->getResource()->hasIdentification() === false) {
-			throw new InputException('can not validate resource without identifier, set type and id first');
+			throw new InputException('can not validate resource without identifier, set type and id/lid first');
 		}
 		
 		$resourceKey = $resource->getResource()->getIdentificationKey();
