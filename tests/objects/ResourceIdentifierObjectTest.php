@@ -3,10 +3,55 @@
 namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
+	public function testSetId_HappyPath() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$resourceIdentifierObject->setType('test');
+		$resourceIdentifierObject->setId('1');
+		
+		$array = $resourceIdentifierObject->toArray();
+		
+		$this->assertArrayHasKey('id', $array);
+		$this->assertArrayNotHasKey('lid', $array);
+		$this->assertSame('1', $array['id']);
+	}
+	
+	public function testSetId_WithLocalIdAlreadySet() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$resourceIdentifierObject->setType('test');
+		$resourceIdentifierObject->setLocalId('uuid-1');
+		
+		$this->expectException(DuplicateException::class);
+		
+		$resourceIdentifierObject->setId('1');
+	}
+	
+	public function testSetLocalId_HappyPath() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$resourceIdentifierObject->setType('test');
+		$resourceIdentifierObject->setLocalId('uuid-1');
+		
+		$array = $resourceIdentifierObject->toArray();
+		
+		$this->assertArrayHasKey('lid', $array);
+		$this->assertArrayNotHasKey('id', $array);
+		$this->assertSame('uuid-1', $array['lid']);
+	}
+	
+	public function testSetLocalId_WithIdAlreadySet() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$resourceIdentifierObject->setType('test');
+		$resourceIdentifierObject->setId('1');
+		
+		$this->expectException(DuplicateException::class);
+		
+		$resourceIdentifierObject->setLocalId('uuid-1');
+	}
+	
 	public function testEquals_HappyPath() {
 		$one = new ResourceIdentifierObject('test', 1);
 		$two = new ResourceIdentifierObject('test', 2);
@@ -25,6 +70,19 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$one->equals($two);
 	}
 	
+	public function testEquals_WithLocalId() {
+		$one = new ResourceIdentifierObject('test');
+		$two = new ResourceIdentifierObject('test');
+		$new = new ResourceIdentifierObject('test');
+		
+		$one->setLocalId('uuid-1');
+		$two->setLocalId('uuid-2');
+		$new->setLocalId('uuid-1');
+		
+		$this->assertFalse($one->equals($two));
+		$this->assertTrue($one->equals($new));
+	}
+	
 	public function testGetIdentificationKey_HappyPath() {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 42);
 		
@@ -32,6 +90,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		
 		$this->assertArrayHasKey('type', $array);
 		$this->assertArrayHasKey('id', $array);
+		$this->assertArrayNotHasKey('lid', $array);
 		$this->assertSame('user', $array['type']);
 		$this->assertSame('42', $array['id']);
 		$this->assertTrue($resourceIdentifierObject->hasIdentification());
@@ -57,6 +116,23 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$this->assertSame('42', $array['id']);
 		$this->assertTrue($resourceIdentifierObject->hasIdentification());
 		$this->assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
+	}
+	
+	public function testGetIdentificationKey_WithLocalId() {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		
+		$resourceIdentifierObject->setType('user');
+		$resourceIdentifierObject->setLocalId('uuid-42');
+		
+		$array = $resourceIdentifierObject->toArray();
+		
+		$this->assertArrayHasKey('type', $array);
+		$this->assertArrayHasKey('lid', $array);
+		$this->assertArrayNotHasKey('id', $array);
+		$this->assertSame('user', $array['type']);
+		$this->assertSame('uuid-42', $array['lid']);
+		$this->assertTrue($resourceIdentifierObject->hasIdentification());
+		$this->assertSame('user|uuid-42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
 	public function testGetIdentificationKey_NoIdentification() {
