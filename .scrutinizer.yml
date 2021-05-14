@@ -8,8 +8,6 @@ build:
               file: tests/report/clover.xml
               format: clover
     analysis:
-      resources:
-        cpus: 4
       tests:
         override:
           - php-scrutinizer-run
