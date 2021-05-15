@@ -97,6 +97,58 @@ class DocumentTest extends TestCase {
 		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level='foo');
 	}
 	
+	public function testSetSelfLink_HappyPath() {
+		$document = new Document();
+		
+		$array = $document->toArray();
+		$this->assertArrayNotHasKey('links', $array);
+		
+		$document->setSelfLink('https://jsonapi.org/foo');
+		
+		$array = $document->toArray();
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('self', $array['links']);
+		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']);
+	}
+	
+	public function testSetDescribedByLink_HappyPath() {
+		$document = new Document();
+		$document->setDescribedByLink('https://jsonapi.org/format', ['version' => '1.1']);
+		
+		$array = $document->toArray();
+		
+		$this->assertCount(1, $array['links']);
+		if (method_exists($this, 'assertIsArray')) {
+			$this->assertIsArray($array['links']['describedby']);
+		}
+		else {
+			$this->assertInternalType('array', $array['links']['describedby']);
+		}
+		$this->assertCount(2, $array['links']['describedby']);
+		$this->assertArrayHasKey('href', $array['links']['describedby']);
+		$this->assertArrayHasKey('meta', $array['links']['describedby']);
+		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']['href']);
+		$this->assertCount(1, $array['links']['describedby']['meta']);
+		$this->assertArrayHasKey('version', $array['links']['describedby']['meta']);
+		$this->assertSame('1.1', $array['links']['describedby']['meta']['version']);
+	}
+	
+	public function testSetDescribedByLink_WithMeta() {
+		$document = new Document();
+		
+		$array = $document->toArray();
+		$this->assertArrayNotHasKey('links', $array);
+		
+		$document->setDescribedByLink('https://jsonapi.org/format');
+		
+		$array = $document->toArray();
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('describedby', $array['links']);
+		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']);
+	}
+	
 	public function testAddMeta_HappyPath() {
 		$document = new Document();
 		

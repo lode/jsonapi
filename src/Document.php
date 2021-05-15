@@ -121,6 +121,20 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	}
 	
 	/**
+	 * set a link describing the current document
+	 * 
+	 * for example this could link to an OpenAPI or JSON Schema document
+	 * 
+	 * @note according to the spec, this can only be set to Document::LEVEL_ROOT
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setDescribedByLink($href, array $meta=[]) {
+		$this->addLink('describedby', $href, $meta, $level=Document::LEVEL_ROOT);
+	}
+	
+	/**
 	 * @param string $key
 	 * @param mixed  $value
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
