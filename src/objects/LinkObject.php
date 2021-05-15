@@ -20,7 +20,7 @@ class LinkObject implements ObjectInterface {
 	/** @var string */
 	protected $type;
 	/** @var string[] */
-	protected $hreflang;
+	protected $hreflang = [];
 	/** @var MetaObject */
 	protected $meta;
 	
@@ -52,11 +52,11 @@ class LinkObject implements ObjectInterface {
 	 * @param string $language
 	 */
 	public function addLanguage($language) {
-		if ($this->hreflang === null) {
+		if ($this->hreflang === []) {
 			$this->setHreflang($language);
 		}
 		else {
-			$this->setHreflang(...$this->hreflang, $language);
+			$this->setHreflang(...array_merge($this->hreflang, [$language]));
 		}
 	}
 	
