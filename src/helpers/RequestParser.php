@@ -45,6 +45,8 @@ class RequestParser {
 	
 	/**
 	 * @return self
+	 * 
+	 * @throws Exception if the body's json is invalid
 	 */
 	public static function fromSuperglobals() {
 		$selfLink = '';
@@ -61,6 +63,9 @@ class RequestParser {
 			
 			if ($documentIsJsonapi || $documentIsJson) {
 				$document = json_decode(file_get_contents('php://input'), true);
+				if (json_last_error() !== JSON_ERROR_NONE) {
+					throw new Exception('error parsing request body: '.json_last_error_msg());
+				}
 				
 				if ($document === null) {
 					$document = [];
