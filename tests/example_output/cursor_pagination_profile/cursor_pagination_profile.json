@@ -1,11 +1,11 @@
 {
 	"jsonapi": {
-		"version": "1.1"
-	},
-	"links": {
+		"version": "1.1",
 		"profile": [
 			"https://jsonapi.org/profiles/ethanresnick/cursor-pagination/"
-		],
+		]
+	},
+	"links": {
 		"prev": null,
 		"next": {
 			"href": "/users?sort=42&page[size]=10&page[after]=zaphod"

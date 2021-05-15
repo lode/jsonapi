@@ -3,19 +3,23 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
-	use AtMemberManager;
+	use AtMemberManager, ExtensionMemberManager;
 	
 	/** @var string */
 	protected $type;
 	/** @var string */
 	protected $id;
+	/** @var string */
+	protected $lid;
 	/** @var MetaObject */
 	protected $meta;
 	/** @var Validator */
@@ -42,6 +46,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		// always mark as used, as these keys are reserved
 		$this->validator->claimUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
 		$this->validator->claimUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
+		$this->validator->claimUsedFields($fieldNames=['lid'], Validator::OBJECT_CONTAINER_LID);
 	}
 	
 	/**
@@ -73,9 +78,32 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	
 	/**
 	 * @param string|int $id will be casted to a string
+	 * 
+	 * @throws DuplicateException if localId is already set
 	 */
 	public function setId($id) {
+		if ($this->lid !== null) {
+			throw new DuplicateException('id is not allowed when localId is already set');
+		}
+		
 		$this->id = (string) $id;
+	}
+	
+	/**
+	 * set a local id to connect resources to each other when created on the client
+	 * 
+	 * @note this should not be used to send back from the server to the client
+	 * 
+	 * @param string|int $localId will be casted to a string
+	 * 
+	 * @throws DuplicateException if normal id is already set
+	 */
+	public function setLocalId($localId) {
+		if ($this->id !== null) {
+			throw new DuplicateException('localId is not allowed when id is already set');
+		}
+		
+		$this->lid = (string) $localId;
 	}
 	
 	/**
@@ -96,7 +124,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @return ResourceIdentifierObject
 	 */
 	public static function fromResourceObject(ResourceObject $resourceObject) {
-		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->id);
+		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->primaryId());
 		
 		if ($resourceObject->meta !== null) {
 			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
@@ -127,7 +155,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @return boolean
 	 */
 	public function hasIdentification() {
-		return ($this->type !== null && $this->id !== null);
+		return ($this->type !== null && $this->primaryId() !== null);
 	}
 	
 	/**
@@ -144,7 +172,7 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 			throw new Exception('resource has no identification yet');
 		}
 		
-		return $this->type.'|'.$this->id;
+		return $this->type.'|'.$this->primaryId();
 	}
 	
 	/**
@@ -155,13 +183,16 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		if ($this->type !== null || $this->id !== null) {
+		if ($this->type !== null || $this->primaryId() !== null) {
 			return false;
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
+			return false;
+		}
+		if ($this->hasExtensionMembers()) {
 			return false;
 		}
 		
@@ -172,12 +203,22 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
 		
 		$array['type'] = $this->type;
 		
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
+		}
+		elseif ($this->lid !== null) {
+			$array['lid'] = $this->lid;
+		}
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
@@ -196,5 +237,17 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 */
 	public function getResource($identifierOnly=false) {
 		return $this;
+	}
+	
+	/**
+	 * @internal
+	 */
+	
+	private function primaryId() {
+		if ($this->lid !== null) {
+			return $this->lid;
+		}
+		
+		return $this->id;
 	}
 }

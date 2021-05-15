@@ -21,9 +21,9 @@
 		"@context": "/meta/@context"
 	},
 	"data": {
-		"@context": "/data/@context",
 		"type": "user",
 		"id": "42",
+		"@context": "/data/@context",
 		"meta": {
 			"@context": "/data/meta/@context"
 		},
@@ -48,9 +48,9 @@
 			"bar": {
 				"@context": "/data/relationships/bar/@context",
 				"data": {
-					"@context": "/data/relationships/bar/data/@context",
 					"type": "user",
 					"id": "2",
+					"@context": "/data/relationships/bar/data/@context",
 					"meta": {
 						"@context": "/data/relationships/bar/data/meta/@context"
 					}
@@ -70,17 +70,17 @@
 	},
 	"included": [
 		{
-			"@context": "/included/0/@context",
 			"type": "user",
 			"id": "1",
+			"@context": "/included/0/@context",
 			"attributes": {
 				"@context": "/included/0/attributes/@context"
 			}
 		},
 		{
-			"@context": "/included/1/@context",
 			"type": "user",
 			"id": "3",
+			"@context": "/included/1/@context",
 			"relationships": {
 				"@context": "/included/1/relationships/@context"
 			}

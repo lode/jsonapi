@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -12,7 +13,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
-	use AtMemberManager;
+	use AtMemberManager, ExtensionMemberManager;
 	
 	/** @var RelationshipObject[] */
 	protected $relationships = [];
@@ -77,14 +78,31 @@ class RelationshipsObject implements ObjectInterface, RecursiveResourceContainer
 	 * @inheritDoc
 	 */
 	public function isEmpty() {
-		return ($this->relationships === [] && $this->hasAtMembers() === false);
+		if ($this->relationships !== []) {
+			return false;
+		}
+		if ($this->hasAtMembers()) {
+			return false;
+		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		
 		foreach ($this->relationships as $key => $relationshipObject) {
 			$array[$key] = $relationshipObject->toArray();

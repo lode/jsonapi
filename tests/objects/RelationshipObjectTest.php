@@ -9,6 +9,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipObjectTest extends TestCase {
@@ -311,6 +312,19 @@ class RelationshipObjectTest extends TestCase {
 		$this->assertTrue($relationshipObject->isEmpty());
 		
 		$relationshipObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($relationshipObject->isEmpty());
+	}
+	
+	/**
+	 * @group Extensions
+	 */
+	public function testIsEmpty_WithExtensionMembers() {
+		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		
+		$this->assertTrue($relationshipObject->isEmpty());
+		
+		$relationshipObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
 		
 		$this->assertFalse($relationshipObject->isEmpty());
 	}

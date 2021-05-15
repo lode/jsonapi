@@ -5,17 +5,13 @@ namespace alsvanzelf\jsonapiTests\profiles;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 
 class TestProfile implements ProfileInterface {
-	private $aliasedLink;
+	private $officialLink;
 	
-	public function setAliasedLink($aliasedLink) {
-		$this->aliasedLink = $aliasedLink;
+	public function setOfficialLink($officialLink) {
+		$this->officialLink = $officialLink;
 	}
 	
-	public function __construct(array $aliases=[]) {}
-	public function getKeyword($keyword) {}
-	public function getOfficialKeywords() {}
-	public function getOfficialLink() {}
-	public function getAliasedLink() {
-		return $this->aliasedLink;
+	public function getOfficialLink() {
+		return $this->officialLink;
 	}
 }

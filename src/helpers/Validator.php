@@ -12,6 +12,7 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 class Validator {
 	const OBJECT_CONTAINER_TYPE          = 'type';
 	const OBJECT_CONTAINER_ID            = 'id';
+	const OBJECT_CONTAINER_LID           = 'lid';
 	const OBJECT_CONTAINER_ATTRIBUTES    = 'attributes';
 	const OBJECT_CONTAINER_RELATIONSHIPS = 'relationships';
 	
@@ -84,7 +85,7 @@ class Validator {
 	 */
 	public function claimUsedResourceIdentifier(ResourceInterface $resource) {
 		if ($resource->getResource()->hasIdentification() === false) {
-			throw new InputException('can not validate resource without identifier, set type and id first');
+			throw new InputException('can not validate resource without identifier, set type and id/lid first');
 		}
 		
 		$resourceKey = $resource->getResource()->getIdentificationKey();
