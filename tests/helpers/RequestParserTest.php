@@ -186,7 +186,7 @@ class RequestParserTest extends TestCase {
 		$request         = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('error parsing request body: quoted object property name expected');
+		$this->expectExceptionMessage('error parsing request body: ');
 		
 		RequestParser::fromPsrRequest($request);
 	}
