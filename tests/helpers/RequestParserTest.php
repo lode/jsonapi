@@ -182,11 +182,11 @@ class RequestParserTest extends TestCase {
 	public function testFromPsrRequest_WithBrokenDocument() {
 		$selfLink        = '';
 		$queryParameters = [];
-		$document        = '{"data": {';
+		$document        = '{"data": {foo: "bar"}}';
 		$request         = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('error parsing request body: unexpected end of data');
+		$this->expectExceptionMessage('error parsing request body: quoted object property name expected');
 		
 		RequestParser::fromPsrRequest($request);
 	}
