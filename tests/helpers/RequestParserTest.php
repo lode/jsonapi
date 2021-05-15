@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\RequestParser;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
@@ -182,11 +183,12 @@ class RequestParserTest extends TestCase {
 		$selfLink        = '';
 		$queryParameters = [];
 		$document        = '{"data": {';
+		$request         = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
 		
-		$request       = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
-		$requestParser = RequestParser::fromPsrRequest($request);
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('error parsing request body: unexpected end of data');
 		
-		$this->assertSame([], $requestParser->getDocument());
+		RequestParser::fromPsrRequest($request);
 	}
 	
 	public function testFromPsrRequest_WithServerRequestInterface() {
