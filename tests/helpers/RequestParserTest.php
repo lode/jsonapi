@@ -178,6 +178,17 @@ class RequestParserTest extends TestCase {
 		$this->assertSame([], $requestParser->getDocument());
 	}
 	
+	public function testFromPsrRequest_WithBrokenDocument() {
+		$selfLink        = '';
+		$queryParameters = [];
+		$document        = '{"data": {';
+		
+		$request       = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$requestParser = RequestParser::fromPsrRequest($request);
+		
+		$this->assertSame([], $requestParser->getDocument());
+	}
+	
 	public function testFromPsrRequest_WithServerRequestInterface() {
 		$queryParameters = [
 			'sort' => 'name,-location',
