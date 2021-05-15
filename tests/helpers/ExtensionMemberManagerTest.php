@@ -7,6 +7,9 @@ use alsvanzelf\jsonapiTests\helpers\TestableNonTraitExtensionMemberManager as Ex
 use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @group Extensions
+ */
 class ExtensionMemberManagerTest extends TestCase {
 	public function testAddExtensionMember_HappyPath() {
 		$helper    = new ExtensionMemberManager();

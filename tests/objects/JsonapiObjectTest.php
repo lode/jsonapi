@@ -34,6 +34,9 @@ class JsonapiObjectTest extends TestCase {
 		$this->assertFalse($jsonapiObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionLink() {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
@@ -44,6 +47,9 @@ class JsonapiObjectTest extends TestCase {
 		$this->assertFalse($jsonapiObject->isEmpty());
 	}
 	
+	/**
+	 * @group Profiles
+	 */
 	public function testIsEmpty_WithProfileLink() {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
@@ -54,6 +60,9 @@ class JsonapiObjectTest extends TestCase {
 		$this->assertFalse($jsonapiObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionMembers() {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
