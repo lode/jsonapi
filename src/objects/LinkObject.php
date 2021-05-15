@@ -84,6 +84,8 @@ class LinkObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @todo validate according to https://tools.ietf.org/html/rfc8288#section-2.1
+	 * 
 	 * @param string $relationType
 	 */
 	public function setRelationType($relationType) {
@@ -112,6 +114,8 @@ class LinkObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @todo validate according to https://tools.ietf.org/html/rfc5646
+	 * 
 	 * @param string ...$hreflang
 	 */
 	public function setHreflang(...$hreflang) {
