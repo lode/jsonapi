@@ -12,10 +12,8 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
-use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
-use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
@@ -196,13 +194,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 			$this->setLinksObject(new LinksObject());
 		}
 		
-		$link = $profile->getAliasedLink();
-		if ($link instanceof LinkObject) {
-			$this->links->appendLinkObject('profile', $link);
-		}
-		else {
-			$this->links->append('profile', $link);
-		}
+		$this->links->append('profile', $profile->getOfficialLink());
 	}
 	
 	/**

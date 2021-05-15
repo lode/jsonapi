@@ -7,7 +7,7 @@ use alsvanzelf\jsonapiTests\example_output\ExampleVersionProfile;
 
 class example_profile {
 	public static function createJsonapiDocument() {
-		$profile = new ExampleVersionProfile(['version' => 'ref']);
+		$profile = new ExampleVersionProfile();
 		
 		$document = new ResourceDocument('user', 42);
 		$document->applyProfile($profile);

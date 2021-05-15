@@ -4,7 +4,6 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\AttributesObject;
-use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
@@ -70,24 +69,17 @@ class ConverterTest extends TestCase {
 	
 	public function testMergeProfilesInContentType_WithProfileStringLink() {
 		$profile = new TestProfile();
-		$profile->setAliasedLink('bar');
-		
-		$this->assertSame('foo;profile="bar", foo', Converter::mergeProfilesInContentType('foo', [$profile]));
-	}
-	
-	public function testMergeProfilesInContentType_WithProfileObjectLink() {
-		$profile = new TestProfile();
-		$profile->setAliasedLink(new LinkObject('bar'));
+		$profile->setOfficialLink('bar');
 		
 		$this->assertSame('foo;profile="bar", foo', Converter::mergeProfilesInContentType('foo', [$profile]));
 	}
 	
 	public function testMergeProfilesInContentType_WithMultipleProfiles() {
 		$profile1 = new TestProfile();
-		$profile1->setAliasedLink('bar');
+		$profile1->setOfficialLink('bar');
 		
 		$profile2 = new TestProfile();
-		$profile2->setAliasedLink(new LinkObject('baz'));
+		$profile2->setOfficialLink('baz');
 		
 		$this->assertSame('foo;profile="bar baz", foo', Converter::mergeProfilesInContentType('foo', [$profile1, $profile2]));
 	}
