@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\RequestParser;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
@@ -176,6 +177,18 @@ class RequestParserTest extends TestCase {
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
 		$this->assertSame([], $requestParser->getDocument());
+	}
+	
+	public function testFromPsrRequest_WithBrokenDocument() {
+		$selfLink        = '';
+		$queryParameters = [];
+		$document        = '{"data": {foo: "bar"}}';
+		$request         = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('error parsing request body: ');
+		
+		RequestParser::fromPsrRequest($request);
 	}
 	
 	public function testFromPsrRequest_WithServerRequestInterface() {
