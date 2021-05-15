@@ -12,7 +12,7 @@ class profile {
 		$document = new ResourceDocument('user', 42);
 		$document->applyProfile($profile);
 		
-		$profile->setTimestamps($document, new \DateTime('2019'), new \DateTime('2021'));
+		$profile->setTimestamps($document, new \DateTime('2019-01-01T00:00:00+0000'), new \DateTime('2021-01-01T00:00:00+0000'));
 		
 		return $document;
 	}
