@@ -136,6 +136,21 @@ class LinkObject implements ObjectInterface {
 		if ($this->href !== null) {
 			return false;
 		}
+		if ($this->rel !== null) {
+			return false;
+		}
+		if ($this->title !== null) {
+			return false;
+		}
+		if ($this->type !== null) {
+			return false;
+		}
+		if ($this->hreflang !== []) {
+			return false;
+		}
+		if ($this->describedby !== null && $this->describedby->isEmpty() === false) {
+			return false;
+		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
 			return false;
 		}
@@ -154,13 +169,13 @@ class LinkObject implements ObjectInterface {
 		
 		$array['href'] = $this->href;
 		
-		if ($this->rel) {
+		if ($this->rel !== null) {
 			$array['rel'] = $this->rel;
 		}
-		if ($this->title) {
+		if ($this->title !== null) {
 			$array['title'] = $this->title;
 		}
-		if ($this->type) {
+		if ($this->type !== null) {
 			$array['type'] = $this->type;
 		}
 		if ($this->hreflang !== []) {
