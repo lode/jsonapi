@@ -30,6 +30,9 @@ class MetaObjectTest extends TestCase {
 		$this->assertFalse($metaObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionMembers() {
 		$metaObject = new MetaObject();
 		

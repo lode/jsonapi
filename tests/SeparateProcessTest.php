@@ -78,6 +78,10 @@ class SeparateProcessTest extends TestCase {
 	 * @group Extensions
 	 */
 	public function testSendResponse_ContentTypeHeaderWithExtensions() {
+		if (extension_loaded('xdebug') === false) {
+			$this->markTestSkipped('can not run without xdebug');
+		}
+		
 		$extension = new TestExtension();
 		$extension->setNamespace('one');
 		$extension->setOfficialLink('https://jsonapi.org');

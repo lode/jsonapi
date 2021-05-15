@@ -100,6 +100,9 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$this->assertFalse($resourceIdentifierObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionMembers() {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		

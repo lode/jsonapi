@@ -33,6 +33,9 @@ class LinkObjectTest extends TestCase {
 		$this->assertFalse($linkObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionMembers() {
 		$linkObject = new LinkObject();
 		

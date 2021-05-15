@@ -316,6 +316,9 @@ class RelationshipObjectTest extends TestCase {
 		$this->assertFalse($relationshipObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testIsEmpty_WithExtensionMembers() {
 		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
 		

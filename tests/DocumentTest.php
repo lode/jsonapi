@@ -204,6 +204,9 @@ class DocumentTest extends TestCase {
 		$this->assertSame('bar', $array['test:foo']);
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testApplyExtension_InvalidNamespace() {
 		$document  = new Document();
 		$extension = new TestExtension();
@@ -215,6 +218,9 @@ class DocumentTest extends TestCase {
 		$document->applyExtension($extension);
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testApplyExtension_ConflictingNamespace() {
 		$document  = new Document();
 		

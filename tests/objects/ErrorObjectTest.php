@@ -159,6 +159,9 @@ class ErrorObjectTest extends TestCase {
 		$this->assertFalse($errorObject->isEmpty());
 	}
 	
+	/**
+	 * @group Extensions
+	 */
 	public function testToArray_WithExtensionMembers() {
 		$errorObject = new ErrorObject();
 		$extension   = new TestExtension();
