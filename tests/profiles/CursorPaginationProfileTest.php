@@ -20,9 +20,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$firstCursor      = 'bar';
 		$lastCursor       = 'foo';
 		
+		$collection->applyProfile($profile);
 		$profile->setLinks($collection, $baseOrCurrentUrl, $firstCursor, $lastCursor);
 		
 		$array = $collection->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(2, $array['links']);
@@ -37,6 +43,7 @@ class CursorPaginationProfileTest extends TestCase {
 	public function test_WithRelationship() {
 		$profile  = new CursorPaginationProfile();
 		$document = new ResourceDocument('test', 1);
+		$document->applyProfile($profile);
 		
 		$person1  = new ResourceObject('person', 1);
 		$person2  = new ResourceObject('person', 2);
@@ -58,6 +65,11 @@ class CursorPaginationProfileTest extends TestCase {
 		$document->addRelationshipObject('people', $relationship);
 		
 		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('data', $array);
 		$this->assertArrayHasKey('relationships', $array['data']);
@@ -85,9 +97,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$baseOrCurrentUrl = '/people?page[size]=10';
 		$lastCursor       = 'foo';
 		
+		$collection->applyProfile($profile);
 		$profile->setLinksFirstPage($collection, $baseOrCurrentUrl, $lastCursor);
 		
 		$array = $collection->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(2, $array['links']);
@@ -104,9 +122,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$baseOrCurrentUrl = '/people?page[size]=10';
 		$firstCursor      = 'bar';
 		
+		$collection->applyProfile($profile);
 		$profile->setLinksLastPage($collection, $baseOrCurrentUrl, $firstCursor);
 		
 		$array = $collection->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(2, $array['links']);
@@ -121,9 +145,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$profile          = new CursorPaginationProfile();
 		$resourceDocument = new ResourceDocument('user', 42);
 		
+		$resourceDocument->applyProfile($profile);
 		$profile->setCursor($resourceDocument, 'foo');
 		
 		$array = $resourceDocument->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('data', $array);
 		$this->assertArrayHasKey('meta', $array['data']);
@@ -136,9 +166,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$profile    = new CursorPaginationProfile();
 		$collection = new CollectionDocument();
 		
+		$collection->applyProfile($profile);
 		$profile->setPaginationLinkObjectsExplicitlyEmpty($collection);
 		
 		$array = $collection->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(2, $array['links']);
@@ -155,9 +191,15 @@ class CursorPaginationProfileTest extends TestCase {
 		$bestGuessTotal   = 100;
 		$rangeIsTruncated = true;
 		
+		$collection->applyProfile($profile);
 		$profile->setPaginationMeta($collection, $exactTotal, $bestGuessTotal, $rangeIsTruncated);
 		
 		$array = $collection->toArray();
+		
+		$this->assertArrayHasKey('jsonapi', $array);
+		$this->assertArrayHasKey('profile', $array['jsonapi']);
+		$this->assertCount(1, $array['jsonapi']['profile']);
+		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
 		$this->assertArrayHasKey('meta', $array);
 		$this->assertArrayHasKey('page', $array['meta']);

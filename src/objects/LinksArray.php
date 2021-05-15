@@ -9,7 +9,6 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 /**
  * an array of links (strings and LinkObjects), used for:
  * - type links in an ErrorObject
- * - profile links at root level
  */
 class LinksArray implements ObjectInterface {
 	/** @var array with string|LinkObject */

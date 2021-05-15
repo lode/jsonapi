@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\objects\LinkObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class LinkObjectTest extends TestCase {
@@ -148,6 +149,19 @@ class LinkObjectTest extends TestCase {
 		$this->assertTrue($linkObject->isEmpty());
 		
 		$linkObject->addAtMember('context', 'test');
+		
+		$this->assertFalse($linkObject->isEmpty());
+	}
+	
+	/**
+	 * @group Extensions
+	 */
+	public function testIsEmpty_WithExtensionMembers() {
+		$linkObject = new LinkObject();
+		
+		$this->assertTrue($linkObject->isEmpty());
+		
+		$linkObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
 		
 		$this->assertFalse($linkObject->isEmpty());
 	}
