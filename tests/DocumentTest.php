@@ -237,7 +237,7 @@ class DocumentTest extends TestCase {
 	public function testApplyExtension_HappyPath() {
 		$extension = new TestExtension();
 		$extension->setNamespace('test');
-		$extension->setOfficialLink('https://jsonapi.org');
+		$extension->setOfficialLink('https://jsonapi.org/extension');
 		
 		$document = new Document();
 		$document->applyExtension($extension);
@@ -245,13 +245,14 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
+		$this->assertCount(2, $array);
 		$this->assertArrayHasKey('jsonapi', $array);
 		$this->assertCount(2, $array['jsonapi']);
 		$this->assertSame('1.1', $array['jsonapi']['version']);
 		$this->assertArrayHasKey('ext', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['ext']);
 		$this->assertArrayHasKey(0, $array['jsonapi']['ext']);
-		$this->assertSame('https://jsonapi.org', $array['jsonapi']['ext'][0]);
+		$this->assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
 		$this->assertArrayHasKey('test:foo', $array);
 		$this->assertSame('bar', $array['test:foo']);
 	}
@@ -298,20 +299,21 @@ class DocumentTest extends TestCase {
 	 */
 	public function testApplyProfile_HappyPath() {
 		$profile = new TestProfile();
-		$profile->setOfficialLink('https://jsonapi.org');
+		$profile->setOfficialLink('https://jsonapi.org/profile');
 		
 		$document = new Document();
 		$document->applyProfile($profile);
 		
 		$array = $document->toArray();
 		
+		$this->assertCount(1, $array);
 		$this->assertArrayHasKey('jsonapi', $array);
 		$this->assertCount(2, $array['jsonapi']);
 		$this->assertSame('1.1', $array['jsonapi']['version']);
 		$this->assertArrayHasKey('profile', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['profile']);
 		$this->assertArrayHasKey(0, $array['jsonapi']['profile']);
-		$this->assertSame('https://jsonapi.org', $array['jsonapi']['profile'][0]);
+		$this->assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
 	}
 	
 	public function testToJson_HappyPath() {
