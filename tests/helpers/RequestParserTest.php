@@ -291,9 +291,10 @@ class RequestParserTest extends TestCase {
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$this->assertFalse($requestParser->hasAnySparseFieldset());
 		
-		$queryParameters = ['fields' => []];
+		// not allowed, but possible
+		$queryParameters = ['fields' => ''];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertFalse($requestParser->hasAnySparseFieldset());
+		$this->assertTrue($requestParser->hasAnySparseFieldset());
 		
 		$queryParameters = ['fields' => ['foo' => 'bar', 'baf' => 'baz']];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);

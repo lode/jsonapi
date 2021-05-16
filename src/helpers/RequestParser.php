@@ -179,14 +179,7 @@ class RequestParser {
 	 * @return boolean
 	 */
 	public function hasAnySparseFieldset() {
-		if (isset($this->queryParameters['fields']) === false) {
-			return false;
-		}
-		if ($this->queryParameters['fields'] === []) {
-			return false;
-		}
-		
-		return true;
+		return (isset($this->queryParameters['fields']));
 	}
 	
 	/**
