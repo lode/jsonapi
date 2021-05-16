@@ -15,6 +15,7 @@ use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
+use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -22,7 +23,9 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
+		LinksManager::addLink as linkManagerAddLink;
+	}
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.1';
@@ -97,11 +100,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 */
 	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
 		if ($level === Document::LEVEL_ROOT) {
-			if ($this->links === null) {
-				$this->setLinksObject(new LinksObject());
-			}
-			
-			$this->links->add($key, $href, $meta);
+			$this->linkManagerAddLink($key, $href, $meta);
 		}
 		elseif ($level === Document::LEVEL_JSONAPI) {
 			throw new InputException('level "jsonapi" can not be used for links');
@@ -117,12 +116,24 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	/**
 	 * set the self link on the document
 	 * 
+	 * @note a LinkObject is added when extensions or profiles are applied
+	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
 	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		$this->addLink('self', $href, $meta, $level);
+		if ($level === Document::LEVEL_ROOT && ($this->extensions !== [] || $this->profiles !== [])) {
+			$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, $this->extensions, $this->profiles);
+			
+			$linkObject = new LinkObject($href, $meta);
+			$linkObject->setMediaType($contentType);
+			
+			$this->addLinkObject('self', $linkObject);
+		}
+		else {
+			$this->addLink('self', $href, $meta, $level);
+		}
 	}
 	
 	/**

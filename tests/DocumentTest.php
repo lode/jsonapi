@@ -237,23 +237,33 @@ class DocumentTest extends TestCase {
 	public function testApplyExtension_HappyPath() {
 		$extension = new TestExtension();
 		$extension->setNamespace('test');
-		$extension->setOfficialLink('https://jsonapi.org');
+		$extension->setOfficialLink('https://jsonapi.org/extension');
 		
 		$document = new Document();
 		$document->applyExtension($extension);
 		$document->addExtensionMember($extension, 'foo', 'bar');
+		$document->setSelfLink('https://jsonapi.org/foo');
 		
 		$array = $document->toArray();
 		
+		$this->assertCount(3, $array);
 		$this->assertArrayHasKey('jsonapi', $array);
 		$this->assertCount(2, $array['jsonapi']);
 		$this->assertSame('1.1', $array['jsonapi']['version']);
 		$this->assertArrayHasKey('ext', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['ext']);
 		$this->assertArrayHasKey(0, $array['jsonapi']['ext']);
-		$this->assertSame('https://jsonapi.org', $array['jsonapi']['ext'][0]);
+		$this->assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
 		$this->assertArrayHasKey('test:foo', $array);
 		$this->assertSame('bar', $array['test:foo']);
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('self', $array['links']);
+		$this->assertCount(2, $array['links']['self']);
+		$this->assertArrayHasKey('href', $array['links']['self']);
+		$this->assertArrayHasKey('type', $array['links']['self']);
+		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		$this->assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
 	}
 	
 	/**
@@ -298,20 +308,30 @@ class DocumentTest extends TestCase {
 	 */
 	public function testApplyProfile_HappyPath() {
 		$profile = new TestProfile();
-		$profile->setOfficialLink('https://jsonapi.org');
+		$profile->setOfficialLink('https://jsonapi.org/profile');
 		
 		$document = new Document();
 		$document->applyProfile($profile);
+		$document->setSelfLink('https://jsonapi.org/foo');
 		
 		$array = $document->toArray();
 		
+		$this->assertCount(2, $array);
 		$this->assertArrayHasKey('jsonapi', $array);
 		$this->assertCount(2, $array['jsonapi']);
 		$this->assertSame('1.1', $array['jsonapi']['version']);
 		$this->assertArrayHasKey('profile', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['profile']);
 		$this->assertArrayHasKey(0, $array['jsonapi']['profile']);
-		$this->assertSame('https://jsonapi.org', $array['jsonapi']['profile'][0]);
+		$this->assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
+		$this->assertArrayHasKey('links', $array);
+		$this->assertCount(1, $array['links']);
+		$this->assertArrayHasKey('self', $array['links']);
+		$this->assertCount(2, $array['links']['self']);
+		$this->assertArrayHasKey('href', $array['links']['self']);
+		$this->assertArrayHasKey('type', $array['links']['self']);
+		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		$this->assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
 	}
 	
 	public function testToJson_HappyPath() {
