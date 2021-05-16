@@ -138,7 +138,7 @@ class ErrorObject implements ObjectInterface {
 			$this->setAboutLink($specificAboutLink);
 		}
 		if ($genericTypeLink !== null) {
-			$this->appendTypeLink($genericTypeLink);
+			$this->setTypeLink($genericTypeLink);
 		}
 	}
 	
