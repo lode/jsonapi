@@ -165,7 +165,7 @@ class ErrorObject implements ObjectInterface {
 	/**
 	 * append a link of the generic type of this error, explained in a human-friendly way
 	 * 
-	 * @deprecated array links are not supported anymore {@see setTypeLink()}
+	 * @deprecated array links are not supported anymore {@see ->setTypeLink()}
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added

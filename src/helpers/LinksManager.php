@@ -29,7 +29,7 @@ trait LinksManager {
 	/**
 	 * append a link to a key with an array of links
 	 * 
-	 * @deprecated array links are not supported anymore {@see addLink()}
+	 * @deprecated array links are not supported anymore {@see ->addLink()}
 	 * 
 	 * @param string $key
 	 * @param string $href
@@ -58,7 +58,7 @@ trait LinksManager {
 	/**
 	 * set a key containing a LinksArray
 	 * 
-	 * @deprecated array links are not supported anymore {@see addLinkObject()}
+	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
 	 * 
 	 * @param string     $key
 	 * @param LinksArray $linksArray
@@ -71,7 +71,7 @@ trait LinksManager {
 	/**
 	 * append a LinkObject to a key with a LinksArray
 	 * 
-	 * @deprecated array links are not supported anymore {@see addLinkObject()}
+	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
 	 * 
 	 * @param string     $key
 	 * @param LinkObject $linkObject
