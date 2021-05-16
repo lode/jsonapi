@@ -109,6 +109,9 @@ class LinksObjectTest extends TestCase {
 		$linksObject->addLinkObject($key='foo', $linkObject);
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
 	public function testAddLinksArray_HappyPath() {
 		$linksObject = new LinksObject();
 		$linksObject->addLinksArray('foo', LinksArray::fromArray(['https://jsonapi.org']));
@@ -122,6 +125,9 @@ class LinksObjectTest extends TestCase {
 		$this->assertSame('https://jsonapi.org', $array['foo'][0]);
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
 	public function testAddLinksArray_BlocksReusingNonArray() {
 		$linksObject = new LinksObject();
 		$linksObject->add('foo', 'https://jsonapi.org');

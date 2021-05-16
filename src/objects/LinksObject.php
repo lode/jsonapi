@@ -64,6 +64,8 @@ class LinksObject implements ObjectInterface {
 	 * 
 	 * @see LinksArray for use cases
 	 * 
+	 * @deprecated array links are not supported anymore {@see add()}
+	 * 
 	 * @param string $key
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
@@ -120,6 +122,8 @@ class LinksObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @deprecated array links are not supported anymore {@see addLinkObject()}
+	 * 
 	 * @param string     $key
 	 * @param LinksArray $linksArray
 	 * 
@@ -136,6 +140,8 @@ class LinksObject implements ObjectInterface {
 	}
 	
 	/**
+	 * @deprecated array links are not supported anymore {@see addLinkObject()}
+	 * 
 	 * @param  string     $key
 	 * @param  LinkObject $linkObject
 	 * 
