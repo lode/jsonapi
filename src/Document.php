@@ -23,7 +23,9 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
+		LinksManager::addLink as linkManagerAddLink;
+	}
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.1';
@@ -98,11 +100,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 */
 	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
 		if ($level === Document::LEVEL_ROOT) {
-			if ($this->links === null) {
-				$this->setLinksObject(new LinksObject());
-			}
-			
-			$this->links->add($key, $href, $meta);
+			$this->linkManagerAddLink($key, $href, $meta);
 		}
 		elseif ($level === Document::LEVEL_JSONAPI) {
 			throw new InputException('level "jsonapi" can not be used for links');
