@@ -1,6 +1,6 @@
 <?php
 
-namespace alsvanzelf\jsonapiTests;
+namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapiTests\helpers\TestableNonTraitAtMemberManager as AtMemberManager;
