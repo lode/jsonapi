@@ -17,9 +17,7 @@
 			"detail": "Please, choose a bit less. Consult your ...",
 			"links": {
 				"about": "https://www.example.com/explanation.html",
-				"type": [
-					"https://www.example.com/documentation.html"
-				]
+				"type": "https://www.example.com/documentation.html"
 			}
 		},
 		{
@@ -35,14 +33,12 @@
 						"foo": "bar"
 					}
 				},
-				"type": [
-					{
-						"href": "https://www.example.com/documentation.html",
-						"meta": {
-							"foo": "bar"
-						}
+				"type": {
+					"href": "https://www.example.com/documentation.html",
+					"meta": {
+						"foo": "bar"
 					}
-				]
+				}
 			},
 			"source": {
 				"pointer": "/data/attributes/title",

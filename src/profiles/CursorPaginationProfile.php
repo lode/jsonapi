@@ -248,7 +248,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function getUnsupportedSortErrorObject($genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Unsupported sort');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort');
 		$errorObject->blameQueryParameter('sort');
 		$errorObject->setHttpStatusCode(400);
 		
@@ -278,7 +278,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function getMaxPageSizeExceededErrorObject($maxSize, $genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Max page size exceeded');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
 		$errorObject->blameQueryParameter('page[size]');
 		$errorObject->setHttpStatusCode(400);
 		$errorObject->addMeta('page', $value=['maxSize' => $maxSize]);
@@ -313,7 +313,7 @@ class CursorPaginationProfile implements ProfileInterface {
 		$errorObject->setHttpStatusCode(400);
 		
 		if ($typeLink !== null) {
-			$errorObject->appendTypeLink($typeLink);
+			$errorObject->setTypeLink($typeLink);
 		}
 		
 		if ($genericTitle !== null) {
@@ -337,7 +337,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function getRangePaginationNotSupportedErrorObject($genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Range pagination not supported');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported');
 		$errorObject->setHttpStatusCode(400);
 		
 		if ($genericTitle !== null) {

@@ -114,6 +114,24 @@ class ErrorObjectTest extends TestCase {
 		ErrorObject::fromException(new \stdClass());
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
+	public function testAppendTypeLink_HappyPath() {
+		$errorObject = new ErrorObject();
+		$this->assertTrue($errorObject->isEmpty());
+		
+		$errorObject->appendTypeLink('https://jsonapi.org');
+		
+		$this->assertFalse($errorObject->isEmpty());
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('links', $array);
+		$this->assertArrayHasKey('type', $array['links']);
+		$this->assertSame(['https://jsonapi.org'], $array['links']['type']);
+	}
+	
 	public function testIsEmpty_All() {
 		$errorObject = new ErrorObject();
 		$this->assertTrue($errorObject->isEmpty());
