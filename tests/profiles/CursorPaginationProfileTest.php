@@ -229,12 +229,11 @@ class CursorPaginationProfileTest extends TestCase {
 		$this->assertArrayHasKey('type', $array['links']);
 		$this->assertArrayHasKey('source', $array);
 		$this->assertArrayHasKey('parameter', $array['source']);
-		$this->assertCount(1, $array['links']['type']);
 		$this->assertSame('400', $array['status']);
 		$this->assertSame('Unsupported sort', $array['code']);
 		$this->assertSame($genericTitle, $array['title']);
 		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort', $array['links']['type'][0]);
+		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort', $array['links']['type']);
 		$this->assertSame('sort', $array['source']['parameter']);
 	}
 	
@@ -259,13 +258,12 @@ class CursorPaginationProfileTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array);
 		$this->assertArrayHasKey('page', $array['meta']);
 		$this->assertArrayHasKey('maxSize', $array['meta']['page']);
-		$this->assertCount(1, $array['links']['type']);
 		$this->assertSame('400', $array['status']);
 		$this->assertSame('Max page size exceeded', $array['code']);
 		$this->assertSame($genericTitle, $array['title']);
 		$this->assertSame($specificDetails, $array['detail']);
 		$this->assertSame('page[size]', $array['source']['parameter']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded', $array['links']['type'][0]);
+		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded', $array['links']['type']);
 		$this->assertSame(42, $array['meta']['page']['maxSize']);
 	}
 	
@@ -288,13 +286,12 @@ class CursorPaginationProfileTest extends TestCase {
 		$this->assertArrayHasKey('type', $array['links']);
 		$this->assertArrayHasKey('source', $array);
 		$this->assertArrayHasKey('parameter', $array['source']);
-		$this->assertCount(1, $array['links']['type']);
 		$this->assertSame('400', $array['status']);
 		$this->assertSame('Invalid parameter value', $array['code']);
 		$this->assertSame($genericTitle, $array['title']);
 		$this->assertSame($specificDetails, $array['detail']);
 		$this->assertSame('page[size]', $array['source']['parameter']);
-		$this->assertSame('https://jsonapi.org', $array['links']['type'][0]);
+		$this->assertSame('https://jsonapi.org', $array['links']['type']);
 	}
 	
 	public function testGetRangePaginationNotSupportedErrorObject_HappyPath() {
@@ -312,12 +309,11 @@ class CursorPaginationProfileTest extends TestCase {
 		$this->assertArrayHasKey('detail', $array);
 		$this->assertArrayHasKey('links', $array);
 		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertCount(1, $array['links']['type']);
 		$this->assertSame('400', $array['status']);
 		$this->assertSame('Range pagination not supported', $array['code']);
 		$this->assertSame($genericTitle, $array['title']);
 		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported', $array['links']['type'][0]);
+		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported', $array['links']['type']);
 	}
 	
 	public function testSetQueryParameter_HappyPath() {
