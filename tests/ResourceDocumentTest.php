@@ -132,6 +132,19 @@ class ResourceDocumentTest extends TestCase {
 		$this->assertSame('jsonapi', $array['jsonapi']['meta']['baz']);
 	}
 	
+	public function testSetLocalId_HappyPath() {
+		$document = new ResourceDocument();
+		$document->setType('user');
+		$document->setLocalId('42');
+		
+		$array = $document->toArray();
+		
+		$this->assertArrayHasKey('data', $array);
+		$this->assertArrayHasKey('lid', $array['data']);
+		$this->assertArrayNotHasKey('id', $array['data']);
+		$this->assertSame('42', $array['data']['lid']);
+	}
+	
 	public function testAddRelationshipObject_WithIncluded() {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
