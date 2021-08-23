@@ -1,0 +1,18 @@
+{
+	"jsonapi": {
+		"version": "1.1",
+		"profile": [
+			"https://jsonapi.org/recommendations/#authoring-profiles"
+		]
+	},
+	"data": {
+		"type": "user",
+		"id": "42",
+		"attributes": {
+			"timestamps": {
+				"created": "2019-01-01T00:00:00+0000",
+				"updated": "2021-01-01T00:00:00+0000"
+			}
+		}
+	}
+}

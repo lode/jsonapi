@@ -2,26 +2,30 @@
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
-use alsvanzelf\jsonapi\objects\ProfileLinkObject;
 
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable {
-	use AtMemberManager, HttpStatusCodeManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
+		LinksManager::addLink as linkManagerAddLink;
+	}
 	
 	const JSONAPI_VERSION_1_0 = '1.0';
 	const JSONAPI_VERSION_1_1 = '1.1';
@@ -39,6 +43,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	protected $meta;
 	/** @var JsonapiObject */
 	protected $jsonapi;
+	/** @var ExtensionInterface[] */
+	protected $extensions = [];
 	/** @var ProfileInterface[] */
 	protected $profiles = [];
 	/** @var array */
@@ -94,11 +100,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 */
 	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
 		if ($level === Document::LEVEL_ROOT) {
-			if ($this->links === null) {
-				$this->setLinksObject(new LinksObject());
-			}
-			
-			$this->links->add($key, $href, $meta);
+			$this->linkManagerAddLink($key, $href, $meta);
 		}
 		elseif ($level === Document::LEVEL_JSONAPI) {
 			throw new InputException('level "jsonapi" can not be used for links');
@@ -114,12 +116,38 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	/**
 	 * set the self link on the document
 	 * 
+	 * @note a LinkObject is added when extensions or profiles are applied
+	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
 	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		$this->addLink('self', $href, $meta, $level);
+		if ($level === Document::LEVEL_ROOT && ($this->extensions !== [] || $this->profiles !== [])) {
+			$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, $this->extensions, $this->profiles);
+			
+			$linkObject = new LinkObject($href, $meta);
+			$linkObject->setMediaType($contentType);
+			
+			$this->addLinkObject('self', $linkObject);
+		}
+		else {
+			$this->addLink('self', $href, $meta, $level);
+		}
+	}
+	
+	/**
+	 * set a link describing the current document
+	 * 
+	 * for example this could link to an OpenAPI or JSON Schema document
+	 * 
+	 * @note according to the spec, this can only be set to Document::LEVEL_ROOT
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setDescribedByLink($href, array $meta=[]) {
+		$this->addLink('describedby', $href, $meta, $level=Document::LEVEL_ROOT);
 	}
 	
 	/**
@@ -179,29 +207,51 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	}
 	
 	/**
+	 * apply a extension which adds the link and sets a correct content-type
+	 * 
+	 * note that the rules from the extension are not automatically enforced
+	 * applying the rules, and applying them correctly, is manual
+	 * however the $extension could have custom methods to help
+	 * 
+	 * @see https://jsonapi.org/extensions/#extensions
+	 * 
+	 * @param ExtensionInterface $extension
+	 * 
+	 * @throws Exception if namespace uses illegal characters
+	 * @throws DuplicateException if namespace conflicts with another applied extension
+	 */
+	public function applyExtension(ExtensionInterface $extension) {
+		$namespace = $extension->getNamespace();
+		if (strlen($namespace) < 1 || preg_match('{[^a-zA-Z0-9]}', $namespace) === 1) {
+			throw new Exception('invalid namespace "'.$namespace.'"');
+		}
+		if (isset($this->extensions[$namespace])) {
+			throw new DuplicateException('an extension with namespace "'.$namespace.'" is already applied');
+		}
+		
+		$this->extensions[$namespace] = $extension;
+		
+		if ($this->jsonapi !== null) {
+			$this->jsonapi->addExtension($extension);
+		}
+	}
+	
+	/**
 	 * apply a profile which adds the link and sets a correct content-type
 	 * 
 	 * note that the rules from the profile are not automatically enforced
 	 * applying the rules, and applying them correctly, is manual
 	 * however the $profile could have custom methods to help
 	 * 
-	 * @see https://jsonapi.org/format/1.1/#profiles
+	 * @see https://jsonapi.org/extensions/#profiles
 	 * 
 	 * @param ProfileInterface $profile
 	 */
 	public function applyProfile(ProfileInterface $profile) {
 		$this->profiles[] = $profile;
 		
-		if ($this->links === null) {
-			$this->setLinksObject(new LinksObject());
-		}
-		
-		$link = $profile->getAliasedLink();
-		if ($link instanceof LinkObject) {
-			$this->links->appendLinkObject('profile', $link);
-		}
-		else {
-			$this->links->append('profile', $link);
+		if ($this->jsonapi !== null) {
+			$this->jsonapi->addProfile($profile);
 		}
 	}
 	
@@ -213,7 +263,14 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
+		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		
 		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();
@@ -267,7 +324,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 		
 		http_response_code($this->httpStatusCode);
 		
-		$contentType = Converter::mergeProfilesInContentType($options['contentType'], $this->profiles);
+		$contentType = Converter::prepareContentType($options['contentType'], $this->extensions, $this->profiles);
 		header('Content-Type: '.$contentType);
 		
 		echo $json;

@@ -19,7 +19,7 @@ class errors_all_options {
 		$errorSpecApi->setHumanTitle($genericTitle='Too much options');
 		$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
 		$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-		$errorSpecApi->appendTypeLink($genericTypeLink='https://www.example.com/documentation.html', ['foo'=>'bar']);
+		$errorSpecApi->setTypeLink($genericTypeLink='https://www.example.com/documentation.html', ['foo'=>'bar']);
 		
 		$metaObject = new \stdClass();
 		$metaObject->property = 'value';
