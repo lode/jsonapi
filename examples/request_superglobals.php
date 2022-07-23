@@ -62,6 +62,7 @@ var_dump($requestParser->getSelfLink());
 
 // useful for determining how to process the request (list/get/create/update)
 var_dump($requestParser->hasIncludePaths());
+var_dump($requestParser->hasAnySparseFieldset());
 var_dump($requestParser->hasSparseFieldset('user'));
 var_dump($requestParser->hasSortFields());
 var_dump($requestParser->hasPagination());
@@ -84,5 +85,10 @@ var_dump($requestParser->getAttribute('name'));
 var_dump($requestParser->getRelationship('ship'));
 var_dump($requestParser->getMeta('lock'));
 
-// get the full document for custom processing
+// useful for determining how to process the request (list/get/create/update)
+var_dump($requestParser->hasQueryParameters());
+var_dump($requestParser->hasDocument());
+
+// get the full query parameters or document for custom processing
+var_dump($requestParser->getQueryParameters());
 var_dump($requestParser->getDocument());

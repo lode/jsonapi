@@ -25,11 +25,11 @@ class RequestParser {
 		'useAnnotatedSortFields' => true,
 	];
 	/** @var string */
-	private $selfLink = '';
+	protected $selfLink = '';
 	/** @var array */
-	private $queryParameters = [];
+	protected $queryParameters = [];
 	/** @var array */
-	private $document = [];
+	protected $document = [];
 	
 	/**
 	 * @param string $selfLink        the uri used to make this request {@see getSelfLink()}
@@ -47,8 +47,33 @@ class RequestParser {
 	 */
 	public static function fromSuperglobals() {
 		$selfLink = '';
-		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		
+		if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+			$selfLink .= $_SERVER['HTTP_X_FORWARDED_PROTO'].'://';
+		}
+		elseif (isset($_SERVER['REQUEST_SCHEME'])) {
+			$selfLink .= $_SERVER['REQUEST_SCHEME'].'://';
+		}
+		else {
+			$selfLink .= 'http://';
+		}
+		
+		if (isset($_SERVER['HTTP_HOST'])) {
+			$selfLink .= $_SERVER['HTTP_HOST'];
+		}
+		elseif (isset($_SERVER['SCRIPT_URI'])) {
+			$startOfDomain  = strpos($_SERVER['SCRIPT_URI'], '://') + strlen('://');
+			$endOfDomain    = strpos($_SERVER['SCRIPT_URI'], '/', $startOfDomain);
+			$lengthOfDomain = ($endOfDomain - $startOfDomain);
+			$selfLink      .= substr($_SERVER['SCRIPT_URI'], $startOfDomain, $lengthOfDomain);
+		}
+		
+		if (isset($_SERVER['REQUEST_URI'])) {
+			$selfLink .= $_SERVER['REQUEST_URI'];
+		}
+		elseif (isset($_SERVER['PATH_INFO']) && isset($_SERVER['QUERY_STRING'])) {
+			$selfLink .= $_SERVER['PATH_INFO'];
+			$selfLink .= ($_SERVER['QUERY_STRING'] !== '') ? '?'.$_SERVER['QUERY_STRING'] : '';
 		}
 		
 		$queryParameters = $_GET;
@@ -148,6 +173,13 @@ class RequestParser {
 		}
 		
 		return $restructured;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasAnySparseFieldset() {
+		return (isset($this->queryParameters['fields']));
 	}
 	
 	/**
@@ -331,6 +363,27 @@ class RequestParser {
 	 */
 	public function getMeta($metaKey) {
 		return $this->document['meta'][$metaKey];
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasQueryParameters() {
+		return ($this->queryParameters !== []);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getQueryParameters() {
+		return $this->queryParameters;
+	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function hasDocument() {
+		return ($this->document !== []);
 	}
 	
 	/**
