@@ -4,7 +4,6 @@ namespace alsvanzelf\jsonapi\profiles;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
-use alsvanzelf\jsonapi\helpers\ProfileAliasManager;
 use alsvanzelf\jsonapi\interfaces\PaginableInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -44,7 +43,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
  * - {@see get*ErrorObject} to generate ErrorObjects for specific error cases
  * - {@see generatePreviousLink} {@see generateNextLink} to apply the links manually
  */
-class CursorPaginationProfile extends ProfileAliasManager implements ProfileInterface {
+class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * human api
 	 */
@@ -115,7 +114,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 * @return string
 	 */
 	public function generatePreviousLink($baseOrCurrentUrl, $beforeCursor) {
-		return $this->setQueryParameter($baseOrCurrentUrl, $this->getKeyword('page').'[before]', $beforeCursor);
+		return $this->setQueryParameter($baseOrCurrentUrl, 'page[before]', $beforeCursor);
 	}
 	
 	/**
@@ -126,7 +125,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 * @return string
 	 */
 	public function generateNextLink($baseOrCurrentUrl, $afterCursor) {
-		return $this->setQueryParameter($baseOrCurrentUrl, $this->getKeyword('page').'[after]', $afterCursor);
+		return $this->setQueryParameter($baseOrCurrentUrl, 'page[after]', $afterCursor);
 	}
 	
 	/**
@@ -192,10 +191,10 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 		];
 		
 		if ($resource instanceof ResourceDocument) {
-			$resource->addMeta($this->getKeyword('page'), $metadata, $level=Document::LEVEL_RESOURCE);
+			$resource->addMeta('page', $metadata, $level=Document::LEVEL_RESOURCE);
 		}
 		else {
-			$resource->addMeta($this->getKeyword('page'), $metadata);
+			$resource->addMeta('page', $metadata);
 		}
 	}
 	
@@ -229,7 +228,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 			$metadata['rangeTruncated'] = $rangeIsTruncated;
 		}
 		
-		$paginable->addMeta($this->getKeyword('page'), $metadata);
+		$paginable->addMeta('page', $metadata);
 	}
 	
 	/**
@@ -249,7 +248,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 */
 	public function getUnsupportedSortErrorObject($genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Unsupported sort');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort');
 		$errorObject->blameQueryParameter('sort');
 		$errorObject->setHttpStatusCode(400);
 		
@@ -279,10 +278,10 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 */
 	public function getMaxPageSizeExceededErrorObject($maxSize, $genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Max page size exceeded');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
-		$errorObject->blameQueryParameter($this->getKeyword('page').'[size]');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
+		$errorObject->blameQueryParameter('page[size]');
 		$errorObject->setHttpStatusCode(400);
-		$errorObject->addMeta($this->getKeyword('page'), $value=['maxSize' => $maxSize]);
+		$errorObject->addMeta('page', $value=['maxSize' => $maxSize]);
 		
 		if ($genericTitle !== null) {
 			$errorObject->setHumanExplanation($genericTitle, $specificDetails);
@@ -302,7 +301,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 * - /errors/0/title            optional
 	 * - /errors/0/detail           optional
 	 * 
-	 * @param  int    $queryParameter  e.g. 'sort' or 'page[size]', aliasing should already be done using {@see getKeyword}
+	 * @param  int    $queryParameter  e.g. 'sort' or 'page[size]'
 	 * @param  string $typeLink        optional
 	 * @param  string $genericTitle    optional, e.g. 'Invalid Parameter.'
 	 * @param  string $specificDetails optional, e.g. 'page[size] must be a positive integer; got 0'
@@ -314,7 +313,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 		$errorObject->setHttpStatusCode(400);
 		
 		if ($typeLink !== null) {
-			$errorObject->appendTypeLink($typeLink);
+			$errorObject->setTypeLink($typeLink);
 		}
 		
 		if ($genericTitle !== null) {
@@ -338,7 +337,7 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	 */
 	public function getRangePaginationNotSupportedErrorObject($genericTitle=null, $specificDetails=null) {
 		$errorObject = new ErrorObject('Range pagination not supported');
-		$errorObject->appendTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported');
+		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported');
 		$errorObject->setHttpStatusCode(400);
 		
 		if ($genericTitle !== null) {
@@ -394,9 +393,14 @@ class CursorPaginationProfile extends ProfileAliasManager implements ProfileInte
 	}
 	
 	/**
-	 * @inheritDoc
+	 * returns the keyword without aliasing
+	 * 
+	 * @deprecated since aliasing was removed from the profiles spec
+	 * 
+	 * @param  string $keyword
+	 * @return string
 	 */
-	public function getOfficialKeywords() {
-		return ['page'];
+	public function getKeyword($keyword) {
+		return $keyword;
 	}
 }

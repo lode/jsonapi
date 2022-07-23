@@ -6,13 +6,14 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 class ErrorObject implements ObjectInterface {
-	use AtMemberManager, HttpStatusCodeManager, LinksManager;
+	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager;
 	
 	/** @var string */
 	protected $id;
@@ -137,7 +138,7 @@ class ErrorObject implements ObjectInterface {
 			$this->setAboutLink($specificAboutLink);
 		}
 		if ($genericTypeLink !== null) {
-			$this->appendTypeLink($genericTypeLink);
+			$this->setTypeLink($genericTypeLink);
 		}
 	}
 	
@@ -152,7 +153,19 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
+	 * set the link of the generic type of this error, explained in a human-friendly way
+	 * 
+	 * @param string $href
+	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 */
+	public function setTypeLink($href, array $meta=[]) {
+		$this->addLink('type', $href, $meta);
+	}
+	
+	/**
 	 * append a link of the generic type of this error, explained in a human-friendly way
+	 * 
+	 * @deprecated array links are not supported anymore {@see ->setTypeLink()}
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
@@ -288,6 +301,9 @@ class ErrorObject implements ObjectInterface {
 		if ($this->hasAtMembers()) {
 			return false;
 		}
+		if ($this->hasExtensionMembers()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -296,8 +312,14 @@ class ErrorObject implements ObjectInterface {
 	 * @inheritDoc
 	 */
 	public function toArray() {
-		$array = $this->getAtMembers();
+		$array = [];
 		
+		if ($this->hasAtMembers()) {
+			$array = array_merge($array, $this->getAtMembers());
+		}
+		if ($this->hasExtensionMembers()) {
+			$array = array_merge($array, $this->getExtensionMembers());
+		}
 		if ($this->id !== null) {
 			$array['id'] = $this->id;
 		}

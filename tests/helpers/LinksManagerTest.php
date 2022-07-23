@@ -1,6 +1,6 @@
 <?php
 
-namespace alsvanzelf\jsonapiTests;
+namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -82,6 +82,9 @@ class LinksManagerTest extends TestCase {
 		$this->assertSame('https://jsonapi.org', $array['foo']['href']);
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
 	public function testAddLinksArray_HappyPath() {
 		$linksArray = new LinksArray();
 		$linksArray->add('https://jsonapi.org');
@@ -98,6 +101,9 @@ class LinksManagerTest extends TestCase {
 		$this->assertSame('https://jsonapi.org', $array['foo'][0]);
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
 	public function testAppendLinkObject_HappyPath() {
 		$linksManager = new LinksManager();
 		$linksManager->addLinksArray('foo', LinksArray::fromArray(['https://jsonapi.org/1']));
