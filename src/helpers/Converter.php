@@ -2,9 +2,9 @@
 
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
-use alsvanzelf\jsonapi\objects\LinkObject;
 
 /**
  * @internal
@@ -35,24 +35,41 @@ class Converter {
 	}
 	
 	/**
-	 * generates the value for a content type header, with profiles merged in if available
+	 * generates the value for a content type header, with extensions and profiles merged in if available
 	 * 
-	 * @param  string             $contentType
-	 * @param  ProfileInterface[] $profiles
+	 * @param  string               $contentType
+	 * @param  ExtensionInterface[] $extensions
+	 * @param  ProfileInterface[]   $profiles
 	 * @return string
 	 */
+	public static function prepareContentType($contentType, array $extensions, array $profiles) {
+		if ($extensions !== []) {
+			$extensionLinks = [];
+			foreach ($extensions as $extension) {
+				$extensionLinks[] = $extension->getOfficialLink();
+			}
+			$extensionLinks = implode(' ', $extensionLinks);
+			
+			$contentType .= '; ext="'.$extensionLinks.'"';
+		}
+		
+		if ($profiles !== []) {
+			$profileLinks = [];
+			foreach ($profiles as $profile) {
+				$profileLinks[] = $profile->getOfficialLink();
+			}
+			$profileLinks = implode(' ', $profileLinks);
+			
+			$contentType .= '; profile="'.$profileLinks.'"';
+		}
+		
+		return $contentType;
+	}
+	
+	/**
+	 * @deprecated {@see prepareContentType()}
+	 */
 	public static function mergeProfilesInContentType($contentType, array $profiles) {
-		if ($profiles === []) {
-			return $contentType;
-		}
-		
-		$profileLinks = [];
-		foreach ($profiles as $profile) {
-			$link = $profile->getAliasedLink();
-			$profileLinks[] = ($link instanceof LinkObject) ? $link->toArray()['href'] : $link;
-		}
-		$profileLinks = implode(' ', $profileLinks);
-		
-		return $contentType.';profile="'.$profileLinks.'", '.$contentType;
+		return self::prepareContentType($contentType, $extensions=[], $profiles);
 	}
 }

@@ -180,6 +180,13 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	}
 	
 	/**
+	 * @param string|int $localId will be casted to a string
+	 */
+	public function setLocalId($localId) {
+		$this->resource->setLocalId($localId);
+	}
+	
+	/**
 	 * @param AttributesObject $attributesObject
 	 * @param array            $options          optional {@see ResourceObject::$defaults}
 	 */

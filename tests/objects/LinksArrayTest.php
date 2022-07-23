@@ -5,6 +5,9 @@ namespace alsvanzelf\jsonapiTests\objects;
 use alsvanzelf\jsonapi\objects\LinksArray;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @deprecated array links are not supported anymore
+ */
 class LinksArrayTest extends TestCase {
 	public function testFromObject_HappyPath() {
 		$object = new \stdClass();

@@ -281,6 +281,20 @@ class RequestParser {
 	}
 	
 	/**
+	 * @return boolean
+	 */
+	public function hasLocalId() {
+		return (isset($this->document['data']['lid']));
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getLocalId() {
+		return $this->document['data']['lid'];
+	}
+	
+	/**
 	 * @param  string $attributeName
 	 * @return boolean
 	 */

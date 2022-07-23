@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
+use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ErrorObjectTest extends TestCase {
@@ -113,6 +114,24 @@ class ErrorObjectTest extends TestCase {
 		ErrorObject::fromException(new \stdClass());
 	}
 	
+	/**
+	 * @deprecated array links are not supported anymore
+	 */
+	public function testAppendTypeLink_HappyPath() {
+		$errorObject = new ErrorObject();
+		$this->assertTrue($errorObject->isEmpty());
+		
+		$errorObject->appendTypeLink('https://jsonapi.org');
+		
+		$this->assertFalse($errorObject->isEmpty());
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('links', $array);
+		$this->assertArrayHasKey('type', $array['links']);
+		$this->assertSame(['https://jsonapi.org'], $array['links']['type']);
+	}
+	
 	public function testIsEmpty_All() {
 		$errorObject = new ErrorObject();
 		$this->assertTrue($errorObject->isEmpty());
@@ -152,6 +171,28 @@ class ErrorObjectTest extends TestCase {
 		$errorObject = new ErrorObject();
 		$errorObject->addAtMember('context', 'test');
 		$this->assertFalse($errorObject->isEmpty());
+		
+		$errorObject = new ErrorObject();
+		$errorObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$this->assertFalse($errorObject->isEmpty());
+	}
+	
+	/**
+	 * @group Extensions
+	 */
+	public function testToArray_WithExtensionMembers() {
+		$errorObject = new ErrorObject();
+		$extension   = new TestExtension();
+		$extension->setNamespace('test');
+		
+		$this->assertSame([], $errorObject->toArray());
+		
+		$errorObject->addExtensionMember($extension, 'foo', 'bar');
+		
+		$array = $errorObject->toArray();
+		
+		$this->assertArrayHasKey('test:foo', $array);
+		$this->assertSame('bar', $array['test:foo']);
 	}
 }
 

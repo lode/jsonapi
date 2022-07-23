@@ -384,6 +384,31 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['foo' => 'bar'], $requestParser->getFilter());
 	}
 	
+	public function testHasLocalId() {
+		$document = [
+			'data' => [
+				'id' => 'foo',
+			],
+		];
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		
+		$this->assertArrayHasKey('data', $requestParser->getDocument());
+		$this->assertArrayHasKey('id', $requestParser->getDocument()['data']);
+		$this->assertFalse($requestParser->hasLocalId());
+		
+		$document = [
+			'data' => [
+				'lid' => 'foo',
+			],
+		];
+		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		
+		$this->assertArrayHasKey('data', $requestParser->getDocument());
+		$this->assertArrayNotHasKey('id', $requestParser->getDocument()['data']);
+		$this->assertTrue($requestParser->hasLocalId());
+		$this->assertSame('foo', $requestParser->getLocalId());
+	}
+	
 	public function testHasAttribute() {
 		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasAttribute('foo'));
