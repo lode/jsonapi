@@ -310,6 +310,14 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
 	
+	public function testGetSortFields_Empty() {
+		$queryParameters = ['sort' => ''];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		
+		$this->assertTrue($requestParser->hasSortFields());
+		$this->assertSame([], $requestParser->getSortFields());
+	}
+	
 	public function testHasPagination() {
 		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasPagination());

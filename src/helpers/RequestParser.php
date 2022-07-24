@@ -196,6 +196,10 @@ class RequestParser {
 	 * }
 	 */
 	public function getSortFields(array $options=[]) {
+		if ($this->queryParameters['sort'] === '') {
+			return [];
+		}
+		
 		$fields = explode(',', $this->queryParameters['sort']);
 		
 		$options = array_merge(self::$defaults, $options);
