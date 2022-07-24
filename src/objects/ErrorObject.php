@@ -195,6 +195,15 @@ class ErrorObject implements ObjectInterface {
 	}
 	
 	/**
+	 * blame the header from the request causing this error
+	 * 
+	 * @param  string $headerName
+	 */
+	public function blameHeader($headerName) {
+		$this->addSource('header', $headerName);
+	}
+	
+	/**
 	 * @param string $key
 	 * @param mixed  $value
 	 */
