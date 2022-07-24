@@ -127,6 +127,10 @@ class RequestParser {
 	 * @return string[]|array
 	 */
 	public function getIncludePaths(array $options=[]) {
+		if ($this->queryParameters['include'] === '') {
+			return [];
+		}
+		
 		$includePaths = explode(',', $this->queryParameters['include']);
 		
 		$options = array_merge(self::$defaults, $options);

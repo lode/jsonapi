@@ -253,6 +253,14 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
+	public function testGetIncludePaths_Empty() {
+		$queryParameters = ['include' => ''];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		
+		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertSame([], $requestParser->getIncludePaths());
+	}
+	
 	public function testHasSparseFieldset() {
 		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasSparseFieldset('foo'));
