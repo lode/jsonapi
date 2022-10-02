@@ -161,7 +161,15 @@ class ErrorObjectTest extends TestCase {
 		$this->assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
+		$errorObject->addSource('pointer', '/bar');
+		$this->assertFalse($errorObject->isEmpty());
+		
+		$errorObject = new ErrorObject();
 		$errorObject->addSource('parameter', 'bar');
+		$this->assertFalse($errorObject->isEmpty());
+		
+		$errorObject = new ErrorObject();
+		$errorObject->addSource('header', 'X-Bar');
 		$this->assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();

@@ -1,8 +1,12 @@
 build:
   environment:
-    php: 7.4.0
+    php: 8.1
   nodes:
     coverage:
+      environment:
+        php:
+          ini:
+            "xdebug.mode": coverage
       tests:
         override:
           - command: php ./script/test_with_coverage.php

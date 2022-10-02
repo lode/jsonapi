@@ -253,6 +253,14 @@ class RequestParserTest extends TestCase {
 		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
+	public function testGetIncludePaths_Empty() {
+		$queryParameters = ['include' => ''];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		
+		$this->assertTrue($requestParser->hasIncludePaths());
+		$this->assertSame([], $requestParser->getIncludePaths());
+	}
+	
 	public function testHasSparseFieldset() {
 		$requestParser = new RequestParser();
 		$this->assertFalse($requestParser->hasSparseFieldset('foo'));
@@ -300,6 +308,14 @@ class RequestParserTest extends TestCase {
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useAnnotatedSortFields' => false];
 		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
+	}
+	
+	public function testGetSortFields_Empty() {
+		$queryParameters = ['sort' => ''];
+		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		
+		$this->assertTrue($requestParser->hasSortFields());
+		$this->assertSame([], $requestParser->getSortFields());
 	}
 	
 	public function testHasPagination() {

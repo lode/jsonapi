@@ -334,6 +334,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 * JsonSerializable
 	 */
 	
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize() {
 		return $this->toArray();
 	}

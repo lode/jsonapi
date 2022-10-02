@@ -42,7 +42,8 @@
 			},
 			"source": {
 				"pointer": "/data/attributes/title",
-				"parameter": "filter"
+				"parameter": "filter",
+				"header": "X-Foo"
 			},
 			"meta": {
 				"foo": "bar",
@@ -63,7 +64,7 @@
 				"message": "please don't throw things",
 				"code": 500,
 				"file": "/errors_all_options.php",
-				"line": 30
+				"line": 31
 			}
 		},
 		{
@@ -73,7 +74,7 @@
 				"message": "something went wrong!",
 				"code": 0,
 				"file": "/errors_all_options.php",
-				"line": 29
+				"line": 30
 			}
 		},
 		{
