@@ -127,6 +127,10 @@ class RequestParser {
 	 * @return string[]|array
 	 */
 	public function getIncludePaths(array $options=[]) {
+		if ($this->queryParameters['include'] === '') {
+			return [];
+		}
+		
 		$includePaths = explode(',', $this->queryParameters['include']);
 		
 		$options = array_merge(self::$defaults, $options);
@@ -192,6 +196,10 @@ class RequestParser {
 	 * }
 	 */
 	public function getSortFields(array $options=[]) {
+		if ($this->queryParameters['sort'] === '') {
+			return [];
+		}
+		
 		$fields = explode(',', $this->queryParameters['sort']);
 		
 		$options = array_merge(self::$defaults, $options);
