@@ -166,6 +166,57 @@ Which will result in:
 
 This can be useful for development. For production usage, you can better construct an `ErrorsDocument` with only specific values.
 
+#### Using extensions and profiles
+
+The [Atomic Operations extension](https://jsonapi.org/ext/atomic/) and the [Cursor Pagination profile](https://jsonapi.org/profiles/ethanresnick/cursor-pagination/) come packaged along. Any 3rd party of self-made extension can be applied with:
+
+```php
+use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+
+class ExampleExtension implements ExtensionInterface {
+	public function getOfficialLink() {
+		return 'https://example.org/extension-documentation';
+	}
+	
+	public function getNamespace() {
+		return 'foo';
+	}
+}
+
+$document = new ResourceDocument('user', 42);
+$document->add('name', 'Zaphod Beeblebrox');
+
+$extension = new ExampleExtension();
+$document->applyExtension($extension);
+$document->addExtensionMember($extension, 'bar', 'baz');
+
+$document->sendResponse();
+```
+
+Which will result in:
+
+```json
+{
+    "foo:bar": "baz",
+    "jsonapi": {
+        "version": "1.1",
+        "ext": [
+            "https://example.org/extension-documentation"
+        ]
+    },
+    "data": {
+        "type": "user",
+        "id": "42",
+        "attributes": {
+            "name": "Zaphod Beeblebrox"
+        }
+    }
+}
+```
+
+A similar flow can be used for profiles.
+
 #### Other examples
 
 Examples for all kind of responses are in the [/examples](/examples) directory.
