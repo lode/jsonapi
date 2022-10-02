@@ -16,6 +16,7 @@ $errorSpecApi = new ErrorObject();
 // mark the cause of the error
 $errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
 $errorSpecApi->blameQueryParameter($parameter='filter');
+$errorSpecApi->blameHeader($headerName='X-Foo');
 
 // an identifier useful for helpdesk purposes
 $errorSpecApi->setUniqueIdentifier($id=42);

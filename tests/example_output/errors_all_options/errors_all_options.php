@@ -12,6 +12,7 @@ class errors_all_options {
 		$errorSpecApi = new ErrorObject();
 		$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
 		$errorSpecApi->blameQueryParameter($parameter='filter');
+		$errorSpecApi->blameHeader($headerName='X-Foo');
 		$errorSpecApi->setUniqueIdentifier($id=42);
 		$errorSpecApi->addMeta($key='foo', $value='bar');
 		$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
