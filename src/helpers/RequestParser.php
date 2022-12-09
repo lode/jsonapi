@@ -294,6 +294,18 @@ class RequestParser {
 	}
 	
 	/**
+	 * @param string $attributeName
+	 * @return mixed|null
+	 */
+	public function findAttribute($attributeName) {
+		if ($this->hasAttribute($attributeName) === false) {
+			return null;
+		}
+		
+		return $this->getAttribute($attributeName);
+	}
+	
+	/**
 	 * @param  string $relationshipName
 	 * @return boolean
 	 */
