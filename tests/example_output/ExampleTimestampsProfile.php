@@ -11,7 +11,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 		return 'https://jsonapi.org/recommendations/#authoring-profiles';
 	}
 	
-	public function setTimestamps(ResourceInterface $resource, \DateTimeInterface $created=null, \DateTimeInterface $updated=null) {
+	public function setTimestamps(ResourceInterface $resource, ?\DateTimeInterface $created=null, ?\DateTimeInterface $updated=null) {
 		if ($resource instanceof ResourceIdentifierObject) {
 			throw new Exception('cannot add attributes to identifier objects');
 		}
