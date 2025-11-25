@@ -2,10 +2,11 @@
 
 namespace alsvanzelf\jsonapiTests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
-use PHPUnit\Framework\TestCase;
 
 class ErrorsDocumentTest extends TestCase {
 	public function testFromException_HappyPath() {
@@ -123,9 +124,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame('foo', $array['errors'][0]['code']);
 	}
 	
-	/**
-	 * @dataProvider dataProviderDetermineHttpStatusCode_HappyPath
-	 */
+	#[DataProvider('dataProviderDetermineHttpStatusCode_HappyPath')]
 	public function testDetermineHttpStatusCode_HappyPath($expectedAdvisedErrorCode, $allErrorCodes) {
 		$document = new ErrorsDocument();
 		
@@ -139,7 +138,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame($expectedAdvisedErrorCode, $advisedErrorCode);
 	}
 	
-	public function dataProviderDetermineHttpStatusCode_HappyPath() {
+	public static function dataProviderDetermineHttpStatusCode_HappyPath() {
 		return [
 			[422, [422]],
 			[422, [422, 422]],

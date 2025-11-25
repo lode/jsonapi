@@ -2,16 +2,16 @@
 
 namespace alsvanzelf\jsonapiTests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
-use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase {
-	/**
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
 	public function testClaimUsedFields_HappyPath() {
 		$validator = new Validator();
 		
@@ -37,9 +37,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
-	/**
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
 	public function testClaimUsedFields_AllowSameContainer() {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
@@ -51,9 +49,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
-	/**
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
 	public function testClaimUsedFields_OptionForReusingTypeField() {
 		$validator  = new Validator();
 		$fieldNames = ['type'];
@@ -66,9 +62,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer, $options);
 	}
 	
-	/**
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
 	public function testClearUsedFields_HappyPath() {
 		$validator       = new Validator();
 		
@@ -115,9 +109,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
-	/**
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
 	public function testClaimUsedResourceIdentifier_HappyPath() {
 		$validator = new Validator();
 		
@@ -150,15 +142,13 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedResourceIdentifier($resource);
 	}
 	
-	/**
-	 * @dataProvider dataProviderCheckMemberName_HappyPath
-	 * @doesNotPerformAssertions
-	 */
+	#[DoesNotPerformAssertions]
+	#[DataProvider('dataProviderCheckMemberName_HappyPath')]
 	public function testCheckMemberName_HappyPath($memberName) {
 		Validator::checkMemberName($memberName);
 	}
 	
-	public function dataProviderCheckMemberName_HappyPath() {
+	public static function dataProviderCheckMemberName_HappyPath() {
 		return [
 			['foo'],
 			['f_o'],
@@ -168,16 +158,14 @@ class ValidatorTest extends TestCase {
 		];
 	}
 	
-	/**
-	 * @dataProvider dataProviderCheckMemberName_InvalidNames
-	 */
+	#[DataProvider('dataProviderCheckMemberName_InvalidNames')]
 	public function testCheckMemberName_InvalidNames($memberName) {
 		$this->expectException(InputException::class);
 		
 		Validator::checkMemberName($memberName);
 	}
 	
-	public function dataProviderCheckMemberName_InvalidNames() {
+	public static function dataProviderCheckMemberName_InvalidNames() {
 		return [
 			['_'],
 			['-'],
@@ -186,14 +174,12 @@ class ValidatorTest extends TestCase {
 		];
 	}
 	
-	/**
-	 * @dataProvider dataProviderCheckHttpStatusCode_HappyPath
-	 */
+	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
 	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode) {
 		$this->assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
 	}
 	
-	public function dataProviderCheckHttpStatusCode_HappyPath() {
+	public static function dataProviderCheckHttpStatusCode_HappyPath() {
 		return [
 			[false, 42],
 			[true,  100],
