@@ -19,8 +19,11 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 		if ($this->document === null) {
 			return '';
 		}
+		if (is_string($this->document) === false) {
+			return (string) json_encode($this->document);
+		}
 		
-		return (string) json_encode($this->document);
+		return $this->document;
 	}
 	
 	// not used in current implementation

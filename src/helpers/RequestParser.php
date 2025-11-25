@@ -3,6 +3,7 @@
 namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -44,6 +45,8 @@ class RequestParser {
 	
 	/**
 	 * @return self
+	 * 
+	 * @throws Exception if the body's json is invalid
 	 */
 	public static function fromSuperglobals() {
 		$selfLink = '';
@@ -60,6 +63,9 @@ class RequestParser {
 			
 			if ($documentIsJsonapi || $documentIsJson) {
 				$document = json_decode(file_get_contents('php://input'), true);
+				if (json_last_error() !== JSON_ERROR_NONE) {
+					throw new Exception('error parsing request body: '.json_last_error_msg());
+				}
 				
 				if ($document === null) {
 					$document = [];
@@ -73,6 +79,8 @@ class RequestParser {
 	/**
 	 * @param  ServerRequestInterface|RequestInterface $request
 	 * @return self
+	 * 
+	 * @throws Exception if the body's json is invalid
 	 */
 	public static function fromPsrRequest(RequestInterface $request) {
 		$selfLink = (string) $request->getUri();
@@ -90,9 +98,8 @@ class RequestParser {
 		}
 		else {
 			$document = json_decode($request->getBody()->getContents(), true);
-			
-			if ($document === null) {
-				$document = [];
+			if (json_last_error() !== JSON_ERROR_NONE) {
+				throw new Exception('error parsing request body: '.json_last_error_msg());
 			}
 		}
 		
