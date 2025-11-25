@@ -1,3 +1,4 @@
 vendor/
-tests/report/
+examples/test-coverage/
+.phpunit.cache
 .phpunit.result.cache

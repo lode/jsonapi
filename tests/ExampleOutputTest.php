@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapiTests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,9 +13,7 @@ class ExampleOutputTest extends TestCase {
 		'prettyPrint' => true,
 	];
 	
-	/**
-	 * @dataProvider dataProviderTestOutput
-	 */
+	#[DataProvider('dataProviderTestOutput')]
 	public function testOutput($generator, $expectedJson, array $options=[], $testName=null) {
 		$options = array_merge(self::$defaults, $options);
 		
@@ -35,7 +34,7 @@ class ExampleOutputTest extends TestCase {
 		$this->assertSame($expectedJson, $actualJson);
 	}
 	
-	public function dataProviderTestOutput() {
+	public static function dataProviderTestOutput() {
 		$directories = glob(__DIR__.'/example_output/*', GLOB_ONLYDIR);
 		
 		$testCases = [];

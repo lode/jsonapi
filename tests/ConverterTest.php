@@ -2,11 +2,12 @@
 
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\helpers\Converter;
-use alsvanzelf\jsonapi\objects\AttributesObject;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
-use PHPUnit\Framework\TestCase;
+use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\objects\AttributesObject;
 
 class ConverterTest extends TestCase {
 	public function testObjectToArray_HappyPath() {
@@ -47,14 +48,12 @@ class ConverterTest extends TestCase {
 		$this->assertSame(42, $array['baz']);
 	}
 	
-	/**
-	 * @dataProvider dataProviderCamelCaseToWords_HappyPath
-	 */
+	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
 	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput) {
 		$this->assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
-	public function dataProviderCamelCaseToWords_HappyPath() {
+	public static function dataProviderCamelCaseToWords_HappyPath() {
 		return [
 			['value',         'value'],
 			['camelValue',    'camel Value'],

@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" bootstrap="tests/bootstrap_tests.php" colors="true">
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.4/phpunit.xsd" bootstrap="tests/bootstrap_tests.php" colors="true" cacheDirectory=".phpunit.cache">
 	<testsuite name="all">
 		<directory>tests</directory>
 	</testsuite>
-	<coverage includeUncoveredFiles="true" processUncoveredFiles="true" ignoreDeprecatedCodeUnits="true" disableCodeCoverageIgnore="true">
+	<coverage includeUncoveredFiles="true" ignoreDeprecatedCodeUnits="true" disableCodeCoverageIgnore="true">
+		<report>
+			<html outputDirectory="examples/test-coverage" lowUpperBound="35" highLowerBound="70"/>
+			<text outputFile="php://stdout" showUncoveredFiles="true"/>
+			<clover outputFile="examples/test-coverage/clover.xml"/>
+		</report>
+	</coverage>
+	<source>
 		<include>
 			<directory suffix=".php">src</directory>
 		</include>
@@ -17,10 +24,5 @@
 			<file>src/resource.php</file>
 			<file>src/response.php</file>
 		</exclude>
-		<report>
-			<html outputDirectory="tests/report" lowUpperBound="35" highLowerBound="70"/>
-			<text outputFile="php://stdout" showUncoveredFiles="true"/>
-			<clover outputFile="tests/report/clover.xml"/>
-		</report>
-	</coverage>
+	</source>
 </phpunit>

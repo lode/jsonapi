@@ -2,10 +2,11 @@
 
 namespace alsvanzelf\jsonapiTests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ResourceObject;
-use PHPUnit\Framework\TestCase;
 
 class CollectionDocumentTest extends TestCase {
 	public function testConstructor_NoResources() {
@@ -97,9 +98,7 @@ class CollectionDocumentTest extends TestCase {
 		$this->assertSame($baseUrl.'last', $array['links']['last']);
 	}
 	
-	/**
-	 * @dataProvider dataProviderSetPaginationLinks_IndividualLinks
-	 */
+	#[DataProvider('dataProviderSetPaginationLinks_IndividualLinks')]
 	public function testSetPaginationLinks_IndividualLinks($key, $previous, $next, $first, $last) {
 		$document = new CollectionDocument();
 		
@@ -118,7 +117,7 @@ class CollectionDocumentTest extends TestCase {
 		}
 	}
 	
-	public function dataProviderSetPaginationLinks_IndividualLinks() {
+	public static function dataProviderSetPaginationLinks_IndividualLinks() {
 		return [
 			['prev',  'https://jsonapi.org', null, null, null],
 			['next',  null, 'https://jsonapi.org', null, null],

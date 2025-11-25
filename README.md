@@ -257,6 +257,8 @@ If you use the library, please ask questions or share what can be improved by [c
 
 For bugs [issues](https://github.com/lode/jsonapi/issues) or [Pull Requests](https://github.com/lode/jsonapi/pulls) are welcome!
 
+See [/script's README](/script) to steps to setup a local development environment.
+
 
 ## Licence
 
