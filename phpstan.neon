@@ -1,0 +1,23 @@
+parameters:
+	# slowly increase
+	level: 0
+	paths:
+		- src/
+		- tests/
+		- examples/
+	excludePaths:
+		- src/base.php
+		- src/collection.php
+		- src/error.php
+		- src/errors.php
+		- src/exception.php
+		- src/resource.php
+		- src/response.php
+
+	strictRules:
+		allRules: false
+
+	reportUnmatchedIgnoredErrors: true
+	ignoreErrors:
+		# add cases to ignore because they are too much work for now
+		# @see https://phpstan.org/user-guide/ignoring-errors#ignoring-in-configuration-file

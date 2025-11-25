@@ -25,6 +25,8 @@ This will updates composer packages.
 
 ## Lint / fix / test
 
+- `./script/lint`: run all linters (reviewdog is broken, see `--help` to run for specific types)
+- `./script/fix`: auto fix from linters (reviewdog is broken, see `--help` to run for specific types)
 - `./script/test`: run all tests
 
 
