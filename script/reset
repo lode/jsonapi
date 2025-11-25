@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd $SCRIPT_DIR/..
+
+if test -f /.dockerenv; then
+	echo 'run this script outside docker'
+	exit 1
+fi
+
+ddev stop
+rm -rf ./vendor
+ddev delete
+
+./script/setup
