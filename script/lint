@@ -145,16 +145,18 @@ else
 	fi
 
 	echo "${T_INFO}Checking coding standards (phpcs)${T_RESET}"
-	echo -e "${T_WARNING}Reviewdog is currently broken${T_RESET}\n"
-	$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle $FILE_FILTER 2> /dev/null \
-		| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+	#$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle $FILE_FILTER 2> /dev/null \
+	#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml $FILE_FILTER 2> /dev/null \
 		&& echo "${T_SUCCESS}Success${T_RESET}"
 	echo -e '\n'
 
 	echo "${T_INFO}Checking static analysis (phpstan)${T_RESET}"
-	echo -e "${T_WARNING}Reviewdog is currently broken${T_RESET}\n"
-	$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=checkstyle 2> /dev/null $FILE_FILTER \
-		| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+	#$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=checkstyle 2> /dev/null $FILE_FILTER \
+	#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon $FILE_FILTER 2> /dev/null \
 		&& echo "${T_SUCCESS}Success${T_RESET}"
 	echo -e '\n'
 
@@ -168,16 +170,18 @@ else
 		echo -e "${T_BOLD}Running bonus checks${T_RESET}\n"
 
 		echo "${T_INFO}Checking coding standards (phpcs --bonus)${T_RESET}"
-		echo -e "${T_WARNING}Reviewdog is currently broken${T_RESET}\n"
-		$CONSOLE_PREFIX ./vendor/bin/phpcs --report=checkstyle --standard=phpcs.bonus.xml $FILE_FILTER 2> /dev/null \
-			| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+		#$CONSOLE_PREFIX ./vendor/bin/phpcs --report=checkstyle --standard=phpcs.bonus.xml $FILE_FILTER 2> /dev/null \
+		#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.bonus.xml $FILE_FILTER 2> /dev/null \
 			&& echo "${T_SUCCESS}Success${T_RESET}"
 		echo -e '\n'
 
 		echo "${T_INFO}Checking static analysis (phpstan --bonus)${T_RESET}"
-		echo -e "${T_WARNING}Reviewdog is currently broken${T_RESET}\n"
-		$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon --no-progress --error-format=checkstyle $FILE_FILTER 2> /dev/null \
-			| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+		#$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon --no-progress --error-format=checkstyle $FILE_FILTER 2> /dev/null \
+		#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon $FILE_FILTER 2> /dev/null \
 			&& echo "${T_SUCCESS}Success${T_RESET}"
 	fi
 fi
