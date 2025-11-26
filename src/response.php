@@ -54,10 +54,10 @@ public static $send_status_headers = true;
 /**
  * internal data containers
  */
-protected $links              = array();
-protected $meta_data          = array();
-protected $included_data      = array();
-protected $included_resources = array();
+protected $links              = [];
+protected $meta_data          = [];
+protected $included_data      = [];
+protected $included_resources = [];
 protected $http_status        = self::STATUS_OK;
 protected $redirect_location  = null;
 
@@ -102,7 +102,7 @@ public function __toString() {
  *         - meta
  */
 public function get_array() {
-	$response = array();
+	$response = [];
 	
 	// links
 	if ($this->links) {
@@ -260,10 +260,10 @@ public function add_link($key, $link, $meta_data=null) {
 			$meta_data = parent::convert_object_to_array($meta_data);
 		}
 		
-		$link = array(
+		$link = [
 			'href' => $link,
 			'meta' => $meta_data,
-		);
+		];
 	}
 	
 	$this->links[$key] = $link;
@@ -309,10 +309,10 @@ public function set_self_link($link, $meta_data=null) {
 			$meta_data = parent::convert_object_to_array($meta_data);
 		}
 		
-		$link = array(
+		$link = [
 			'href' => $link,
 			'meta' => $meta_data,
-		);
+		];
 	}
 	
 	$this->links['self'] = $link;
@@ -335,10 +335,10 @@ public function add_self_link_meta($key, $meta_data) {
 	
 	// converts string-type link
 	if (is_string($this->links['self'])) {
-		$this->links['self'] = array(
+		$this->links['self'] = [
 			'href' => $this->links['self'],
-			'meta' => array(),
-		);
+			'meta' => [],
+		];
 	}
 	
 	$this->links['self']['meta'][$key] = $meta_data;

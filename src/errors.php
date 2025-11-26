@@ -79,7 +79,7 @@ public function __construct($error_message=null, $friendly_message=null, $about_
  *         - meta
  */
 public function get_array() {
-	$response = array();
+	$response = [];
 	
 	// links
 	if ($this->links) {

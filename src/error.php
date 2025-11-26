@@ -28,7 +28,7 @@ private $meta_data;
 /**
  * http status messages used for string output
  */
-private static $http_status_messages = array(
+private static $http_status_messages = [
 	200 => 'OK',
 	201 => 'Created',
 	204 => 'No Content',
@@ -43,7 +43,7 @@ private static $http_status_messages = array(
 	422 => 'Unprocessable Entity',
 	500 => 'Internal Server Error',
 	503 => 'Service Unavailable',
-);
+];
 
 /**
  * creates a new error for inclusion in the errors collection
@@ -89,7 +89,7 @@ public function __construct($error_message, $friendly_message=null, $about_link=
  *         - meta
  */
 public function get_array() {
-	$response_part = array();
+	$response_part = [];
 	
 	// the basics
 	$response_part['status'] = $this->http_status;
@@ -107,7 +107,7 @@ public function get_array() {
 	
 	// the source of the problem
 	if ($this->post_body_pointer || $this->get_parameter_name) {
-		$response_part['source'] = array();
+		$response_part['source'] = [];
 		
 		if ($this->post_body_pointer) {
 			$response_part['source']['pointer'] = $this->post_body_pointer;
@@ -119,9 +119,9 @@ public function get_array() {
 	
 	// technical guidance
 	if ($this->about_link) {
-		$response_part['links'] = array(
+		$response_part['links'] = [
 			'about' => $this->about_link,
-		);
+		];
 	}
 	if ($this->identifier) {
 		$response_part['id'] = $this->identifier;
@@ -239,10 +239,10 @@ public function set_about_link($about_link, $meta_data=null) {
 			$meta_data = parent::convert_object_to_array($meta_data);
 		}
 		
-		$about_link = array(
+		$about_link = [
 			'href' => $about_link,
 			'meta' => $meta_data,
-		);
+		];
 	}
 	
 	$this->about_link = $about_link;
