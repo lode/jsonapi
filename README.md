@@ -1,4 +1,4 @@
-# jsonapi [![Build Status](https://scrutinizer-ci.com/g/lode/jsonapi/badges/build.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/build-status/main) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/lode/jsonapi/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main) [![Code Coverage](https://scrutinizer-ci.com/g/lode/jsonapi/badges/coverage.png?b=main)](https://scrutinizer-ci.com/g/lode/jsonapi/?branch=main)
+# jsonapi
 
 A simple and human-friendly library for api servers (php serving json).
 
