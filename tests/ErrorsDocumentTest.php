@@ -29,7 +29,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('function', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertArrayHasKey('class', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['errors'][0]['meta']['trace'][0]['function']);
-		$this->assertSame(__CLASS__, $array['errors'][0]['meta']['trace'][0]['class']);
+		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
 	/**
@@ -60,7 +60,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('function', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertArrayHasKey('class', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['errors'][0]['meta']['trace'][0]['function']);
-		$this->assertSame(__CLASS__, $array['errors'][0]['meta']['trace'][0]['class']);
+		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
 	public function testFromException_BlocksNonException() {
