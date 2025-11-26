@@ -124,13 +124,17 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame('foo', $array['errors'][0]['code']);
 	}
 	
+	/**
+	 * @param non-empty-array<int> $allErrorCodes
+	 */
 	#[DataProvider('dataProviderDetermineHttpStatusCode_HappyPath')]
-	public function testDetermineHttpStatusCode_HappyPath($expectedAdvisedErrorCode, $allErrorCodes) {
+	public function testDetermineHttpStatusCode_HappyPath(int $expectedAdvisedErrorCode, array $allErrorCodes) {
 		$document = new ErrorsDocument();
 		
 		$method = new \ReflectionMethod($document, 'determineHttpStatusCode');
 		$method->setAccessible(true);
 		
+		$advisedErrorCode = null;
 		foreach ($allErrorCodes as $errorCode) {
 			$advisedErrorCode = $method->invoke($document, $errorCode);
 		}

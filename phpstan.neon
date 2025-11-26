@@ -1,6 +1,6 @@
 parameters:
 	# slowly increase
-	level: 0
+	level: 1
 	paths:
 		- src/
 		- tests/
