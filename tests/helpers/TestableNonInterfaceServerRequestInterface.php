@@ -15,16 +15,48 @@ class TestableNonInterfaceServerRequestInterface extends TestableNonInterfaceReq
 	}
 	
 	// not used in current implementation
-	public function getServerParams() {}
-	public function getCookieParams() {}
-	public function withCookieParams(array $cookies) {}
-	public function withQueryParams(array $query) {}
-	public function getUploadedFiles() {}
-	public function withUploadedFiles(array $uploadedFiles) {}
+	public function getServerParams() {
+		return [];
+	}
+	
+	public function getCookieParams() {
+		return [];
+	}
+	
+	public function withCookieParams(array $cookies) {
+		return $this;
+	}
+	
+	public function withQueryParams(array $query) {
+		return $this;
+	}
+	
+	public function getUploadedFiles() {
+		return [];
+	}
+	
+	public function withUploadedFiles(array $uploadedFiles) {
+		return $this;
+	}
+	
 	public function getParsedBody() {}
-	public function withParsedBody($data) {}
-	public function getAttributes() {}
-	public function getAttribute($name, $default = null) {}
-	public function withAttribute($name, $value) {}
-	public function withoutAttribute($name) {}
+	public function withParsedBody($data) {
+		return $this;
+	}
+	
+	public function getAttributes() {
+		return [];
+	}
+	
+	public function getAttribute($name, $default = null) {
+		return null;
+	}
+	
+	public function withAttribute($name, $value) {
+		return $this;
+	}
+	
+	public function withoutAttribute($name) {
+		return $this;
+	}
 }

@@ -22,7 +22,7 @@ class LinksManagerTest extends TestCase {
 	
 	public function testAppendLink_HappyPath() {
 		$linksManager = new LinksManager();
-		$linksManager->appendLink('foo', 'https://jsonapi.org');
+		$linksManager->appendLink('foo', 'https://jsonapi.org'); // @phpstan-ignore method.deprecated
 		
 		$array = $linksManager->toArray();
 		
@@ -35,7 +35,7 @@ class LinksManagerTest extends TestCase {
 	
 	public function testAppendLink_WithMeta() {
 		$linksManager = new LinksManager();
-		$linksManager->appendLink('foo', 'https://jsonapi.org', ['bar' => 'baz']);
+		$linksManager->appendLink('foo', 'https://jsonapi.org', ['bar' => 'baz']); // @phpstan-ignore method.deprecated
 		
 		$array = $linksManager->toArray();
 		
@@ -52,8 +52,8 @@ class LinksManagerTest extends TestCase {
 	
 	public function testAppendLink_MultipleLinks() {
 		$linksManager = new LinksManager();
-		$linksManager->appendLink('foo', 'https://jsonapi.org', ['bar' => 'baz']);
-		$linksManager->appendLink('foo', 'https://jsonapi.org/2');
+		$linksManager->appendLink('foo', 'https://jsonapi.org', ['bar' => 'baz']); // @phpstan-ignore method.deprecated
+		$linksManager->appendLink('foo', 'https://jsonapi.org/2'); // @phpstan-ignore method.deprecated
 		
 		$array = $linksManager->toArray();
 		

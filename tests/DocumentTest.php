@@ -45,7 +45,7 @@ class DocumentTest extends TestCase {
 			$this->assertIsString($array['links']['foo']);
 		}
 		else {
-			$this->assertInternalType('string', $array['links']['foo']);
+			$this->assertIsString($array['links']['foo']);
 		}
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
@@ -61,7 +61,7 @@ class DocumentTest extends TestCase {
 			$this->assertIsArray($array['links']['foo']);
 		}
 		else {
-			$this->assertInternalType('array', $array['links']['foo']);
+			$this->assertIsArray($array['links']['foo']);
 		}
 		$this->assertCount(2, $array['links']['foo']);
 		$this->assertArrayHasKey('href', $array['links']['foo']);
@@ -125,7 +125,7 @@ class DocumentTest extends TestCase {
 			$this->assertIsArray($array['links']['describedby']);
 		}
 		else {
-			$this->assertInternalType('array', $array['links']['describedby']);
+			$this->assertIsArray($array['links']['describedby']);
 		}
 		$this->assertCount(2, $array['links']['describedby']);
 		$this->assertArrayHasKey('href', $array['links']['describedby']);
@@ -168,7 +168,7 @@ class DocumentTest extends TestCase {
 			$this->assertIsString($array['meta']['foo']);
 		}
 		else {
-			$this->assertInternalType('string', $array['meta']['foo']);
+			$this->assertIsString($array['meta']['foo']);
 		}
 		$this->assertSame('bar', $array['meta']['foo']);
 	}
@@ -192,7 +192,7 @@ class DocumentTest extends TestCase {
 			$this->assertIsString($array['jsonapi']['meta']['foo']);
 		}
 		else {
-			$this->assertInternalType('string', $array['jsonapi']['meta']['foo']);
+			$this->assertIsString($array['jsonapi']['meta']['foo']);
 		}
 		$this->assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}

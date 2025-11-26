@@ -24,18 +24,49 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 	}
 	
 	// not used in current implementation
-	public function __toString() {}
+	public function __toString() {
+		return '';
+	}
+	
 	public function close() {}
+	
 	public function detach() {}
+	
 	public function getSize() {}
-	public function tell() {}
-	public function eof() {}
-	public function isSeekable() {}
+	
+	public function tell() {
+		return 0;
+	}
+	
+	public function eof() {
+		return false;
+	}
+	
+	public function isSeekable() {
+		return false;
+	}
+	
 	public function seek($offset, $whence = SEEK_SET) {}
+	
 	public function rewind() {}
-	public function isWritable() {}
-	public function write($string) {}
-	public function isReadable() {}
-	public function read($length) {}
-	public function getMetadata($key = null) {}
+	
+	public function isWritable() {
+		return false;
+	}
+	
+	public function write($string) {
+		return 0;
+	}
+	
+	public function isReadable() {
+		return false;
+	}
+	
+	public function read($length) {
+		return '';
+	}
+	
+	public function getMetadata($key = null) {
+		return null;
+	}
 }

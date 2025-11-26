@@ -28,11 +28,26 @@ class TestableNonInterfaceRequestInterface implements RequestInterface {
 	}
 	
 	// not used in current implementation
-	public function getRequestTarget() {}
-	public function withRequestTarget($requestTarget) {}
-	public function getMethod() {}
-	public function withMethod($method) {}
-	public function withUri(UriInterface $uri, $preserveHost = false) {}
+	public function getRequestTarget() {
+		return '';
+	}
+	
+	public function withRequestTarget($requestTarget) {
+		return $this;
+	}
+	
+	public function getMethod() {
+		return '';
+	}
+	
+	public function withMethod($method) {
+		return $this;
+	}
+	
+	public function withUri(UriInterface $uri, $preserveHost = false) {
+		return $this;
+	}
+	
 	
 	/**
 	 * MessageInterface
@@ -43,14 +58,43 @@ class TestableNonInterfaceRequestInterface implements RequestInterface {
 	}
 	
 	// not used in current implementation
-	public function getProtocolVersion() {}
-	public function withProtocolVersion($version) {}
-	public function getHeaders() {}
-	public function hasHeader($name) {}
-	public function getHeader($name) {}
-	public function getHeaderLine($name) {}
-	public function withHeader($name, $value) {}
-	public function withAddedHeader($name, $value) {}
-	public function withoutHeader($name) {}
-	public function withBody(StreamInterface $body) {}
+	public function getProtocolVersion() {
+		return '';
+	}
+	
+	public function withProtocolVersion($version) {
+		return $this;
+	}
+	
+	public function getHeaders() {
+		return [['']];
+	}
+	
+	public function hasHeader($name) {
+		return false;
+	}
+	
+	public function getHeader($name) {
+		return [''];
+	}
+	
+	public function getHeaderLine($name) {
+		return '';
+	}
+	
+	public function withHeader($name, $value) {
+		return $this;
+	}
+	
+	public function withAddedHeader($name, $value) {
+		return $this;
+	}
+	
+	public function withoutHeader($name) {
+		return $this;
+	}
+	
+	public function withBody(StreamInterface $body) {
+		return $this;
+	}
 }

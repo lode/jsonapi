@@ -25,7 +25,7 @@ class LinksObjectTest extends TestCase {
 	
 	public function testAppend_HappyPath() {
 		$linksObject = new LinksObject();
-		$linksObject->append('foo', 'https://jsonapi.org');
+		$linksObject->append('foo', 'https://jsonapi.org'); // @phpstan-ignore method.deprecated
 		
 		$array = $linksObject->toArray();
 		
@@ -39,10 +39,10 @@ class LinksObjectTest extends TestCase {
 	public function testAppend_BlocksReusingNonArray() {
 		$linksObject = new LinksObject();
 		$linksObject->add('foo', 'https://jsonapi.org');
-		
+
 		$this->expectException(DuplicateException::class);
-		
-		$linksObject->append('foo', 'https://jsonapi.org/2');
+
+		$linksObject->append('foo', 'https://jsonapi.org/2'); // @phpstan-ignore method.deprecated
 	}
 	
 	public function testAddLinkString_HappyPath() {
@@ -139,8 +139,8 @@ class LinksObjectTest extends TestCase {
 	
 	public function testAppendLinkObject_HappyPath() {
 		$linksObject = new LinksObject();
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/1'));
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2'));
+		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/1')); // @phpstan-ignore method.deprecated
+		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2')); // @phpstan-ignore method.deprecated
 		
 		$array = $linksObject->toArray();
 		
@@ -158,10 +158,10 @@ class LinksObjectTest extends TestCase {
 	public function testAppendLinkObject_BlocksReusingNonArray() {
 		$linksObject = new LinksObject();
 		$linksObject->add('foo', 'https://jsonapi.org');
-		
+
 		$this->expectException(DuplicateException::class);
-		
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2'));
+
+		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2')); // @phpstan-ignore method.deprecated
 	}
 	
 	public function testToArray_ExplicitlyEmpty() {
