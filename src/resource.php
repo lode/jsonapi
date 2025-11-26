@@ -69,10 +69,10 @@ public static $relation_links = self::RELATION_LINKS_BOTH;
  */
 protected $primary_type          = null;
 protected $primary_id            = null;
-protected $primary_attributes    = array();
-protected $primary_relationships = array();
-protected $primary_links         = array();
-protected $primary_meta_data     = array();
+protected $primary_attributes    = [];
+protected $primary_relationships = [];
+protected $primary_links         = [];
+protected $primary_meta_data     = [];
 
 /**
  * creates a new resource
@@ -134,7 +134,7 @@ public function has_data() {
  *         - meta
  */
 public function get_array() {
-	$response = array();
+	$response = [];
 	
 	// links
 	if ($this->links) {
@@ -142,9 +142,9 @@ public function get_array() {
 	}
 	
 	// primary data
-	$response['data'] = array(
+	$response['data'] = [
 		'type' => $this->primary_type,
-	);
+	];
 	if ($this->primary_id) {
 		$response['data']['id'] = $this->primary_id;
 	}
@@ -249,7 +249,7 @@ public function fill_data($values) {
  * @todo allow to add collections as well
  */
 public function add_relation($key, $relation, $skip_include=false, $type=null) {
-	if ($type && in_array($type, array(self::RELATION_TO_ONE, self::RELATION_TO_MANY)) == false) {
+	if ($type && in_array($type, [self::RELATION_TO_ONE, self::RELATION_TO_MANY]) == false) {
 		throw new \Exception('unknown relation type');
 	}
 	if (isset($this->primary_relationships[$key]) && $relation instanceof \alsvanzelf\jsonapi\resource == false) {
@@ -291,7 +291,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 			return;
 		}
 		if ($type == self::RELATION_TO_MANY) {
-			$relation_data = array($relation_data);
+			$relation_data = [$relation_data];
 		}
 	}
 	elseif ($relation instanceof \alsvanzelf\jsonapi\collection) {
@@ -303,7 +303,7 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		}
 		
 		$base_url      = (isset($this->primary_links['self']['href'])) ? $this->primary_links['self']['href'] : $this->primary_links['self'];
-		$relation_data = array();
+		$relation_data = [];
 		foreach ($relation_resources as $relation_resource) {
 			$relation_data[] = [
 				'type' => $relation_resource->get_type(),
@@ -312,9 +312,9 @@ public function add_relation($key, $relation, $skip_include=false, $type=null) {
 		}
 	}
 	
-	$this->primary_relationships[$key] = array(
+	$this->primary_relationships[$key] = [
 		'data'  => $relation_data,
-	);
+	];
 	
 	$relation_links = [];
 	if (self::$relation_links == self::RELATION_LINKS_RELATIONSHIP || self::$relation_links == self::RELATION_LINKS_BOTH) {

@@ -35,7 +35,7 @@ class ErrorObjectTest extends TestCase {
 		$this->assertArrayHasKey('function', $array['meta']['trace'][0]);
 		$this->assertArrayHasKey('class', $array['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['meta']['trace'][0]['function']);
-		$this->assertSame(__CLASS__, $array['meta']['trace'][0]['class']);
+		$this->assertSame(self::class, $array['meta']['trace'][0]['class']);
 	}
 	
 	public function testFromException_DoNotExposeTrace() {

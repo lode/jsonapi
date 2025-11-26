@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd $SCRIPT_DIR/..
+
+# whether to run bonus levels by default, or only when requested
+BONUS_DEFAULT=0
+
+# docker configured and not inside docker
+CONSOLE_PREFIX=""
+if test ! -f /.dockerenv; then
+	CONSOLE_PREFIX="./script/console"
+fi
+
+# colors and fonts, only loaded on interactive terminals
+if [ -t 0 ]; then
+	T_ERROR=$(tput setaf 7; tput setab 1)
+	T_INFO=$(tput setaf 7; tput setab 4)
+	T_WARNING=$(tput setaf 0; tput setab 3)
+	T_SUCCESS=$(tput setaf 0; tput setab 2)
+	T_BOLD=$(tput bold)
+	T_RESET=$(tput sgr0)
+fi
+
+if test "$1" = "--help"; then
+	echo "${T_INFO}./script/lint [<type>] [--bonus] [--no-bonus] [--everything] [extra arguments]${T_RESET}"
+	echo 'Runs linters, defaults to phpcs and phpstan on the *git-diff* between the base and the head branch'
+	echo ''
+	echo "${T_BOLD}<type>${T_RESET}"
+	echo 'Optional, if set it runs on the *changed files* (not only git-diff) between the base and the head branch'
+	echo '- phpcs'
+	echo '- phpstan'
+	echo '- rector'
+	echo '- commented (assumes --everything)'
+	echo ''
+	echo "${T_BOLD}--bonus${T_RESET}"
+	echo "${T_BOLD}--no-bonus${T_RESET}"
+	echo 'Optional, if set it includes/excludes linters on more strict levels (can be used with or without specific type)'
+	echo 'Default behavior can be changed with `BONUS_DEFAULT` variable in `script/lint` file'
+	echo ''
+	echo "${T_BOLD}--everything${T_RESET}"
+	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files (ignored when no type is given)'
+	echo ''
+	echo "${T_BOLD}extra arguments${T_RESET}"
+	echo 'Optional, passed to the linter of the specified type (ignored when no type is given)'
+	echo ''
+	echo "${T_INFO}./script/lint --list-files${T_RESET}"
+	echo 'Shows the files it will run the linter on'
+	echo ''
+	echo "${T_INFO}./script/lint --help${T_RESET}"
+	echo 'Shows this help'
+	exit 0
+fi
+
+# check arguments
+(test "$1" = "--list-files") && HAS_LIST_FILES=1 || HAS_LIST_FILES=0
+(test "$2" = "--everything" || test "$3" = "--everything") && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
+(test "$1" = "--bonus" || test "$2" = "--bonus" || test "$3" = "--bonus") && BONUS_REQUESTED=1 || BONUS_REQUESTED=0
+(test "$1" = "--no-bonus" || test "$2" = "--no-bonus" || test "$3" = "--no-bonus") && BONUS_REJECTED=1 || BONUS_REJECTED=0
+(test "$#" -gt 0 && test "$1" != "--bonus" && test "$1" != "--no-bonus" && test "$1" != "--list-files" && test "$1" != "--everything") && HAS_TYPE=1 || HAS_TYPE=0
+(test "$BONUS_REJECTED" = 0 && (test "$BONUS_REQUESTED" = 1 || test "$BONUS_DEFAULT" = 1)) && HAS_BONUS=1 || HAS_BONUS=0
+
+# store type and its extra arguments
+TYPE=""
+EXTRA_ARGUMENTS=""
+if test "$HAS_TYPE" = 1; then
+	TYPE="$1"
+	EXTRA_ARGUMENTS="${@:2}"
+
+	if (test "$BONUS_REQUESTED" = 1 || test "$BONUS_REJECTED" = 1) && test "$HAS_EVERYTHING" = 1; then
+		EXTRA_ARGUMENTS="${@:4}"
+	elif test "$BONUS_REQUESTED" = 1 || test "$BONUS_REJECTED" = 1 || test "$HAS_EVERYTHING" = 1; then
+		EXTRA_ARGUMENTS="${@:3}"
+	fi
+
+	if test -n "$EXTRA_ARGUMENTS"; then
+		echo "${T_INFO}Running $TYPE with extra arguments: $EXTRA_ARGUMENTS${T_RESET}"
+	fi
+fi
+
+# gather files to test
+GIT_MERGE_BASE=$(git merge-base main @)
+if test "$HAS_EVERYTHING" = 1; then
+	FILE_FILTER=""
+else
+	# get names of files changed in this branch
+	DIFF_FILE_NAMES=`git diff $GIT_MERGE_BASE --name-only --diff-filter=d -- '*.php'`
+	if test -z "$DIFF_FILE_NAMES"; then
+		echo "${T_WARNING}No files changed${T_RESET}"
+		exit 0
+	fi
+
+	# convert filenames with newlines to filenames with spaces
+	FILE_FILTER="${DIFF_FILE_NAMES//$'\n'/ }"
+
+	if test "$HAS_LIST_FILES" = 1; then
+		echo "$DIFF_FILE_NAMES"
+		exit 0
+	fi
+fi
+
+if test "$HAS_TYPE" = 1; then
+	if test "$TYPE" = "commented"; then
+		# can only work on file _paths_, thus we assume `--everything`
+		$CONSOLE_PREFIX ./vendor/bin/swiss-knife check-commented-code . $EXTRA_ARGUMENTS
+
+	elif test "$TYPE" = "phpcs"; then
+		if test "$HAS_BONUS" = 1; then
+			$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.bonus.xml -p $EXTRA_ARGUMENTS $FILE_FILTER
+		else
+			$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml -p $EXTRA_ARGUMENTS $FILE_FILTER
+		fi
+
+	elif test "$TYPE" = "phpstan"; then
+		if test "$HAS_BONUS" = 1; then
+			$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon -v $EXTRA_ARGUMENTS $FILE_FILTER 2> /dev/null
+		else
+			$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon -v $EXTRA_ARGUMENTS $FILE_FILTER 2> /dev/null
+		fi
+
+	elif test "$TYPE" = "rector"; then
+		echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
+		$CONSOLE_PREFIX ./vendor/bin/rector process --dry-run $EXTRA_ARGUMENTS $FILE_FILTER
+
+	else
+		echo "${T_ERROR}Unknown type specified: $TYPE${T_RESET}"
+		exit 1
+	fi
+else
+	echo -e "${T_BOLD}Running checks on the git changed lines between the base and the head branch${T_RESET}\n"
+
+	echo "${T_INFO}Checking syntax errors (php -l)${T_RESET}"
+	$CONSOLE_PREFIX php -l $FILE_FILTER 1> /dev/null \
+		|| exit 1 \
+		&& echo "${T_SUCCESS}Success${T_RESET}"
+	echo -e '\n'
+
+	echo -e "${T_BOLD}Running checks on the git-diff between the base and the head branch${T_RESET}\n"
+
+	if test ! -f ./vendor/bin/reviewdog; then
+		echo -e "${T_INFO}Installing reviewdog (in /vendor/bin/reviewdog) to lint changes only, this is one-time only${T_RESET}\n"
+		curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh | sh -s -- -b ./vendor/bin
+		echo -e '\n'
+	fi
+
+	echo "${T_INFO}Checking coding standards (phpcs)${T_RESET}"
+	echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+	#$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml --report=checkstyle $FILE_FILTER 2> /dev/null \
+	#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.xml $FILE_FILTER 2> /dev/null \
+		&& echo "${T_SUCCESS}Success${T_RESET}"
+	echo -e '\n'
+
+	echo "${T_INFO}Checking static analysis (phpstan)${T_RESET}"
+	echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+	#$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon --no-progress --error-format=checkstyle 2> /dev/null $FILE_FILTER \
+	#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+	$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.neon $FILE_FILTER 2> /dev/null \
+		&& echo "${T_SUCCESS}Success${T_RESET}"
+	echo -e '\n'
+
+	echo "${T_INFO}Checking refactors (rector)${T_RESET}"
+	echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
+	$CONSOLE_PREFIX ./vendor/bin/rector process --memory-limit=4g --dry-run $FILE_FILTER 2> /dev/null \
+		&& echo "${T_SUCCESS}Success${T_RESET}"
+
+	if test "$HAS_BONUS" = 1; then
+		echo -e '\n'
+		echo -e "${T_BOLD}Running bonus checks${T_RESET}\n"
+
+		echo "${T_INFO}Checking coding standards (phpcs --bonus)${T_RESET}"
+		echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+		#$CONSOLE_PREFIX ./vendor/bin/phpcs --report=checkstyle --standard=phpcs.bonus.xml $FILE_FILTER 2> /dev/null \
+		#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		$CONSOLE_PREFIX ./vendor/bin/phpcs --standard=phpcs.bonus.xml $FILE_FILTER 2> /dev/null \
+			&& echo "${T_SUCCESS}Success${T_RESET}"
+		echo -e '\n'
+
+		echo "${T_INFO}Checking static analysis (phpstan --bonus)${T_RESET}"
+		echo -e "${T_WARNING}Running without reviewdog${T_RESET}\n"
+		#$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon --no-progress --error-format=checkstyle $FILE_FILTER 2> /dev/null \
+		#	| $CONSOLE_PREFIX ./vendor/bin/reviewdog -f=checkstyle -reporter=local -diff="git diff $GIT_MERGE_BASE" -fail-level=any 2> /dev/null \
+		$CONSOLE_PREFIX ./vendor/bin/phpstan analyse --configuration=phpstan.bonus.neon $FILE_FILTER 2> /dev/null \
+			&& echo "${T_SUCCESS}Success${T_RESET}"
+	fi
+fi

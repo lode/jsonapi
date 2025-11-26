@@ -1,0 +1,12 @@
+includes:
+	- phpstan.neon
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+	level: 9
+
+	treatPhpDocTypesAsCertain: true
+
+	# @see https://github.com/phpstan/phpstan-strict-rules
+	strictRules:
+		allRules: true

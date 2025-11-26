@@ -209,7 +209,7 @@ class CursorPaginationProfileTest extends TestCase {
 		$this->assertArrayHasKey('rangeTruncated', $array['meta']['page']);
 		$this->assertSame(42, $array['meta']['page']['total']);
 		$this->assertSame(100, $array['meta']['page']['estimatedTotal']['bestGuess']);
-		$this->assertSame(true, $array['meta']['page']['rangeTruncated']);
+		$this->assertTrue($array['meta']['page']['rangeTruncated']);
 	}
 	
 	public function testGetUnsupportedSortErrorObject_HappyPath() {
@@ -350,7 +350,7 @@ class CursorPaginationProfileTest extends TestCase {
 	public function testGetKeyword_HappyPath() {
 		$profile = new CursorPaginationProfile();
 		
-		$keyword = $profile->getKeyword('page');
+		$keyword = $profile->getKeyword('page'); // @phpstan-ignore method.deprecated
 		
 		$this->assertSame('page', $keyword);
 	}

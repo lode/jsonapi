@@ -71,7 +71,7 @@ class RequestParserTest extends TestCase {
 		
 		$this->assertSame('Foo', $requestParser->getAttribute('name'));
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
-		$this->assertSame(true, $requestParser->getMeta('lock'));
+		$this->assertTrue($requestParser->getMeta('lock'));
 		
 		$this->assertSame($_POST, $requestParser->getDocument());
 	}
@@ -162,7 +162,7 @@ class RequestParserTest extends TestCase {
 		
 		$this->assertSame('Foo', $requestParser->getAttribute('name'));
 		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
-		$this->assertSame(true, $requestParser->getMeta('lock'));
+		$this->assertTrue($requestParser->getMeta('lock'));
 		
 		$this->assertSame($document, $requestParser->getDocument());
 	}
@@ -358,7 +358,7 @@ class RequestParserTest extends TestCase {
 				'id' => 'foo',
 			],
 		];
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		
 		$this->assertArrayHasKey('data', $requestParser->getDocument());
 		$this->assertArrayHasKey('id', $requestParser->getDocument()['data']);
@@ -369,7 +369,7 @@ class RequestParserTest extends TestCase {
 				'lid' => 'foo',
 			],
 		];
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		
 		$this->assertArrayHasKey('data', $requestParser->getDocument());
 		$this->assertArrayNotHasKey('id', $requestParser->getDocument()['data']);
@@ -390,7 +390,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertTrue($requestParser->hasAttribute('foo'));
 		$this->assertFalse($requestParser->hasAttribute('bar'));
 	}
@@ -404,7 +404,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertSame('bar', $requestParser->getAttribute('foo'));
 	}
 	
@@ -426,7 +426,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertTrue($requestParser->hasRelationship('foo'));
 		$this->assertFalse($requestParser->hasRelationship('bar'));
 	}
@@ -445,7 +445,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertSame(['data' => ['type' => 'bar', 'id' => '42']], $requestParser->getRelationship('foo'));
 	}
 	
@@ -460,7 +460,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertTrue($requestParser->hasMeta('foo'));
 		$this->assertFalse($requestParser->hasMeta('bar'));
 	}
@@ -472,7 +472,7 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertSame('bar', $requestParser->getMeta('foo'));
 	}
 	
@@ -497,7 +497,7 @@ class RequestParserTest extends TestCase {
 			'foo' => 'bar',
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $quaryParameters=[], $document);
+		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
 		$this->assertSame($document, $requestParser->getDocument());
 	}
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+	<file>.</file>
+
+	<exclude-pattern>./.ddev/*</exclude-pattern>
+	<exclude-pattern>./vendor/*</exclude-pattern>
+	<exclude-pattern>./src/base.php</exclude-pattern>
+	<exclude-pattern>./src/collection.php</exclude-pattern>
+	<exclude-pattern>./src/error.php</exclude-pattern>
+	<exclude-pattern>./src/errors.php</exclude-pattern>
+	<exclude-pattern>./src/exception.php</exclude-pattern>
+	<exclude-pattern>./src/resource.php</exclude-pattern>
+	<exclude-pattern>./src/response.php</exclude-pattern>
+
+	<arg name="basepath" value="."/>
+	<arg name="cache" value=".phpcs-cache"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="75"/>
+	<arg value="s"/> <!-- Show sniff error codes in all reports. -->
+
+	<!--
+		Define rules
+		@see rules:   https://gist.github.com/lode/1187f45ecf6146102927f04c6ba9b7ab
+		@see options: https://github.com/PHPCSStandards/PHP_CodeSniffer/wiki/Customisable-Sniff-Properties
+	-->
+
+	<rule ref="Generic.Metrics.CyclomaticComplexity"/>
+	<rule ref="Generic.Metrics.NestingLevel"/>
+	
+	<rule ref="Squiz.Operators.ComparisonOperatorUsage"/>
+</ruleset>

@@ -22,8 +22,8 @@ class collection extends response {
  * internal data containers
  */
 protected $primary_type             = null;
-protected $primary_collection       = array();
-protected $primary_resource_objects = array();
+protected $primary_collection       = [];
+protected $primary_resource_objects = [];
 
 /**
  * creates a new collection
@@ -58,7 +58,7 @@ public function get_type() {
  *         - meta
  */
 public function get_array() {
-	$response = array();
+	$response = [];
 	
 	// links
 	if ($this->links) {

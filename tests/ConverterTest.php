@@ -119,7 +119,8 @@ class ConverterTest extends TestCase {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('bar');
 		
-		$this->assertSame('foo; profile="bar"', Converter::mergeProfilesInContentType('foo', [$profile]));
+		$contentType = Converter::mergeProfilesInContentType('foo', [$profile]); // @phpstan-ignore staticMethod.deprecated
+		$this->assertSame('foo; profile="bar"', $contentType);
 	}
 }
 

@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd $SCRIPT_DIR/..
+
+# docker configured and not inside docker
+CONSOLE_PREFIX=""
+if test ! -f /.dockerenv; then
+	CONSOLE_PREFIX="./script/console"
+fi
+
+# colors and fonts, only loaded on interactive terminals
+if [ -t 0 ]; then
+	T_ERROR=$(tput setaf 7; tput setab 1)
+	T_INFO=$(tput setaf 7; tput setab 4)
+	T_WARNING=$(tput setaf 0; tput setab 3)
+	T_SUCCESS=$(tput setaf 0; tput setab 2)
+	T_BOLD=$(tput bold)
+	T_RESET=$(tput sgr0)
+fi
+
+if test "$1" = "--help"; then
+	echo "${T_INFO}./script/fix [<type>] [--everything] [extra arguments]${T_RESET}"
+	echo 'Lets linters fix code, defaults to phpcbf (phpcs) and rector on the *git-diff* between the base and the head branch'
+	echo ''
+	echo "${T_BOLD}<type>${T_RESET}"
+	echo 'Optional, if set it runs on the *changed files* (not only git-diff) between the base and the head branch'
+	echo '- phpcbf (or phpcs)'
+	echo '- rector'
+	echo ''
+	echo "${T_BOLD}--everything${T_RESET}"
+	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files (ignored when no type is given)'
+	echo ''
+	echo "${T_BOLD}extra arguments${T_RESET}"
+	echo 'Optional, passed to the linter of the specified type (ignored when no type is given)'
+	echo ''
+	echo "${T_INFO}./script/fix --help${T_RESET}"
+	echo 'Shows this help'
+	exit 0
+fi
+
+# check arguments
+test "$2" = "--everything" && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
+test "$#" -gt 0 && HAS_TYPE=1 || HAS_TYPE=0
+
+# store type and its extra arguments
+TYPE=""
+EXTRA_ARGUMENTS=""
+if test "$HAS_TYPE" = 1; then
+	TYPE="$1"
+	EXTRA_ARGUMENTS="${@:2}"
+
+	if test "$HAS_EVERYTHING" = 1; then
+		EXTRA_ARGUMENTS="${@:3}"
+	fi
+
+	if test -n "$EXTRA_ARGUMENTS"; then
+		echo "${T_INFO}Running $TYPE with extra arguments: $EXTRA_ARGUMENTS${T_RESET}"
+	fi
+fi
+
+# gather files to test
+GIT_MERGE_BASE=$(git merge-base main @)
+if test "$HAS_EVERYTHING" = 1; then
+	FILE_FILTER=""
+else
+	# get names of files changed in this branch
+	DIFF_FILE_NAMES=`git diff $GIT_MERGE_BASE --name-only --diff-filter=d`
+	if test -z "$DIFF_FILE_NAMES"; then
+		echo "${T_WARNING}No files changed${T_RESET}"
+		exit 0
+	fi
+
+	# convert filenames with newlines to filenames with spaces
+	FILE_FILTER="${DIFF_FILE_NAMES//$'\n'/ }"
+fi
+
+if test "$HAS_TYPE" = 1; then
+	if test "$TYPE" = "phpcbf" || test "$TYPE" = "phpcs"; then
+		$CONSOLE_PREFIX ./vendor/bin/phpcbf $EXTRA_ARGUMENTS $FILE_FILTER
+
+	elif test "$TYPE" = "rector"; then
+		echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
+		$CONSOLE_PREFIX ./vendor/bin/rector process $EXTRA_ARGUMENTS $FILE_FILTER
+
+	else
+		echo "${T_ERROR}Unknown type specified: $TYPE${T_RESET}"
+		exit 1
+
+	fi
+else
+	echo -e "${T_BOLD}Running fixes on the changed files (not only git-diff) between the base and the head branch${T_RESET}\n"
+
+	echo "${T_INFO}Fixing refactors (rector)${T_RESET}"
+	echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
+	$CONSOLE_PREFIX ./vendor/bin/rector process $FILE_FILTER || true
+
+	echo "${T_INFO}Fixing coding standards (phpcs)${T_RESET}"
+	$CONSOLE_PREFIX ./vendor/bin/phpcbf $FILE_FILTER || true
+fi

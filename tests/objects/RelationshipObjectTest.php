@@ -302,7 +302,7 @@ class RelationshipObjectTest extends TestCase {
 			$this->assertIsArray($array['data']);
 		}
 		else {
-			$this->assertInternalType('array', $array['data']);
+			$this->assertIsArray($array['data']);
 		}
 	}
 	

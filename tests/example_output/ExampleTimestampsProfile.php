@@ -13,7 +13,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 	
 	public function setTimestamps(ResourceInterface $resource, ?\DateTimeInterface $created=null, ?\DateTimeInterface $updated=null) {
 		if ($resource instanceof ResourceIdentifierObject) {
-			throw new Exception('cannot add attributes to identifier objects');
+			throw new \Exception('cannot add attributes to identifier objects');
 		}
 		
 		$timestamps = [];

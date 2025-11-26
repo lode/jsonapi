@@ -29,7 +29,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('function', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertArrayHasKey('class', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['errors'][0]['meta']['trace'][0]['function']);
-		$this->assertSame(__CLASS__, $array['errors'][0]['meta']['trace'][0]['class']);
+		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
 	/**
@@ -60,7 +60,7 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('function', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertArrayHasKey('class', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['errors'][0]['meta']['trace'][0]['function']);
-		$this->assertSame(__CLASS__, $array['errors'][0]['meta']['trace'][0]['class']);
+		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
 	public function testFromException_BlocksNonException() {
@@ -124,13 +124,17 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame('foo', $array['errors'][0]['code']);
 	}
 	
+	/**
+	 * @param non-empty-array<int> $allErrorCodes
+	 */
 	#[DataProvider('dataProviderDetermineHttpStatusCode_HappyPath')]
-	public function testDetermineHttpStatusCode_HappyPath($expectedAdvisedErrorCode, $allErrorCodes) {
+	public function testDetermineHttpStatusCode_HappyPath(int $expectedAdvisedErrorCode, array $allErrorCodes) {
 		$document = new ErrorsDocument();
 		
 		$method = new \ReflectionMethod($document, 'determineHttpStatusCode');
 		$method->setAccessible(true);
 		
+		$advisedErrorCode = null;
 		foreach ($allErrorCodes as $errorCode) {
 			$advisedErrorCode = $method->invoke($document, $errorCode);
 		}
