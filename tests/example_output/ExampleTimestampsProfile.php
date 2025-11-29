@@ -2,6 +2,7 @@
 
 namespace alsvanzelf\jsonapiTests\example_output;
 
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -16,7 +17,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 	 */
 	public function setTimestamps(ResourceInterface $resource, ?\DateTimeInterface $created=null, ?\DateTimeInterface $updated=null) {
 		if ($resource instanceof HasAttributesInterface === false) {
-			throw new \Exception('cannot add attributes to identifier objects');
+			throw new InputException('cannot add attributes to identifier objects');
 		}
 		
 		$timestamps = [];

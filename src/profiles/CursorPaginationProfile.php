@@ -5,6 +5,7 @@ namespace alsvanzelf\jsonapi\profiles;
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\PaginableInterface;
@@ -147,7 +148,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function setPaginationLinkObjects(PaginableInterface $paginable, LinkObject $previousLinkObject, LinkObject $nextLinkObject) {
 		if ($paginable instanceof HasLinksInterface === false) {
-			throw new Exception('unsupported paginable to set pagination links on');
+			throw new InputException('unsupported paginable to set pagination links on');
 		}
 		
 		$paginable->addLinkObject('prev', $previousLinkObject);
@@ -194,7 +195,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function setItemMeta(ResourceInterface $resource, $cursor) {
 		if ($resource instanceof HasMetaInterface === false) {
-			throw new Exception('resource doesn\'t support meta');
+			throw new InputException('resource doesn\'t support meta');
 		}
 		
 		$metadata = [
@@ -226,7 +227,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 */
 	public function setPaginationMeta(PaginableInterface $paginable, $exactTotal=null, $bestGuessTotal=null, $rangeIsTruncated=null) {
 		if ($paginable instanceof HasMetaInterface === false) {
-			throw new \Exception('paginable doesn\'t support meta');
+			throw new InputException('paginable doesn\'t support meta');
 		}
 		
 		$metadata = [];
