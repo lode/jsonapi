@@ -188,8 +188,8 @@ class LinksObject extends AbstractObject {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
 				$array[$key] = $link->toArray();
 			}
-			elseif ($link instanceof LinksArray && $link->isEmpty() === false) {
-				$array[$key] = $link->toArray();
+			elseif ($link instanceof LinksArray && $link->isEmpty() === false) { // @phpstan-ignore method.deprecatedClass
+				$array[$key] = $link->toArray(); // @phpstan-ignore method.deprecatedClass
 			}
 			elseif ($link instanceof LinkObject && $link->isEmpty()) {
 				$array[$key] = null;
