@@ -101,7 +101,7 @@ class LinkObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @param string $friendlyTitle
+	 * @param string $humanTitle
 	 */
 	public function setHumanTitle($humanTitle) {
 		$this->title = $humanTitle;

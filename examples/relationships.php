@@ -78,7 +78,7 @@ $jsonapi = new ResourceDocument('user', 1);
 $custom_relation = [
 	'data' => ['cus' => 'tom'],
 ];
-$jsonapi->add_relation('custom', $custom_relation);
+$jsonapi->addRelationship('custom', $custom_relation);
 
 /**
  * sending the response

@@ -35,7 +35,7 @@ class Validator {
 	 * 
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
-	 * @param  string[] $fieldName
+	 * @param  string[] $fieldNames
 	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
 	 * @param  array    $options         optional {@see Validator::$defaults}
 	 * 
@@ -65,7 +65,7 @@ class Validator {
 	}
 	
 	/**
-	 * @param string $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
+	 * @param string $objectContainerToClear one of the Validator::OBJECT_CONTAINER_* constants
 	 */
 	public function clearUsedFields($objectContainerToClear) {
 		foreach ($this->usedFields as $fieldName => $containerFound) {
