@@ -303,7 +303,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute(string $key, $value, array $options=[]) {
+	public function addAttribute($key, $value, array $options=[]) {
 		return $this->add($key, $value);
 	}
 	

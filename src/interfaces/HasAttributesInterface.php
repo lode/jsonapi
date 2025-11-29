@@ -10,7 +10,8 @@ interface HasAttributesInterface {
 	 * 
 	 * @see ResourceObject::$defaults
 	 * 
+	 * @param string $key
 	 * @param mixed  $value
 	 */
-	public function addAttribute(string $key, $value, array $options=[]);
+	public function addAttribute($key, $value, array $options=[]);
 }

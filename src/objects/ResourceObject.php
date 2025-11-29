@@ -197,7 +197,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute(string $key, $value, array $options=[]) {
+	public function addAttribute($key, $value, array $options=[]) {
 		return $this->add($key, $value);
 	}
 	
