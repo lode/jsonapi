@@ -1,6 +1,6 @@
 parameters:
 	# slowly increase
-	level: 3
+	level: 4
 	paths:
 		- src/
 		- tests/
@@ -14,9 +14,11 @@ parameters:
 		- src/resource.php
 		- src/response.php
 
+	treatPhpDocTypesAsCertain: false
+	
 	strictRules:
 		allRules: false
-
+	
 	reportUnmatchedIgnoredErrors: true
 	ignoreErrors:
 		# add cases to ignore because they are too much work for now
