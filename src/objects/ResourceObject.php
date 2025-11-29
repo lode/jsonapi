@@ -197,9 +197,6 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * HasAttributesInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addAttribute(string $key, $value, array $options=[]) {
 		return $this->add($key, $value);
 	}
@@ -208,9 +205,6 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * ResourceInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getResource($identifierOnly=false) {
 		if ($identifierOnly) {
 			return ResourceIdentifierObject::fromResourceObject($this);
@@ -223,9 +217,6 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if (parent::isEmpty() === false) {
 			return false;
@@ -243,9 +234,6 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -266,9 +254,6 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getNestedContainedResourceObjects() {
 		if ($this->relationships === null) {
 			return [];

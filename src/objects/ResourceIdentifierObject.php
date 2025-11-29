@@ -175,9 +175,6 @@ class ResourceIdentifierObject extends AbstractObject implements ResourceInterfa
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->type !== null || $this->primaryId() !== null) {
 			return false;
@@ -195,9 +192,6 @@ class ResourceIdentifierObject extends AbstractObject implements ResourceInterfa
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -228,9 +222,6 @@ class ResourceIdentifierObject extends AbstractObject implements ResourceInterfa
 	 * ResourceInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getResource($identifierOnly=false) {
 		return $this;
 	}

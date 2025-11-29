@@ -79,9 +79,6 @@ class JsonapiObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->version !== null) {
 			return false;
@@ -105,9 +102,6 @@ class JsonapiObject extends AbstractObject {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

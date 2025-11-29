@@ -63,9 +63,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
 		if ($previousHref !== null) {
 			$this->addLink('prev', $previousHref);
@@ -115,9 +112,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -133,9 +127,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * ResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getContainedResources() {
 		return $this->resources;
 	}

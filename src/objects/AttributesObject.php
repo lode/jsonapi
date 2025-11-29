@@ -78,9 +78,6 @@ class AttributesObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->attributes !== []) {
 			return false;
@@ -95,9 +92,6 @@ class AttributesObject extends AbstractObject {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

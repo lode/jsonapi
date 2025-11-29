@@ -160,9 +160,6 @@ class LinksObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->links !== []) {
 			return false;
@@ -177,9 +174,6 @@ class LinksObject extends AbstractObject {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

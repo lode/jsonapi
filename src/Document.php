@@ -261,9 +261,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -287,9 +284,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $array;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toJson(array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
@@ -311,9 +305,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $json;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function sendResponse(array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		

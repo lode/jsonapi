@@ -288,9 +288,6 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -306,9 +303,6 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * HasAttributesInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function addAttribute(string $key, $value, array $options=[]) {
 		return $this->add($key, $value);
 	}
@@ -317,9 +311,6 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * ResourceInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getResource($identifierOnly=false) {
 		return $this->resource->getResource($identifierOnly);
 	}

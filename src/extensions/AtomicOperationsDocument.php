@@ -39,9 +39,6 @@ class AtomicOperationsDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$results = [];
 		foreach ($this->results as $result) {

@@ -145,8 +145,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @inheritDoc
-	 * 
 	 * @throws InputException if used on a to-one relationship
 	 */
 	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
@@ -255,9 +253,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->type === RelationshipObject::TO_ONE && $this->resource !== null) {
 			return false;
@@ -281,9 +276,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -320,9 +312,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getNestedContainedResourceObjects() {
 		if ($this->isEmpty()) {
 			return [];

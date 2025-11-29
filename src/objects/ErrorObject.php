@@ -277,9 +277,6 @@ class ErrorObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->id !== null) {
 			return false;
@@ -315,9 +312,6 @@ class ErrorObject extends AbstractObject {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

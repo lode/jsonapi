@@ -130,9 +130,6 @@ class LinkObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->href !== null) {
 			return false;
@@ -165,9 +162,6 @@ class LinkObject extends AbstractObject {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

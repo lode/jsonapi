@@ -400,9 +400,6 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * ProfileInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getOfficialLink() {
 		return 'https://jsonapi.org/profiles/ethanresnick/cursor-pagination/';
 	}

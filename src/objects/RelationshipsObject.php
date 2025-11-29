@@ -70,9 +70,6 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->relationships !== []) {
 			return false;
@@ -87,9 +84,6 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -111,9 +105,6 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getNestedContainedResourceObjects() {
 		$resourceObjects = [];
 		
