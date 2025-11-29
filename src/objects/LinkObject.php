@@ -2,14 +2,10 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class LinkObject implements ObjectInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class LinkObject extends AbstractObject {
 	/** @var string */
 	protected $href;
 	/** @var string */

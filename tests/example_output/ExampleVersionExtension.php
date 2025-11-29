@@ -4,6 +4,7 @@ namespace alsvanzelf\jsonapiTests\example_output;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
 class ExampleVersionExtension implements ExtensionInterface {
@@ -18,9 +19,13 @@ class ExampleVersionExtension implements ExtensionInterface {
 	public function setVersion(ResourceInterface $resource, $version) {
 		if ($resource instanceof ResourceDocument) {
 			$resource->getResource()->addExtensionMember($this, 'id', $version);
+			return;
 		}
-		else {
-			$resource->addExtensionMember($this, 'id', $version);
+		
+		if ($resource instanceof HasExtensionMembersInterface === false) {
+			throw new \Exception('resource doesn\'t have extension members');
 		}
+		
+		$resource->addExtensionMember($this, 'id', $version);
 	}
 }

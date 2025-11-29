@@ -13,6 +13,8 @@ use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -22,7 +24,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
-abstract class Document implements DocumentInterface, \JsonSerializable {
+abstract class Document implements DocumentInterface, \JsonSerializable, HasLinksInterface, HasMetaInterface {
 	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
 		LinksManager::addLink as linkManagerAddLink;
 	}

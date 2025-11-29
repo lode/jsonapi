@@ -8,6 +8,7 @@ use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -21,7 +22,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
  * it can contain other Resources as relationships
  * a CollectionDocument should be used if the primary Resource is (or can be) a set
  */
-class ResourceDocument extends DataDocument implements ResourceInterface {
+class ResourceDocument extends DataDocument implements HasAttributesInterface, ResourceInterface {
 	/** @var ResourceIdentifierObject|ResourceObject */
 	protected $resource;
 	/** @var array */
@@ -85,7 +86,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array  $options optional {@see ResourceDocument::$defaults}
 	 */
 	public function add($key, $value, array $options=[]) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		$this->resource->add($key, $value, $options);
 	}
@@ -102,7 +105,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array   $options  optional {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		$options = array_merge(self::$defaults, $options);
 		
@@ -120,7 +125,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
 	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		if ($level === Document::LEVEL_RESOURCE) {
 			$this->resource->addLink($key, $href, $meta);
@@ -137,7 +144,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array  $meta optional
 	 */
 	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_RESOURCE) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		if ($level === Document::LEVEL_RESOURCE) {
 			$this->resource->setSelfLink($href, $meta);
@@ -191,7 +200,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array            $options          optional {@see ResourceObject::$defaults}
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		$this->resource->setAttributesObject($attributesObject, $options);
 	}
@@ -206,7 +217,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array              $options            optional {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		$options = array_merge(self::$defaults, $options);
 		
@@ -226,7 +239,9 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 * @param array               $options             optional {@see ResourceDocument::$defaults}
 	 */
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject, array $options=[]) {
-		$this->ensureResourceObject();
+		if ($this->resource instanceof ResourceObject === false) {
+			throw new Exception('the resource is an identifier-only object');
+		}
 		
 		$options = array_merge(self::$defaults, $options);
 		
@@ -270,17 +285,6 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 	 */
 	
 	/**
-	 * @internal
-	 * 
-	 * @throws Exception
-	 */
-	private function ensureResourceObject() {
-		if ($this->resource instanceof ResourceObject === false) {
-			throw new Exception('the resource is an identifier-only object');
-		}
-	}
-	
-	/**
 	 * DocumentInterface
 	 */
 	
@@ -296,6 +300,17 @@ class ResourceDocument extends DataDocument implements ResourceInterface {
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * HasAttributesInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addAttribute(string $key, $value, array $options=[]) {
+		return $this->add($key, $value);
 	}
 	
 	/**

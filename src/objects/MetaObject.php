@@ -2,15 +2,11 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 
-class MetaObject implements ObjectInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class MetaObject extends AbstractObject {
 	/** @var array */
 	protected $meta = [];
 	

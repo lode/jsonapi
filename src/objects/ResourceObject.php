@@ -7,6 +7,7 @@ use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
+use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -14,7 +15,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
-class ResourceObject extends ResourceIdentifierObject implements RecursiveResourceContainerInterface {
+class ResourceObject extends ResourceIdentifierObject implements HasAttributesInterface, RecursiveResourceContainerInterface {
 	use LinksManager;
 	
 	/** @var AttributesObject */
@@ -190,6 +191,17 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * HasAttributesInterface
+	 */
+	
+	/**
+	 * @inheritDoc
+	 */
+	public function addAttribute(string $key, $value, array $options=[]) {
+		return $this->add($key, $value);
 	}
 	
 	/**

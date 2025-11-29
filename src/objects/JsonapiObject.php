@@ -3,16 +3,12 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class JsonapiObject implements ObjectInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class JsonapiObject extends AbstractObject {
 	/** @var string */
 	protected $version;
 	/** @var ExtensionInterface[] */

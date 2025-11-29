@@ -3,18 +3,14 @@
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\Validator;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class RelationshipsObject implements ObjectInterface, RecursiveResourceContainerInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class RelationshipsObject extends AbstractObject implements RecursiveResourceContainerInterface {
 	/** @var RelationshipObject[] */
 	protected $relationships = [];
 	
