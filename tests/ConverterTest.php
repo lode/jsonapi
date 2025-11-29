@@ -127,6 +127,6 @@ class ConverterTest extends TestCase {
 class TestObject {
 	public $foo = 'bar';
 	public $baz = 42;
-	private $secret = 'value';
+	private $secret = 'value'; // @phpstan-ignore property.onlyWritten
 	public function method() {}
 }

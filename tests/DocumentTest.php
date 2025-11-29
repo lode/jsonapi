@@ -41,12 +41,7 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('links', $array);
 		$this->assertCount(1, $array['links']);
 		$this->assertArrayHasKey('foo', $array['links']);
-		if (method_exists($this, 'assertIsString')) {
-			$this->assertIsString($array['links']['foo']);
-		}
-		else {
-			$this->assertIsString($array['links']['foo']);
-		}
+		$this->assertIsString($array['links']['foo']);
 		$this->assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
 	
@@ -57,12 +52,7 @@ class DocumentTest extends TestCase {
 		$array = $document->toArray();
 		
 		$this->assertCount(1, $array['links']);
-		if (method_exists($this, 'assertIsArray')) {
-			$this->assertIsArray($array['links']['foo']);
-		}
-		else {
-			$this->assertIsArray($array['links']['foo']);
-		}
+		$this->assertIsArray($array['links']['foo']);
 		$this->assertCount(2, $array['links']['foo']);
 		$this->assertArrayHasKey('href', $array['links']['foo']);
 		$this->assertArrayHasKey('meta', $array['links']['foo']);
@@ -121,12 +111,7 @@ class DocumentTest extends TestCase {
 		$array = $document->toArray();
 		
 		$this->assertCount(1, $array['links']);
-		if (method_exists($this, 'assertIsArray')) {
-			$this->assertIsArray($array['links']['describedby']);
-		}
-		else {
-			$this->assertIsArray($array['links']['describedby']);
-		}
+		$this->assertIsArray($array['links']['describedby']);
 		$this->assertCount(2, $array['links']['describedby']);
 		$this->assertArrayHasKey('href', $array['links']['describedby']);
 		$this->assertArrayHasKey('meta', $array['links']['describedby']);
@@ -164,12 +149,7 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array);
 		$this->assertCount(1, $array['meta']);
 		$this->assertArrayHasKey('foo', $array['meta']);
-		if (method_exists($this, 'assertIsString')) {
-			$this->assertIsString($array['meta']['foo']);
-		}
-		else {
-			$this->assertIsString($array['meta']['foo']);
-		}
+		$this->assertIsString($array['meta']['foo']);
 		$this->assertSame('bar', $array['meta']['foo']);
 	}
 	
@@ -188,12 +168,7 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array['jsonapi']);
 		$this->assertCount(1, $array['jsonapi']['meta']);
 		$this->assertArrayHasKey('foo', $array['jsonapi']['meta']);
-		if (method_exists($this, 'assertIsString')) {
-			$this->assertIsString($array['jsonapi']['meta']['foo']);
-		}
-		else {
-			$this->assertIsString($array['jsonapi']['meta']['foo']);
-		}
+		$this->assertIsString($array['jsonapi']['meta']['foo']);
 		$this->assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}
 	

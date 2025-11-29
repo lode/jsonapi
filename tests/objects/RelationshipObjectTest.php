@@ -298,12 +298,7 @@ class RelationshipObjectTest extends TestCase {
 		$array = $relationshipObject->toArray();
 		
 		$this->assertArrayHasKey('data', $array);
-		if (method_exists($this, 'assertIsArray')) {
-			$this->assertIsArray($array['data']);
-		}
-		else {
-			$this->assertIsArray($array['data']);
-		}
+		$this->assertIsArray($array['data']);
 	}
 	
 	public function testIsEmpty_WithAtMembers() {

@@ -36,11 +36,6 @@ class ErrorsDocumentTest extends TestCase {
 	 * @group non-php5
 	 */
 	public function testFromException_AllowsThrowable() {
-		if (PHP_MAJOR_VERSION < 7) {
-			$this->markTestSkipped('can not run in php5');
-			return;
-		}
-		
 		$document = ErrorsDocument::fromException(new \Error('foo', 42));
 		
 		$array = $document->toArray();

@@ -91,11 +91,6 @@ class ErrorObjectTest extends TestCase {
 	 * @group non-php5
 	 */
 	public function testFromException_NamespacedThrowable() {
-		if (PHP_MAJOR_VERSION < 7) {
-			$this->markTestSkipped('can not run in php5');
-			return;
-		}
-		
 		$exception   = new TestError();
 		$errorObject = ErrorObject::fromException($exception);
 		
