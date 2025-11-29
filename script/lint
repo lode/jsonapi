@@ -120,7 +120,6 @@ if test "$HAS_TYPE" = 1; then
 		fi
 
 	elif test "$TYPE" = "rector"; then
-		echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
 		$CONSOLE_PREFIX ./vendor/bin/rector process --dry-run $EXTRA_ARGUMENTS $FILE_FILTER
 
 	else
@@ -161,7 +160,6 @@ else
 	echo -e '\n'
 
 	echo "${T_INFO}Checking refactors (rector)${T_RESET}"
-	echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
 	$CONSOLE_PREFIX ./vendor/bin/rector process --memory-limit=4g --dry-run $FILE_FILTER 2> /dev/null \
 		&& echo "${T_SUCCESS}Success${T_RESET}"
 

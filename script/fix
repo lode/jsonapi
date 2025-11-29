@@ -81,7 +81,6 @@ if test "$HAS_TYPE" = 1; then
 		$CONSOLE_PREFIX ./vendor/bin/phpcbf $EXTRA_ARGUMENTS $FILE_FILTER
 
 	elif test "$TYPE" = "rector"; then
-		echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
 		$CONSOLE_PREFIX ./vendor/bin/rector process $EXTRA_ARGUMENTS $FILE_FILTER
 
 	else
@@ -93,7 +92,6 @@ else
 	echo -e "${T_BOLD}Running fixes on the changed files (not only git-diff) between the base and the head branch${T_RESET}\n"
 
 	echo "${T_INFO}Fixing refactors (rector)${T_RESET}"
-	echo "${T_WARNING}Rector might not produce correct results until phpstan is on level 4 on the main branch${T_RESET}"
 	$CONSOLE_PREFIX ./vendor/bin/rector process $FILE_FILTER || true
 
 	echo "${T_INFO}Fixing coding standards (phpcs)${T_RESET}"
