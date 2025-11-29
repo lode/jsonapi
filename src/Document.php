@@ -43,7 +43,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	
 	/** @var MetaObject */
 	protected $meta;
-	/** @var JsonapiObject */
+	/** @var ?JsonapiObject */
 	protected $jsonapi;
 	/** @var ExtensionInterface[] */
 	protected $extensions = [];

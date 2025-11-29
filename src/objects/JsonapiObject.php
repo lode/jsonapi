@@ -13,7 +13,7 @@ class JsonapiObject extends AbstractObject {
 	protected $version;
 	/** @var ExtensionInterface[] */
 	protected $extensions = [];
-	/** @var ProfileInterface */
+	/** @var ProfileInterface[] */
 	protected $profiles = [];
 	/** @var MetaObject */
 	protected $meta;

@@ -271,6 +271,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new InputException('does not make sense to set a document inside a document, use ResourceObject or ResourceIdentifierObject instead');
 		}
 		
+		/** @var ResourceIdentifierObject|ResourceObject $resource */
+		
 		$options = array_merge(self::$defaults, $options);
 		
 		$this->resource = $resource;

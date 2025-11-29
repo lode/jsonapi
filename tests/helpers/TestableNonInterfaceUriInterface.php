@@ -43,7 +43,7 @@ class TestableNonInterfaceUriInterface implements UriInterface {
 	}
 	
 	public function getPort() {
-		return '';
+		return null;
 	}
 	
 	public function getPath() {
