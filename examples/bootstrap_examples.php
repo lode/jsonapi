@@ -55,7 +55,7 @@ class ExampleDataset {
 	
 	public static function getRecord($type, $id) {
 		if (!isset(self::$records[$type][$id])) {
-			throw new Exception('sorry, we have a limited dataset');
+			throw new \Exception('sorry, we have a limited dataset');
 		}
 		
 		return self::$records[$type][$id];
