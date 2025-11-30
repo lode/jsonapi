@@ -32,9 +32,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
-	/**
-	 * @group non-php5
-	 */
 	public function testFromException_AllowsThrowable() {
 		$document = ErrorsDocument::fromException(new \Error('foo', 42));
 		
