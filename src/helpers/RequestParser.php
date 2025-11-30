@@ -55,8 +55,8 @@ class RequestParser {
 		
 		$document = $_POST;
 		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
-			$documentIsJsonapi = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL) !== false);
-			$documentIsJson    = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG)    !== false);
+			$documentIsJsonapi = (str_contains($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL));
+			$documentIsJson    = (str_contains($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG));
 			
 			if ($documentIsJsonapi || $documentIsJson) {
 				$document = json_decode(file_get_contents('php://input'), true);
@@ -211,7 +211,7 @@ class RequestParser {
 		foreach ($fields as $field) {
 			$order = RequestParser::SORT_ASCENDING;
 			
-			if (strpos($field, '-') === 0) {
+			if (str_starts_with($field, '-')) {
 				$field = substr($field, 1);
 				$order = RequestParser::SORT_DESCENDING;
 			}
