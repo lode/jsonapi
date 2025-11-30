@@ -127,7 +127,6 @@ class ErrorsDocumentTest extends TestCase {
 		$document = new ErrorsDocument();
 		
 		$method = new \ReflectionMethod($document, 'determineHttpStatusCode');
-		$method->setAccessible(true);
 		
 		$advisedErrorCode = null;
 		foreach ($allErrorCodes as $errorCode) {

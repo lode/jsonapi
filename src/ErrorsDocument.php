@@ -152,7 +152,7 @@ class ErrorsDocument extends Document {
 	 */
 	protected function determineHttpStatusCode($httpStatusCode) {
 		// add the new code
-		$category = substr($httpStatusCode, 0, 1);
+		$category = substr((string) $httpStatusCode, 0, 1);
 		$this->httpStatusCodes[$category][$httpStatusCode] = true;
 		
 		$advisedStatusCode = $httpStatusCode;
