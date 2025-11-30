@@ -30,9 +30,13 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 	
 	public function close() {}
 	
-	public function detach() {}
+	public function detach() {
+		return null;
+	}
 	
-	public function getSize() {}
+	public function getSize() {
+		return null;
+	}
 	
 	public function tell() {
 		return 0;

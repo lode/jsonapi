@@ -13,6 +13,9 @@ use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -22,7 +25,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 /**
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
-abstract class Document implements DocumentInterface, \JsonSerializable {
+abstract class Document implements DocumentInterface, \JsonSerializable, HasLinksInterface, HasMetaInterface, HasExtensionMembersInterface {
 	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
 		LinksManager::addLink as linkManagerAddLink;
 	}
@@ -41,7 +44,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	
 	/** @var MetaObject */
 	protected $meta;
-	/** @var JsonapiObject */
+	/** @var ?JsonapiObject */
 	protected $jsonapi;
 	/** @var ExtensionInterface[] */
 	protected $extensions = [];
@@ -259,9 +262,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -285,9 +285,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 		return $array;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toJson(array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
@@ -309,9 +306,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable {
 		return $json;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function sendResponse(array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		

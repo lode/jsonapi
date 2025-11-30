@@ -190,10 +190,10 @@ class RequestParser {
 	 * @todo return some kind of SortFieldObject
 	 * 
 	 * @param  array $options optional {@see RequestParser::$defaults}
-	 * @return string[]|array[] {
-	 *         @var string $field the sort field, without any minus sign for descending sort order
-	 *         @var string $order one of the RequestParser::SORT_* constants
-	 * }
+	 * @return string[]|array<array{
+	 *         field: string, // the sort field, without any minus sign for descending sort order
+	 *         order: string, // one of the RequestParser::SORT_* constants
+	 * }>
 	 */
 	public function getSortFields(array $options=[]) {
 		if ($this->queryParameters['sort'] === '') {

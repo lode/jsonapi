@@ -16,16 +16,10 @@ class AtomicOperationsExtension implements ExtensionInterface {
 	 * ExtensionInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getOfficialLink() {
 		return 'https://jsonapi.org/ext/atomic/';
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getNamespace() {
 		return 'atomic';
 	}

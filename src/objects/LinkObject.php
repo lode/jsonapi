@@ -2,14 +2,11 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class LinkObject implements ObjectInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class LinkObject extends AbstractObject implements HasMetaInterface {
 	/** @var string */
 	protected $href;
 	/** @var string */
@@ -101,7 +98,7 @@ class LinkObject implements ObjectInterface {
 	}
 	
 	/**
-	 * @param string $friendlyTitle
+	 * @param string $humanTitle
 	 */
 	public function setHumanTitle($humanTitle) {
 		$this->title = $humanTitle;
@@ -134,9 +131,6 @@ class LinkObject implements ObjectInterface {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->href !== null) {
 			return false;
@@ -169,9 +163,6 @@ class LinkObject implements ObjectInterface {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

@@ -39,7 +39,10 @@ class TestableNonInterfaceServerRequestInterface extends TestableNonInterfaceReq
 		return $this;
 	}
 	
-	public function getParsedBody() {}
+	public function getParsedBody() {
+		return null;
+	}
+	
 	public function withParsedBody($data) {
 		return $this;
 	}

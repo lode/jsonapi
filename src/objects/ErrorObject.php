@@ -4,16 +4,16 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use alsvanzelf\jsonapi\helpers\Converter;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 
-class ErrorObject implements ObjectInterface {
-	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager;
+class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaInterface {
+	use HttpStatusCodeManager, LinksManager;
 	
 	/** @var string */
 	protected $id;
@@ -279,9 +279,6 @@ class ErrorObject implements ObjectInterface {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->id !== null) {
 			return false;
@@ -317,9 +314,6 @@ class ErrorObject implements ObjectInterface {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		

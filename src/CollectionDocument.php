@@ -9,8 +9,8 @@ use alsvanzelf\jsonapi\interfaces\PaginableInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
-use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 
 /**
  * this document is a set of Resources
@@ -63,9 +63,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 		}
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
 		if ($previousHref !== null) {
 			$this->addLink('prev', $previousHref);
@@ -115,9 +112,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -133,9 +127,6 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * ResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getContainedResources() {
 		return $this->resources;
 	}

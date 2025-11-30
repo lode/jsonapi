@@ -1,0 +1,25 @@
+name: test
+on:
+  pull_request:
+    paths:
+      - "**.php"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Setup Composer
+        uses: ramsey/composer-install@v3
+        with:
+            composer-options: "--no-scripts"
+
+      - name: Run phpunit
+        run: ./vendor/bin/phpunit

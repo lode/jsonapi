@@ -2,18 +2,15 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
-use alsvanzelf\jsonapi\helpers\AtMemberManager;
-use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\Validator;
-use alsvanzelf\jsonapi\interfaces\ObjectInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
+use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
-	use AtMemberManager, ExtensionMemberManager;
-	
+class ResourceIdentifierObject extends AbstractObject implements HasMetaInterface, ResourceInterface {
 	/** @var string */
 	protected $type;
 	/** @var string */
@@ -179,9 +176,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if ($this->type !== null || $this->primaryId() !== null) {
 			return false;
@@ -199,9 +193,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = [];
 		
@@ -232,9 +223,6 @@ class ResourceIdentifierObject implements ObjectInterface, ResourceInterface {
 	 * ResourceInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getResource($identifierOnly=false) {
 		return $this;
 	}

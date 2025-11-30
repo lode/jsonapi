@@ -55,9 +55,6 @@ class MetaDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		

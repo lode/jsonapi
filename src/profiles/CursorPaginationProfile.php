@@ -4,6 +4,9 @@ namespace alsvanzelf\jsonapi\profiles;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\PaginableInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -138,11 +141,15 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-links
 	 * 
-	 * @param PaginableInterface $paginable
-	 * @param LinkObject         $previousLinkObject
-	 * @param LinkObject         $nextLinkObject
+	 * @param PaginableInterface&HasLinksInterface $paginable
+	 * @param LinkObject                           $previousLinkObject
+	 * @param LinkObject                           $nextLinkObject
 	 */
 	public function setPaginationLinkObjects(PaginableInterface $paginable, LinkObject $previousLinkObject, LinkObject $nextLinkObject) {
+		if ($paginable instanceof HasLinksInterface === false) {
+			throw new InputException('unsupported paginable to set pagination links on');
+		}
+		
 		$paginable->addLinkObject('prev', $previousLinkObject);
 		$paginable->addLinkObject('next', $nextLinkObject);
 	}
@@ -182,10 +189,14 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-item-metadata
 	 * 
-	 * @param ResourceInterface $resource
-	 * @param string            $cursor
+	 * @param ResourceInterface&HasMetaInterface $resource
+	 * @param string                             $cursor
 	 */
 	public function setItemMeta(ResourceInterface $resource, $cursor) {
+		if ($resource instanceof HasMetaInterface === false) {
+			throw new InputException('resource doesn\'t support meta');
+		}
+		
 		$metadata = [
 			'cursor' => $cursor,
 		];
@@ -208,12 +219,16 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-metadata
 	 * 
-	 * @param PaginableInterface $paginable
-	 * @param int                $exactTotal       optional
-	 * @param int                $bestGuessTotal   optional
-	 * @param boolean            $rangeIsTruncated optional, if both after and before are supplied but the items exceed requested or max size
+	 * @param PaginableInterface&HasMetaInterface $paginable
+	 * @param int                                 $exactTotal       optional
+	 * @param int                                 $bestGuessTotal   optional
+	 * @param boolean                             $rangeIsTruncated optional, if both after and before are supplied but the items exceed requested or max size
 	 */
 	public function setPaginationMeta(PaginableInterface $paginable, $exactTotal=null, $bestGuessTotal=null, $rangeIsTruncated=null) {
+		if ($paginable instanceof HasMetaInterface === false) {
+			throw new InputException('paginable doesn\'t support meta');
+		}
+		
 		$metadata = [];
 		
 		if ($exactTotal !== null) {
@@ -385,9 +400,6 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * ProfileInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getOfficialLink() {
 		return 'https://jsonapi.org/profiles/ethanresnick/cursor-pagination/';
 	}

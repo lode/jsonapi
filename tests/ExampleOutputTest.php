@@ -28,7 +28,6 @@ class ExampleOutputTest extends TestCase {
 		if ($expectedJson === null && file_exists($actualJsonPath) === false) {
 			file_put_contents($actualJsonPath, $actualJson);
 			$this->markTestSkipped('no stored json to test against, try again');
-			return;
 		}
 		
 		$this->assertSame($expectedJson, $actualJson);

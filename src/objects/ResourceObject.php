@@ -7,6 +7,8 @@ use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
+use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -14,7 +16,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
-class ResourceObject extends ResourceIdentifierObject implements RecursiveResourceContainerInterface {
+class ResourceObject extends ResourceIdentifierObject implements HasAttributesInterface, HasLinksInterface, RecursiveResourceContainerInterface {
 	use LinksManager;
 	
 	/** @var AttributesObject */
@@ -193,12 +195,17 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	}
 	
 	/**
+	 * HasAttributesInterface
+	 */
+	
+	public function addAttribute($key, $value, array $options=[]) {
+		return $this->add($key, $value);
+	}
+	
+	/**
 	 * ResourceInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getResource($identifierOnly=false) {
 		if ($identifierOnly) {
 			return ResourceIdentifierObject::fromResourceObject($this);
@@ -211,9 +218,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	 * ObjectInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function isEmpty() {
 		if (parent::isEmpty() === false) {
 			return false;
@@ -231,9 +235,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 		return true;
 	}
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function toArray() {
 		$array = parent::toArray();
 		
@@ -254,9 +255,6 @@ class ResourceObject extends ResourceIdentifierObject implements RecursiveResour
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	/**
-	 * @inheritDoc
-	 */
 	public function getNestedContainedResourceObjects() {
 		if ($this->relationships === null) {
 			return [];

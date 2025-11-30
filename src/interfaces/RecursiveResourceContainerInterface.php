@@ -16,7 +16,7 @@ interface RecursiveResourceContainerInterface {
 	 * 
 	 * @internal
 	 * 
-	 * @return ResourceObjects[]
+	 * @return ResourceObject[]
 	 */
 	public function getNestedContainedResourceObjects();
 }

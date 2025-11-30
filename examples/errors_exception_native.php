@@ -13,7 +13,7 @@ require 'bootstrap_examples.php';
  */
 
 try {
-	throw new Exception('unknown user', 404);
+	throw new \Exception('unknown user', 404);
 }
 catch (Exception $e) {
 	$options = [
