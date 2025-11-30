@@ -44,17 +44,11 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param  \Exception|\Throwable $exception
+	 * @param  \Throwable $exception
 	 * @param  array                 $options   optional {@see ErrorsDocument::$defaults}
 	 * @return ErrorsDocument
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
 	 */
-	public static function fromException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
-		
+	public static function fromException(\Throwable $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		$errorsDocument = new self();
@@ -68,16 +62,10 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param \Exception|\Throwable $exception
+	 * @param \Throwable $exception
 	 * @param array                 $options   optional {@see ErrorsDocument::$defaults}
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
 	 */
-	public function addException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
-		
+	public function addException(\Throwable $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));

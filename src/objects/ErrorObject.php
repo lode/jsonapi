@@ -63,17 +63,11 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 */
 	
 	/**
-	 * @param  \Exception|\Throwable $exception
-	 * @param  array                 $options   optional {@see ErrorObject::$defaults}
+	 * @param  \Throwable $exception
+	 * @param  array      $options   optional {@see ErrorObject::$defaults}
 	 * @return ErrorObject
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
 	 */
-	public static function fromException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
-		
+	public static function fromException(\Throwable $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		$errorObject = new self();

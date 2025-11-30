@@ -100,12 +100,6 @@ class ErrorObjectTest extends TestCase {
 		$this->assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
 	}
 	
-	public function testFromException_BlocksNonException() {
-		$this->expectException(InputException::class);
-		
-		ErrorObject::fromException(new \stdClass());
-	}
-	
 	/**
 	 * @deprecated array links are not supported anymore
 	 */

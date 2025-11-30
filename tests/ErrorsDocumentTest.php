@@ -5,7 +5,6 @@ namespace alsvanzelf\jsonapiTests;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\ErrorsDocument;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class ErrorsDocumentTest extends TestCase {
@@ -55,12 +54,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
-	public function testFromException_BlocksNonException() {
-		$this->expectException(InputException::class);
-		
-		ErrorsDocument::fromException(new \stdClass());
-	}
-	
 	public function testAddException_WithPrevious() {
 		$exception = new \Exception('foo', 1, new \Exception('bar', 2));
 		
@@ -93,14 +86,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('meta', $array['errors'][0]);
 		$this->assertArrayHasKey('message', $array['errors'][0]['meta']);
 		$this->assertSame('foo', $array['errors'][0]['meta']['message']);
-	}
-	
-	public function testAddException_BlocksNonException() {
-		$document = new ErrorsDocument();
-		
-		$this->expectException(InputException::class);
-		
-		$document->addException(new \stdClass());
 	}
 	
 	public function testToArray_EmptyErrorObject() {
