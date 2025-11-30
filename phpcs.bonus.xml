@@ -4,13 +4,6 @@
 
 	<exclude-pattern>./.ddev/*</exclude-pattern>
 	<exclude-pattern>./vendor/*</exclude-pattern>
-	<exclude-pattern>./src/base.php</exclude-pattern>
-	<exclude-pattern>./src/collection.php</exclude-pattern>
-	<exclude-pattern>./src/error.php</exclude-pattern>
-	<exclude-pattern>./src/errors.php</exclude-pattern>
-	<exclude-pattern>./src/exception.php</exclude-pattern>
-	<exclude-pattern>./src/resource.php</exclude-pattern>
-	<exclude-pattern>./src/response.php</exclude-pattern>
 
 	<arg name="basepath" value="."/>
 	<arg name="cache" value=".phpcs-cache"/>
