@@ -26,7 +26,7 @@ trait ExtensionMemberManager {
 	public function addExtensionMember(ExtensionInterface $extension, $key, $value) {
 		$namespace = $extension->getNamespace();
 		
-		if (strpos($key, $namespace.':') === 0) {
+		if (str_starts_with($key, $namespace.':')) {
 			$key = substr($key, strlen($namespace.':'));
 		}
 		

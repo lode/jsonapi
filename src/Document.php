@@ -288,7 +288,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	public function toJson(array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
-		$array = ($options['array'] !== null) ? $options['array'] : $this->toArray();
+		$array = $options['array'] ?? $this->toArray();
 		
 		if ($options['prettyPrint']) {
 			$options['encodeOptions'] |= JSON_PRETTY_PRINT;
@@ -314,7 +314,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 			return;
 		}
 		
-		$json = ($options['json'] !== null) ? $options['json'] : $this->toJson($options);
+		$json = $options['json'] ?? $this->toJson($options);
 		
 		http_response_code($this->httpStatusCode);
 		

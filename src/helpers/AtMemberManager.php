@@ -22,7 +22,7 @@ trait AtMemberManager {
 	 * @param mixed  $value
 	 */
 	public function addAtMember($key, $value) {
-		if (strpos($key, '@') === 0) {
+		if (str_starts_with($key, '@')) {
 			$key = substr($key, 1);
 		}
 		

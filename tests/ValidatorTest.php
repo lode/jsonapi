@@ -86,7 +86,7 @@ class ValidatorTest extends TestCase {
 			$objectContainer = Validator::OBJECT_CONTAINER_RELATIONSHIPS;
 			$validator->claimUsedFields($fieldNames, $objectContainer);
 		}
-		catch (DuplicateException $e) {
+		catch (DuplicateException) {
 			$thrown = true;
 		}
 		$this->assertTrue($thrown);

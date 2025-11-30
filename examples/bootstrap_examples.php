@@ -92,14 +92,13 @@ class ExampleDataset {
 }
 
 class ExampleUser {
-	public $id;
 	public $name;
 	public $heads;
 	public $unknown;
 	
-	public function __construct($id) {
-		$this->id = $id;
-	}
+	public function __construct(
+		public $id,
+	) {}
 	
 	function getCurrentLocation() {
 		return 'Earth';

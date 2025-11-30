@@ -5,7 +5,6 @@ namespace alsvanzelf\jsonapiTests;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\ErrorsDocument;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class ErrorsDocumentTest extends TestCase {
@@ -32,9 +31,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
-	/**
-	 * @group non-php5
-	 */
 	public function testFromException_AllowsThrowable() {
 		$document = ErrorsDocument::fromException(new \Error('foo', 42));
 		
@@ -56,12 +52,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertArrayHasKey('class', $array['errors'][0]['meta']['trace'][0]);
 		$this->assertSame(__FUNCTION__, $array['errors'][0]['meta']['trace'][0]['function']);
 		$this->assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
-	}
-	
-	public function testFromException_BlocksNonException() {
-		$this->expectException(InputException::class);
-		
-		ErrorsDocument::fromException(new \stdClass());
 	}
 	
 	public function testAddException_WithPrevious() {
@@ -98,14 +88,6 @@ class ErrorsDocumentTest extends TestCase {
 		$this->assertSame('foo', $array['errors'][0]['meta']['message']);
 	}
 	
-	public function testAddException_BlocksNonException() {
-		$document = new ErrorsDocument();
-		
-		$this->expectException(InputException::class);
-		
-		$document->addException(new \stdClass());
-	}
-	
 	public function testToArray_EmptyErrorObject() {
 		$document = new ErrorsDocument();
 		$document->addErrorObject(new ErrorObject('foo'));
@@ -127,7 +109,6 @@ class ErrorsDocumentTest extends TestCase {
 		$document = new ErrorsDocument();
 		
 		$method = new \ReflectionMethod($document, 'determineHttpStatusCode');
-		$method->setAccessible(true);
 		
 		$advisedErrorCode = null;
 		foreach ($allErrorCodes as $errorCode) {
