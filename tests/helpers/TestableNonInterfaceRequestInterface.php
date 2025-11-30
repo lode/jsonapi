@@ -9,15 +9,11 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 class TestableNonInterfaceRequestInterface implements RequestInterface {
-	protected $selfLink;
-	protected $queryParameters;
-	protected $document;
-	
-	public function __construct($selfLink, $queryParameters, $document) {
-		$this->selfLink        = $selfLink;
-		$this->queryParameters = $queryParameters;
-		$this->document        = $document;
-	}
+	public function __construct(
+		protected $selfLink,
+		protected $queryParameters,
+		protected $document,
+	) {}
 	
 	/**
 	 * RequestInterface

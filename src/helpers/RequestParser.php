@@ -24,23 +24,17 @@ class RequestParser {
 		 */
 		'useAnnotatedSortFields' => true,
 	];
-	/** @var string */
-	private $selfLink = '';
-	/** @var array */
-	private $queryParameters = [];
-	/** @var array */
-	private $document = [];
 	
 	/**
 	 * @param string $selfLink        the uri used to make this request {@see getSelfLink()}
 	 * @param array  $queryParameters all query parameters defined by the specification
 	 * @param array  $document        the request jsonapi document
 	 */
-	public function __construct($selfLink='', array $queryParameters=[], array $document=[]) {
-		$this->selfLink        = $selfLink;
-		$this->queryParameters = $queryParameters;
-		$this->document        = $document;
-	}
+	public function __construct(
+		private $selfLink='',
+		private array $queryParameters=[],
+		private array $document=[],
+	) {}
 	
 	/**
 	 * @return self

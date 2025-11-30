@@ -5,11 +5,9 @@ namespace alsvanzelf\jsonapiTests\helpers;
 use Psr\Http\Message\StreamInterface;
 
 class TestableNonInterfaceStreamInterface implements StreamInterface {
-	protected $document;
-	
-	public function __construct($document) {
-		$this->document = $document;
-	}
+	public function __construct(
+		protected $document,
+	) {}
 	
 	/**
 	 * StreamInterface
@@ -24,7 +22,7 @@ class TestableNonInterfaceStreamInterface implements StreamInterface {
 	}
 	
 	// not used in current implementation
-	public function __toString() {
+	public function __toString(): string {
 		return '';
 	}
 	

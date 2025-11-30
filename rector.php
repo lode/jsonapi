@@ -26,7 +26,7 @@ return RectorConfig::configure()
 	->withIndent(indentChar: "\t", indentSize: 1)
 
 	// slowly increase php version
-	->withPhpSets(php70: true)
+	->withPhpSets(php80: true)
 
 	// slowly increase levels
 	->withTypeCoverageLevel(1)

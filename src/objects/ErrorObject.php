@@ -78,7 +78,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		
 		$errorObject = new self();
 		
-		$className = get_class($exception);
+		$className = $exception::class;
 		if (strpos($className, '\\')) {
 			$exploded  = explode('\\', $className);
 			$className = end($exploded);
@@ -91,7 +91,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		}
 		
 		$metaObject = MetaObject::fromArray([
-			'type'    => get_class($exception),
+			'type'    => $exception::class,
 			'message' => $exception->getMessage(),
 			'code'    => $exception->getCode(),
 			'file'    => $filePath,
