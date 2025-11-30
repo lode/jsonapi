@@ -163,18 +163,6 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	}
 	
 	/**
-	 * append a link of the generic type of this error, explained in a human-friendly way
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->setTypeLink()}
-	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function appendTypeLink($href, array $meta=[]) {
-		$this->appendLink('type', $href, $meta);
-	}
-	
-	/**
 	 * blame the json pointer from the request body causing this error
 	 * 
 	 * @see https://tools.ietf.org/html/rfc6901
