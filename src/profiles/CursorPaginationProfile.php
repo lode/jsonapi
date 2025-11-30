@@ -4,7 +4,6 @@ namespace alsvanzelf\jsonapi\profiles;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
-use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;

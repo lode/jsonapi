@@ -18,15 +18,15 @@ class ExampleVersionExtension implements ExtensionInterface {
 	}
 	
 	public function setVersion(ResourceInterface $resource, $version) {
-		if ($resource instanceof ResourceDocument) {
-			$resource->getResource()->addExtensionMember($this, 'id', $version);
-			return;
-		}
-		
 		if ($resource instanceof HasExtensionMembersInterface === false) {
 			throw new InputException('resource doesn\'t have extension members');
 		}
 		
-		$resource->addExtensionMember($this, 'id', $version);
+		if ($resource instanceof ResourceDocument) {
+			$resource->getResource()->addExtensionMember($this, 'id', $version);
+		}
+		else {
+			$resource->addExtensionMember($this, 'id', $version);
+		}
 	}
 }
