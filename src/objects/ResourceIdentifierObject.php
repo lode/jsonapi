@@ -5,11 +5,12 @@ namespace alsvanzelf\jsonapi\objects;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\Validator;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class ResourceIdentifierObject extends AbstractObject implements ResourceInterface {
+class ResourceIdentifierObject extends AbstractObject implements HasMetaInterface, ResourceInterface {
 	/** @var string */
 	protected $type;
 	/** @var string */

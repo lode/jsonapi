@@ -2,10 +2,11 @@
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class LinkObject extends AbstractObject {
+class LinkObject extends AbstractObject implements HasMetaInterface {
 	/** @var string */
 	protected $href;
 	/** @var string */

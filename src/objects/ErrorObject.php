@@ -8,9 +8,11 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\helpers\Validator;
+use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
-class ErrorObject extends AbstractObject {
+class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaInterface {
 	use HttpStatusCodeManager, LinksManager;
 	
 	/** @var string */

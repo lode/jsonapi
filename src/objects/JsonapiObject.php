@@ -4,11 +4,12 @@ namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
-class JsonapiObject extends AbstractObject {
+class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	/** @var string */
 	protected $version;
 	/** @var ExtensionInterface[] */
