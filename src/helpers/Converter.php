@@ -65,11 +65,4 @@ class Converter {
 		
 		return $contentType;
 	}
-	
-	/**
-	 * @deprecated {@see prepareContentType()}
-	 */
-	public static function mergeProfilesInContentType($contentType, array $profiles) {
-		return self::prepareContentType($contentType, $extensions=[], $profiles);
-	}
 }
