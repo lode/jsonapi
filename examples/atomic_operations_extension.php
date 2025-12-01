@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\extensions\AtomicOperationsDocument;
 

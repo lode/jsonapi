@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\helpers\LinksManager;

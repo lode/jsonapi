@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\at_members_in_errors;
 
 use alsvanzelf\jsonapi\ErrorsDocument;

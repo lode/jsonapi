@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\resource_document_identifier_only;
 
 use alsvanzelf\jsonapi\ResourceDocument;

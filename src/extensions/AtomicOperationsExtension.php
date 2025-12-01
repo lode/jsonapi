@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\extensions;
 
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;

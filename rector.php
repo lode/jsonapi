@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 // @see https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md for more rules
 
@@ -12,7 +13,10 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 		__DIR__ . '/examples',
 	])
-
+	->withRules([
+		DeclareStrictTypesRector::class,
+	])
+	
 	// tab-based indenting
 	->withIndent(indentChar: "\t", indentSize: 1)
 

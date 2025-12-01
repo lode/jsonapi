@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\meta_only;
 
 use alsvanzelf\jsonapi\MetaDocument;

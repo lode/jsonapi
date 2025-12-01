@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\RelationshipObject;

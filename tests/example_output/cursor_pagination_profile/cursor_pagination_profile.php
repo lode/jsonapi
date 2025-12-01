@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\cursor_pagination_profile;
 
 use alsvanzelf\jsonapi\CollectionDocument;

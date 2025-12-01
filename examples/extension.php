@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\helpers\Converter;
