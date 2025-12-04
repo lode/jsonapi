@@ -29,9 +29,9 @@ class ErrorsDocument extends Document {
 	];
 	
 	/**
-	 * @param ErrorObject $errorObject optional
+	 * @param ?ErrorObject $errorObject optional
 	 */
-	public function __construct(ErrorObject $errorObject=null) {
+	public function __construct(?ErrorObject $errorObject=null) {
 		parent::__construct();
 		
 		if ($errorObject !== null) {
