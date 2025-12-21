@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\helpers\Validator;
@@ -43,9 +44,9 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		// always mark as used, as these keys are reserved
-		$this->validator->claimUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
-		$this->validator->claimUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
-		$this->validator->claimUsedFields($fieldNames=['lid'], Validator::OBJECT_CONTAINER_LID);
+		$this->validator->claimUsedFields($fieldNames=['type'], ObjectContainerEnum::Type);
+		$this->validator->claimUsedFields($fieldNames=['id'], ObjectContainerEnum::Id);
+		$this->validator->claimUsedFields($fieldNames=['lid'], ObjectContainerEnum::Lid);
 	}
 	
 	/**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -39,12 +40,13 @@ class Converter {
 	/**
 	 * generates the value for a content type header, with extensions and profiles merged in if available
 	 * 
-	 * @param  string               $contentType
 	 * @param  ExtensionInterface[] $extensions
 	 * @param  ProfileInterface[]   $profiles
 	 * @return string
 	 */
-	public static function prepareContentType($contentType, array $extensions, array $profiles) {
+	public static function prepareContentType(ContentTypeEnum $contentType, array $extensions, array $profiles) {
+		$contentType = $contentType->value;
+		
 		if ($extensions !== []) {
 			$extensionLinks = [];
 			foreach ($extensions as $extension) {

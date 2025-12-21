@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 
 require 'bootstrap_examples.php';
@@ -30,7 +30,7 @@ $extension->setVersion($document, '2019');
  * get the json
  */
 
-$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, [$extension], []);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

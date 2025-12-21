@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use alsvanzelf\jsonapiTests\profiles\TestProfile;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 
@@ -70,7 +71,7 @@ class ConverterTest extends TestCase {
 	 * @group Profiles
 	 */
 	public function testPrepareContentType_HappyPath() {
-		$this->assertSame('foo', Converter::prepareContentType('foo', [], []));
+		$this->assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
 	/**
@@ -80,7 +81,7 @@ class ConverterTest extends TestCase {
 		$extension = new TestExtension();
 		$extension->setOfficialLink('bar');
 		
-		$this->assertSame('foo; ext="bar"', Converter::prepareContentType('foo', [$extension], []));
+		$this->assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
 	
 	/**
@@ -90,7 +91,7 @@ class ConverterTest extends TestCase {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('bar');
 		
-		$this->assertSame('foo; profile="bar"', Converter::prepareContentType('foo', [], [$profile]));
+		$this->assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
 	
 	/**
@@ -110,7 +111,7 @@ class ConverterTest extends TestCase {
 		$profile2 = new TestProfile();
 		$profile2->setOfficialLink('baz');
 		
-		$this->assertSame('foo; ext="bar baz"; profile="bar baz"', Converter::prepareContentType('foo', [$extension1, $extension2], [$profile1, $profile2]));
+		$this->assertSame(ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]));
 	}
 }
 

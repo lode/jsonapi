@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapiTests\example_output\extension_members_everywhere;
 
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -94,7 +95,7 @@ class extension_members_everywhere {
 		$metaObject = new MetaObject();
 		$metaObject->addExtensionMember($extension, 'key', '/data/relationships/foo/meta/key');
 		
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->addExtensionMember($extension, 'key', '/data/relationships/foo/key');
 		$relationshipObject->setResource($resourceObject);
 		$relationshipObject->setLinksObject($linksObject);
@@ -109,7 +110,7 @@ class extension_members_everywhere {
 		$resourceIdentifierObject->addExtensionMember($extension, 'key', '/data/relationships/bar/data/key');
 		$resourceIdentifierObject->setMetaObject($metaObject);
 		
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->addExtensionMember($extension, 'key', '/data/relationships/bar/key');
 		$relationshipObject->setResource($resourceIdentifierObject);
 		

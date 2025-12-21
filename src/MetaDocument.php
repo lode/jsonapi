@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -43,9 +44,8 @@ class MetaDocument extends Document {
 	 * 
 	 * @param string $key
 	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function add($key, $value, $level=Document::LEVEL_ROOT) {
+	public function add($key, $value, DocumentLevelEnum $level=DocumentLevelEnum::Root) {
 		parent::addMeta($key, $value, $level);
 	}
 	

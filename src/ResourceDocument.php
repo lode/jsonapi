@@ -7,6 +7,7 @@ namespace alsvanzelf\jsonapi;
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Converter;
@@ -124,14 +125,13 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * @param string $key
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
+	public function addLink($key, $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === Document::LEVEL_RESOURCE) {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->addLink($key, $href, $meta);
 		}
 		else {
@@ -145,12 +145,12 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * @param string $href
 	 * @param array  $meta optional
 	 */
-	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_RESOURCE) {
+	public function setSelfLink($href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Resource) {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === Document::LEVEL_RESOURCE) {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->setSelfLink($href, $meta);
 		}
 		else {
@@ -161,10 +161,9 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * @param string $key
 	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_RESOURCE) {
+	public function addMeta($key, $value, DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->addMeta($key, $value);
 		}
 		else {

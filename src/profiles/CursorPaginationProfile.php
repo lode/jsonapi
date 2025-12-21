@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\profiles;
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
@@ -204,7 +204,7 @@ class CursorPaginationProfile implements ProfileInterface {
 		];
 		
 		if ($resource instanceof ResourceDocument) {
-			$resource->addMeta('page', $metadata, $level=Document::LEVEL_RESOURCE);
+			$resource->addMeta('page', $metadata, $level=DocumentLevelEnum::Resource);
 		}
 		else {
 			$resource->addMeta('page', $metadata);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\JsonapiVersionEnum;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -12,7 +13,7 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject extends AbstractObject implements HasMetaInterface {
-	/** @var string */
+	/** @var JsonapiVersionEnum */
 	protected $version;
 	/** @var ExtensionInterface[] */
 	protected $extensions = [];
@@ -21,10 +22,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	/** @var MetaObject */
 	protected $meta;
 	
-	/**
-	 * @param ?string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_LATEST
-	 */
-	public function __construct($version=Document::JSONAPI_VERSION_LATEST) {
+	public function __construct(?JsonapiVersionEnum $version=JsonapiVersionEnum::Latest) {
 		if ($version !== null) {
 			$this->setVersion($version);
 		}
@@ -50,10 +48,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $version
-	 */
-	public function setVersion($version) {
+	public function setVersion(JsonapiVersionEnum $version) {
 		$this->version = $version;
 	}
 	
@@ -115,7 +110,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		if ($this->version !== null) {
-			$array['version'] = $this->version;
+			$array['version'] = $this->version->value;
 		}
 		if ($this->extensions !== []) {
 			$array['ext'] = [];

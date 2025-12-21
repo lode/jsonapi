@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\LinksManager;
-use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -92,7 +92,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 			$this->attributes = new AttributesObject();
 		}
 		
-		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->claimUsedFields([$key], ObjectContainerEnum::Attributes, $options);
 		
 		$this->attributes->add($key, $value);
 	}
@@ -131,8 +131,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
 		$newKeys = $attributesObject->getKeys();
-		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_ATTRIBUTES);
-		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->clearUsedFields(ObjectContainerEnum::Attributes);
+		$this->validator->claimUsedFields($newKeys, ObjectContainerEnum::Attributes, $options);
 		
 		$this->attributes = $attributesObject;
 	}
@@ -153,7 +153,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 			$this->setRelationshipsObject(new RelationshipsObject());
 		}
 		
-		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
+		$this->validator->claimUsedFields([$key], ObjectContainerEnum::Relationships, $options);
 		
 		$this->relationships->addRelationshipObject($key, $relationshipObject);
 	}
@@ -163,8 +163,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 */
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject) {
 		$newKeys = $relationshipsObject->getKeys();
-		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_RELATIONSHIPS);
-		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
+		$this->validator->clearUsedFields(ObjectContainerEnum::Relationships);
+		$this->validator->claimUsedFields($newKeys, ObjectContainerEnum::Relationships);
 		
 		$this->relationships = $relationshipsObject;
 	}

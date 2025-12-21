@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -32,18 +34,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		LinksManager::addLink as linkManagerAddLink;
 	}
 	
-	const JSONAPI_VERSION_1_0 = '1.0';
-	const JSONAPI_VERSION_1_1 = '1.1';
-	const JSONAPI_VERSION_LATEST = Document::JSONAPI_VERSION_1_1;
-	
-	const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
-	const CONTENT_TYPE_DEBUG    = 'application/json';
-	const CONTENT_TYPE_JSONP    = 'application/javascript';
-	
-	const LEVEL_ROOT     = 'root';
-	const LEVEL_JSONAPI  = 'jsonapi';
-	const LEVEL_RESOURCE = 'resource';
-	
 	/** @var MetaObject */
 	protected $meta;
 	/** @var ?JsonapiObject */
@@ -68,7 +58,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		 * send out the official jsonapi content-type header
 		 * overwrite for jsonp or if clients don't support it
 		 */
-		'contentType' => Document::CONTENT_TYPE_OFFICIAL,
+		'contentType' => ContentTypeEnum::Official,
 		
 		/**
 		 * overwrite the array to encode to json
@@ -99,23 +89,15 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @param string $key
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 * 
-	 * @throws InputException if the $level is Document::LEVEL_JSONAPI, Document::LEVEL_RESOURCE, or unknown
+	 * @throws InputException if the $level is not DocumentLevelEnum::Root
 	 */
-	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT) {
-			$this->linkManagerAddLink($key, $href, $meta);
-		}
-		elseif ($level === Document::LEVEL_JSONAPI) {
-			throw new InputException('level "jsonapi" can not be used for links');
-		}
-		elseif ($level === Document::LEVEL_RESOURCE) {
-			throw new InputException('level "resource" can only be set on a ResourceDocument');
-		}
-		else {
-			throw new InputException('unknown level "'.$level.'"');
-		}
+	public function addLink($key, $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+		match ($level) {
+			DocumentLevelEnum::Root     => $this->linkManagerAddLink($key, $href, $meta),
+			DocumentLevelEnum::Jsonapi  => throw new InputException('level "jsonapi" can not be used for links'),
+			DocumentLevelEnum::Resource => throw new InputException('level "resource" can only be set on a ResourceDocument'),
+		};
 	}
 	
 	/**
@@ -125,11 +107,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT && ($this->extensions !== [] || $this->profiles !== [])) {
-			$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, $this->extensions, $this->profiles);
+	public function setSelfLink($href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+		if ($level === DocumentLevelEnum::Root && ($this->extensions !== [] || $this->profiles !== [])) {
+			$contentType = Converter::prepareContentType(ContentTypeEnum::Official, $this->extensions, $this->profiles);
 			
 			$linkObject = new LinkObject($href, $meta);
 			$linkObject->setMediaType($contentType);
@@ -146,43 +127,42 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * for example this could link to an OpenAPI or JSON Schema document
 	 * 
-	 * @note according to the spec, this can only be set to Document::LEVEL_ROOT
+	 * @note according to the spec, this can only be set to DocumentLevelEnum::Root
 	 * 
 	 * @param string $href
 	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setDescribedByLink($href, array $meta=[]) {
-		$this->addLink('describedby', $href, $meta, $level=Document::LEVEL_ROOT);
+		$this->addLink('describedby', $href, $meta, $level=DocumentLevelEnum::Root);
 	}
 	
 	/**
 	 * @param string $key
 	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 * 
 	 * @throws InputException if the $level is unknown
-	 * @throws InputException if the $level is Document::LEVEL_RESOURCE
+	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
-	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT) {
+	public function addMeta($key, $value, DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+		if ($level === DocumentLevelEnum::Root) {
 			if ($this->meta === null) {
 				$this->setMetaObject(new MetaObject());
 			}
 			
 			$this->meta->add($key, $value);
 		}
-		elseif ($level === Document::LEVEL_JSONAPI) {
+		elseif ($level === DocumentLevelEnum::Jsonapi) {
 			if ($this->jsonapi === null) {
 				$this->setJsonapiObject(new JsonapiObject());
 			}
 			
 			$this->jsonapi->addMeta($key, $value);
 		}
-		elseif ($level === Document::LEVEL_RESOURCE) {
+		elseif ($level === DocumentLevelEnum::Resource) {
 			throw new InputException('level "resource" can only be set on a ResourceDocument');
 		}
 		else {
-			throw new InputException('unknown level "'.$level.'"');
+			throw new InputException('unknown level "'.$level->value.'"');
 		}
 	}
 	

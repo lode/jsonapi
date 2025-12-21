@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -12,12 +13,6 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
  * @internal
  */
 class Validator {
-	const OBJECT_CONTAINER_TYPE          = 'type';
-	const OBJECT_CONTAINER_ID            = 'id';
-	const OBJECT_CONTAINER_LID           = 'lid';
-	const OBJECT_CONTAINER_ATTRIBUTES    = 'attributes';
-	const OBJECT_CONTAINER_RELATIONSHIPS = 'relationships';
-	
 	/** @var array */
 	protected $usedFields = [];
 	/** @var array */
@@ -38,12 +33,11 @@ class Validator {
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
 	 * @param  string[] $fieldNames
-	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
 	 * @param  array    $options         optional {@see Validator::$defaults}
 	 * 
 	 * @throws DuplicateException
 	 */
-	public function claimUsedFields(array $fieldNames, $objectContainer, array $options=[]) {
+	public function claimUsedFields(array $fieldNames, ObjectContainerEnum $objectContainer, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		foreach ($fieldNames as $fieldName) {
@@ -58,18 +52,15 @@ class Validator {
 			/**
 			 * @note this is not allowed by the specification
 			 */
-			if ($this->usedFields[$fieldName] === Validator::OBJECT_CONTAINER_TYPE && $options['enforceTypeFieldNamespace'] === false) {
+			if ($this->usedFields[$fieldName] === ObjectContainerEnum::Type && $options['enforceTypeFieldNamespace'] === false) {
 				continue;
 			}
 			
-			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName].'"');
+			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName]->value.'"');
 		}
 	}
 	
-	/**
-	 * @param string $objectContainerToClear one of the Validator::OBJECT_CONTAINER_* constants
-	 */
-	public function clearUsedFields($objectContainerToClear) {
+	public function clearUsedFields(ObjectContainerEnum $objectContainerToClear) {
 		foreach ($this->usedFields as $fieldName => $containerFound) {
 			if ($containerFound !== $objectContainerToClear) {
 				continue;

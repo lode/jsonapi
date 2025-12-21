@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 
 require 'bootstrap_examples.php';
 
@@ -13,7 +13,7 @@ require 'bootstrap_examples.php';
 
 $relationshipDocument = new ResourceDocument('author', 12);
 
-$relationshipDocument->setSelfLink('/articles/1/relationship/author', $meta=[], $level=Document::LEVEL_ROOT);
+$relationshipDocument->setSelfLink('/articles/1/relationship/author', $meta=[], $level=DocumentLevelEnum::Root);
 $relationshipDocument->addLink('related', '/articles/1/author');
 
 /**

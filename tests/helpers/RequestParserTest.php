@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\helpers;
 
-use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
 use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
@@ -28,7 +29,7 @@ class RequestParserTest extends TestCase {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/user/42?'.http_build_query($_GET);
-		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
 		$_POST = [
 			'data' => [
@@ -63,7 +64,7 @@ class RequestParserTest extends TestCase {
 		
 		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
 		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 		$this->assertSame('42', $requestParser->getFilter());
 		
@@ -82,7 +83,7 @@ class RequestParserTest extends TestCase {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/';
-		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
 		$_GET  = [];
 		$_POST = [];
@@ -154,7 +155,7 @@ class RequestParserTest extends TestCase {
 		
 		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
 		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 		$this->assertSame('42', $requestParser->getFilter());
 		
@@ -192,7 +193,7 @@ class RequestParserTest extends TestCase {
 		
 		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
 		$this->assertTrue($requestParser->hasSortFields());
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
 	public function testGetSelfLink() {
@@ -294,15 +295,15 @@ class RequestParserTest extends TestCase {
 	public function testGetSortFields_Reformatted() {
 		$queryParameters = ['sort' => 'foo'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => '-bar'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'bar', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => 'foo,-bar'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$this->assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending], ['field' => 'bar', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
 	public function testGetSortFields_Raw() {

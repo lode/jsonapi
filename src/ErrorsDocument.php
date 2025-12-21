@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 /**

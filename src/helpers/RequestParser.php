@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\helpers;
 
-use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RequestParser {
-	const SORT_ASCENDING  = 'ascending';
-	const SORT_DESCENDING = 'descending';
-	
 	/** @var array */
 	protected static $defaults = [
 		/**
@@ -51,8 +49,8 @@ class RequestParser {
 		
 		$document = $_POST;
 		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
-			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL));
-			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG));
+			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
+			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
 			if ($documentIsJsonapi || $documentIsJson) {
 				$document = json_decode(file_get_contents('php://input'), true);
@@ -188,7 +186,7 @@ class RequestParser {
 	 * @param  array $options optional {@see RequestParser::$defaults}
 	 * @return string[]|array<array{
 	 *         field: string, // the sort field, without any minus sign for descending sort order
-	 *         order: string, // one of the RequestParser::SORT_* constants
+	 *         order: SortOrderEnum,
 	 * }>
 	 */
 	public function getSortFields(array $options=[]) {
@@ -205,11 +203,11 @@ class RequestParser {
 		
 		$sort = [];
 		foreach ($fields as $field) {
-			$order = RequestParser::SORT_ASCENDING;
+			$order = SortOrderEnum::Ascending;
 			
 			if (str_starts_with($field, '-')) {
 				$field = substr($field, 1);
-				$order = RequestParser::SORT_DESCENDING;
+				$order = SortOrderEnum::Descending;
 			}
 			
 			$sort[] = [
