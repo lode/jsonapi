@@ -9,15 +9,11 @@ interface ExtensionInterface {
 	 * the unique link identifying and describing the extension
 	 * 
 	 * @internal
-	 * 
-	 * @return string
 	 */
-	public function getOfficialLink();
+	public function getOfficialLink(): string;
 	
 	/**
 	 * get the extension's namespace
-	 * 
-	 * @return string
 	 */
-	public function getNamespace();
+	public function getNamespace(): string;
 }

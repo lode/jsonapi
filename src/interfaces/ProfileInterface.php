@@ -9,8 +9,6 @@ interface ProfileInterface {
 	 * the unique link identifying and describing the profile
 	 * 
 	 * @internal
-	 * 
-	 * @return string
 	 */
-	public function getOfficialLink();
+	public function getOfficialLink(): string;
 }

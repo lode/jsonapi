@@ -60,11 +60,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 		}
 	}
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
+	public function addMeta(string $key, mixed $value): void {
 		if ($this->meta === null) {
 			$this->setMetaObject(new MetaObject());
 		}
@@ -133,7 +129,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->href !== null) {
 			return false;
 		}
@@ -165,7 +161,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {

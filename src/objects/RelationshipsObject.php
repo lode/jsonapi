@@ -72,7 +72,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->relationships !== []) {
 			return false;
 		}
@@ -86,7 +86,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
@@ -107,7 +107,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	public function getNestedContainedResourceObjects() {
+	public function getNestedContainedResourceObjects(): array {
 		$resourceObjects = [];
 		
 		foreach ($this->relationships as $relationship) {

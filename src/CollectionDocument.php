@@ -65,7 +65,12 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 		}
 	}
 	
-	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
+	public function setPaginationLinks(
+		?string $previousHref=null,
+		?string $nextHref=null,
+		?string $firstHref=null,
+		?string $lastHref=null,
+	): void {
 		if ($previousHref !== null) {
 			$this->addLink('prev', $previousHref);
 		}
@@ -129,7 +134,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * ResourceContainerInterface
 	 */
 	
-	public function getContainedResources() {
+	public function getContainedResources(): array {
 		return $this->resources;
 	}
 }

@@ -9,8 +9,8 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 
 trait ExtensionMemberManager {
-	/** @var array */
-	protected $extensionMembers = [];
+	/** @var array<string, mixed> */
+	protected array $extensionMembers = [];
 	
 	/**
 	 * human api
@@ -20,12 +20,7 @@ trait ExtensionMemberManager {
 	 * spec api
 	 */
 	
-	/**
-	 * @param ExtensionInterface $extension
-	 * @param string             $key
-	 * @param mixed              $value
-	 */
-	public function addExtensionMember(ExtensionInterface $extension, $key, $value) {
+	public function addExtensionMember(ExtensionInterface $extension, string $key, mixed $value): void {
 		$namespace = $extension->getNamespace();
 		
 		if (str_starts_with($key, $namespace.':')) {
@@ -47,19 +42,17 @@ trait ExtensionMemberManager {
 	
 	/**
 	 * @internal
-	 * 
-	 * @return boolean
 	 */
-	public function hasExtensionMembers() {
+	public function hasExtensionMembers(): bool {
 		return ($this->extensionMembers !== []);
 	}
 	
 	/**
 	 * @internal
 	 * 
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public function getExtensionMembers() {
+	public function getExtensionMembers(): array {
 		return $this->extensionMembers;
 	}
 }

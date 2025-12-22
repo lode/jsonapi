@@ -13,7 +13,7 @@ class TestProfile implements ProfileInterface {
 		$this->officialLink = $officialLink;
 	}
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return $this->officialLink;
 	}
 }

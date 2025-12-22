@@ -86,13 +86,13 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 */
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * if $meta is given, a LinkObject is added, otherwise a link string is added
+	 * 
+	 * @param array<array-key, mixed> $meta
 	 * 
 	 * @throws InputException if the $level is not DocumentLevelEnum::Root
 	 */
-	public function addLink($key, $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+	public function addLink(string $key, ?string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		match ($level) {
 			DocumentLevelEnum::Root     => $this->linkManagerAddLink($key, $href, $meta),
 			DocumentLevelEnum::Jsonapi  => throw new InputException('level "jsonapi" can not be used for links'),
@@ -137,13 +137,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 * 
 	 * @throws InputException if the $level is unknown
 	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
-	public function addMeta($key, $value, DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($level === DocumentLevelEnum::Root) {
 			if ($this->meta === null) {
 				$this->setMetaObject(new MetaObject());

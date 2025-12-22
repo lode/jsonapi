@@ -11,8 +11,7 @@ interface ResourceInterface {
 	/**
 	 * @internal
 	 * 
-	 * @param  boolean $identifierOnly optional, defaults to false
-	 * @return ResourceIdentifierObject|ResourceObject
+	 * @return ($identifierOnly is true ? ResourceIdentifierObject : ResourceObject)
 	 */
-	public function getResource($identifierOnly=false);
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject;
 }

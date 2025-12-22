@@ -200,15 +200,15 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute($key, $value, array $options=[]) {
-		return $this->add($key, $value);
+	public function addAttribute(string $key, mixed $value, array $options=[]): void {
+		$this->add($key, $value);
 	}
 	
 	/**
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject {
 		if ($identifierOnly) {
 			return ResourceIdentifierObject::fromResourceObject($this);
 		}
@@ -220,7 +220,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if (parent::isEmpty() === false) {
 			return false;
 		}
@@ -237,7 +237,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
@@ -257,7 +257,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	public function getNestedContainedResourceObjects() {
+	public function getNestedContainedResourceObjects(): array {
 		if ($this->relationships === null) {
 			return [];
 		}

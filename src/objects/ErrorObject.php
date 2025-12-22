@@ -186,11 +186,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		$this->addSource('header', $headerName);
 	}
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
+	public function addMeta(string $key, mixed $value): void {
 		if ($this->meta === null) {
 			$this->setMetaObject(new MetaObject());
 		}
@@ -262,7 +258,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->id !== null) {
 			return false;
 		}
@@ -297,7 +293,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {

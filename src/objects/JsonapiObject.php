@@ -32,11 +32,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * human api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
+	public function addMeta(string $key, mixed $value): void {
 		if ($this->meta === null) {
 			$this->setMetaObject(new MetaObject());
 		}
@@ -77,7 +73,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->version !== null) {
 			return false;
 		}
@@ -100,7 +96,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {

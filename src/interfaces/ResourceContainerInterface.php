@@ -19,7 +19,7 @@ interface ResourceContainerInterface {
 	 * 
 	 * @internal
 	 * 
-	 * @return array with a mix of ResourceIdentifierObject and ResourceObject
+	 * @return ResourceInterface[]
 	 */
-	public function getContainedResources();
+	public function getContainedResources(): array;
 }

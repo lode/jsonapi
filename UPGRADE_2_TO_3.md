@@ -1,5 +1,11 @@
 # Upgrade from library v2 to v3
 
+## Interfaces
+
+When extending interfaces, you'll have to add method argument types and return types.
+
+Check [all interfaces](/src/interfaces) for the correct typing.
+
 ## Enums
 
 Content types:

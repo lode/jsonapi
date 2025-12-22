@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi\interfaces;
 
 interface PaginableInterface {
-	/**
-	 * @param string $previousHref optional
-	 * @param string $nextHref     optional
-	 * @param string $firstHref    optional
-	 * @param string $lastHref     optional
-	 */
-	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null);
+	public function setPaginationLinks(
+		?string $previousHref=null,
+		?string $nextHref=null,
+		?string $firstHref=null,
+		?string $lastHref=null,
+	): void;
 }

@@ -122,11 +122,11 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * if $meta is given, a LinkObject is added, otherwise a link string is added
+	 * 
+	 * @param array<array-key, mixed> $meta
 	 */
-	public function addLink($key, $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+	public function addLink(string $key, ?string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -158,11 +158,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		}
 	}
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value, DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->addMeta($key, $value);
 		}
@@ -306,15 +302,15 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute($key, $value, array $options=[]) {
-		return $this->add($key, $value);
+	public function addAttribute(string $key, mixed $value, array $options=[]): void {
+		$this->add($key, $value);
 	}
 	
 	/**
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject {
 		return $this->resource->getResource($identifierOnly);
 	}
 }

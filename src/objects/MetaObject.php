@@ -62,7 +62,7 @@ class MetaObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->meta !== []) {
 			return false;
 		}
@@ -76,7 +76,7 @@ class MetaObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {

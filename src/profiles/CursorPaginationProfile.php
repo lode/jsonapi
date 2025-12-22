@@ -402,7 +402,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * ProfileInterface
 	 */
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/profiles/ethanresnick/cursor-pagination/';
 	}
 }

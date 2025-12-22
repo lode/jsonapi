@@ -112,11 +112,11 @@ class ExampleVersionExtension implements ExtensionInterface {
 	 * the required method
 	 */
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/format/1.1/#extension-rules';
 	}
 	
-	public function getNamespace() {
+	public function getNamespace(): string {
 		return 'version';
 	}
 	
@@ -143,7 +143,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 	 * the required method
 	 */
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/recommendations/#authoring-profiles';
 	}
 	

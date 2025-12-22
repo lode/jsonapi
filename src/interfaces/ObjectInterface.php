@@ -9,17 +9,15 @@ interface ObjectInterface {
 	 * whether the object contains something for output
 	 * 
 	 * @internal
-	 * 
-	 * @return boolean
 	 */
-	public function isEmpty();
+	public function isEmpty(): bool;
 	
 	/**
 	 * generate array with the contents of the object
 	 * 
 	 * @internal
 	 * 
-	 * @return array
+	 * @return array<array-key, mixed>
 	 */
-	public function toArray();
+	public function toArray(): array;
 }

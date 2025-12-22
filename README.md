@@ -175,11 +175,11 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 
 class ExampleExtension implements ExtensionInterface {
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://example.org/extension-documentation';
 	}
 	
-	public function getNamespace() {
+	public function getNamespace(): string {
 		return 'foo';
 	}
 }

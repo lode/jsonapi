@@ -133,7 +133,12 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	/**
 	 * @throws InputException if used on a to-one relationship
 	 */
-	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
+	public function setPaginationLinks(
+		?string $previousHref=null,
+		?string $nextHref=null,
+		?string $firstHref=null,
+		?string $lastHref=null,
+	): void {
 		if ($this->type === RelationshipTypeEnum::ToOne) {
 			throw new InputException('can not add pagination links to a to-one relationship');
 		}
@@ -152,11 +157,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		}
 	}
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
+	public function addMeta(string $key, mixed $value): void {
 		if ($this->meta === null) {
 			$this->setMetaObject(new MetaObject());
 		}
@@ -241,7 +242,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->type === RelationshipTypeEnum::ToOne && $this->resource !== null) {
 			return false;
 		}
@@ -264,7 +265,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
@@ -300,7 +301,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	public function getNestedContainedResourceObjects() {
+	public function getNestedContainedResourceObjects(): array {
 		if ($this->isEmpty()) {
 			return [];
 		}

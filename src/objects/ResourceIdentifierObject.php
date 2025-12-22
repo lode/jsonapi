@@ -53,11 +53,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * human api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
+	public function addMeta(string $key, mixed $value): void {
 		if ($this->meta === null) {
 			$this->setMetaObject(new MetaObject());
 		}
@@ -179,7 +175,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->type !== null || $this->primaryId() !== null) {
 			return false;
 		}
@@ -196,7 +192,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		$array['type'] = $this->type;
@@ -226,7 +222,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject {
 		return $this;
 	}
 	

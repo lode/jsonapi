@@ -11,11 +11,11 @@ use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
 class ExampleVersionExtension implements ExtensionInterface {
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/format/1.1/#extension-rules';
 	}
 	
-	public function getNamespace() {
+	public function getNamespace(): string {
 		return 'version';
 	}
 	

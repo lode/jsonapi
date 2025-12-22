@@ -34,6 +34,23 @@ class AttributesObjectTest extends TestCase {
 		$this->assertSame('bar', $array['foo']);
 	}
 	
+	public function testAdd_AllowsMixedValue() {
+		$attributesObject = new AttributesObject();
+		$attributesObject->add('array-list', ['foo']);
+		$attributesObject->add('array-int-key', [42 => 'foo']);
+		$attributesObject->add('array-string-key', ['foo' => 'bar']);
+		$attributesObject->add('bool', true);
+		$attributesObject->add('int', 42);
+		$attributesObject->add('float', 4.2);
+		$attributesObject->add('null', null);
+		$attributesObject->add('object', new \stdClass);
+		$attributesObject->add('string', 'foo');
+		
+		$array = $attributesObject->toArray();
+		
+		$this->assertCount(9, $array);
+	}
+	
 	public function testAdd_WithObject() {
 		$object = new \stdClass();
 		$object->bar = 'baz';

@@ -96,7 +96,7 @@ class LinksObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->links !== []) {
 			return false;
 		}
@@ -110,7 +110,7 @@ class LinksObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
