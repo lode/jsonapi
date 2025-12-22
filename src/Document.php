@@ -254,7 +254,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {

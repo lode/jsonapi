@@ -189,7 +189,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		
@@ -230,7 +230,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		
@@ -246,7 +246,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
 			$array['relationships'] = $this->relationships->toArray();
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
 		

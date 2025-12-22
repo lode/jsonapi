@@ -13,11 +13,7 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
  * @internal
  */
 class Converter {
-	/**
-	 * @param  object $object
-	 * @return array
-	 */
-	public static function objectToArray($object) {
+	public static function objectToArray(object $object): array {
 		if ($object instanceof ObjectInterface) {
 			return $object->toArray();
 		}
@@ -27,11 +23,8 @@ class Converter {
 	
 	/**
 	 * @see https://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced/7599674#7599674
-	 * 
-	 * @param  string $camelCase
-	 * @return string
 	 */
-	public static function camelCaseToWords($camelCase) {
+	public static function camelCaseToWords(string $camelCase): string {
 		$parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $camelCase);
 		
 		return implode(' ', $parts);
@@ -40,11 +33,10 @@ class Converter {
 	/**
 	 * generates the value for a content type header, with extensions and profiles merged in if available
 	 * 
-	 * @param  ExtensionInterface[] $extensions
-	 * @param  ProfileInterface[]   $profiles
-	 * @return string
+	 * @param ExtensionInterface[] $extensions
+	 * @param ProfileInterface[]   $profiles
 	 */
-	public static function prepareContentType(ContentTypeEnum $contentType, array $extensions, array $profiles) {
+	public static function prepareContentType(ContentTypeEnum $contentType, array $extensions, array $profiles): string {
 		$contentType = $contentType->value;
 		
 		if ($extensions !== []) {

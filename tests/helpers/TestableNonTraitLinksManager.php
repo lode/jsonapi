@@ -13,7 +13,7 @@ class TestableNonTraitLinksManager {
 	use LinksManager;
 	
 	public function toArray() {
-		if ($this->links === null) {
+		if ($this->hasLinks() === false) {
 			return [];
 		}
 		

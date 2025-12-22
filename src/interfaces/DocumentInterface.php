@@ -9,6 +9,8 @@ use alsvanzelf\jsonapi\exceptions\Exception;
 interface DocumentInterface {
 	/**
 	 * generate array with the contents of the document, used by {@see ->toJson()}
+	 * 
+	 * @return array<array-key, mixed>
 	 */
 	public function toArray(): array;
 	

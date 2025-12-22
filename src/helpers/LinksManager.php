@@ -8,8 +8,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 trait LinksManager {
-	/** @var LinksObject */
-	protected $links;
+	protected LinksObject $links;
 	
 	/**
 	 * human api
@@ -53,8 +52,23 @@ trait LinksManager {
 	/**
 	 * @internal
 	 */
-	private function ensureLinksObject() {
-		if ($this->links === null) {
+	protected function hasLinks(): bool {
+		if (isset($this->links) === false) {
+			return false;
+		}
+		
+		if ($this->links->isEmpty()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @internal
+	 */
+	private function ensureLinksObject(): void {
+		if (isset($this->links) === false) {
 			$this->setLinksObject(new LinksObject());
 		}
 	}

@@ -13,7 +13,6 @@ class HttpStatusCodeManagerTest extends TestCase {
 		$helper = new HttpStatusCodeManager();
 		
 		$this->assertFalse($helper->hasHttpStatusCode());
-		$this->assertNull($helper->getHttpStatusCode());
 		
 		$helper->setHttpStatusCode(204);
 		

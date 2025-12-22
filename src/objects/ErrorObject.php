@@ -274,7 +274,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		if ($this->detail !== null) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		if ($this->source !== []) {
@@ -317,7 +317,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		if ($this->detail !== null) {
 			$array['detail'] = $this->detail;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
 		if ($this->source !== []) {

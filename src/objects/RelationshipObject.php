@@ -249,7 +249,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		if ($this->type === RelationshipTypeEnum::ToMany && $this->resources !== []) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		if ($this->meta !== null && $this->meta->isEmpty() === false) {
@@ -275,7 +275,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
 		if ($this->type === RelationshipTypeEnum::ToOne) {
