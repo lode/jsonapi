@@ -287,7 +287,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['data'] = null;

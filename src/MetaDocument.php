@@ -57,7 +57,7 @@ class MetaDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		// force meta to be set, and be an object when converting to json

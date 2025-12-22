@@ -41,7 +41,7 @@ class AtomicOperationsDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$results = [];
 		foreach ($this->results as $result) {
 			$results[] = [

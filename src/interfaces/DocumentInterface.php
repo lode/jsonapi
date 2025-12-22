@@ -9,27 +9,24 @@ use alsvanzelf\jsonapi\exceptions\Exception;
 interface DocumentInterface {
 	/**
 	 * generate array with the contents of the document, used by {@see ->toJson()}
-	 * 
-	 * @return array
 	 */
-	public function toArray();
+	public function toArray(): array;
 	
 	/**
 	 * generate json with the contents of the document, used by {@see ->sendResponse()}
 	 * 
-	 * @param  array $options optional
-	 * @return string json
+	 * @param TypeAlias_InternalOptions $options
 	 * 
 	 * @throws Exception if generating json fails
 	 */
-	public function toJson(array $options=[]);
+	public function toJson(array $options=[]): string;
 	
 	/**
 	 * send jsonapi response to the browser
 	 * 
 	 * @note will set http status code and content type, and echo json
 	 * 
-	 * @param array $options optional
+	 * @param TypeAlias_InternalOptions $options
 	 */
-	public function sendResponse(array $options=[]);
+	public function sendResponse(array $options=[]): void;
 }

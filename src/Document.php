@@ -241,7 +241,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
@@ -264,7 +264,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $array;
 	}
 	
-	public function toJson(array $options=[]) {
+	public function toJson(array $options=[]): string {
 		$options = array_merge(self::$defaults, $options);
 		
 		$array = $options['array'] ?? $this->toArray();
@@ -285,7 +285,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $json;
 	}
 	
-	public function sendResponse(array $options=[]) {
+	public function sendResponse(array $options=[]): void {
 		$options = array_merge(self::$defaults, $options);
 		
 		if ($this->httpStatusCode === 204) {

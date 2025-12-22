@@ -119,7 +119,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['data'] = [];
