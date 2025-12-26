@@ -3,7 +3,6 @@
 namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 trait LinksManager {
@@ -27,20 +26,6 @@ trait LinksManager {
 	}
 	
 	/**
-	 * append a link to a key with an array of links
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLink()}
-	 * 
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function appendLink($key, $href, array $meta=[]) {
-		$this->ensureLinksObject();
-		$this->links->append($key, $href, $meta);
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -53,32 +38,6 @@ trait LinksManager {
 	public function addLinkObject($key, LinkObject $linkObject) {
 		$this->ensureLinksObject();
 		$this->links->addLinkObject($key, $linkObject);
-	}
-	
-	/**
-	 * set a key containing a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinksArray $linksArray
-	 */
-	public function addLinksArray($key, LinksArray $linksArray) {
-		$this->ensureLinksObject();
-		$this->links->addLinksArray($key, $linksArray);
-	}
-	
-	/**
-	 * append a LinkObject to a key with a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 */
-	public function appendLinkObject($key, LinkObject $linkObject) {
-		$this->ensureLinksObject();
-		$this->links->appendLinkObject($key, $linkObject);
 	}
 	
 	/**

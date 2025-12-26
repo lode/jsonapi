@@ -5,7 +5,6 @@ namespace alsvanzelf\jsonapiTests\objects;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use PHPUnit\Framework\TestCase;
 
@@ -21,28 +20,6 @@ class LinksObjectTest extends TestCase {
 		$this->assertCount(1, $array);
 		$this->assertArrayHasKey('foo', $array);
 		$this->assertSame('https://jsonapi.org', $array['foo']);
-	}
-	
-	public function testAppend_HappyPath() {
-		$linksObject = new LinksObject();
-		$linksObject->append('foo', 'https://jsonapi.org'); // @phpstan-ignore method.deprecated
-		
-		$array = $linksObject->toArray();
-		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertCount(1, $array['foo']);
-		$this->assertArrayHasKey(0, $array['foo']);
-		$this->assertSame('https://jsonapi.org', $array['foo'][0]);
-	}
-	
-	public function testAppend_BlocksReusingNonArray() {
-		$linksObject = new LinksObject();
-		$linksObject->add('foo', 'https://jsonapi.org');
-
-		$this->expectException(DuplicateException::class);
-
-		$linksObject->append('foo', 'https://jsonapi.org/2'); // @phpstan-ignore method.deprecated
 	}
 	
 	public function testAddLinkString_HappyPath() {
@@ -107,61 +84,6 @@ class LinksObjectTest extends TestCase {
 		$this->expectException(DuplicateException::class);
 		
 		$linksObject->addLinkObject($key='foo', $linkObject);
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore
-	 */
-	public function testAddLinksArray_HappyPath() {
-		$linksObject = new LinksObject();
-		$linksObject->addLinksArray('foo', LinksArray::fromArray(['https://jsonapi.org']));
-		
-		$array = $linksObject->toArray();
-		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertCount(1, $array['foo']);
-		$this->assertArrayHasKey(0, $array['foo']);
-		$this->assertSame('https://jsonapi.org', $array['foo'][0]);
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore
-	 */
-	public function testAddLinksArray_BlocksReusingNonArray() {
-		$linksObject = new LinksObject();
-		$linksObject->add('foo', 'https://jsonapi.org');
-		
-		$this->expectException(DuplicateException::class);
-		
-		$linksObject->addLinksArray('foo', LinksArray::fromArray(['https://jsonapi.org/2']));
-	}
-	
-	public function testAppendLinkObject_HappyPath() {
-		$linksObject = new LinksObject();
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/1')); // @phpstan-ignore method.deprecated
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2')); // @phpstan-ignore method.deprecated
-		
-		$array = $linksObject->toArray();
-		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertCount(2, $array['foo']);
-		$this->assertArrayHasKey(0, $array['foo']);
-		$this->assertArrayHasKey(1, $array['foo']);
-		$this->assertArrayHasKey('href', $array['foo'][0]);
-		$this->assertArrayHasKey('href', $array['foo'][1]);
-		$this->assertSame('https://jsonapi.org/1', $array['foo'][0]['href']);
-		$this->assertSame('https://jsonapi.org/2', $array['foo'][1]['href']);
-	}
-	
-	public function testAppendLinkObject_BlocksReusingNonArray() {
-		$linksObject = new LinksObject();
-		$linksObject->add('foo', 'https://jsonapi.org');
-
-		$this->expectException(DuplicateException::class);
-
-		$linksObject->appendLinkObject('foo', new LinkObject('https://jsonapi.org/2')); // @phpstan-ignore method.deprecated
 	}
 	
 	public function testToArray_ExplicitlyEmpty() {
