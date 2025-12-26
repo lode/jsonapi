@@ -8,6 +8,7 @@ parameters:
 
 	typeAliases:
 		PHPStanTypeAlias_InternalOptions: 'array<string, bool|int|null|\alsvanzelf\jsonapi\enums\ContentTypeEnum>'
+	
 	treatPhpDocTypesAsCertain: false
 	
 	strictRules:
