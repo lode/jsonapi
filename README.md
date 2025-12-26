@@ -17,7 +17,7 @@ Read more about it at [jsonapi.org](https://jsonapi.org/).
 composer require alsvanzelf/jsonapi
 ```
 
-The library requires php 8.2. For lower versions see [v2](/releases/tag/v2.5.0).
+The library requires php 8.2. Use the latest [v2.x release](/releases/tag/v2.5.0) for lower php versions.
 
 #### Upgrading from v1
 
