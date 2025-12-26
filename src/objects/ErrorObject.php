@@ -145,7 +145,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	/**
 	 * set the link about this specific occurence of the error, explained in a human-friendly way
 	 * 
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setAboutLink(string $href, array $meta=[]): void {
 		$this->addLink('about', $href, $meta);
@@ -154,7 +154,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	/**
 	 * set the link of the generic type of this error, explained in a human-friendly way
 	 * 
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setTypeLink(string $href, array $meta=[]): void {
 		$this->addLink('type', $href, $meta);

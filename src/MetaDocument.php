@@ -19,7 +19,7 @@ class MetaDocument extends Document {
 	 */
 	
 	/**
-	 * @param  array<array-key, mixed> $meta
+	 * @param  array<string, mixed> $meta
 	 */
 	public static function fromArray(array $meta): self {
 		$metaDocument = new self();

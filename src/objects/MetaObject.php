@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
 class MetaObject extends AbstractObject {
-	/** @var array<array-key, mixed> */
+	/** @var array<string, mixed> */
 	protected array $meta = [];
 	
 	/**
@@ -17,7 +17,7 @@ class MetaObject extends AbstractObject {
 	 */
 	
 	/**
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 */
 	public static function fromArray(array $meta): self {
 		$metaObject = new self();

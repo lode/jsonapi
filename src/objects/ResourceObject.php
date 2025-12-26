@@ -89,7 +89,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	/**
 	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param array<string, ?string>                                        $links
-	 * @param array<array-key, mixed>                                       $meta
+	 * @param array<string, mixed>                                          $meta
 	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
 	public function addRelationship(
@@ -107,7 +107,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setSelfLink(string $href, array $meta=[]): void {
 		$this->addLink('self', $href, $meta);

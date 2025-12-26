@@ -39,7 +39,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * 
 	 * @param  CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param  array<string, ?string>                                        $links
-	 * @param  array<array-key, mixed>                                       $meta
+	 * @param  array<string, mixed>                                          $meta
 	 * 
 	 * @throws InputException if $relation is not one of the supported formats
 	 */
@@ -69,8 +69,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param array<string, ?string>  $links
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, ?string> $links
+	 * @param array<string, mixed>   $meta
 	 */
 	public static function fromResource(
 		ResourceInterface $resource,
@@ -96,8 +96,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param array<string, ?string>  $links
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, ?string> $links
+	 * @param array<string, mixed>   $meta
 	 */
 	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): self {
 		$relationshipObject = new self(RelationshipTypeEnum::ToMany);

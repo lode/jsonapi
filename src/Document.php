@@ -89,7 +89,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	/**
 	 * if $meta is given, a LinkObject is added, otherwise a link string is added
 	 * 
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 * 
 	 * @throws InputException if the $level is not DocumentLevelEnum::Root
 	 */
@@ -106,7 +106,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @note a LinkObject is added when extensions or profiles are applied
 	 * 
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setSelfLink(string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($level === DocumentLevelEnum::Root && ($this->extensions !== [] || $this->profiles !== [])) {
@@ -129,7 +129,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @note according to the spec, this can only be set to DocumentLevelEnum::Root
 	 * 
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setDescribedByLink(string $href, array $meta=[]): void {
 		$this->addLink('describedby', $href, $meta, $level=DocumentLevelEnum::Root);

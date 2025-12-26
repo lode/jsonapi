@@ -13,7 +13,7 @@ interface HasLinksInterface {
 	 * 
 	 * if $meta is given, a LinkObject is added, otherwise a link string is added
 	 * 
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 */
 	public function addLink(string $key, ?string $href, array $meta=[]): void;
 	

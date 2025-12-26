@@ -10,7 +10,7 @@ interface DocumentInterface {
 	/**
 	 * generate array with the contents of the document, used by {@see ->toJson()}
 	 * 
-	 * @return array<array-key, mixed>
+	 * @return array<string, mixed>
 	 */
 	public function toArray(): array;
 	

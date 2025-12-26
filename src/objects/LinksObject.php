@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
 class LinksObject extends AbstractObject {
-	/** @var array<array-key, string|LinkObject> */
+	/** @var array<string, string|LinkObject> */
 	protected array $links = [];
 	
 	/**
@@ -38,7 +38,7 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function add(string $key, ?string $href, array $meta=[]): void {
 		if ($meta === []) {

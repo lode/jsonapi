@@ -1,5 +1,11 @@
 # Upgrade from library v2 to v3
 
+## Checking links, ...
+
+Objects more often use uninitialized properties. `has*()` helper methods have been added to support the new flow.
+
+- `$object->links` to `if ($object->hasLinks()) $object->links`
+
 ## Interfaces
 
 When extending interfaces, you'll have to add method argument types and return types.

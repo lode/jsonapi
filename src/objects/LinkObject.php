@@ -19,7 +19,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	protected MetaObject $meta;
 	
 	/**
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 */
 	public function __construct(?string $href=null, array $meta=[]) {
 		if ($href !== null) {

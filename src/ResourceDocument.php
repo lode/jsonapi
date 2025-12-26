@@ -100,7 +100,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param array<string, ?string>                                        $links
-	 * @param array<array-key, mixed>                                       $meta
+	 * @param array<string, mixed>                                          $meta
 	 * @param TypeAlias_InternalOptions                                     $options {@see ResourceDocument::$defaults}
 	 */
 	public function addRelationship(
@@ -126,7 +126,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * if $meta is given, a LinkObject is added, otherwise a link string is added
 	 * 
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 */
 	public function addLink(string $key, ?string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($this->resource instanceof ResourceObject === false) {
@@ -144,7 +144,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * set the self link on the resource
 	 * 
-	 * @param array<array-key, mixed> $meta
+	 * @param array<string, mixed> $meta
 	 */
 	public function setSelfLink(string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Resource): void {
 		if ($this->resource instanceof ResourceObject === false) {

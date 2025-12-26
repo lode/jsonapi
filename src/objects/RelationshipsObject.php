@@ -25,7 +25,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	/**
 	 * @param  CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param  array<string, ?string>                                        $links
-	 * @param  array<array-key, mixed>                                       $meta
+	 * @param  array<string, mixed>                                          $meta
 	 */
 	public function add(
 		string $key,
