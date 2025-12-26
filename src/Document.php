@@ -34,16 +34,14 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		LinksManager::addLink as linkManagerAddLink;
 	}
 	
-	/** @var MetaObject */
-	protected $meta;
-	/** @var ?JsonapiObject */
-	protected $jsonapi;
+	protected MetaObject $meta;
+	protected ?JsonapiObject $jsonapi;
 	/** @var ExtensionInterface[] */
-	protected $extensions = [];
+	protected array $extensions = [];
 	/** @var ProfileInterface[] */
-	protected $profiles = [];
-	/** @var array */
-	protected static $defaults = [
+	protected array $profiles = [];
+	/** @var TypeAlias_InternalOptions */
+	protected static array $defaults = [
 		/**
 		 * encode to json with these default options
 		 */
@@ -105,10 +103,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @note a LinkObject is added when extensions or profiles are applied
 	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setSelfLink($href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root) {
+	public function setSelfLink(string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($level === DocumentLevelEnum::Root && ($this->extensions !== [] || $this->profiles !== [])) {
 			$contentType = Converter::prepareContentType(ContentTypeEnum::Official, $this->extensions, $this->profiles);
 			
@@ -129,10 +126,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @note according to the spec, this can only be set to DocumentLevelEnum::Root
 	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<array-key, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setDescribedByLink($href, array $meta=[]) {
+	public function setDescribedByLink(string $href, array $meta=[]): void {
 		$this->addLink('describedby', $href, $meta, $level=DocumentLevelEnum::Root);
 	}
 	
@@ -142,14 +138,14 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 */
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($level === DocumentLevelEnum::Root) {
-			if ($this->meta === null) {
+			if (isset($this->meta) === false) {
 				$this->setMetaObject(new MetaObject());
 			}
 			
 			$this->meta->add($key, $value);
 		}
 		elseif ($level === DocumentLevelEnum::Jsonapi) {
-			if ($this->jsonapi === null) {
+			if (isset($this->jsonapi) === false) {
 				$this->setJsonapiObject(new JsonapiObject());
 			}
 			
@@ -167,24 +163,18 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * spec api
 	 */
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
-	/**
-	 * @param JsonapiObject $jsonapiObject
-	 */
-	public function setJsonapiObject(JsonapiObject $jsonapiObject) {
+	public function setJsonapiObject(JsonapiObject $jsonapiObject): void {
 		$this->jsonapi = $jsonapiObject;
 	}
 	
 	/**
 	 * hide that this api supports jsonapi, or which version it is using
 	 */
-	public function unsetJsonapiObject() {
+	public function unsetJsonapiObject(): void {
 		$this->jsonapi = null;
 	}
 	
@@ -197,12 +187,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @see https://jsonapi.org/extensions/#extensions
 	 * 
-	 * @param ExtensionInterface $extension
-	 * 
 	 * @throws Exception if namespace uses illegal characters
 	 * @throws DuplicateException if namespace conflicts with another applied extension
 	 */
-	public function applyExtension(ExtensionInterface $extension) {
+	public function applyExtension(ExtensionInterface $extension): void {
 		$namespace = $extension->getNamespace();
 		if (strlen($namespace) < 1 || preg_match('{[^a-zA-Z0-9]}', $namespace) === 1) {
 			throw new Exception('invalid namespace "'.$namespace.'"');
@@ -213,7 +201,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		
 		$this->extensions[$namespace] = $extension;
 		
-		if ($this->jsonapi !== null) {
+		if (isset($this->jsonapi)) {
 			$this->jsonapi->addExtension($extension);
 		}
 	}
@@ -226,13 +214,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * however the $profile could have custom methods to help
 	 * 
 	 * @see https://jsonapi.org/extensions/#profiles
-	 * 
-	 * @param ProfileInterface $profile
 	 */
-	public function applyProfile(ProfileInterface $profile) {
+	public function applyProfile(ProfileInterface $profile): void {
 		$this->profiles[] = $profile;
 		
-		if ($this->jsonapi !== null) {
+		if (isset($this->jsonapi)) {
 			$this->jsonapi->addProfile($profile);
 		}
 	}
@@ -251,13 +237,13 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
-		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
+		if (isset($this->jsonapi) && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();
 		}
 		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		
@@ -308,7 +294,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 */
 	
 	#[\ReturnTypeWillChange]
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return $this->toArray();
 	}
 }

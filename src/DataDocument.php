@@ -10,13 +10,13 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 /**
+ * @internal
  * @see ResourceDocument or CollectionDocument
  */
 abstract class DataDocument extends Document {
 	/** @var ResourceObject[] */
-	protected $includedResources = [];
-	/** @var Validator */
-	protected $validator;
+	protected array $includedResources = [];
+	protected readonly Validator $validator;
 	
 	public function __construct() {
 		parent::__construct();
@@ -35,10 +35,8 @@ abstract class DataDocument extends Document {
 	/**
 	 * mainly used when an `included` query parameter is passed
 	 * and resources are requested separate from what is standard for a response
-	 * 
-	 * @param ResourceObject ...$resourceObjects
 	 */
-	public function addIncludedResourceObject(ResourceObject ...$resourceObjects) {
+	public function addIncludedResourceObject(ResourceObject ...$resourceObjects): void {
 		foreach ($resourceObjects as $resourceObject) {
 			try {
 				$this->validator->claimUsedResourceIdentifier($resourceObject);
