@@ -14,7 +14,8 @@ use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
 class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaInterface {
-	use HttpStatusCodeManager, LinksManager;
+	use HttpStatusCodeManager;
+	use LinksManager;
 	
 	protected string|int $id;
 	protected string $code;

@@ -30,7 +30,10 @@ use alsvanzelf\jsonapi\objects\MetaObject;
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable, HasLinksInterface, HasMetaInterface, HasExtensionMembersInterface {
-	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
+	use AtMemberManager;
+	use ExtensionMemberManager;
+	use HttpStatusCodeManager;
+	use LinksManager {
 		LinksManager::addLink as linkManagerAddLink;
 	}
 	
