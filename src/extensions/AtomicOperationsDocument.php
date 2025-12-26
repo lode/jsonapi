@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\extensions;
 
 use alsvanzelf\jsonapi\Document;
@@ -11,10 +13,9 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
  * document to send results of an atomic operations API
  */
 class AtomicOperationsDocument extends Document {
-	/** @var AtomicOperationsExtension */
-	private $extension;
+	private readonly AtomicOperationsExtension $extension;
 	/** @var ResourceInterface[] */
-	private $results = [];
+	private array $results = [];
 	
 	/**
 	 * start the document, auto applies the extension
@@ -31,7 +32,7 @@ class AtomicOperationsDocument extends Document {
 	 * 
 	 * @param ResourceInterface[] ...$resources
 	 */
-	public function addResults(ResourceInterface ...$resources) {
+	public function addResults(ResourceInterface ...$resources): void {
 		$this->results = array_merge($this->results, $resources);
 	}
 	
@@ -39,7 +40,7 @@ class AtomicOperationsDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$results = [];
 		foreach ($this->results as $result) {
 			$results[] = [

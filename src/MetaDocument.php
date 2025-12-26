@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
@@ -16,10 +19,9 @@ class MetaDocument extends Document {
 	 */
 	
 	/**
-	 * @param  array $meta
-	 * @return MetaDocument
+	 * @param  array<string, mixed> $meta
 	 */
-	public static function fromArray(array $meta) {
+	public static function fromArray(array $meta): self {
 		$metaDocument = new self();
 		$metaDocument->setMetaObject(MetaObject::fromArray($meta));
 		
@@ -27,10 +29,9 @@ class MetaDocument extends Document {
 	}
 	
 	/**
-	 * @param  object $meta
-	 * @return MetaDocument
+	 * @param object $meta
 	 */
-	public static function fromObject($meta) {
+	public static function fromObject(object $meta): self {
 		$array = Converter::objectToArray($meta);
 		
 		return self::fromArray($array);
@@ -38,12 +39,8 @@ class MetaDocument extends Document {
 	
 	/**
 	 * wrapper for Document::addMeta() to the primary data of this document available via `add()`
-	 * 
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
 	 */
-	public function add($key, $value, $level=Document::LEVEL_ROOT) {
+	public function add(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		parent::addMeta($key, $value, $level);
 	}
 	
@@ -55,7 +52,7 @@ class MetaDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		// force meta to be set, and be an object when converting to json

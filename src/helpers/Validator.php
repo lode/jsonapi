@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -10,18 +13,12 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
  * @internal
  */
 class Validator {
-	const OBJECT_CONTAINER_TYPE          = 'type';
-	const OBJECT_CONTAINER_ID            = 'id';
-	const OBJECT_CONTAINER_LID           = 'lid';
-	const OBJECT_CONTAINER_ATTRIBUTES    = 'attributes';
-	const OBJECT_CONTAINER_RELATIONSHIPS = 'relationships';
-	
-	/** @var array */
-	protected $usedFields = [];
-	/** @var array */
-	protected $usedResourceIdentifiers = [];
-	/** @var array */
-	protected static $defaults = [
+	/** @var array<string, ObjectContainerEnum> */
+	protected array $usedFields = [];
+	/** @var array<string, true> */
+	protected array $usedResourceIdentifiers = [];
+	/** @var PHPStanTypeAlias_InternalOptions */
+	protected static array $defaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
 		 * the specification doesn't allow this as 'type' is already set at the root of a resource
@@ -35,13 +32,12 @@ class Validator {
 	 * 
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
-	 * @param  string[] $fieldNames
-	 * @param  string   $objectContainer one of the Validator::OBJECT_CONTAINER_* constants
-	 * @param  array    $options         optional {@see Validator::$defaults}
+	 * @param  string[]                         $fieldNames
+	 * @param  PHPStanTypeAlias_InternalOptions $options    {@see Validator::$defaults}
 	 * 
 	 * @throws DuplicateException
 	 */
-	public function claimUsedFields(array $fieldNames, $objectContainer, array $options=[]) {
+	public function claimUsedFields(array $fieldNames, ObjectContainerEnum $objectContainer, array $options=[]): void {
 		$options = array_merge(self::$defaults, $options);
 		
 		foreach ($fieldNames as $fieldName) {
@@ -56,18 +52,15 @@ class Validator {
 			/**
 			 * @note this is not allowed by the specification
 			 */
-			if ($this->usedFields[$fieldName] === Validator::OBJECT_CONTAINER_TYPE && $options['enforceTypeFieldNamespace'] === false) {
+			if ($this->usedFields[$fieldName] === ObjectContainerEnum::Type && $options['enforceTypeFieldNamespace'] === false) {
 				continue;
 			}
 			
-			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName].'"');
+			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName]->value.'"');
 		}
 	}
 	
-	/**
-	 * @param string $objectContainerToClear one of the Validator::OBJECT_CONTAINER_* constants
-	 */
-	public function clearUsedFields($objectContainerToClear) {
+	public function clearUsedFields(ObjectContainerEnum $objectContainerToClear): void {
 		foreach ($this->usedFields as $fieldName => $containerFound) {
 			if ($containerFound !== $objectContainerToClear) {
 				continue;
@@ -78,12 +71,10 @@ class Validator {
 	}
 	
 	/**
-	 * @param  ResourceInterface $resource
-	 * 
 	 * @throws InputException if no type or id has been set on the resource
 	 * @throws DuplicateException if the combination of type and id has been set before
 	 */
-	public function claimUsedResourceIdentifier(ResourceInterface $resource) {
+	public function claimUsedResourceIdentifier(ResourceInterface $resource): void {
 		if ($resource->getResource()->hasIdentification() === false) {
 			throw new InputException('can not validate resource without identifier, set type and id/lid first');
 		}
@@ -102,11 +93,9 @@ class Validator {
 	 * 
 	 * @todo allow non-url safe chars
 	 * 
-	 * @param  string $memberName
-	 * 
 	 * @throws InputException
 	 */
-	public static function checkMemberName($memberName) {
+	public static function checkMemberName(string $memberName): void {
 		$globallyAllowedCharacters  = 'a-zA-Z0-9';
 		$generallyAllowedCharacters = $globallyAllowedCharacters.'_-';
 		
@@ -129,11 +118,7 @@ class Validator {
 		throw new InputException('invalid member name "'.$memberName.'"');
 	}
 	
-	/**
-	 * @param  string|int $httpStatusCode
-	 * @return boolean
-	 */
-	public static function checkHttpStatusCode($httpStatusCode) {
+	public static function checkHttpStatusCode(string|int $httpStatusCode): bool {
 		$httpStatusCode = (int) $httpStatusCode;
 		
 		if ($httpStatusCode < 100) {

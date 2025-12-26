@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\DataDocument;
@@ -18,9 +20,9 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
  */
 class CollectionDocument extends DataDocument implements PaginableInterface, ResourceContainerInterface {
 	/** @var ResourceInterface[] */
-	protected $resources = [];
-	/** @var array */
-	protected static $defaults = [
+	protected array $resources = [];
+	/** @var PHPStanTypeAlias_InternalOptions */
+	protected static array $defaults = [
 		/**
 		 * add resources inside relationships to /included when adding resources to the collection
 		 */
@@ -35,11 +37,8 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * generate a CollectionDocument from one or multiple resources
 	 * 
 	 * adds included resources if found inside the resource's relationships, use {@see ->addResource()} to change that behavior
-	 * 
-	 * @param  ResourceInterface ...$resources
-	 * @return CollectionDocument
 	 */
-	public static function fromResources(ResourceInterface ...$resources) {
+	public static function fromResources(ResourceInterface ...$resources): self {
 		$collectionDocument = new self();
 		
 		foreach ($resources as $resource) {
@@ -50,11 +49,9 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	}
 	
 	/**
-	 * @param string     $type
-	 * @param string|int $id
-	 * @param array      $attributes optional, if given a ResourceObject is added, otherwise a ResourceIdentifierObject is added
+	 * @param array<string, mixed> $attributes if given a ResourceObject is added, otherwise a ResourceIdentifierObject is added
 	 */
-	public function add($type, $id, array $attributes=[]) {
+	public function add(string $type, string|int $id, array $attributes=[]): void {
 		if ($attributes === []) {
 			$this->addResource(new ResourceIdentifierObject($type, $id));
 		}
@@ -63,7 +60,12 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 		}
 	}
 	
-	public function setPaginationLinks($previousHref=null, $nextHref=null, $firstHref=null, $lastHref=null) {
+	public function setPaginationLinks(
+		?string $previousHref=null,
+		?string $nextHref=null,
+		?string $firstHref=null,
+		?string $lastHref=null,
+	): void {
 		if ($previousHref !== null) {
 			$this->addLink('prev', $previousHref);
 		}
@@ -87,12 +89,11 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * 
 	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param ResourceInterface $resource
-	 * @param array             $options  optional {@see CollectionDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see CollectionDocument::$defaults}
 	 * 
 	 * @throws InputException if the resource is empty
 	 */
-	public function addResource(ResourceInterface $resource, array $options=[]) {
+	public function addResource(ResourceInterface $resource, array $options=[]): void {
 		if ($resource->getResource()->isEmpty()) {
 			throw new InputException('does not make sense to add empty resources to a collection');
 		}
@@ -112,7 +113,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['data'] = [];
@@ -127,7 +128,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * ResourceContainerInterface
 	 */
 	
-	public function getContainedResources() {
+	public function getContainedResources(): array {
 		return $this->resources;
 	}
 }

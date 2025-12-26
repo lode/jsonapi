@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\profiles;
 
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -11,7 +13,7 @@ class TestProfile implements ProfileInterface {
 		$this->officialLink = $officialLink;
 	}
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return $this->officialLink;
 	}
 }

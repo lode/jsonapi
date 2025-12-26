@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\extensions;
 
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
@@ -16,11 +18,11 @@ class AtomicOperationsExtension implements ExtensionInterface {
 	 * ExtensionInterface
 	 */
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/ext/atomic/';
 	}
 	
-	public function getNamespace() {
+	public function getNamespace(): string {
 		return 'atomic';
 	}
 }

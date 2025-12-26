@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
-use PHPUnit\Framework\TestCase;
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase {
 	#[DoesNotPerformAssertions]
@@ -16,11 +19,11 @@ class ValidatorTest extends TestCase {
 		$validator = new Validator();
 		
 		$fieldNames      = ['foo'];
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$fieldNames      = ['bar'];
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
@@ -28,12 +31,12 @@ class ValidatorTest extends TestCase {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$this->expectException(DuplicateException::class);
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_RELATIONSHIPS;
+		$objectContainer = ObjectContainerEnum::Relationships;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
@@ -42,10 +45,10 @@ class ValidatorTest extends TestCase {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
@@ -54,10 +57,10 @@ class ValidatorTest extends TestCase {
 		$validator  = new Validator();
 		$fieldNames = ['type'];
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_TYPE;
+		$objectContainer = ObjectContainerEnum::Type;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$options         = ['enforceTypeFieldNamespace' => false];
 		$validator->claimUsedFields($fieldNames, $objectContainer, $options);
 	}
@@ -67,7 +70,7 @@ class ValidatorTest extends TestCase {
 		$validator       = new Validator();
 		
 		$fieldNames      = ['foo'];
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$validator->clearUsedFields($objectContainer);
@@ -77,13 +80,13 @@ class ValidatorTest extends TestCase {
 		$validator  = new Validator();
 		
 		$fieldNames      = ['foo', 'bar'];
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$thrown = false;
 		try {
 			$fieldNames      = ['bar'];
-			$objectContainer = Validator::OBJECT_CONTAINER_RELATIONSHIPS;
+			$objectContainer = ObjectContainerEnum::Relationships;
 			$validator->claimUsedFields($fieldNames, $objectContainer);
 		}
 		catch (DuplicateException) {
@@ -91,21 +94,21 @@ class ValidatorTest extends TestCase {
 		}
 		$this->assertTrue($thrown);
 		
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->clearUsedFields($objectContainer);
 		
 		$fieldNames      = ['foo'];
-		$objectContainer = Validator::OBJECT_CONTAINER_ATTRIBUTES;
+		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$fieldNames      = ['bar'];
-		$objectContainer = Validator::OBJECT_CONTAINER_RELATIONSHIPS;
+		$objectContainer = ObjectContainerEnum::Relationships;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 		
 		$this->expectException(DuplicateException::class);
 		
 		$fieldNames      = ['foo'];
-		$objectContainer = Validator::OBJECT_CONTAINER_RELATIONSHIPS;
+		$objectContainer = ObjectContainerEnum::Relationships;
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	

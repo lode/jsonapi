@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\JsonapiVersionEnum;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -10,19 +13,14 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject extends AbstractObject implements HasMetaInterface {
-	/** @var string */
-	protected $version;
+	protected JsonapiVersionEnum $version;
 	/** @var ExtensionInterface[] */
-	protected $extensions = [];
+	protected array $extensions = [];
 	/** @var ProfileInterface[] */
-	protected $profiles = [];
-	/** @var MetaObject */
-	protected $meta;
+	protected array $profiles = [];
+	protected MetaObject $meta;
 	
-	/**
-	 * @param ?string $version one of the Document::JSONAPI_VERSION_* constants, optional, defaults to Document::JSONAPI_VERSION_LATEST
-	 */
-	public function __construct($version=Document::JSONAPI_VERSION_LATEST) {
+	public function __construct(?JsonapiVersionEnum $version=JsonapiVersionEnum::Latest) {
 		if ($version !== null) {
 			$this->setVersion($version);
 		}
@@ -32,12 +30,8 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * human api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
-		if ($this->meta === null) {
+	public function addMeta(string $key, mixed $value): void {
+		if (isset($this->meta) === false) {
 			$this->setMetaObject(new MetaObject());
 		}
 		
@@ -48,31 +42,19 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $version
-	 */
-	public function setVersion($version) {
+	public function setVersion(JsonapiVersionEnum $version): void {
 		$this->version = $version;
 	}
 	
-	/**
-	 * @param ExtensionInterface $extension
-	 */
-	public function addExtension(ExtensionInterface $extension) {
+	public function addExtension(ExtensionInterface $extension): void {
 		$this->extensions[] = $extension;
 	}
 	
-	/**
-	 * @param ProfileInterface $profile
-	 */
-	public function addProfile(ProfileInterface $profile) {
+	public function addProfile(ProfileInterface $profile): void {
 		$this->profiles[] = $profile;
 	}
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
@@ -80,8 +62,8 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
-		if ($this->version !== null) {
+	public function isEmpty(): bool {
+		if (isset($this->version)) {
 			return false;
 		}
 		if ($this->extensions !== []) {
@@ -90,7 +72,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		if ($this->profiles !== []) {
 			return false;
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
@@ -103,7 +85,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
@@ -112,8 +94,8 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		if ($this->hasExtensionMembers()) {
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
-		if ($this->version !== null) {
-			$array['version'] = $this->version;
+		if (isset($this->version)) {
+			$array['version'] = $this->version->value;
 		}
 		if ($this->extensions !== []) {
 			$array['ext'] = [];
@@ -127,7 +109,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 				$array['profile'][] = $profile->getOfficialLink();
 			}
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		

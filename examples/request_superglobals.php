@@ -1,6 +1,8 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
+declare(strict_types=1);
+
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
 
 require 'bootstrap_examples.php';
@@ -44,7 +46,7 @@ $_POST = [
 $_SERVER['REQUEST_SCHEME'] = 'https';
 $_SERVER['HTTP_HOST']      = 'example.org';
 $_SERVER['REQUEST_URI']    = '/user/42?'.http_build_query($_GET);
-$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 
 /**
  * parsing the request

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 /**
@@ -11,11 +12,11 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
  */
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
-	protected $errors = [];
-	/** @var array */
-	protected $httpStatusCodes;
-	/** @var array */
-	protected static $defaults = [
+	protected array $errors = [];
+	/** @var array<number, array<number, true>> */
+	protected array $httpStatusCodes;
+	/** @var PHPStanTypeAlias_InternalOptions */
+	protected static array $defaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
 		 * in some cases it might be handy to disable if traces are too big
@@ -28,9 +29,6 @@ class ErrorsDocument extends Document {
 		'includeExceptionPrevious' => true,
 	];
 	
-	/**
-	 * @param ?ErrorObject $errorObject optional
-	 */
 	public function __construct(?ErrorObject $errorObject=null) {
 		parent::__construct();
 		
@@ -44,11 +42,9 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param  \Throwable $exception
-	 * @param  array                 $options   optional {@see ErrorsDocument::$defaults}
-	 * @return ErrorsDocument
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
-	public static function fromException(\Throwable $exception, array $options=[]) {
+	public static function fromException(\Throwable $exception, array $options=[]): self {
 		$options = array_merge(self::$defaults, $options);
 		
 		$errorsDocument = new self();
@@ -62,10 +58,9 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param \Throwable $exception
-	 * @param array                 $options   optional {@see ErrorsDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
-	public function addException(\Throwable $exception, array $options=[]) {
+	public function addException(\Throwable $exception, array $options=[]): void {
 		$options = array_merge(self::$defaults, $options);
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));
@@ -82,11 +77,17 @@ class ErrorsDocument extends Document {
 	/**
 	 * @param string|int $genericCode       developer-friendly code of the generic type of error
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
-	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
-	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
-	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
+	 * @param string     $specificDetails   human-friendly explanation of the specific error
+	 * @param string     $specificAboutLink human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   human-friendly explanation of the generic type of error
 	 */
-	public function add($genericCode, $genericTitle, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
+	public function add(
+		string|int $genericCode,
+		string $genericTitle,
+		?string $specificDetails=null,
+		?string $specificAboutLink=null,
+		?string $genericTypeLink=null,
+	): void {
 		$errorObject = new ErrorObject($genericCode, $genericTitle, $specificDetails, $specificAboutLink, $genericTypeLink);
 		
 		$this->addErrorObject($errorObject);
@@ -98,10 +99,8 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @note also defines the http status code of the document if the ErrorObject has it defined
-	 * 
-	 * @param ErrorObject $errorObject
 	 */
-	public function addErrorObject(ErrorObject $errorObject) {
+	public function addErrorObject(ErrorObject $errorObject): void {
 		$this->errors[] = $errorObject;
 		
 		if ($errorObject->hasHttpStatusCode()) {
@@ -113,7 +112,7 @@ class ErrorsDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['errors'] = [];
@@ -134,11 +133,8 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @internal
-	 * 
-	 * @param  string|int $httpStatusCode
-	 * @return int
 	 */
-	protected function determineHttpStatusCode($httpStatusCode) {
+	protected function determineHttpStatusCode(string|int $httpStatusCode): int {
 		// add the new code
 		$category = substr((string) $httpStatusCode, 0, 1);
 		$this->httpStatusCodes[$category][$httpStatusCode] = true;

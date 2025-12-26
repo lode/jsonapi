@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
@@ -45,7 +48,7 @@ $document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[],
  * to-many relationship, one-by-one
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($friend1Resource);
 $relationshipObject->addResource($friend2Resource);
 
@@ -65,7 +68,7 @@ $document->addRelationship('included-friends', $friends);
  * to-many relationship, different types
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($ship1Resource);
 $relationshipObject->addResource($dockResource);
 

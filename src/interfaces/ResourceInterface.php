@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\interfaces;
 
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
@@ -9,8 +11,7 @@ interface ResourceInterface {
 	/**
 	 * @internal
 	 * 
-	 * @param  boolean $identifierOnly optional, defaults to false
-	 * @return ResourceIdentifierObject|ResourceObject
+	 * @return ($identifierOnly is true ? ResourceIdentifierObject : ResourceObject)
 	 */
-	public function getResource($identifierOnly=false);
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject;
 }

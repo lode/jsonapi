@@ -1,7 +1,9 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\MetaDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 
 require 'bootstrap_examples.php';
 
@@ -73,4 +75,4 @@ echo '<pre style="font-size: large;">$document->sendResponse();</pre>';
 echo '<pre>';
 $document->sendResponse($options);
 echo '</pre>';
-echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.']</em></p>';
+echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.ContentTypeEnum::Official->value.']</em></p>';

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -68,7 +71,7 @@ class DocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
 		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=Document::LEVEL_JSONAPI);
+		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Jsonapi);
 	}
 	
 	public function testAddLink_BlocksResourceLevel() {
@@ -77,16 +80,7 @@ class DocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=Document::LEVEL_RESOURCE);
-	}
-	
-	public function testAddLink_BlocksUnknownLevel() {
-		$document = new Document();
-		
-		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('unknown level "foo"');
-		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level='foo');
+		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Resource);
 	}
 	
 	public function testSetSelfLink_HappyPath() {
@@ -160,7 +154,7 @@ class DocumentTest extends TestCase {
 		$this->assertArrayHasKey('jsonapi', $array);
 		$this->assertArrayNotHasKey('meta', $array['jsonapi']);
 		
-		$document->addMeta('foo', 'bar', $level=Document::LEVEL_JSONAPI);
+		$document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		
@@ -178,16 +172,7 @@ class DocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$document->addMeta('foo', 'bar', $level=Document::LEVEL_RESOURCE);
-	}
-	
-	public function testAddMeta_BlocksUnknownLevel() {
-		$document = new Document();
-		
-		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('unknown level "foo"');
-		
-		$document->addMeta('foo', 'bar', $level='foo');
+		$document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Resource);
 	}
 	
 	public function testAddLinkObject_HappyPath() {

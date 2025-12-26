@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\helpers\LinksManager;
@@ -11,7 +13,7 @@ class TestableNonTraitLinksManager {
 	use LinksManager;
 	
 	public function toArray() {
-		if ($this->links === null) {
+		if ($this->hasLinks() === false) {
 			return [];
 		}
 		

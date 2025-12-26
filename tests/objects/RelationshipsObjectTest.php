@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
@@ -94,7 +97,7 @@ class RelationshipsObjectTest extends TestCase {
 	}
 	
 	public function testToArray_EmptyRelationship() {
-		$relationshipObject  = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject  = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipsObject = new RelationshipsObject();
 		
 		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);

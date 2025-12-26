@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\AttributesObject;
@@ -86,9 +88,9 @@ class ResourceDocumentTest extends TestCase {
 	
 	public function testAddMeta_HappyPath() {
 		$document = new ResourceDocument();
-		$document->addMeta('foo', 'root', $level=Document::LEVEL_ROOT);
-		$document->addMeta('bar', 'resource', $level=Document::LEVEL_RESOURCE);
-		$document->addMeta('baz', 'jsonapi', $level=Document::LEVEL_JSONAPI);
+		$document->addMeta('foo', 'root', $level=DocumentLevelEnum::Root);
+		$document->addMeta('bar', 'resource', $level=DocumentLevelEnum::Resource);
+		$document->addMeta('baz', 'jsonapi', $level=DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		
@@ -122,7 +124,7 @@ class ResourceDocumentTest extends TestCase {
 		
 		$this->assertArrayNotHasKey('jsonapi', $array);
 		
-		$document->addMeta('baz', 'jsonapi', $level=Document::LEVEL_JSONAPI);
+		$document->addMeta('baz', 'jsonapi', $level=DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		

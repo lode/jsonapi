@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -127,7 +130,7 @@ class ResourceObjectTest extends TestCase {
 	}
 	
 	public function testAddRelationshipObject_HappyPath() {
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$resourceObject = new ResourceObject('user', 24);
@@ -151,7 +154,7 @@ class ResourceObjectTest extends TestCase {
 	}
 	
 	public function testAddRelationshipObject_BlockDrosteEffect() {
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$resourceObject = new ResourceObject('user', 42);

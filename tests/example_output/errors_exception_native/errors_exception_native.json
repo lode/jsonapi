@@ -11,7 +11,7 @@
 				"message": "unknown user",
 				"code": 404,
 				"file": "/errors_exception_native.php",
-				"line": 9
+				"line": 11
 			}
 		}
 	]

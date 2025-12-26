@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\Exception;
@@ -141,9 +143,9 @@ class ResourceIdentifierObjectTest extends TestCase {
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
+		$this->assertArrayNotHasKey('type', $array);
 		$this->assertArrayNotHasKey('id', $array);
-		$this->assertNull($array['type']);
+		$this->assertSame([], $array);
 		$this->assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$this->expectException(Exception::class);

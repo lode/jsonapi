@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\at_members_everywhere;
 
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
@@ -87,7 +90,7 @@ class at_members_everywhere {
 		$metaObject = new MetaObject();
 		$metaObject->addAtMember('context', '/data/relationships/foo/meta/@context');
 		
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->addAtMember('context', '/data/relationships/foo/@context');
 		$relationshipObject->setResource($resourceObject);
 		$relationshipObject->setLinksObject($linksObject);
@@ -102,7 +105,7 @@ class at_members_everywhere {
 		$resourceIdentifierObject->addAtMember('context', '/data/relationships/bar/data/@context');
 		$resourceIdentifierObject->setMetaObject($metaObject);
 		
-		$relationshipObject = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->addAtMember('context', '/data/relationships/bar/@context');
 		$relationshipObject->setResource($resourceIdentifierObject);
 		

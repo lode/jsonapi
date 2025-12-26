@@ -1,7 +1,9 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 
 require 'bootstrap_examples.php';
@@ -30,7 +32,7 @@ $profile->setTimestamps($document, $created, $updated);
  * get the json
  */
 
-$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, [], [$profile]);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

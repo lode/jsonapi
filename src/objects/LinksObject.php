@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
@@ -9,18 +11,17 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
 class LinksObject extends AbstractObject {
-	/** @var array with string|LinkObject */
-	protected $links = [];
+	/** @var array<string, string|LinkObject> */
+	protected array $links = [];
 	
 	/**
 	 * human api
 	 */
 	
 	/**
-	 * @param  array  $links key-value with values being href strings
-	 * @return LinksObject
+	 * @param array<string, ?string> $links key-value with values being href strings
 	 */
-	public static function fromArray(array $links) {
+	public static function fromArray(array $links): LinksObject {
 		$linksObject = new self();
 		
 		foreach ($links as $key => $href) {
@@ -30,22 +31,16 @@ class LinksObject extends AbstractObject {
 		return $linksObject;
 	}
 	
-	/**
-	 * @param  object $links
-	 * @return LinksObject
-	 */
-	public static function fromObject($links) {
+	public static function fromObject(object $links): LinksObject {
 		$array = Converter::objectToArray($links);
 		
 		return self::fromArray($array);
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function add($key, $href, array $meta=[]) {
+	public function add(string $key, ?string $href, array $meta=[]): void {
 		if ($meta === []) {
 			$this->addLinkString($key, $href);
 		}
@@ -59,12 +54,9 @@ class LinksObject extends AbstractObject {
 	 */
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * 
 	 * @throws DuplicateException if another link is already using that $key
 	 */
-	public function addLinkString($key, $href) {
+	public function addLinkString(string $key, ?string $href): void {
 		Validator::checkMemberName($key);
 		
 		if (isset($this->links[$key])) {
@@ -75,12 +67,9 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 * 
 	 * @throws DuplicateException if another link is already using that $key
 	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
+	public function addLinkObject(string $key, LinkObject $linkObject): void {
 		Validator::checkMemberName($key);
 		
 		if (isset($this->links[$key])) {
@@ -94,7 +83,7 @@ class LinksObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->links !== []) {
 			return false;
 		}
@@ -108,7 +97,7 @@ class LinksObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {

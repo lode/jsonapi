@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\relationships;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
@@ -43,7 +46,7 @@ class relationships {
 		 * to-many relationship, one-by-one
 		 */
 		
-		$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+		$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource($friend1Resource);
 		$relationshipObject->addResource($friend2Resource);
 		
@@ -63,7 +66,7 @@ class relationships {
 		 * to-many relationship, different types
 		 */
 		
-		$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+		$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource($ship1Resource);
 		$relationshipObject->addResource($dockResource);
 		

@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
+use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 // @see https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md for more rules
 
@@ -12,16 +14,23 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 		__DIR__ . '/examples',
 	])
-
+	->withRules([
+		DeclareStrictTypesRector::class,
+	])
+	->withSkip([
+		// better explicit readability
+		IfIssetToCoalescingRector::class,
+	])
+	
 	// tab-based indenting
 	->withIndent(indentChar: "\t", indentSize: 1)
-
-	// slowly increase php version
+	
+	// lowest supported php version
 	->withPhpSets(php82: true)
-
+	
 	// slowly increase levels
 	->withTypeCoverageLevel(1)
 	->withDeadCodeLevel(1)
-
+	
 	// @todo add `->withPreparedSets()` once on a higher level with other rules
 ;

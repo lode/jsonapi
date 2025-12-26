@@ -10,5 +10,6 @@ use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 
 abstract class AbstractObject implements ObjectInterface, HasExtensionMembersInterface {
-	use AtMemberManager, ExtensionMemberManager;
+	use AtMemberManager;
+	use ExtensionMemberManager;
 }

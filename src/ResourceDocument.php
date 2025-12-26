@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\DataDocument;
 use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Converter;
@@ -23,10 +26,9 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
  * a CollectionDocument should be used if the primary Resource is (or can be) a set
  */
 class ResourceDocument extends DataDocument implements HasAttributesInterface, ResourceInterface {
-	/** @var ResourceIdentifierObject|ResourceObject */
-	protected $resource;
-	/** @var array */
-	protected static $defaults = [
+	protected ResourceIdentifierObject|ResourceObject $resource;
+	/** @var PHPStanTypeAlias_InternalOptions */
+	protected static array $defaults = [
 		/**
 		 * add resources inside relationships to /included when adding resources to the collection
 		 */
@@ -37,11 +39,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * @note $type and $id are optional to pass during construction
 	 *       however they are required for a valid ResourceDocument
 	 *       so use ->setPrimaryResource() if not passing them during construction
-	 * 
-	 * @param string     $type optional
-	 * @param string|int $id   optional
 	 */
-	public function __construct($type=null, $id=null) {
+	public function __construct(?string $type=null, string|int|null $id=null) {
 		parent::__construct();
 		
 		$this->setPrimaryResource(new ResourceObject($type, $id));
@@ -52,13 +51,14 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 */
 	
 	/**
-	 * @param  array      $attributes
-	 * @param  string     $type       optional
-	 * @param  string|int $id         optional
-	 * @param  array      $options    optional {@see ResourceDocument::$defaults} {@see ResourceObject::$defaults}
-	 * @return ResourceDocument
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults} {@see ResourceObject::$defaults}
 	 */
-	public static function fromArray(array $attributes, $type=null, $id=null, array $options=[]) {
+	public static function fromArray(
+		array $attributes,
+		?string $type=null,
+		string|int|null $id=null,
+		array $options=[],
+	): self {
 		$resourceDocument = new self();
 		$resourceDocument->setPrimaryResource(ResourceObject::fromArray($attributes, $type, $id, $options), $options);
 		
@@ -66,13 +66,14 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	}
 	
 	/**
-	 * @param  object     $attributes
-	 * @param  string     $type       optional
-	 * @param  string|int $id         optional
-	 * @param  array      $options    optional {@see ResourceDocument::$defaults}
-	 * @return ResourceDocument
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
 	 */
-	public static function fromObject($attributes, $type=null, $id=null, array $options=[]) {
+	public static function fromObject(
+		object $attributes,
+		?string $type=null,
+		string|int|null $id=null,
+		array $options=[],
+	): self {
 		$array = Converter::objectToArray($attributes);
 		
 		return self::fromArray($array, $type, $id, $options);
@@ -81,11 +82,10 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * add key-value pairs to the resource's attributes
 	 * 
-	 * @param string $key
-	 * @param mixed  $value   objects will be converted using `get_object_vars()`
-	 * @param array  $options optional {@see ResourceDocument::$defaults}
+	 * @param mixed                            $value   objects will be converted using `get_object_vars()`
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
 	 */
-	public function add($key, $value, array $options=[]) {
+	public function add(string $key, mixed $value, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -98,13 +98,18 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the relation, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param string  $key
-	 * @param mixed   $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param array   $links    optional
-	 * @param array   $meta     optional
-	 * @param array   $options  optional {@see ResourceDocument::$defaults}
+	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
+	 * @param array<string, ?string>                                        $links
+	 * @param array<string, mixed>                                          $meta
+	 * @param PHPStanTypeAlias_InternalOptions                              $options {@see ResourceDocument::$defaults}
 	 */
-	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
+	public function addRelationship(
+		string $key,
+		array|CollectionDocument|ResourceInterface|null $relation,
+		array $links=[],
+		array $meta=[],
+		array $options=[],
+	): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -119,17 +124,16 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 * if $meta is given, a LinkObject is added, otherwise a link string is added
+	 * 
+	 * @param array<string, mixed> $meta
 	 */
-	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
+	public function addLink(string $key, ?string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === Document::LEVEL_RESOURCE) {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->addLink($key, $href, $meta);
 		}
 		else {
@@ -140,15 +144,14 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * set the self link on the resource
 	 * 
-	 * @param string $href
-	 * @param array  $meta optional
+	 * @param array<string, mixed> $meta
 	 */
-	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_RESOURCE) {
+	public function setSelfLink(string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Resource): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === Document::LEVEL_RESOURCE) {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->setSelfLink($href, $meta);
 		}
 		else {
@@ -156,13 +159,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		}
 	}
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
-	 */
-	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_RESOURCE) {
+	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
+		if ($level === DocumentLevelEnum::Resource) {
 			$this->resource->addMeta($key, $value);
 		}
 		else {
@@ -174,32 +172,28 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * wrapping ResourceObject spec api
 	 */
 	
-	/**
-	 * @param string $type
-	 */
-	public function setType($type) {
+	public function setType(string $type): void {
 		$this->resource->setType($type);
 	}
 	
 	/**
-	 * @param string|int $id will be casted to a string
+	 * int $id will be casted to a string
 	 */
-	public function setId($id) {
+	public function setId(string|int $id): void {
 		$this->resource->setId($id);
 	}
 	
 	/**
-	 * @param string|int $localId will be casted to a string
+	 * int $localId will be casted to a string
 	 */
-	public function setLocalId($localId) {
+	public function setLocalId(string|int $localId): void {
 		$this->resource->setLocalId($localId);
 	}
 	
 	/**
-	 * @param AttributesObject $attributesObject
-	 * @param array            $options          optional {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
-	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
+	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -212,11 +206,9 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the RelationshipObject, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param string             $key
-	 * @param RelationshipObject $relationshipObject
-	 * @param array              $options            optional {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
 	 */
-	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
+	public function addRelationshipObject(string $key, RelationshipObject $relationshipObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -235,10 +227,9 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the RelationshipObjects inside the RelationshipsObject, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param RelationshipsObject $relationshipsObject
-	 * @param array               $options             optional {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
 	 */
-	public function setRelationshipsObject(RelationshipsObject $relationshipsObject, array $options=[]) {
+	public function setRelationshipsObject(RelationshipsObject $relationshipsObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
@@ -261,12 +252,11 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param ResourceInterface $resource
-	 * @param array             $options  optional {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
 	 * 
 	 * @throws InputException if the $resource is a ResourceDocument itself
 	 */
-	public function setPrimaryResource(ResourceInterface $resource, array $options=[]) {
+	public function setPrimaryResource(ResourceInterface $resource, array $options=[]): void {
 		if ($resource instanceof ResourceDocument) {
 			throw new InputException('does not make sense to set a document inside a document, use ResourceObject or ResourceIdentifierObject instead');
 		}
@@ -290,11 +280,11 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['data'] = null;
-		if ($this->resource !== null && $this->resource->isEmpty() === false) {
+		if ($this->resource->isEmpty() === false) {
 			$array['data'] = $this->resource->toArray();
 		}
 		
@@ -305,15 +295,15 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute($key, $value, array $options=[]) {
-		return $this->add($key, $value);
+	public function addAttribute(string $key, mixed $value, array $options=[]): void {
+		$this->add($key, $value);
 	}
 	
 	/**
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject {
 		return $this->resource->getResource($identifierOnly);
 	}
 }

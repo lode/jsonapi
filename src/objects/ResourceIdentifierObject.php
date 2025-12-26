@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
@@ -11,26 +15,18 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class ResourceIdentifierObject extends AbstractObject implements HasMetaInterface, ResourceInterface {
-	/** @var string */
-	protected $type;
-	/** @var string */
-	protected $id;
-	/** @var string */
-	protected $lid;
-	/** @var MetaObject */
-	protected $meta;
-	/** @var Validator */
-	protected $validator;
+	protected string $type;
+	protected string $id;
+	protected string $lid;
+	protected MetaObject $meta;
+	protected readonly Validator $validator;
 	
 	/**
 	 * @note $type and $id are optional to pass during construction
 	 *       however they are required for a valid ResourceIdentifierObject
 	 *       so use ->setType() and ->setId() if not passing them during construction
-	 * 
-	 * @param string     $type optional
-	 * @param string|int $id   optional
 	 */
-	public function __construct($type=null, $id=null) {
+	public function __construct(?string $type=null, string|int|null $id=null) {
 		$this->validator = new Validator();
 		
 		if ($type !== null) {
@@ -41,21 +37,17 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		// always mark as used, as these keys are reserved
-		$this->validator->claimUsedFields($fieldNames=['type'], Validator::OBJECT_CONTAINER_TYPE);
-		$this->validator->claimUsedFields($fieldNames=['id'], Validator::OBJECT_CONTAINER_ID);
-		$this->validator->claimUsedFields($fieldNames=['lid'], Validator::OBJECT_CONTAINER_LID);
+		$this->validator->claimUsedFields($fieldNames=['type'], ObjectContainerEnum::Type);
+		$this->validator->claimUsedFields($fieldNames=['id'], ObjectContainerEnum::Id);
+		$this->validator->claimUsedFields($fieldNames=['lid'], ObjectContainerEnum::Lid);
 	}
 	
 	/**
 	 * human api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function addMeta($key, $value) {
-		if ($this->meta === null) {
+	public function addMeta(string $key, mixed $value): void {
+		if (isset($this->meta) === false) {
 			$this->setMetaObject(new MetaObject());
 		}
 		
@@ -66,20 +58,17 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $type
-	 */
-	public function setType($type) {
+	public function setType(string $type): void {
 		$this->type = $type;
 	}
 	
 	/**
-	 * @param string|int $id will be casted to a string
+	 * int $id will be casted to a string
 	 * 
 	 * @throws DuplicateException if localId is already set
 	 */
-	public function setId($id) {
-		if ($this->lid !== null) {
+	public function setId(string|int $id): void {
+		if (isset($this->lid)) {
 			throw new DuplicateException('id is not allowed when localId is already set');
 		}
 		
@@ -91,22 +80,19 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * 
 	 * @note this should not be used to send back from the server to the client
 	 * 
-	 * @param string|int $localId will be casted to a string
+	 * int $localId will be casted to a string
 	 * 
 	 * @throws DuplicateException if normal id is already set
 	 */
-	public function setLocalId($localId) {
-		if ($this->id !== null) {
+	public function setLocalId(string|int $localId): void {
+		if (isset($this->id)) {
 			throw new DuplicateException('localId is not allowed when id is already set');
 		}
 		
 		$this->lid = (string) $localId;
 	}
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
@@ -117,13 +103,16 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	/**
 	 * @internal
 	 * 
-	 * @param  ResourceObject $resourceObject
-	 * @return ResourceIdentifierObject
+	 * @throws InputException if the $resourceoObject's type or id is not set yet
 	 */
-	public static function fromResourceObject(ResourceObject $resourceObject) {
+	public static function fromResourceObject(ResourceObject $resourceObject): self {
+		if ($resourceObject->hasIdentification() === false) {
+			throw new InputException('resource has no identification yet<');
+		}
+		
 		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->primaryId());
 		
-		if ($resourceObject->meta !== null) {
+		if (isset($resourceObject->meta)) {
 			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
 		}
 		
@@ -133,12 +122,9 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	/**
 	 * @internal
 	 * 
-	 * @param  ResourceInterface $resource
-	 * @return boolean
-	 * 
 	 * @throws Exception if one or both are missing identification
 	 */
-	public function equals(ResourceInterface $resource) {
+	public function equals(ResourceInterface $resource): bool {
 		if ($this->hasIdentification() === false || $resource->getResource()->hasIdentification() === false) {
 			throw new Exception('can not compare resources if identification is missing');
 		}
@@ -148,11 +134,17 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	
 	/**
 	 * @internal
-	 * 
-	 * @return boolean
 	 */
-	public function hasIdentification() {
-		return ($this->type !== null && $this->primaryId() !== null);
+	public function hasIdentification(): bool {
+		if (isset($this->type) === false) {
+			return false;
+		}
+		
+		if (isset($this->id) === false && isset($this->lid) === false) {
+			return false;
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -160,11 +152,9 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * 
 	 * @internal
 	 * 
-	 * @return string
-	 * 
 	 * @throws Exception if type or id is not set yet
 	 */
-	public function getIdentificationKey() {
+	public function getIdentificationKey(): string {
 		if ($this->hasIdentification() === false) {
 			throw new Exception('resource has no identification yet');
 		}
@@ -176,11 +166,14 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
-		if ($this->type !== null || $this->primaryId() !== null) {
+	public function isEmpty(): bool {
+		if (isset($this->type)) {
 			return false;
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->id) || isset($this->lid)) {
+			return false;
+		}
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
@@ -193,15 +186,16 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
-		$array['type'] = $this->type;
-		
-		if ($this->id !== null) {
+		if (isset($this->type)) {
+			$array['type'] = $this->type;
+		}
+		if (isset($this->id)) {
 			$array['id'] = $this->id;
 		}
-		elseif ($this->lid !== null) {
+		elseif (isset($this->lid)) {
 			$array['lid'] = $this->lid;
 		}
 		
@@ -212,7 +206,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		
@@ -223,7 +217,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject {
 		return $this;
 	}
 	
@@ -231,8 +225,12 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * @internal
 	 */
 	
-	private function primaryId() {
-		if ($this->lid !== null) {
+	private function primaryId(): string {
+		if (isset($this->id) === false && isset($this->lid) === false) {
+			throw new Exception('resource has no identification yet');
+		}
+		
+		if (isset($this->lid)) {
 			return $this->lid;
 		}
 		

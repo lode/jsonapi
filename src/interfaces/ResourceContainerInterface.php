@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\interfaces;
 
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
@@ -17,7 +19,7 @@ interface ResourceContainerInterface {
 	 * 
 	 * @internal
 	 * 
-	 * @return array with a mix of ResourceIdentifierObject and ResourceObject
+	 * @return ResourceInterface[]
 	 */
-	public function getContainedResources();
+	public function getContainedResources(): array;
 }

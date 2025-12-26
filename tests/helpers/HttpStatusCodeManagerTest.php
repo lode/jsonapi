@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -11,7 +13,6 @@ class HttpStatusCodeManagerTest extends TestCase {
 		$helper = new HttpStatusCodeManager();
 		
 		$this->assertFalse($helper->hasHttpStatusCode());
-		$this->assertNull($helper->getHttpStatusCode());
 		
 		$helper->setHttpStatusCode(204);
 		

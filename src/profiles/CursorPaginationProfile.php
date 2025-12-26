@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\profiles;
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
@@ -54,12 +56,14 @@ class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * set links to paginate the data using cursors of the paginated data
 	 * 
-	 * @param PaginableInterface $paginable        a CollectionDocument or RelationshipObject
-	 * @param string             $baseOrCurrentUrl
-	 * @param string             $firstCursor
-	 * @param string             $lastCursor
+	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinks(PaginableInterface $paginable, $baseOrCurrentUrl, $firstCursor, $lastCursor) {
+	public function setLinks(
+		PaginableInterface $paginable,
+		string $baseOrCurrentUrl,
+		string $firstCursor,
+		string $lastCursor,
+	): void {
 		$previousLinkObject = new LinkObject($this->generatePreviousLink($baseOrCurrentUrl, $firstCursor));
 		$nextLinkObject     = new LinkObject($this->generateNextLink($baseOrCurrentUrl, $lastCursor));
 		
@@ -67,41 +71,32 @@ class CursorPaginationProfile implements ProfileInterface {
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable        a CollectionDocument or RelationshipObject
-	 * @param string             $baseOrCurrentUrl
-	 * @param string             $lastCursor
+	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksFirstPage(PaginableInterface $paginable, $baseOrCurrentUrl, $lastCursor) {
+	public function setLinksFirstPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjectsWithoutPrevious($paginable, $baseOrCurrentUrl, $lastCursor);
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable        a CollectionDocument or RelationshipObject
-	 * @param string             $baseOrCurrentUrl
-	 * @param string             $firstCursor
+	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksLastPage(PaginableInterface $paginable, $baseOrCurrentUrl, $firstCursor) {
+	public function setLinksLastPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjectsWithoutNext($paginable, $baseOrCurrentUrl, $firstCursor);
 	}
 	
 	/**
 	 * set the cursor of a specific resource to allow pagination after or before this resource
-	 * 
-	 * @param ResourceInterface $resource
-	 * @param string            $cursor
 	 */
-	public function setCursor(ResourceInterface $resource, $cursor) {
+	public function setCursor(ResourceInterface $resource, string $cursor): void {
 		$this->setItemMeta($resource, $cursor);
 	}
 	
 	/**
 	 * set count(s) to tell about the (estimated) total size
 	 * 
-	 * @param PaginableInterface $paginable        a CollectionDocument or RelationshipObject
-	 * @param int                $exactTotal       optional
-	 * @param int                $bestGuessTotal   optional
+	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setCount(PaginableInterface $paginable, $exactTotal=null, $bestGuessTotal=null) {
+	public function setCount(PaginableInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null) {
 		$this->setPaginationMeta($paginable, $exactTotal, $bestGuessTotal);
 	}
 	
@@ -111,21 +106,13 @@ class CursorPaginationProfile implements ProfileInterface {
 	
 	/**
 	 * helper to get generate a correct page[before] link, use to apply manually
-	 * 
-	 * @param  string $baseOrCurrentUrl
-	 * @param  string $beforeCursor
-	 * @return string
 	 */
-	public function generatePreviousLink($baseOrCurrentUrl, $beforeCursor) {
+	public function generatePreviousLink(string $baseOrCurrentUrl, string $beforeCursor): string {
 		return $this->setQueryParameter($baseOrCurrentUrl, 'page[before]', $beforeCursor);
 	}
 	
 	/**
 	 * helper to get generate a correct page[after] link, use to apply manually
-	 * 
-	 * @param  string $baseOrCurrentUrl
-	 * @param  string $afterCursor
-	 * @return string
 	 */
 	public function generateNextLink($baseOrCurrentUrl, $afterCursor) {
 		return $this->setQueryParameter($baseOrCurrentUrl, 'page[after]', $afterCursor);
@@ -140,42 +127,25 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * - /data/0/relationships/foo/links/prev & /data/0/relationships/foo/links/next
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-links
-	 * 
-	 * @param PaginableInterface&HasLinksInterface $paginable
-	 * @param LinkObject                           $previousLinkObject
-	 * @param LinkObject                           $nextLinkObject
 	 */
-	public function setPaginationLinkObjects(PaginableInterface $paginable, LinkObject $previousLinkObject, LinkObject $nextLinkObject) {
-		if ($paginable instanceof HasLinksInterface === false) {
-			throw new InputException('unsupported paginable to set pagination links on');
-		}
-		
+	public function setPaginationLinkObjects(
+		PaginableInterface & HasLinksInterface $paginable,
+		LinkObject $previousLinkObject,
+		LinkObject $nextLinkObject,
+	): void {
 		$paginable->addLinkObject('prev', $previousLinkObject);
 		$paginable->addLinkObject('next', $nextLinkObject);
 	}
 	
-	/**
-	 * @param PaginableInterface $paginable
-	 * @param string             $baseOrCurrentUrl
-	 * @param string             $firstCursor
-	 */
-	public function setPaginationLinkObjectsWithoutNext(PaginableInterface $paginable, $baseOrCurrentUrl, $firstCursor) {
+	public function setPaginationLinkObjectsWithoutNext(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject($this->generatePreviousLink($baseOrCurrentUrl, $firstCursor)), new LinkObject());
 	}
 	
-	/**
-	 * @param PaginableInterface $paginable
-	 * @param string             $baseOrCurrentUrl
-	 * @param string             $lastCursor
-	 */
-	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface $paginable, $baseOrCurrentUrl, $lastCursor) {
+	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject($this->generateNextLink($baseOrCurrentUrl, $lastCursor)));
 	}
 	
-	/**
-	 * @param PaginableInterface $paginable
-	 */
-	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface $paginable) {
+	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface $paginable): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject());
 	}
 	
@@ -188,21 +158,14 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * - /data/0/relationships/foo/meta/page
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-item-metadata
-	 * 
-	 * @param ResourceInterface&HasMetaInterface $resource
-	 * @param string                             $cursor
 	 */
-	public function setItemMeta(ResourceInterface $resource, $cursor) {
-		if ($resource instanceof HasMetaInterface === false) {
-			throw new InputException('resource doesn\'t support meta');
-		}
-		
+	public function setItemMeta(ResourceInterface & HasMetaInterface $resource, string $cursor): void {
 		$metadata = [
 			'cursor' => $cursor,
 		];
 		
 		if ($resource instanceof ResourceDocument) {
-			$resource->addMeta('page', $metadata, $level=Document::LEVEL_RESOURCE);
+			$resource->addMeta('page', $metadata, $level=DocumentLevelEnum::Resource);
 		}
 		else {
 			$resource->addMeta('page', $metadata);
@@ -219,16 +182,14 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * 
 	 * @see https://jsonapi.org/profiles/ethanresnick/cursor-pagination/#terms-pagination-metadata
 	 * 
-	 * @param PaginableInterface&HasMetaInterface $paginable
-	 * @param int                                 $exactTotal       optional
-	 * @param int                                 $bestGuessTotal   optional
-	 * @param boolean                             $rangeIsTruncated optional, if both after and before are supplied but the items exceed requested or max size
+	 * @param boolean $rangeIsTruncated, if both after and before are supplied but the items exceed requested or max size
 	 */
-	public function setPaginationMeta(PaginableInterface $paginable, $exactTotal=null, $bestGuessTotal=null, $rangeIsTruncated=null) {
-		if ($paginable instanceof HasMetaInterface === false) {
-			throw new InputException('paginable doesn\'t support meta');
-		}
-		
+	public function setPaginationMeta(
+		PaginableInterface & HasMetaInterface $paginable,
+		?int $exactTotal=null,
+		?int $bestGuessTotal=null,
+		?bool $rangeIsTruncated=null,
+	): void {
 		$metadata = [];
 		
 		if ($exactTotal !== null) {
@@ -250,18 +211,9 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * get an ErrorObject for when the requested sorting cannot efficiently be paginated
 	 * 
 	 * ends up at:
-	 * - /errors/0/code
-	 * - /errors/0/status
-	 * - /errors/0/source/parameter
-	 * - /errors/0/links/type/0
-	 * - /errors/0/title            optional
-	 * - /errors/0/detail           optional
-	 * 
-	 * @param  string $genericTitle    optional
-	 * @param  string $specificDetails optional
-	 * @return ErrorObject
+	 * - /errors/0/*
 	 */
-	public function getUnsupportedSortErrorObject($genericTitle=null, $specificDetails=null) {
+	public function getUnsupportedSortErrorObject(?string $genericTitle=null, ?string $specificDetails=null): ErrorObject {
 		$errorObject = new ErrorObject('Unsupported sort');
 		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort');
 		$errorObject->blameQueryParameter('sort');
@@ -278,20 +230,12 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * get an ErrorObject for when the requested page size exceeds the server-defined max page size
 	 * 
 	 * ends up at:
-	 * - /errors/0/code
-	 * - /errors/0/status
-	 * - /errors/0/source/parameter
-	 * - /errors/0/links/type/0
-	 * - /errors/0/meta/page/maxSize
-	 * - /errors/0/title             optional
-	 * - /errors/0/detail            optional
+	 * - /errors/0/*
 	 * 
-	 * @param  int    $maxSize
-	 * @param  string $genericTitle    optional, e.g. 'Page size requested is too large.'
-	 * @param  string $specificDetails optional, e.g. 'You requested a size of 200, but 100 is the maximum.'
-	 * @return ErrorObject
+	 * @param string $genericTitle    e.g. 'Page size requested is too large.'
+	 * @param string $specificDetails e.g. 'You requested a size of 200, but 100 is the maximum.'
 	 */
-	public function getMaxPageSizeExceededErrorObject($maxSize, $genericTitle=null, $specificDetails=null) {
+	public function getMaxPageSizeExceededErrorObject(int $maxSize, ?string $genericTitle=null, ?string $specificDetails=null): ErrorObject {
 		$errorObject = new ErrorObject('Max page size exceeded');
 		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
 		$errorObject->blameQueryParameter('page[size]');
@@ -309,20 +253,18 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * get an ErrorObject for when the requested page size is not a positive integer, or when the requested page after/before is not a valid cursor
 	 * 
 	 * ends up at:
-	 * - /errors/0/code
-	 * - /errors/0/status
-	 * - /errors/0/source/parameter
-	 * - /errors/0/links/type/0     optional
-	 * - /errors/0/title            optional
-	 * - /errors/0/detail           optional
+	 * - /errors/0/*
 	 * 
-	 * @param  int    $queryParameter  e.g. 'sort' or 'page[size]'
-	 * @param  string $typeLink        optional
-	 * @param  string $genericTitle    optional, e.g. 'Invalid Parameter.'
-	 * @param  string $specificDetails optional, e.g. 'page[size] must be a positive integer; got 0'
-	 * @return ErrorObject
+	 * @param  string $queryParameter  e.g. 'sort' or 'page[size]'
+	 * @param  string $genericTitle    e.g. 'Invalid Parameter.'
+	 * @param  string $specificDetails e.g. 'page[size] must be a positive integer; got 0'
 	 */
-	public function getInvalidParameterValueErrorObject($queryParameter, $typeLink=null, $genericTitle=null, $specificDetails=null) {
+	public function getInvalidParameterValueErrorObject(
+		string $queryParameter,
+		?string $typeLink=null,
+		?string $genericTitle=null,
+		?string $specificDetails=null,
+	): ErrorObject {
 		$errorObject = new ErrorObject('Invalid parameter value');
 		$errorObject->blameQueryParameter($queryParameter);
 		$errorObject->setHttpStatusCode(400);
@@ -342,15 +284,9 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * get an ErrorObject for when range pagination requests (when both 'page[after]' and 'page[before]' are requested) are not supported
 	 * 
 	 * ends up at:
-	 * - /errors/0/code
-	 * - /errors/0/status
-	 * - /errors/0/links/type/0
-	 * 
-	 * @param  string $genericTitle    optional
-	 * @param  string $specificDetails optional
-	 * @return ErrorObject
+	 * - /errors/0/*
 	 */
-	public function getRangePaginationNotSupportedErrorObject($genericTitle=null, $specificDetails=null) {
+	public function getRangePaginationNotSupportedErrorObject(?string $genericTitle=null, ?string $specificDetails=null): ErrorObject {
 		$errorObject = new ErrorObject('Range pagination not supported');
 		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported');
 		$errorObject->setHttpStatusCode(400);
@@ -368,12 +304,8 @@ class CursorPaginationProfile implements ProfileInterface {
 	
 	/**
 	 * add or adjust a key in the query string of a url
-	 * 
-	 * @param string $url
-	 * @param string $key
-	 * @param string $value
 	 */
-	private function setQueryParameter($url, $key, $value) {
+	private function setQueryParameter(string $url, string $key, string $value): string {
 		$originalQuery     = parse_url($url, PHP_URL_QUERY);
 		$decodedQuery      = urldecode($originalQuery);
 		$originalIsEncoded = ($decodedQuery !== $originalQuery);
@@ -400,7 +332,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * ProfileInterface
 	 */
 	
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/profiles/ethanresnick/cursor-pagination/';
 	}
 }
