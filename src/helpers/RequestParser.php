@@ -10,7 +10,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class RequestParser {
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * reformat the include query parameter paths to nested arrays
@@ -105,7 +105,7 @@ class RequestParser {
 	 * the nested format allows easier processing on each step of the chain
 	 * the raw format allows for custom processing
 	 * 
-	 * @param  TypeAlias_InternalOptions $options {@see RequestParser::$defaults}
+	 * @param  PHPStanTypeAlias_InternalOptions $options {@see RequestParser::$defaults}
 	 * @return string[]|array
 	 */
 	public function getIncludePaths(array $options=[]): array {
@@ -163,7 +163,7 @@ class RequestParser {
 	 * 
 	 * @todo return some kind of SortFieldObject
 	 * 
-	 * @param  TypeAlias_InternalOptions $options {@see RequestParser::$defaults}
+	 * @param  PHPStanTypeAlias_InternalOptions $options {@see RequestParser::$defaults}
 	 * @return string[]|array<array{
 	 *         field: string, // the sort field, without any minus sign for descending sort order
 	 *         order: SortOrderEnum,

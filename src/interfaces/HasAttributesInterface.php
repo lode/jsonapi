@@ -10,7 +10,7 @@ interface HasAttributesInterface {
 	 * 
 	 * @see ResourceObject::$defaults
 	 * 
-	 * @param TypeAlias_InternalOptions $options
+	 * @param PHPStanTypeAlias_InternalOptions $options
 	 */
 	public function addAttribute(string $key, mixed $value, array $options=[]): void;
 }

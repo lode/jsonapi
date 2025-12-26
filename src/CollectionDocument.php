@@ -21,7 +21,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 class CollectionDocument extends DataDocument implements PaginableInterface, ResourceContainerInterface {
 	/** @var ResourceInterface[] */
 	protected array $resources = [];
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * add resources inside relationships to /included when adding resources to the collection
@@ -89,7 +89,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * 
 	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param TypeAlias_InternalOptions $options {@see CollectionDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see CollectionDocument::$defaults}
 	 * 
 	 * @throws InputException if the resource is empty
 	 */

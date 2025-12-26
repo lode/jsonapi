@@ -23,7 +23,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	
 	protected AttributesObject $attributes;
 	protected RelationshipsObject $relationships;
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
@@ -42,8 +42,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 *       and if $id is null, it is filled with that value
 	 *       it is common to find it inside, and not doing so will cause an exception
 	 * 
-	 * @param array<string, mixed>      $attributes
-	 * @param TypeAlias_InternalOptions $options    {@see ResourceObject::$defaults}
+	 * @param array<string, mixed>             $attributes
+	 * @param PHPStanTypeAlias_InternalOptions $options    {@see ResourceObject::$defaults}
 	 */
 	public static function fromArray(array $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): self {
 		if (isset($attributes['id'])) {
@@ -61,7 +61,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
 	public static function fromObject(object $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): self {
 		$array = Converter::objectToArray($attributes);
@@ -72,7 +72,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	/**
 	 * add key-value pairs to attributes
 	 * 
-	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
 	public function add(string $key, mixed $value, array $options=[]): void {
 		$options = array_merge(self::$defaults, $options);
@@ -90,7 +90,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param array<string, ?string>                                        $links
 	 * @param array<string, mixed>                                          $meta
-	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions                              $options {@see ResourceObject::$defaults}
 	 */
 	public function addRelationship(
 		string $key,
@@ -118,7 +118,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 */
 	
 	/**
-	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]): void {
 		$newKeys = $attributesObject->getKeys();
@@ -129,7 +129,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param TypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 * 
 	 * @throws DuplicateException if the resource is contained as a resource in the relationship
 	 */

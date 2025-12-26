@@ -24,7 +24,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	/** @var array{pointer?: string, parameter?: string, header?: string} */
 	protected array $source = [];
 	protected MetaObject $meta;
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
@@ -66,7 +66,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 */
 	
 	/**
-	 * @param TypeAlias_InternalOptions $options {@see ErrorObject::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorObject::$defaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): self {
 		$options = array_merge(self::$defaults, $options);

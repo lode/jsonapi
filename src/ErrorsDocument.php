@@ -15,7 +15,7 @@ class ErrorsDocument extends Document {
 	protected array $errors = [];
 	/** @var array<number, array<number, true>> */
 	protected array $httpStatusCodes;
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
@@ -42,7 +42,7 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param TypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): self {
 		$options = array_merge(self::$defaults, $options);
@@ -58,7 +58,7 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param TypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
+	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
 	public function addException(\Throwable $exception, array $options=[]): void {
 		$options = array_merge(self::$defaults, $options);
@@ -77,9 +77,9 @@ class ErrorsDocument extends Document {
 	/**
 	 * @param string|int $genericCode       developer-friendly code of the generic type of error
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
-	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
-	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
-	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
+	 * @param string     $specificDetails   human-friendly explanation of the specific error
+	 * @param string     $specificAboutLink human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   human-friendly explanation of the generic type of error
 	 */
 	public function add(
 		string|int $genericCode,

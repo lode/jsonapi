@@ -7,7 +7,7 @@ parameters:
 		- examples/
 
 	typeAliases:
-		TypeAlias_InternalOptions: 'array<string, bool|int|null|\alsvanzelf\jsonapi\enums\ContentTypeEnum>'
+		PHPStanTypeAlias_InternalOptions: 'array<string, bool|int|null|\alsvanzelf\jsonapi\enums\ContentTypeEnum>'
 	treatPhpDocTypesAsCertain: false
 	
 	strictRules:

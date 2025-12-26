@@ -43,7 +43,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	protected array $extensions = [];
 	/** @var ProfileInterface[] */
 	protected array $profiles = [];
-	/** @var TypeAlias_InternalOptions */
+	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
 		/**
 		 * encode to json with these default options
