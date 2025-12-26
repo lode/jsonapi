@@ -13,14 +13,12 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class JsonapiObject extends AbstractObject implements HasMetaInterface {
-	/** @var JsonapiVersionEnum */
-	protected $version;
+	protected JsonapiVersionEnum $version;
 	/** @var ExtensionInterface[] */
-	protected $extensions = [];
+	protected array $extensions = [];
 	/** @var ProfileInterface[] */
-	protected $profiles = [];
-	/** @var MetaObject */
-	protected $meta;
+	protected array $profiles = [];
+	protected MetaObject $meta;
 	
 	public function __construct(?JsonapiVersionEnum $version=JsonapiVersionEnum::Latest) {
 		if ($version !== null) {
@@ -33,7 +31,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 */
 	
 	public function addMeta(string $key, mixed $value): void {
-		if ($this->meta === null) {
+		if (isset($this->meta) === false) {
 			$this->setMetaObject(new MetaObject());
 		}
 		
@@ -44,28 +42,19 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 * spec api
 	 */
 	
-	public function setVersion(JsonapiVersionEnum $version) {
+	public function setVersion(JsonapiVersionEnum $version): void {
 		$this->version = $version;
 	}
 	
-	/**
-	 * @param ExtensionInterface $extension
-	 */
-	public function addExtension(ExtensionInterface $extension) {
+	public function addExtension(ExtensionInterface $extension): void {
 		$this->extensions[] = $extension;
 	}
 	
-	/**
-	 * @param ProfileInterface $profile
-	 */
-	public function addProfile(ProfileInterface $profile) {
+	public function addProfile(ProfileInterface $profile): void {
 		$this->profiles[] = $profile;
 	}
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
@@ -74,7 +63,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 	 */
 	
 	public function isEmpty(): bool {
-		if ($this->version !== null) {
+		if (isset($this->version)) {
 			return false;
 		}
 		if ($this->extensions !== []) {
@@ -83,7 +72,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		if ($this->profiles !== []) {
 			return false;
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
@@ -105,7 +94,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 		if ($this->hasExtensionMembers()) {
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
-		if ($this->version !== null) {
+		if (isset($this->version)) {
 			$array['version'] = $this->version->value;
 		}
 		if ($this->extensions !== []) {
@@ -120,7 +109,7 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 				$array['profile'][] = $profile->getOfficialLink();
 			}
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		

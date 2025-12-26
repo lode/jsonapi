@@ -9,26 +9,19 @@ use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class LinkObject extends AbstractObject implements HasMetaInterface {
-	/** @var string */
-	protected $href;
-	/** @var string */
-	protected $rel;
-	/** @var LinkObject */
-	protected $describedby;
-	/** @var string */
-	protected $title;
-	/** @var string */
-	protected $type;
+	protected string $href;
+	protected string $rel;
+	protected LinkObject $describedby;
+	protected string $title;
+	protected string $type;
 	/** @var string[] */
-	protected $hreflang = [];
-	/** @var MetaObject */
-	protected $meta;
+	protected array $hreflang = [];
+	protected MetaObject $meta;
 	
 	/**
-	 * @param string $href
-	 * @param array  $meta optional
+	 * @param array<array-key, mixed> $meta
 	 */
-	public function __construct($href=null, array $meta=[]) {
+	public function __construct(?string $href=null, array $meta=[]) {
 		if ($href !== null) {
 			$this->setHref($href);
 		}
@@ -41,17 +34,11 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	 * human api
 	 */
 	
-	/**
-	 * @param string $href
-	 */
-	public function setDescribedBy($href) {
+	public function setDescribedBy(string $href): void {
 		$this->setDescribedByLinkObject(new LinkObject($href));
 	}
 	
-	/**
-	 * @param string $language
-	 */
-	public function addLanguage($language) {
+	public function addLanguage(string $language): void {
 		if ($this->hreflang === []) {
 			$this->setHreflang($language);
 		}
@@ -61,7 +48,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	}
 	
 	public function addMeta(string $key, mixed $value): void {
-		if ($this->meta === null) {
+		if (isset($this->meta) === false) {
 			$this->setMetaObject(new MetaObject());
 		}
 		
@@ -72,56 +59,37 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $href
-	 */
-	public function setHref($href) {
+	public function setHref(string $href): void {
 		$this->href = $href;
 	}
 	
 	/**
 	 * @todo validate according to https://tools.ietf.org/html/rfc8288#section-2.1
-	 * 
-	 * @param string $relationType
 	 */
-	public function setRelationType($relationType) {
+	public function setRelationType(string $relationType): void {
 		$this->rel = $relationType;
 	}
 	
-	/**
-	 * @param LinkObject $describedBy
-	 */
-	public function setDescribedByLinkObject(LinkObject $describedBy) {
+	public function setDescribedByLinkObject(LinkObject $describedBy): void {
 		$this->describedby = $describedBy;
 	}
 	
-	/**
-	 * @param string $humanTitle
-	 */
-	public function setHumanTitle($humanTitle) {
+	public function setHumanTitle(string $humanTitle): void {
 		$this->title = $humanTitle;
 	}
 	
-	/**
-	 * @param string $mediaType
-	 */
-	public function setMediaType($mediaType) {
+	public function setMediaType(string $mediaType): void {
 		$this->type = $mediaType;
 	}
 	
 	/**
 	 * @todo validate according to https://tools.ietf.org/html/rfc5646
-	 * 
-	 * @param string ...$hreflang
 	 */
-	public function setHreflang(...$hreflang) {
+	public function setHreflang(string ...$hreflang): void {
 		$this->hreflang = $hreflang;
 	}
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
@@ -130,25 +98,25 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 	 */
 	
 	public function isEmpty(): bool {
-		if ($this->href !== null) {
+		if (isset($this->href)) {
 			return false;
 		}
-		if ($this->rel !== null) {
+		if (isset($this->rel)) {
 			return false;
 		}
-		if ($this->title !== null) {
+		if (isset($this->title)) {
 			return false;
 		}
-		if ($this->type !== null) {
+		if (isset($this->type)) {
 			return false;
 		}
 		if ($this->hreflang !== []) {
 			return false;
 		}
-		if ($this->describedby !== null && $this->describedby->isEmpty() === false) {
+		if (isset($this->describedby) && $this->describedby->isEmpty() === false) {
 			return false;
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
@@ -171,15 +139,16 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 			$array = array_merge($array, $this->getExtensionMembers());
 		}
 		
-		$array['href'] = $this->href;
-		
-		if ($this->rel !== null) {
+		if (isset($this->href)) {
+			$array['href'] = $this->href;
+		}
+		if (isset($this->rel)) {
 			$array['rel'] = $this->rel;
 		}
-		if ($this->title !== null) {
+		if (isset($this->title)) {
 			$array['title'] = $this->title;
 		}
-		if ($this->type !== null) {
+		if (isset($this->type)) {
 			$array['type'] = $this->type;
 		}
 		if ($this->hreflang !== []) {
@@ -190,10 +159,10 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 				$array['hreflang'] = $this->hreflang;
 			}
 		}
-		if ($this->describedby !== null && $this->describedby->isEmpty() === false) {
+		if (isset($this->describedby) && $this->describedby->isEmpty() === false) {
 			$array['describedby'] = $this->describedby->toArray();
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		

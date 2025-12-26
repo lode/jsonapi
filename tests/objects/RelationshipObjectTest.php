@@ -65,16 +65,6 @@ class RelationshipObjectTest extends TestCase {
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithUnknownType() {
-		$fakeResource = new \stdClass();
-		$fakeResource->type = 'user';
-		$fakeResource->id = 42;
-		
-		$this->expectException(InputException::class);
-		
-		RelationshipObject::fromAnything($fakeResource);
-	}
-	
 	public function testFromResource_ToMany() {
 		$resourceObject = new ResourceObject('user', 42);
 		$type           = RelationshipTypeEnum::ToMany;

@@ -9,18 +9,17 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
 class MetaObject extends AbstractObject {
-	/** @var array */
-	protected $meta = [];
+	/** @var array<array-key, mixed> */
+	protected array $meta = [];
 	
 	/**
 	 * human api
 	 */
 	
 	/**
-	 * @param  array $meta
-	 * @return MetaObject
+	 * @param array<array-key, mixed> $meta
 	 */
-	public static function fromArray(array $meta) {
+	public static function fromArray(array $meta): self {
 		$metaObject = new self();
 		
 		foreach ($meta as $key => $value) {
@@ -30,11 +29,7 @@ class MetaObject extends AbstractObject {
 		return $metaObject;
 	}
 	
-	/**
-	 * @param  object $meta
-	 * @return MetaObject
-	 */
-	public static function fromObject($meta) {
+	public static function fromObject(object $meta): self {
 		$array = Converter::objectToArray($meta);
 		
 		return self::fromArray($array);
@@ -44,11 +39,7 @@ class MetaObject extends AbstractObject {
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function add($key, $value) {
+	public function add(string $key, mixed $value): void {
 		Validator::checkMemberName($key);
 		
 		if (is_object($value)) {

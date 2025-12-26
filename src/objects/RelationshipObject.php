@@ -21,15 +21,13 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 class RelationshipObject extends AbstractObject implements PaginableInterface, RecursiveResourceContainerInterface, HasLinksInterface, HasMetaInterface {
 	use LinksManager;
 	
-	/** @var MetaObject */
-	protected $meta;
-	/** @var ResourceInterface */
-	protected $resource;
+	protected MetaObject $meta;
+	protected ResourceInterface $resource;
 	/** @var ResourceInterface[] */
-	protected $resources = [];
+	protected array $resources = [];
 	
 	public function __construct(
-		protected RelationshipTypeEnum $type,
+		protected readonly RelationshipTypeEnum $type,
 	) {}
 	
 	/**
@@ -39,14 +37,17 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	/**
 	 * create a RelationshipObject from mixed input
 	 * 
-	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param  array  $links    optional
-	 * @param  array  $meta     optional
-	 * @return RelationshipObject
+	 * @param  CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
+	 * @param  array<string, ?string>                                        $links
+	 * @param  array<array-key, mixed>                                       $meta
 	 * 
 	 * @throws InputException if $relation is not one of the supported formats
 	 */
-	public static function fromAnything($relation, array $links=[], array $meta=[]) {
+	public static function fromAnything(
+		array|CollectionDocument|ResourceInterface|null $relation,
+		array $links=[],
+		array $meta=[],
+	): self {
 		if (is_array($relation)) {
 			$relation = CollectionDocument::fromResources(...$relation);
 		}
@@ -68,12 +69,15 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param  ResourceInterface $resource
-	 * @param  array             $links    optional
-	 * @param  array             $meta     optional
-	 * @return RelationshipObject
+	 * @param array<string, ?string>  $links
+	 * @param array<array-key, mixed> $meta
 	 */
-	public static function fromResource(ResourceInterface $resource, array $links=[], array $meta=[], RelationshipTypeEnum $type=RelationshipTypeEnum::ToOne) {
+	public static function fromResource(
+		ResourceInterface $resource,
+		array $links=[],
+		array $meta=[],
+		RelationshipTypeEnum $type=RelationshipTypeEnum::ToOne,
+	): self {
 		$relationshipObject = new self($type);
 		
 		match ($type) {
@@ -92,12 +96,10 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param  CollectionDocument $collectionDocument
-	 * @param  array              $links              optional
-	 * @param  array              $meta               optional
-	 * @return RelationshipObject
+	 * @param array<string, ?string>  $links
+	 * @param array<array-key, mixed> $meta
 	 */
-	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]) {
+	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): self {
 		$relationshipObject = new self(RelationshipTypeEnum::ToMany);
 		
 		foreach ($collectionDocument->getContainedResources() as $resource) {
@@ -115,18 +117,16 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setSelfLink($href, array $meta=[]) {
+	public function setSelfLink(string $href, array $meta=[]): void {
 		$this->addLink('self', $href, $meta);
 	}
 	
 	/**
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setRelatedLink($href, array $meta=[]) {
+	public function setRelatedLink(string $href, array $meta=[]): void {
 		$this->addLink('related', $href, $meta);
 	}
 	
@@ -158,7 +158,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	public function addMeta(string $key, mixed $value): void {
-		if ($this->meta === null) {
+		if (isset($this->meta) === false) {
 			$this->setMetaObject(new MetaObject());
 		}
 		
@@ -172,11 +172,9 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	/**
 	 * set the resource on a to-one relationship
 	 * 
-	 * @param ResourceInterface $resource
-	 * 
 	 * @throws InputException if used on a to-many relationship, use {@see ->addResource()} instead
 	 */
-	public function setResource(ResourceInterface $resource) {
+	public function setResource(ResourceInterface $resource): void {
 		if ($this->type === RelationshipTypeEnum::ToMany) {
 			throw new InputException('can not set a resource on a to-many relationship, use ->addResource()');
 		}
@@ -187,11 +185,9 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	/**
 	 * add a resource to a to-many relationship
 	 * 
-	 * @param ResourceInterface $resource
-	 * 
 	 * @throws InputException if used on a to-one relationship, use {@see ->setResource()} instead
 	 */
-	public function addResource(ResourceInterface $resource) {
+	public function addResource(ResourceInterface $resource): void {
 		if ($this->type === RelationshipTypeEnum::ToOne) {
 			throw new InputException('can not add a resource to a to-one relationship, use ->setResource()');
 		}
@@ -199,10 +195,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		$this->resources[] = $resource;
 	}
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
@@ -214,11 +207,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * whether or not the $otherResource is (one of) the resource(s) inside the relationship
 	 * 
 	 * @internal
-	 * 
-	 * @param  ResourceInterface $otherResource
-	 * @return boolean
 	 */
-	public function hasResource(ResourceInterface $otherResource) {
+	public function hasResource(ResourceInterface $otherResource): bool {
 		if ($this->isEmpty()) {
 			return false;
 		}
@@ -243,7 +233,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 */
 	
 	public function isEmpty(): bool {
-		if ($this->type === RelationshipTypeEnum::ToOne && $this->resource !== null) {
+		if ($this->type === RelationshipTypeEnum::ToOne && isset($this->resource)) {
 			return false;
 		}
 		if ($this->type === RelationshipTypeEnum::ToMany && $this->resources !== []) {
@@ -252,7 +242,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		if ($this->hasLinks()) {
 			return false;
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			return false;
 		}
 		if ($this->hasAtMembers()) {
@@ -280,7 +270,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		}
 		if ($this->type === RelationshipTypeEnum::ToOne) {
 			$array['data'] = null;
-			if ($this->resource !== null) {
+			if (isset($this->resource)) {
 				$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
 			}
 		}
@@ -290,7 +280,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 				$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
 			}
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		
