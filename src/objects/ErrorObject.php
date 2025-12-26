@@ -63,22 +63,16 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 */
 	
 	/**
-	 * @param  \Exception|\Throwable $exception
-	 * @param  array                 $options   optional {@see ErrorObject::$defaults}
+	 * @param  \Throwable $exception
+	 * @param  array      $options   optional {@see ErrorObject::$defaults}
 	 * @return ErrorObject
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
 	 */
-	public static function fromException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
-		
+	public static function fromException(\Throwable $exception, array $options=[]) {
 		$options = array_merge(self::$defaults, $options);
 		
 		$errorObject = new self();
 		
-		$className = get_class($exception);
+		$className = $exception::class;
 		if (strpos($className, '\\')) {
 			$exploded  = explode('\\', $className);
 			$className = end($exploded);
@@ -91,7 +85,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		}
 		
 		$metaObject = MetaObject::fromArray([
-			'type'    => get_class($exception),
+			'type'    => $exception::class,
 			'message' => $exception->getMessage(),
 			'code'    => $exception->getCode(),
 			'file'    => $filePath,
@@ -160,18 +154,6 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 */
 	public function setTypeLink($href, array $meta=[]) {
 		$this->addLink('type', $href, $meta);
-	}
-	
-	/**
-	 * append a link of the generic type of this error, explained in a human-friendly way
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->setTypeLink()}
-	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function appendTypeLink($href, array $meta=[]) {
-		$this->appendLink('type', $href, $meta);
 	}
 	
 	/**

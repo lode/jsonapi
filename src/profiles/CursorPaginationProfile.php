@@ -403,16 +403,4 @@ class CursorPaginationProfile implements ProfileInterface {
 	public function getOfficialLink() {
 		return 'https://jsonapi.org/profiles/ethanresnick/cursor-pagination/';
 	}
-	
-	/**
-	 * returns the keyword without aliasing
-	 * 
-	 * @deprecated since aliasing was removed from the profiles spec
-	 * 
-	 * @param  string $keyword
-	 * @return string
-	 */
-	public function getKeyword($keyword) {
-		return $keyword;
-	}
 }

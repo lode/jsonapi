@@ -5,13 +5,10 @@ namespace alsvanzelf\jsonapiTests\helpers;
 use Psr\Http\Message\UriInterface;
 
 class TestableNonInterfaceUriInterface implements UriInterface {
-	protected $selfLink;
-	protected $queryParameters;
-	
-	public function __construct($selfLink, $queryParameters) {
-		$this->selfLink        = $selfLink;
-		$this->queryParameters = $queryParameters;
-	}
+	public function __construct(
+		protected $selfLink,
+		protected $queryParameters,
+	) {}
 	
 	/**
 	 * UriInterface
@@ -21,8 +18,8 @@ class TestableNonInterfaceUriInterface implements UriInterface {
 		return http_build_query($this->queryParameters);
 	}
 	
-	public function __toString() {
-		return $this->selfLink;
+	public function __toString(): string {
+		return (string) $this->selfLink;
 	}
 	
 	// not used in current implementation

@@ -7,7 +7,6 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 
 class LinksObject extends AbstractObject {
 	/** @var array with string|LinkObject */
@@ -56,32 +55,6 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * appends a link to an array of links under a specific key
-	 * 
-	 * @see LinksArray for use cases
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->add()}
-	 * 
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * 
-	 * @throws DuplicateException if another link is already using that $key but is not an array
-	 */
-	public function append($key, $href, array $meta=[]) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key]) === false) {
-			$this->addLinksArray($key, new LinksArray());
-		}
-		elseif ($this->links[$key] instanceof LinksArray === false) {
-			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
-		}
-		
-		$this->links[$key]->add($href, $meta);
-	}
-	
-	/**
 	 * spec api
 	 */
 	
@@ -118,45 +91,6 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinksArray $linksArray
-	 * 
-	 * @throws DuplicateException if another link is already using that $key
-	 */
-	public function addLinksArray($key, LinksArray $linksArray) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key])) {
-			throw new DuplicateException('link with key "'.$key.'" already set');
-		}
-		
-		$this->links[$key] = $linksArray;
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param  string     $key
-	 * @param  LinkObject $linkObject
-	 * 
-	 * @throws DuplicateException if another link is already using that $key but is not an array
-	 */
-	public function appendLinkObject($key, LinkObject $linkObject) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key]) === false) {
-			$this->addLinksArray($key, new LinksArray());
-		}
-		elseif ($this->links[$key] instanceof LinksArray === false) {
-			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
-		}
-		
-		$this->links[$key]->addLinkObject($linkObject);
-	}
-	
-	/**
 	 * ObjectInterface
 	 */
 	
@@ -187,9 +121,6 @@ class LinksObject extends AbstractObject {
 		foreach ($this->links as $key => $link) {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
 				$array[$key] = $link->toArray();
-			}
-			elseif ($link instanceof LinksArray && $link->isEmpty() === false) { // @phpstan-ignore method.deprecatedClass
-				$array[$key] = $link->toArray(); // @phpstan-ignore method.deprecatedClass
 			}
 			elseif ($link instanceof LinkObject && $link->isEmpty()) {
 				$array[$key] = null;

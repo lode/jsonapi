@@ -87,9 +87,6 @@ class ErrorObjectTest extends TestCase {
 		$this->assertSame('alsvanzelf\jsonapi\exceptions\InputException', $array['meta']['type']);
 	}
 	
-	/**
-	 * @group non-php5
-	 */
 	public function testFromException_NamespacedThrowable() {
 		$exception   = new TestError();
 		$errorObject = ErrorObject::fromException($exception);
@@ -101,30 +98,6 @@ class ErrorObjectTest extends TestCase {
 		$this->assertArrayHasKey('type', $array['meta']);
 		$this->assertSame('Test Error', $array['code']);
 		$this->assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
-	}
-	
-	public function testFromException_BlocksNonException() {
-		$this->expectException(InputException::class);
-		
-		ErrorObject::fromException(new \stdClass());
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore
-	 */
-	public function testAppendTypeLink_HappyPath() {
-		$errorObject = new ErrorObject();
-		$this->assertTrue($errorObject->isEmpty());
-		
-		$errorObject->appendTypeLink('https://jsonapi.org');
-		
-		$this->assertFalse($errorObject->isEmpty());
-		
-		$array = $errorObject->toArray();
-		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertSame(['https://jsonapi.org'], $array['links']['type']);
 	}
 	
 	public function testIsEmpty_All() {
@@ -199,6 +172,4 @@ class ErrorObjectTest extends TestCase {
 	}
 }
 
-if (PHP_MAJOR_VERSION >= 7) {
-	class TestError extends \Error {}
-}
+class TestError extends \Error {}

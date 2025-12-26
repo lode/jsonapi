@@ -41,7 +41,7 @@ abstract class DataDocument extends Document {
 			try {
 				$this->validator->claimUsedResourceIdentifier($resourceObject);
 			}
-			catch (DuplicateException $e) {
+			catch (DuplicateException) {
 				// silently skip duplicates
 				continue;
 			}

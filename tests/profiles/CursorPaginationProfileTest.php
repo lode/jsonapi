@@ -319,7 +319,6 @@ class CursorPaginationProfileTest extends TestCase {
 	public function testSetQueryParameter_HappyPath() {
 		$profile = new CursorPaginationProfile();
 		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
-		$method->setAccessible(true);
 		
 		$url   = '/people?sort=x&page[size]=10&page[after]=foo';
 		$key   = 'page[after]';
@@ -333,7 +332,6 @@ class CursorPaginationProfileTest extends TestCase {
 	public function testSetQueryParameter_EncodedUrl() {
 		$profile = new CursorPaginationProfile();
 		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
-		$method->setAccessible(true);
 		
 		$url   = '/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=foo';
 		$key   = 'page[after]';
@@ -342,16 +340,5 @@ class CursorPaginationProfileTest extends TestCase {
 		$newUrl = $method->invoke($profile, $url, $key, $value);
 		
 		$this->assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
-	}
-	
-	/**
-	 * test method while it is part of the interface
-	 */
-	public function testGetKeyword_HappyPath() {
-		$profile = new CursorPaginationProfile();
-		
-		$keyword = $profile->getKeyword('page'); // @phpstan-ignore method.deprecated
-		
-		$this->assertSame('page', $keyword);
 	}
 }
