@@ -24,23 +24,17 @@ class RequestParser {
 		 */
 		'useAnnotatedSortFields' => true,
 	];
-	/** @var string */
-	private $selfLink = '';
-	/** @var array */
-	private $queryParameters = [];
-	/** @var array */
-	private $document = [];
 	
 	/**
 	 * @param string $selfLink        the uri used to make this request {@see getSelfLink()}
 	 * @param array  $queryParameters all query parameters defined by the specification
 	 * @param array  $document        the request jsonapi document
 	 */
-	public function __construct($selfLink='', array $queryParameters=[], array $document=[]) {
-		$this->selfLink        = $selfLink;
-		$this->queryParameters = $queryParameters;
-		$this->document        = $document;
-	}
+	public function __construct(
+		private $selfLink='',
+		private array $queryParameters=[],
+		private array $document=[],
+	) {}
 	
 	/**
 	 * @return self
@@ -55,8 +49,8 @@ class RequestParser {
 		
 		$document = $_POST;
 		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
-			$documentIsJsonapi = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL) !== false);
-			$documentIsJson    = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG)    !== false);
+			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL));
+			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG));
 			
 			if ($documentIsJsonapi || $documentIsJson) {
 				$document = json_decode(file_get_contents('php://input'), true);
@@ -131,7 +125,7 @@ class RequestParser {
 			return [];
 		}
 		
-		$includePaths = explode(',', $this->queryParameters['include']);
+		$includePaths = explode(',', (string) $this->queryParameters['include']);
 		
 		$options = array_merge(self::$defaults, $options);
 		if ($options['useNestedIncludePaths'] === false) {
@@ -171,7 +165,7 @@ class RequestParser {
 			return [];
 		}
 		
-		return explode(',', $this->queryParameters['fields'][$type]);
+		return explode(',', (string) $this->queryParameters['fields'][$type]);
 	}
 	
 	/**
@@ -200,7 +194,7 @@ class RequestParser {
 			return [];
 		}
 		
-		$fields = explode(',', $this->queryParameters['sort']);
+		$fields = explode(',', (string) $this->queryParameters['sort']);
 		
 		$options = array_merge(self::$defaults, $options);
 		if ($options['useAnnotatedSortFields'] === false) {
@@ -211,7 +205,7 @@ class RequestParser {
 		foreach ($fields as $field) {
 			$order = RequestParser::SORT_ASCENDING;
 			
-			if (strpos($field, '-') === 0) {
+			if (str_starts_with($field, '-')) {
 				$field = substr($field, 1);
 				$order = RequestParser::SORT_DESCENDING;
 			}

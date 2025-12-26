@@ -12,21 +12,12 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 		__DIR__ . '/examples',
 	])
-	->withSkip([
-		__DIR__ . '/src/base.php',
-		__DIR__ . '/src/collection.php',
-		__DIR__ . '/src/error.php',
-		__DIR__ . '/src/errors.php',
-		__DIR__ . '/src/exception.php',
-		__DIR__ . '/src/resource.php',
-		__DIR__ . '/src/response.php',
-	])
 
 	// tab-based indenting
 	->withIndent(indentChar: "\t", indentSize: 1)
 
 	// slowly increase php version
-	->withPhpSets(php56: true)
+	->withPhpSets(php82: true)
 
 	// slowly increase levels
 	->withTypeCoverageLevel(1)
