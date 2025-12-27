@@ -18,7 +18,7 @@ class HttpStatusCodeManagerTest extends TestCase {
 		};
 	}
 	
-	public function testSetHttpStatusCode_HappyPath() {
+	public function testSetHttpStatusCode_HappyPath(): void {
 		parent::assertFalse(self::$helper->hasHttpStatusCode());
 		
 		self::$helper->setHttpStatusCode(204);
@@ -27,13 +27,13 @@ class HttpStatusCodeManagerTest extends TestCase {
 		parent::assertSame(204, self::$helper->getHttpStatusCode());
 	}
 	
-	public function testSetHttpStatusCode_InvalidForHttp() {
+	public function testSetHttpStatusCode_InvalidForHttp(): void {
 		$this->expectException(InputException::class);
 		
 		self::$helper->setHttpStatusCode(42);
 	}
 	
-	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
+	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes(): void {
 		self::$helper->setHttpStatusCode(299);
 		
 		parent::assertTrue(self::$helper->hasHttpStatusCode());

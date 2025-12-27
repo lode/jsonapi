@@ -29,7 +29,7 @@ class SeparateProcessTest extends TestCase {
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSendResponse_HappyPath() {
+	public function testSendResponse_HappyPath(): void {
 		ob_start();
 		$this->document->sendResponse();
 		$output = ob_get_clean();
@@ -40,7 +40,7 @@ class SeparateProcessTest extends TestCase {
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSendResponse_NoContent() {
+	public function testSendResponse_NoContent(): void {
 		$this->document->setHttpStatusCode(204);
 		
 		ob_start();
@@ -54,7 +54,7 @@ class SeparateProcessTest extends TestCase {
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSendResponse_ContentTypeHeader() {
+	public function testSendResponse_ContentTypeHeader(): void {
 		if (extension_loaded('xdebug') === false) {
 			parent::markTestSkipped('can not run without xdebug');
 		}
@@ -87,7 +87,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 * @group Extensions
 	 */
-	public function testSendResponse_ContentTypeHeaderWithExtensions() {
+	public function testSendResponse_ContentTypeHeaderWithExtensions(): void {
 		if (extension_loaded('xdebug') === false) {
 			parent::markTestSkipped('can not run without xdebug');
 		}
@@ -119,7 +119,7 @@ class SeparateProcessTest extends TestCase {
 	 * @runInSeparateProcess
 	 * @group Profiles
 	 */
-	public function testSendResponse_ContentTypeHeaderWithProfiles() {
+	public function testSendResponse_ContentTypeHeaderWithProfiles(): void {
 		if (extension_loaded('xdebug') === false) {
 			parent::markTestSkipped('can not run without xdebug');
 		}
@@ -144,7 +144,7 @@ class SeparateProcessTest extends TestCase {
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSendResponse_StatusCodeHeader() {
+	public function testSendResponse_StatusCodeHeader(): void {
 		
 		ob_start();
 		$this->document->sendResponse();
@@ -173,7 +173,7 @@ class SeparateProcessTest extends TestCase {
 	/**
 	 * @runInSeparateProcess
 	 */
-	public function testSendResponse_CustomJson() {
+	public function testSendResponse_CustomJson(): void {
 		$options  = ['json' => '{"foo":42}'];
 		
 		ob_start();

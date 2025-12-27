@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class ErrorsDocumentTest extends TestCase {
-	public function testFromException_HappyPath() {
+	public function testFromException_HappyPath(): void {
 		$document = ErrorsDocument::fromException(new \Exception('foo', 42));
 		
 		$array = $document->toArray();
@@ -33,7 +33,7 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
-	public function testFromException_AllowsThrowable() {
+	public function testFromException_AllowsThrowable(): void {
 		$document = ErrorsDocument::fromException(new \Error('foo', 42));
 		
 		$array = $document->toArray();
@@ -56,7 +56,7 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame(self::class, $array['errors'][0]['meta']['trace'][0]['class']);
 	}
 	
-	public function testAddException_WithPrevious() {
+	public function testAddException_WithPrevious(): void {
 		$exception = new \Exception('foo', 1, new \Exception('bar', 2));
 		
 		$document = new ErrorsDocument();
@@ -74,7 +74,7 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['errors'][1]['meta']['message']);
 	}
 	
-	public function testAddException_SkipPrevious() {
+	public function testAddException_SkipPrevious(): void {
 		$exception = new \Exception('foo', 1, new \Exception('bar', 2));
 		$options   = ['includeExceptionPrevious' => false];
 		
@@ -90,7 +90,7 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame('foo', $array['errors'][0]['meta']['message']);
 	}
 	
-	public function testToArray_EmptyErrorObject() {
+	public function testToArray_EmptyErrorObject(): void {
 		$document = new ErrorsDocument();
 		$document->addErrorObject(new ErrorObject('foo'));
 		$document->addErrorObject(new ErrorObject());
@@ -107,7 +107,7 @@ class ErrorsDocumentTest extends TestCase {
 	 * @param non-empty-array<int> $allErrorCodes
 	 */
 	#[DataProvider('dataProviderDetermineHttpStatusCode_HappyPath')]
-	public function testDetermineHttpStatusCode_HappyPath(int $expectedAdvisedErrorCode, array $allErrorCodes) {
+	public function testDetermineHttpStatusCode_HappyPath(int $expectedAdvisedErrorCode, array $allErrorCodes): void {
 		$document = new ErrorsDocument();
 		
 		$method = new \ReflectionMethod($document, 'determineHttpStatusCode');
@@ -135,7 +135,7 @@ class ErrorsDocumentTest extends TestCase {
 		];
 	}
 	
-	public function testDetermineHttpStatusCode_Override() {
+	public function testDetermineHttpStatusCode_Override(): void {
 		$document = new ErrorsDocument();
 		
 		parent::assertSame(200, $document->getHttpStatusCode());

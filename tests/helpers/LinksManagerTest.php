@@ -25,7 +25,7 @@ class LinksManagerTest extends TestCase {
 		};
 	}
 	
-	public function testAddLink_HappyPath() {
+	public function testAddLink_HappyPath(): void {
 		$this->linksManager->addLink('foo', 'https://jsonapi.org');
 		
 		$array = $this->linksManager->toArray();
@@ -35,7 +35,7 @@ class LinksManagerTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['foo']);
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$this->linksManager->addLinkObject('foo', new LinkObject('https://jsonapi.org'));
 		
 		$array = $this->linksManager->toArray();

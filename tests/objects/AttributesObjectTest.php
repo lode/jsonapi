@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\TestCase;
 
 class AttributesObjectTest extends TestCase {
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		
@@ -22,7 +22,7 @@ class AttributesObjectTest extends TestCase {
 		parent::assertSame('bar', $array['foo']);
 	}
 	
-	public function testAdd_HappyPath() {
+	public function testAdd_HappyPath(): void {
 		$attributesObject = new AttributesObject();
 		$attributesObject->add('foo', 'bar');
 		
@@ -33,7 +33,7 @@ class AttributesObjectTest extends TestCase {
 		parent::assertSame('bar', $array['foo']);
 	}
 	
-	public function testAdd_AllowsMixedValue() {
+	public function testAdd_AllowsMixedValue(): void {
 		$attributesObject = new AttributesObject();
 		$attributesObject->add('array-list', ['foo']);
 		$attributesObject->add('array-int-key', [42 => 'foo']);
@@ -50,7 +50,7 @@ class AttributesObjectTest extends TestCase {
 		parent::assertCount(9, $array);
 	}
 	
-	public function testAdd_WithObject() {
+	public function testAdd_WithObject(): void {
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
@@ -70,7 +70,7 @@ class AttributesObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testAddExtensionMember_HappyPath() {
+	public function testAddExtensionMember_HappyPath(): void {
 		$attributesObject = new AttributesObject();
 		$extension        = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		

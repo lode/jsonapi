@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\objects\JsonapiObject;
 use PHPUnit\Framework\TestCase;
 
 class JsonapiObjectTest extends TestCase {
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
@@ -26,7 +26,7 @@ class JsonapiObjectTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
@@ -39,7 +39,7 @@ class JsonapiObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionLink() {
+	public function testIsEmpty_WithExtensionLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
@@ -52,7 +52,7 @@ class JsonapiObjectTest extends TestCase {
 	/**
 	 * @group Profiles
 	 */
-	public function testIsEmpty_WithProfileLink() {
+	public function testIsEmpty_WithProfileLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
@@ -65,7 +65,7 @@ class JsonapiObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
 		parent::assertTrue($jsonapiObject->isEmpty());

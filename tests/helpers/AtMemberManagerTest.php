@@ -18,7 +18,7 @@ class AtMemberManagerTest extends TestCase {
 		};
 	}
 	
-	public function testAddAtMember_HappyPath() {
+	public function testAddAtMember_HappyPath(): void {
 		parent::assertFalse(self::$helper->hasAtMembers());
 		parent::assertSame([], self::$helper->getAtMembers());
 		
@@ -32,7 +32,7 @@ class AtMemberManagerTest extends TestCase {
 		parent::assertSame('bar', $array['@foo']);
 	}
 	
-	public function testAddAtMember_WithoutAtSign() {
+	public function testAddAtMember_WithoutAtSign(): void {
 		self::$helper->addAtMember('foo', 'bar');
 		
 		$array = self::$helper->getAtMembers();
@@ -40,7 +40,7 @@ class AtMemberManagerTest extends TestCase {
 		parent::assertArrayHasKey('@foo', $array);
 	}
 	
-	public function testAddAtMember_WithObjectValue() {
+	public function testAddAtMember_WithObjectValue(): void {
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
@@ -53,7 +53,7 @@ class AtMemberManagerTest extends TestCase {
 		parent::assertSame('baz', $array['@foo']['bar']);
 	}
 	
-	public function testAddAtMember_InvalidDoubleAt() {
+	public function testAddAtMember_InvalidDoubleAt(): void {
 		$this->expectException(InputException::class);
 		
 		self::$helper->addAtMember('@@foo', 'bar');

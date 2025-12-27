@@ -15,7 +15,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceObjectTest extends TestCase {
-	public function testConstructor_ClientDocumentWithoutId() {
+	public function testConstructor_ClientDocumentWithoutId(): void {
 		$resourceObject = new ResourceObject('user');
 		$resourceObject->add('foo', 'bar');
 		
@@ -25,7 +25,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertArrayHasKey('attributes', $array);
 	}
 	
-	public function testFromArray_WithoutId() {
+	public function testFromArray_WithoutId(): void {
 		$type       = 'user';
 		$id         = null;
 		$attributes = [
@@ -42,7 +42,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testFromArray_IdViaArgument() {
+	public function testFromArray_IdViaArgument(): void {
 		$type       = 'user';
 		$id         = 42;
 		$attributes = [
@@ -59,7 +59,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testFromArray_IdViaAttributes() {
+	public function testFromArray_IdViaAttributes(): void {
 		$type       = 'user';
 		$id         = null;
 		$attributes = [
@@ -78,7 +78,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testHasIdentifierPropertiesOnly_Yes() {
+	public function testHasIdentifierPropertiesOnly_Yes(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
@@ -104,7 +104,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 	}
 	
-	public function testHasIdentifierPropertiesOnly_No() {
+	public function testHasIdentifierPropertiesOnly_No(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
@@ -129,7 +129,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 	}
 	
-	public function testAddRelationshipObject_HappyPath() {
+	public function testAddRelationshipObject_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
@@ -153,7 +153,7 @@ class ResourceObjectTest extends TestCase {
 		parent::assertSame('42', $array['relationships']['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_BlockDrosteEffect() {
+	public function testAddRelationshipObject_BlockDrosteEffect(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
@@ -164,7 +164,7 @@ class ResourceObjectTest extends TestCase {
 		$resourceObject->addRelationshipObject('foo', $relationshipObject);
 	}
 	
-	public function testIsEmpty_All() {
+	public function testIsEmpty_All(): void {
 		$resourceObject = new ResourceObject();
 		parent::assertTrue($resourceObject->isEmpty());
 		

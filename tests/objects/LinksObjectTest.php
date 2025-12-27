@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use PHPUnit\Framework\TestCase;
 
 class LinksObjectTest extends TestCase {
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'https://jsonapi.org';
 		
@@ -24,7 +24,7 @@ class LinksObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['foo']);
 	}
 	
-	public function testAddLinkString_HappyPath() {
+	public function testAddLinkString_HappyPath(): void {
 		$linksObject = new LinksObject();
 		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
 		
@@ -35,7 +35,7 @@ class LinksObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['foo']);
 	}
 	
-	public function testAddLinkString_InvalidKey() {
+	public function testAddLinkString_InvalidKey(): void {
 		$linksObject = new LinksObject();
 		
 		$this->expectException(InputException::class);
@@ -43,7 +43,7 @@ class LinksObjectTest extends TestCase {
 		$linksObject->addLinkString($key='-foo', 'https://jsonapi.org');
 	}
 	
-	public function testAddLinkString_ExistingKey() {
+	public function testAddLinkString_ExistingKey(): void {
 		$linksObject = new LinksObject();
 		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
 		
@@ -52,7 +52,7 @@ class LinksObjectTest extends TestCase {
 		$linksObject->addLinkString($key='foo', 'https://jsonapi.org/2');
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
 		$linksObject = new LinksObject();
@@ -66,7 +66,7 @@ class LinksObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['foo']['href']);
 	}
 	
-	public function testAddLinkObject_InvalidKey() {
+	public function testAddLinkObject_InvalidKey(): void {
 		$linkObject  = new LinkObject('https://jsonapi.org');
 		$linksObject = new LinksObject();
 		
@@ -75,7 +75,7 @@ class LinksObjectTest extends TestCase {
 		$linksObject->addLinkObject($key='-foo', $linkObject);
 	}
 	
-	public function testAddLinkObject_ExistingKey() {
+	public function testAddLinkObject_ExistingKey(): void {
 		$linksObject = new LinksObject();
 		
 		$linkObject = new LinkObject('https://jsonapi.org');
@@ -88,7 +88,7 @@ class LinksObjectTest extends TestCase {
 		$linksObject->addLinkObject($key='foo', $linkObject);
 	}
 	
-	public function testToArray_ExplicitlyEmpty() {
+	public function testToArray_ExplicitlyEmpty(): void {
 		$linksObject = new LinksObject();
 		$linksObject->addLinkObject('foo', new LinkObject());
 		

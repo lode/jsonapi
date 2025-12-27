@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * @group Extensions
  */
 class AtomicOperationsDocumentTest extends TestCase {
-	public function testSetResults_HappyPath() {
+	public function testSetResults_HappyPath(): void {
 		$document = new AtomicOperationsDocument();
 		
 		$resource1 = new ResourceObject('person', 1);
@@ -46,7 +46,7 @@ class AtomicOperationsDocumentTest extends TestCase {
 		parent::assertSame(['data' => $resource3->toArray()], $array['atomic:results'][2]);
 	}
 	
-	public function testSetResults_EmptySuccessResults() {
+	public function testSetResults_EmptySuccessResults(): void {
 		$document = new AtomicOperationsDocument();
 		$array    = $document->toArray();
 		

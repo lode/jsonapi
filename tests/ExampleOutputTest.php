@@ -16,7 +16,7 @@ class ExampleOutputTest extends TestCase {
 	];
 	
 	#[DataProvider('dataProviderTestOutput')]
-	public function testOutput($generator, $expectedJson, array $options=[], $testName=null) {
+	public function testOutput($generator, $expectedJson, array $options=[], $testName=null): void {
 		$options = array_merge(self::$defaults, $options);
 		
 		$document   = $generator::createJsonapiDocument();

@@ -27,19 +27,19 @@ class DocumentTest extends TestCase {
 		$this->document = new class extends Document {};
 	}
 	
-	public function testConstructor_NoContent() {
+	public function testConstructor_NoContent(): void {
 		$array = $this->document->toArray();
 		
 		parent::assertCount(1, $array);
 		parent::assertArrayHasKey('jsonapi', $array);
 	}
 	
-	public function testSetHttpStatusCode_HappyPath() {
+	public function testSetHttpStatusCode_HappyPath(): void {
 		parent::assertTrue($this->document->hasHttpStatusCode());
 		parent::assertSame(200, $this->document->getHttpStatusCode());
 	}
 	
-	public function testAddLink_HappyPath() {
+	public function testAddLink_HappyPath(): void {
 		$array = $this->document->toArray();
 		parent::assertArrayNotHasKey('links', $array);
 		
@@ -54,7 +54,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
 	
-	public function testAddLink_WithMeta() {
+	public function testAddLink_WithMeta(): void {
 		$this->document->addLink('foo', 'https://jsonapi.org', $meta=['bar' => 'baz']);
 		
 		$array = $this->document->toArray();
@@ -70,21 +70,21 @@ class DocumentTest extends TestCase {
 		parent::assertSame('baz', $array['links']['foo']['meta']['bar']);
 	}
 	
-	public function testAddLink_BlocksJsonapiLevel() {
+	public function testAddLink_BlocksJsonapiLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
 		
 		$this->document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Jsonapi);
 	}
 	
-	public function testAddLink_BlocksResourceLevel() {
+	public function testAddLink_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
 		$this->document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Resource);
 	}
 	
-	public function testSetSelfLink_HappyPath() {
+	public function testSetSelfLink_HappyPath(): void {
 		$array = $this->document->toArray();
 		parent::assertArrayNotHasKey('links', $array);
 		
@@ -97,7 +97,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']);
 	}
 	
-	public function testSetDescribedByLink_HappyPath() {
+	public function testSetDescribedByLink_HappyPath(): void {
 		$this->document->setDescribedByLink('https://jsonapi.org/format', ['version' => '1.1']);
 		
 		$array = $this->document->toArray();
@@ -113,7 +113,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('1.1', $array['links']['describedby']['meta']['version']);
 	}
 	
-	public function testSetDescribedByLink_WithMeta() {
+	public function testSetDescribedByLink_WithMeta(): void {
 		$array = $this->document->toArray();
 		parent::assertArrayNotHasKey('links', $array);
 		
@@ -126,7 +126,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('https://jsonapi.org/format', $array['links']['describedby']);
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$array = $this->document->toArray();
 		parent::assertArrayNotHasKey('meta', $array);
 		
@@ -141,7 +141,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testAddMeta_AtJsonapiLevel() {
+	public function testAddMeta_AtJsonapiLevel(): void {
 		$array = $this->document->toArray();
 		parent::assertArrayHasKey('jsonapi', $array);
 		parent::assertArrayNotHasKey('meta', $array['jsonapi']);
@@ -158,14 +158,14 @@ class DocumentTest extends TestCase {
 		parent::assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}
 	
-	public function testAddMeta_BlocksResourceLevel() {
+	public function testAddMeta_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
 		$this->document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Resource);
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
 		$this->document->addLinkObject($key='foo', $linkObject);
@@ -183,7 +183,7 @@ class DocumentTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testApplyExtension_HappyPath() {
+	public function testApplyExtension_HappyPath(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, [
 			'getNamespace'    => 'test',
 			'getOfficialLink' => 'https://jsonapi.org/extension',
@@ -218,7 +218,7 @@ class DocumentTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testApplyExtension_InvalidNamespace() {
+	public function testApplyExtension_InvalidNamespace(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo-bar']);
 		
 		$this->expectException(Exception::class);
@@ -230,7 +230,7 @@ class DocumentTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testApplyExtension_ConflictingNamespace() {
+	public function testApplyExtension_ConflictingNamespace(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
 		$this->document->applyExtension($extension1);
 		
@@ -248,7 +248,7 @@ class DocumentTest extends TestCase {
 	/**
 	 * @group Profiles
 	 */
-	public function testApplyProfile_HappyPath() {
+	public function testApplyProfile_HappyPath(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'https://jsonapi.org/profile']);
 		
 		$this->document->applyProfile($profile);
@@ -274,27 +274,27 @@ class DocumentTest extends TestCase {
 		parent::assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
 	}
 	
-	public function testToJson_HappyPath() {
+	public function testToJson_HappyPath(): void {
 		parent::assertSame('{"jsonapi":{"version":"1.1"}}', $this->document->toJson());
 	}
 	
-	public function testToJson_CustomArray() {
+	public function testToJson_CustomArray(): void {
 		$options = ['array' => ['foo' => 42]];
 		parent::assertSame('{"foo":42}', $this->document->toJson($options));
 	}
 	
-	public function testToJson_PrettyPrint() {
+	public function testToJson_PrettyPrint(): void {
 		$options = ['prettyPrint' => true];
 		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.1"'.PHP_EOL.'    }'.PHP_EOL.'}';
 		parent::assertSame($expectedJson, $this->document->toJson($options));
 	}
 	
-	public function testToJson_JsonEncodeOptions() {
+	public function testToJson_JsonEncodeOptions(): void {
 		$options = ['encodeOptions' => JSON_FORCE_OBJECT, 'array' => ['foo' => [4,2]]];
 		parent::assertSame('{"foo":{"0":4,"1":2}}', $this->document->toJson($options));
 	}
 	
-	public function testToJson_JsonpCallback() {
+	public function testToJson_JsonpCallback(): void {
 		$this->document->addMeta('foo', 'bar');
 		
 		$options = ['jsonpCallback' => 'baz'];
@@ -302,7 +302,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
 	}
 	
-	public function testToJson_InvalidUtf8() {
+	public function testToJson_InvalidUtf8(): void {
 		$options = ['array' => ['foo' => "\xB1\x31"]];
 		
 		$this->expectException(Exception::class);
@@ -311,7 +311,7 @@ class DocumentTest extends TestCase {
 		$this->document->toJson($options);
 	}
 	
-	public function testJsonSerialize_HappyPath() {
+	public function testJsonSerialize_HappyPath(): void {
 		$this->document->addMeta('foo', 'bar');
 		
 		$json = $this->document->toJson();

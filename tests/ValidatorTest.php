@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class ValidatorTest extends TestCase {
 	#[DoesNotPerformAssertions]
-	public function testClaimUsedFields_HappyPath() {
+	public function testClaimUsedFields_HappyPath(): void {
 		$validator = new Validator();
 		
 		$fieldNames      = ['foo'];
@@ -27,7 +27,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedFields($fieldNames, $objectContainer);
 	}
 	
-	public function testClaimUsedFields_EnforceNamespace() {
+	public function testClaimUsedFields_EnforceNamespace(): void {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
 		
@@ -41,7 +41,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DoesNotPerformAssertions]
-	public function testClaimUsedFields_AllowSameContainer() {
+	public function testClaimUsedFields_AllowSameContainer(): void {
 		$validator  = new Validator();
 		$fieldNames = ['foo'];
 		
@@ -53,7 +53,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DoesNotPerformAssertions]
-	public function testClaimUsedFields_OptionForReusingTypeField() {
+	public function testClaimUsedFields_OptionForReusingTypeField(): void {
 		$validator  = new Validator();
 		$fieldNames = ['type'];
 		
@@ -66,7 +66,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DoesNotPerformAssertions]
-	public function testClearUsedFields_HappyPath() {
+	public function testClearUsedFields_HappyPath(): void {
 		$validator       = new Validator();
 		
 		$fieldNames      = ['foo'];
@@ -76,7 +76,7 @@ class ValidatorTest extends TestCase {
 		$validator->clearUsedFields($objectContainer);
 	}
 	
-	public function testClearUsedFields_FreesForAnotherNamespace() {
+	public function testClearUsedFields_FreesForAnotherNamespace(): void {
 		$validator  = new Validator();
 		
 		$fieldNames      = ['foo', 'bar'];
@@ -113,7 +113,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DoesNotPerformAssertions]
-	public function testClaimUsedResourceIdentifier_HappyPath() {
+	public function testClaimUsedResourceIdentifier_HappyPath(): void {
 		$validator = new Validator();
 		
 		$resource = new ResourceObject('foo', 1);
@@ -123,7 +123,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedResourceIdentifier($resource);
 	}
 	
-	public function testClaimUsedResourceIdentifier_RequiresIdentification() {
+	public function testClaimUsedResourceIdentifier_RequiresIdentification(): void {
 		$validator = new Validator();
 		
 		$resource = new ResourceObject();
@@ -134,7 +134,7 @@ class ValidatorTest extends TestCase {
 		$validator->claimUsedResourceIdentifier($resource);
 	}
 	
-	public function testClaimUsedResourceIdentifier_BlocksDuplicates() {
+	public function testClaimUsedResourceIdentifier_BlocksDuplicates(): void {
 		$validator = new Validator();
 		$resource  = new ResourceObject('foo', 1);
 		
@@ -147,7 +147,7 @@ class ValidatorTest extends TestCase {
 	
 	#[DoesNotPerformAssertions]
 	#[DataProvider('dataProviderCheckMemberName_HappyPath')]
-	public function testCheckMemberName_HappyPath($memberName) {
+	public function testCheckMemberName_HappyPath($memberName): void {
 		Validator::checkMemberName($memberName);
 	}
 	
@@ -162,7 +162,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCheckMemberName_InvalidNames')]
-	public function testCheckMemberName_InvalidNames($memberName) {
+	public function testCheckMemberName_InvalidNames($memberName): void {
 		$this->expectException(InputException::class);
 		
 		Validator::checkMemberName($memberName);
@@ -178,7 +178,7 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
-	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode) {
+	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode): void {
 		parent::assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
 	}
 	

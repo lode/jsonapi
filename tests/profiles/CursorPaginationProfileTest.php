@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  * @group Profiles
  */
 class CursorPaginationProfileTest extends TestCase {
-	public function testSetLinks_HappyPath() {
+	public function testSetLinks_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();
 		$baseOrCurrentUrl = '/people?page[size]=10';
@@ -42,7 +42,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
 	}
 	
-	public function test_WithRelationship() {
+	public function test_WithRelationship(): void {
 		$profile  = new CursorPaginationProfile();
 		$document = new ResourceDocument('test', 1);
 		$document->applyProfile($profile);
@@ -93,7 +93,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertArrayHasKey('cursor', $array['data']['relationships']['people']['data'][0]['meta']['page']);
 	}
 	
-	public function testSetLinksFirstPage_HappyPath() {
+	public function testSetLinksFirstPage_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();
 		$baseOrCurrentUrl = '/people?page[size]=10';
@@ -118,7 +118,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
 	}
 	
-	public function testSetLinksLastPage_HappyPath() {
+	public function testSetLinksLastPage_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();
 		$baseOrCurrentUrl = '/people?page[size]=10';
@@ -143,7 +143,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('/people?page[size]=10&page[before]='.$firstCursor, $array['links']['prev']['href']);
 	}
 	
-	public function testSetCursor() {
+	public function testSetCursor(): void {
 		$profile          = new CursorPaginationProfile();
 		$resourceDocument = new ResourceDocument('user', 42);
 		
@@ -164,7 +164,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('foo', $array['data']['meta']['page']['cursor']);
 	}
 	
-	public function testSetPaginationLinkObjectsExplicitlyEmpty_HapptPath() {
+	public function testSetPaginationLinkObjectsExplicitlyEmpty_HapptPath(): void {
 		$profile    = new CursorPaginationProfile();
 		$collection = new CollectionDocument();
 		
@@ -186,7 +186,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertNull($array['links']['next']);
 	}
 	
-	public function testSetPaginationMeta() {
+	public function testSetPaginationMeta(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();
 		$exactTotal       = 42;
@@ -214,7 +214,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertTrue($array['meta']['page']['rangeTruncated']);
 	}
 	
-	public function testGetUnsupportedSortErrorObject_HappyPath() {
+	public function testGetUnsupportedSortErrorObject_HappyPath(): void {
 		$profile         = new CursorPaginationProfile();
 		$genericTitle    = 'foo';
 		$specificDetails = 'bar';
@@ -239,7 +239,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('sort', $array['source']['parameter']);
 	}
 	
-	public function testGetMaxPageSizeExceededErrorObject_HappyPath() {
+	public function testGetMaxPageSizeExceededErrorObject_HappyPath(): void {
 		$profile         = new CursorPaginationProfile();
 		$maxSize         = 42;
 		$genericTitle    = 'foo';
@@ -269,7 +269,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame(42, $array['meta']['page']['maxSize']);
 	}
 	
-	public function testGetInvalidParameterValueErrorObject_HappyPath() {
+	public function testGetInvalidParameterValueErrorObject_HappyPath(): void {
 		$profile         = new CursorPaginationProfile();
 		$queryParameter  = 'page[size]';
 		$typeLink        = 'https://jsonapi.org';
@@ -296,7 +296,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['type']);
 	}
 	
-	public function testGetRangePaginationNotSupportedErrorObject_HappyPath() {
+	public function testGetRangePaginationNotSupportedErrorObject_HappyPath(): void {
 		$profile         = new CursorPaginationProfile();
 		$genericTitle    = 'foo';
 		$specificDetails = 'bar';
@@ -318,7 +318,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported', $array['links']['type']);
 	}
 	
-	public function testSetQueryParameter_HappyPath() {
+	public function testSetQueryParameter_HappyPath(): void {
 		$profile = new CursorPaginationProfile();
 		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
 		
@@ -331,7 +331,7 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertSame('/people?sort=x&page[size]=10&page[after]=bar', $newUrl);
 	}
 	
-	public function testSetQueryParameter_EncodedUrl() {
+	public function testSetQueryParameter_EncodedUrl(): void {
 		$profile = new CursorPaginationProfile();
 		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
 		

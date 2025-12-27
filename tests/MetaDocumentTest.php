@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\MetaDocument;
 use PHPUnit\Framework\TestCase;
 
 class MetaDocumentTest extends TestCase {
-	public function testConstructor_NoMeta() {
+	public function testConstructor_NoMeta(): void {
 		$document = new MetaDocument();
 		
 		$array = $document->toArray();
@@ -19,7 +19,7 @@ class MetaDocumentTest extends TestCase {
 		parent::assertSame('{"jsonapi":{"version":"1.1"},"meta":{}}', $json);
 	}
 	
-	public function testFromArray_HappyPath() {
+	public function testFromArray_HappyPath(): void {
 		$document = MetaDocument::fromArray(['foo' => 'bar']);
 		
 		$array = $document->toArray();
@@ -30,7 +30,7 @@ class MetaDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		
@@ -44,7 +44,7 @@ class MetaDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$document = new MetaDocument();
 		$document->addMeta('foo', 'bar');
 		
@@ -56,7 +56,7 @@ class MetaDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testAdd_HappyPath() {
+	public function testAdd_HappyPath(): void {
 		$document = new MetaDocument();
 		$document->add('foo', 'bar');
 		

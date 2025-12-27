@@ -22,7 +22,7 @@ class ExtensionMemberManagerTest extends TestCase {
 		};
 	}
 	
-	public function testAddExtensionMember_HappyPath() {
+	public function testAddExtensionMember_HappyPath(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		parent::assertFalse(self::$helper->hasExtensionMembers());
@@ -38,7 +38,7 @@ class ExtensionMemberManagerTest extends TestCase {
 		parent::assertSame('bar', $array['test:foo']);
 	}
 	
-	public function testAddExtensionMember_WithNamespacePrefixed() {
+	public function testAddExtensionMember_WithNamespacePrefixed(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		self::$helper->addExtensionMember($extension, 'test:foo', 'bar');
@@ -48,7 +48,7 @@ class ExtensionMemberManagerTest extends TestCase {
 		parent::assertArrayHasKey('test:foo', $array);
 	}
 	
-	public function testAddExtensionMember_WithObjectValue() {
+	public function testAddExtensionMember_WithObjectValue(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		$object = new \stdClass();
@@ -63,7 +63,7 @@ class ExtensionMemberManagerTest extends TestCase {
 		parent::assertSame('baz', $array['test:foo']['bar']);
 	}
 	
-	public function testAddExtensionMember_InvalidNamespaceOrCharacter() {
+	public function testAddExtensionMember_InvalidNamespaceOrCharacter(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		$this->expectException(InputException::class);

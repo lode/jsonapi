@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
 use PHPUnit\Framework\TestCase;
 
 class ErrorObjectTest extends TestCase {
-	public function testFromException_HappyPath() {
+	public function testFromException_HappyPath(): void {
 		$exception    = new \Exception('foo', 1);
 		$expectedLine = (__LINE__ - 1);
 		$errorObject  = ErrorObject::fromException($exception);
@@ -40,7 +40,7 @@ class ErrorObjectTest extends TestCase {
 		parent::assertSame(self::class, $array['meta']['trace'][0]['class']);
 	}
 	
-	public function testFromException_DoNotExposeTrace() {
+	public function testFromException_DoNotExposeTrace(): void {
 		$exception    = new \Exception('foo', 1);
 		$expectedLine = (__LINE__ - 1);
 		$options      = ['includeExceptionTrace' => false];
@@ -59,7 +59,7 @@ class ErrorObjectTest extends TestCase {
 		parent::assertArrayNotHasKey('trace', $array['meta']);
 	}
 	
-	public function testFromException_StripFilePath() {
+	public function testFromException_StripFilePath(): void {
 		$exception   = new \Exception('foo', 1);
 		$basePath    = realpath(__DIR__.'/../../').'/';
 		$options     = ['stripExceptionBasePath' => $basePath];
@@ -76,7 +76,7 @@ class ErrorObjectTest extends TestCase {
 		parent::assertSame('vendor/phpunit/phpunit/src/Framework/TestCase.php', $array['meta']['trace'][1]['file']);
 	}
 	
-	public function testFromException_NamespacedException() {
+	public function testFromException_NamespacedException(): void {
 		$exception   = new InputException();
 		$errorObject = ErrorObject::fromException($exception);
 		
@@ -89,7 +89,7 @@ class ErrorObjectTest extends TestCase {
 		parent::assertSame('alsvanzelf\jsonapi\exceptions\InputException', $array['meta']['type']);
 	}
 	
-	public function testFromException_NamespacedThrowable() {
+	public function testFromException_NamespacedThrowable(): void {
 		$exception   = new TestError();
 		$errorObject = ErrorObject::fromException($exception);
 		
@@ -102,7 +102,7 @@ class ErrorObjectTest extends TestCase {
 		parent::assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
 	}
 	
-	public function testIsEmpty_All() {
+	public function testIsEmpty_All(): void {
 		$errorObject = new ErrorObject();
 		parent::assertTrue($errorObject->isEmpty());
 		
@@ -158,7 +158,7 @@ class ErrorObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testToArray_WithExtensionMembers() {
+	public function testToArray_WithExtensionMembers(): void {
 		$errorObject = new ErrorObject();
 		$extension   = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		

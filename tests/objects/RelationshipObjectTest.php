@@ -16,21 +16,21 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipObjectTest extends TestCase {
-	public function testConstructor_ToOne() {
+	public function testConstructor_ToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testConstructor_ToMany() {
+	public function testConstructor_ToMany(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceObject() {
+	public function testFromAnything_WithResourceObject(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addMeta('foo', 'bar');
 		
@@ -39,19 +39,19 @@ class RelationshipObjectTest extends TestCase {
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceIdentifierObject() {
+	public function testFromAnything_WithResourceIdentifierObject(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceIdentifierObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceDocument() {
+	public function testFromAnything_WithResourceDocument(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceDocument('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithCollectionDocument() {
+	public function testFromAnything_WithCollectionDocument(): void {
 		$resourceObject     = new ResourceObject('user', 42);
 		$collectionDocument = CollectionDocument::fromResources($resourceObject);
 		$relationshipObject = RelationshipObject::fromAnything($collectionDocument);
@@ -59,13 +59,13 @@ class RelationshipObjectTest extends TestCase {
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceObjects() {
+	public function testFromAnything_WithResourceObjects(): void {
 		$relationshipObject = RelationshipObject::fromAnything([new ResourceObject('user', 42)]);
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromResource_ToMany() {
+	public function testFromResource_ToMany(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$type           = RelationshipTypeEnum::ToMany;
 		
@@ -81,7 +81,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('42', $array['data'][0]['id']);
 	}
 	
-	public function testFromResource_WithLinks() {
+	public function testFromResource_WithLinks(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$links          = ['self' => 'https://jsonapi.org'];
 		
@@ -95,7 +95,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['self']);
 	}
 	
-	public function testFromResource_WithMeta() {
+	public function testFromResource_WithMeta(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$meta          = ['foo' => 'bar'];
 		
@@ -109,7 +109,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testFromCollectionDocument_WithMeta() {
+	public function testFromCollectionDocument_WithMeta(): void {
 		$collectionDocument = CollectionDocument::fromResources(new ResourceObject('user', 42));
 		$meta               = ['foo' => 'bar'];
 		
@@ -123,7 +123,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testSetSelfLink_HappyPath() {
+	public function testSetSelfLink_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setSelfLink('https://jsonapi.org');
 		
@@ -134,7 +134,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['self']);
 	}
 	
-	public function testSetRelatedLink_HappyPath() {
+	public function testSetRelatedLink_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setRelatedLink('https://jsonapi.org');
 		
@@ -145,7 +145,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['related']);
 	}
 	
-	public function testSetPaginationLinks_HappyPath() {
+	public function testSetPaginationLinks_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$baseUrl            = 'https://jsonapi.org/?page=';
 		
@@ -165,7 +165,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame($baseUrl.'last', $array['links']['last']);
 	}
 	
-	public function testSetPaginationLinks_BlockedOnToOne() {
+	public function testSetPaginationLinks_BlockedOnToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$this->expectException(InputException::class);
@@ -173,7 +173,7 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->setPaginationLinks('foo');
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		parent::assertTrue($relationshipObject->isEmpty());
@@ -189,7 +189,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testHasResource_ToMany() {
+	public function testHasResource_ToMany(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
@@ -200,7 +200,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertFalse($relationshipObject->hasResource(new ResourceObject('user', 24)));
 	}
 	
-	public function testGetContainedResources_SkipsResourceIdentifierObjects() {
+	public function testGetContainedResources_SkipsResourceIdentifierObjects(): void {
 		$relationshipObject           = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$resourceIdentifierObject     = new ResourceIdentifierObject('user', 24);
 		$resourceObjectIdentifierOnly = new ResourceObject('user', 42);
@@ -222,14 +222,14 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertCount(1, $relationshipObject->getNestedContainedResourceObjects());
 	}
 	
-	public function testSetResource_HappyPath() {
+	public function testSetResource_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testSetResource_RequiresToOneType() {
+	public function testSetResource_RequiresToOneType(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		
 		$this->expectException(InputException::class);
@@ -237,14 +237,14 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 	}
 	
-	public function testAddResource_HappyPath() {
+	public function testAddResource_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testAddResource_RequiresToOneType() {
+	public function testAddResource_RequiresToOneType(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$this->expectException(InputException::class);
@@ -252,7 +252,7 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		parent::assertTrue($relationshipObject->isEmpty());
@@ -270,7 +270,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
-	public function testToArray_EmptyResource() {
+	public function testToArray_EmptyResource(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$array = $relationshipObject->toArray();
@@ -279,7 +279,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertNull($array['data']);
 	}
 	
-	public function testToArray_EmptyResources() {
+	public function testToArray_EmptyResources(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		
 		$array = $relationshipObject->toArray();
@@ -288,7 +288,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertIsArray($array['data']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		parent::assertTrue($relationshipObject->isEmpty());
@@ -301,7 +301,7 @@ class RelationshipObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		parent::assertTrue($relationshipObject->isEmpty());

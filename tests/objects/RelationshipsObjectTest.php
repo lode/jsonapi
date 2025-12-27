@@ -13,7 +13,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipsObjectTest extends TestCase {
-	public function testAdd_HappyPath() {
+	public function testAdd_HappyPath(): void {
 		$relationshipsObject = new RelationshipsObject();
 		$relationshipsObject->add('foo', new ResourceObject('user', 42));
 		
@@ -28,7 +28,7 @@ class RelationshipsObjectTest extends TestCase {
 		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_HappyPath() {
+	public function testAddRelationshipObject_HappyPath(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
 		$relationshipsObject = new RelationshipsObject();
@@ -45,7 +45,7 @@ class RelationshipsObjectTest extends TestCase {
 		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_WithPredefinedKey() {
+	public function testAddRelationshipObject_WithPredefinedKey(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
 		$relationshipsObject = new RelationshipsObject();
@@ -62,7 +62,7 @@ class RelationshipsObjectTest extends TestCase {
 		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_InvalidKey() {
+	public function testAddRelationshipObject_InvalidKey(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
@@ -71,7 +71,7 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipsObject->addRelationshipObject($key='-foo', $relationshipObject);
 	}
 	
-	public function testAddRelationshipObject_MultipleRelationships() {
+	public function testAddRelationshipObject_MultipleRelationships(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
@@ -85,7 +85,7 @@ class RelationshipsObjectTest extends TestCase {
 		parent::assertArrayHasKey('bar', $array);
 	}
 	
-	public function testAddRelationshipObject_MultipleReusingKeys() {
+	public function testAddRelationshipObject_MultipleReusingKeys(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
@@ -96,7 +96,7 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
 	}
 	
-	public function testToArray_EmptyRelationship() {
+	public function testToArray_EmptyRelationship(): void {
 		$relationshipObject  = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipsObject = new RelationshipsObject();
 		

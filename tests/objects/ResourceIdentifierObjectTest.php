@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
-	public function testSetId_HappyPath() {
+	public function testSetId_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setId('1');
@@ -23,7 +23,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertSame('1', $array['id']);
 	}
 	
-	public function testSetId_WithLocalIdAlreadySet() {
+	public function testSetId_WithLocalIdAlreadySet(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setLocalId('uuid-1');
@@ -33,7 +33,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->setId('1');
 	}
 	
-	public function testSetLocalId_HappyPath() {
+	public function testSetLocalId_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setLocalId('uuid-1');
@@ -45,7 +45,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertSame('uuid-1', $array['lid']);
 	}
 	
-	public function testSetLocalId_WithIdAlreadySet() {
+	public function testSetLocalId_WithIdAlreadySet(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setId('1');
@@ -55,7 +55,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->setLocalId('uuid-1');
 	}
 	
-	public function testEquals_HappyPath() {
+	public function testEquals_HappyPath(): void {
 		$one = new ResourceIdentifierObject('test', 1);
 		$two = new ResourceIdentifierObject('test', 2);
 		$new = new ResourceIdentifierObject('test', 1);
@@ -64,7 +64,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertTrue($one->equals($new));
 	}
 	
-	public function testEquals_WithoutIdentification() {
+	public function testEquals_WithoutIdentification(): void {
 		$one = new ResourceIdentifierObject('test', 1);
 		$two = new ResourceIdentifierObject();
 		
@@ -73,7 +73,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$one->equals($two);
 	}
 	
-	public function testEquals_WithLocalId() {
+	public function testEquals_WithLocalId(): void {
 		$one = new ResourceIdentifierObject('test');
 		$two = new ResourceIdentifierObject('test');
 		$new = new ResourceIdentifierObject('test');
@@ -86,7 +86,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertTrue($one->equals($new));
 	}
 	
-	public function testGetIdentificationKey_HappyPath() {
+	public function testGetIdentificationKey_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 42);
 		
 		$array = $resourceIdentifierObject->toArray();
@@ -100,7 +100,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_SetAfterwards() {
+	public function testGetIdentificationKey_SetAfterwards(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		parent::assertFalse($resourceIdentifierObject->hasIdentification());
@@ -121,7 +121,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_WithLocalId() {
+	public function testGetIdentificationKey_WithLocalId(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		$resourceIdentifierObject->setType('user');
@@ -138,7 +138,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertSame('user|uuid-42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_NoIdentification() {
+	public function testGetIdentificationKey_NoIdentification(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		$array = $resourceIdentifierObject->toArray();
@@ -153,7 +153,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->getIdentificationKey();
 	}
 	
-	public function testGetIdentificationKey_NoFullIdentification() {
+	public function testGetIdentificationKey_NoFullIdentification(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user');
 		
 		$array = $resourceIdentifierObject->toArray();
@@ -168,7 +168,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->getIdentificationKey();
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		parent::assertTrue($resourceIdentifierObject->isEmpty());
@@ -181,7 +181,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		parent::assertTrue($resourceIdentifierObject->isEmpty());

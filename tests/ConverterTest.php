@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ConverterTest extends TestCase {
-	public function testObjectToArray_HappyPath() {
+	public function testObjectToArray_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		$object->baz = 42;
@@ -27,7 +27,7 @@ class ConverterTest extends TestCase {
 		parent::assertSame(42, $array['baz']);
 	}
 	
-	public function testObjectToArray_MethodsAndPrivateProperties() {
+	public function testObjectToArray_MethodsAndPrivateProperties(): void {
 		$object = new class {
 			public $foo = 'bar';
 			public $baz = 42;
@@ -44,7 +44,7 @@ class ConverterTest extends TestCase {
 		parent::assertArrayNotHasKey('method', $array);
 	}
 	
-	public function testObjectToArray_FromInternalObject() {
+	public function testObjectToArray_FromInternalObject(): void {
 		$values = ['foo'=>'bar', 'baz'=>42];
 		$attributesObject = AttributesObject::fromArray($values);
 		
@@ -58,7 +58,7 @@ class ConverterTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
-	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput) {
+	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput): void {
 		parent::assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
@@ -76,14 +76,14 @@ class ConverterTest extends TestCase {
 	 * @group Extensions
 	 * @group Profiles
 	 */
-	public function testPrepareContentType_HappyPath() {
+	public function testPrepareContentType_HappyPath(): void {
 		parent::assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testPrepareContentType_WithExtensionStringLink() {
+	public function testPrepareContentType_WithExtensionStringLink(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
@@ -92,7 +92,7 @@ class ConverterTest extends TestCase {
 	/**
 	 * @group Profiles
 	 */
-	public function testPrepareContentType_WithProfileStringLink() {
+	public function testPrepareContentType_WithProfileStringLink(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
@@ -102,7 +102,7 @@ class ConverterTest extends TestCase {
 	 * @group Extensions
 	 * @group Profiles
 	 */
-	public function testPrepareContentType_WithMultipleExtensionsAndProfiles() {
+	public function testPrepareContentType_WithMultipleExtensionsAndProfiles(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'baz']);
 		$profile1   = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);

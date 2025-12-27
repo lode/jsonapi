@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use PHPUnit\Framework\TestCase;
 
 class LinkObjectTest extends TestCase {
-	public function testSetDescribedBy_HappyPath() {
+	public function testSetDescribedBy_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -25,7 +25,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['describedby']['href']);
 	}
 	
-	public function testAddLanguage_HappyPath() {
+	public function testAddLanguage_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -40,7 +40,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('nl-NL', $array['hreflang']);
 	}
 	
-	public function testAddLanguage_Multiple() {
+	public function testAddLanguage_Multiple(): void {
 		$linkObject = new LinkObject();
 		
 		$linkObject->addLanguage('nl-NL');
@@ -52,7 +52,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame(['nl-NL', 'en-US'], $array['hreflang']);
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -68,7 +68,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testSetRelationType_HappyPath() {
+	public function testSetRelationType_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -83,7 +83,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('external', $array['rel']);
 	}
 	
-	public function testSetDescribedByLinkObject_HappyPath() {
+	public function testSetDescribedByLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -100,7 +100,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['describedby']['href']);
 	}
 	
-	public function testSetHumanTitle_HappyPath() {
+	public function testSetHumanTitle_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -115,7 +115,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('A link', $array['title']);
 	}
 	
-	public function testSetMediaType_HappyPath() {
+	public function testSetMediaType_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -130,7 +130,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame('text/html', $array['type']);
 	}
 	
-	public function testSetHreflang_HappyPath() {
+	public function testSetHreflang_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -145,7 +145,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertSame(['nl-NL', 'en-US'], $array['hreflang']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());
@@ -158,7 +158,7 @@ class LinkObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$linkObject = new LinkObject();
 		
 		parent::assertTrue($linkObject->isEmpty());

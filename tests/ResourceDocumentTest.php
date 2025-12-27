@@ -17,7 +17,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceDocumentTest extends TestCase {
-	public function testConstructor_NoResource() {
+	public function testConstructor_NoResource(): void {
 		$document = new ResourceDocument();
 		
 		$array = $document->toArray();
@@ -26,7 +26,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertNull($array['data']);
 	}
 	
-	public function testFromObject_WithAttributesObject() {
+	public function testFromObject_WithAttributesObject(): void {
 		$attributesObject = new AttributesObject();
 		$attributesObject->add('foo', 'bar');
 		
@@ -40,7 +40,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['data']['attributes']['foo']);
 	}
 	
-	public function testAdd_HappyPath() {
+	public function testAdd_HappyPath(): void {
 		$document = new ResourceDocument('user', 42);
 		$document->add('foo', 'bar');
 		
@@ -52,7 +52,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertSame('bar', $array['data']['attributes']['foo']);
 	}
 	
-	public function testAdd_IdentifierOnlyObject() {
+	public function testAdd_IdentifierOnlyObject(): void {
 		$document = new ResourceDocument();
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
@@ -64,7 +64,7 @@ class ResourceDocumentTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testAdd_BlocksExtensionMembersViaRegularAdd() {
+	public function testAdd_BlocksExtensionMembersViaRegularAdd(): void {
 		$document = new ResourceDocument();
 		$document->applyExtension(parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']));
 		
@@ -74,7 +74,7 @@ class ResourceDocumentTest extends TestCase {
 		$document->add('test:foo', 'bar');
 	}
 	
-	public function testAddRelationship_WithIncluded() {
+	public function testAddRelationship_WithIncluded(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		
@@ -86,7 +86,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayHasKey('included', $array);
 	}
 	
-	public function testAddRelationship_DoNotIncludeContainedResources() {
+	public function testAddRelationship_DoNotIncludeContainedResources(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		
@@ -100,7 +100,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('included', $array);
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$document = new ResourceDocument();
 		$document->addMeta('foo', 'root', $level=DocumentLevelEnum::Root);
 		$document->addMeta('bar', 'resource', $level=DocumentLevelEnum::Resource);
@@ -124,7 +124,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertSame('jsonapi', $array['jsonapi']['meta']['baz']);
 	}
 	
-	public function testAddMeta_RecreateJsonapiObject() {
+	public function testAddMeta_RecreateJsonapiObject(): void {
 		$document = new ResourceDocument();
 		
 		$array = $document->toArray();
@@ -148,7 +148,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertSame('jsonapi', $array['jsonapi']['meta']['baz']);
 	}
 	
-	public function testSetLocalId_HappyPath() {
+	public function testSetLocalId_HappyPath(): void {
 		$document = new ResourceDocument();
 		$document->setType('user');
 		$document->setLocalId('42');
@@ -161,7 +161,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertSame('42', $array['data']['lid']);
 	}
 	
-	public function testAddRelationshipObject_WithIncluded() {
+	public function testAddRelationshipObject_WithIncluded(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
@@ -174,7 +174,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayHasKey('included', $array);
 	}
 	
-	public function testAddRelationshipObject_DoNotIncludeContainedResources() {
+	public function testAddRelationshipObject_DoNotIncludeContainedResources(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
@@ -189,7 +189,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('included', $array);
 	}
 	
-	public function testSetRelationshipsObject_WithIncluded() {
+	public function testSetRelationshipsObject_WithIncluded(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
@@ -205,7 +205,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayHasKey('included', $array);
 	}
 	
-	public function testSetRelationshipsObject_DoNotIncludeContainedResources() {
+	public function testSetRelationshipsObject_DoNotIncludeContainedResources(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$relationshipObject = RelationshipObject::fromAnything($resourceObject);
@@ -223,7 +223,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('included', $array);
 	}
 	
-	public function testSetPrimaryResource_HappyPath() {
+	public function testSetPrimaryResource_HappyPath(): void {
 		$document = new ResourceDocument();
 		$document->setPrimaryResource(new ResourceObject('user', 42));
 		
@@ -237,7 +237,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('attributes', $array['data']);
 	}
 	
-	public function testSetPrimaryResource_WithIncluded() {
+	public function testSetPrimaryResource_WithIncluded(): void {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
@@ -252,7 +252,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayHasKey('included', $array);
 	}
 	
-	public function testSetPrimaryResource_DoNotIncludeContainedResources() {
+	public function testSetPrimaryResource_DoNotIncludeContainedResources(): void {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
@@ -269,7 +269,7 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('included', $array);
 	}
 	
-	public function testSetPrimaryResource_BlocksResourceDocument() {
+	public function testSetPrimaryResource_BlocksResourceDocument(): void {
 		$document = new ResourceDocument();
 		
 		$this->expectException(InputException::class);

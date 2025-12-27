@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\objects\MetaObject;
 use PHPUnit\Framework\TestCase;
 
 class MetaObjectTest extends TestCase {
-	public function testAdd_AllowsMixedValue() {
+	public function testAdd_AllowsMixedValue(): void {
 		$metaObject = new MetaObject();
 		$metaObject->add('array-list', ['foo']);
 		$metaObject->add('array-int-key', [42 => 'foo']);
@@ -26,7 +26,7 @@ class MetaObjectTest extends TestCase {
 		parent::assertCount(9, $array);
 	}
 	
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		
@@ -39,7 +39,7 @@ class MetaObjectTest extends TestCase {
 		parent::assertSame('bar', $array['foo']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$metaObject = new MetaObject();
 		
 		parent::assertTrue($metaObject->isEmpty());
@@ -52,7 +52,7 @@ class MetaObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$metaObject = new MetaObject();
 		
 		parent::assertTrue($metaObject->isEmpty());

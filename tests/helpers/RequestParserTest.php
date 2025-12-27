@@ -14,7 +14,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
 class RequestParserTest extends TestCase {
-	public function testFromSuperglobals_HappyPath() {
+	public function testFromSuperglobals_HappyPath(): void {
 		$_GET = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -81,7 +81,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
-	public function testFromSuperglobals_WithPhpInputStream() {
+	public function testFromSuperglobals_WithPhpInputStream(): void {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/';
@@ -95,7 +95,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getDocument());
 	}
 	
-	public function testFromSuperglobals_WithoutServerContext() {
+	public function testFromSuperglobals_WithoutServerContext(): void {
 		unset($_SERVER['REQUEST_SCHEME']);
 		unset($_SERVER['HTTP_HOST']);
 		unset($_SERVER['REQUEST_URI']);
@@ -109,7 +109,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithRequestInterface() {
+	public function testFromPsrRequest_WithRequestInterface(): void {
 		$queryParameters = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -179,7 +179,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame($document, $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithEmptyDocument() {
+	public function testFromPsrRequest_WithEmptyDocument(): void {
 		$selfLink        = '';
 		$queryParameters = [];
 		$document        = null;
@@ -194,7 +194,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithServerRequestInterface() {
+	public function testFromPsrRequest_WithServerRequestInterface(): void {
 		$queryParameters = [
 			'sort' => 'name,-location',
 		];
@@ -212,7 +212,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
-	public function testGetSelfLink() {
+	public function testGetSelfLink(): void {
 		$requestParser = new RequestParser('https://example.org/');
 		parent::assertSame('https://example.org/', $requestParser->getSelfLink());
 		
@@ -223,7 +223,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame($selfLink, $requestParser->getSelfLink());
 	}
 	
-	public function testHasIncludePaths() {
+	public function testHasIncludePaths(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasIncludePaths());
 		
@@ -232,7 +232,7 @@ class RequestParserTest extends TestCase {
 		parent::assertTrue($requestParser->hasIncludePaths());
 	}
 	
-	public function testGetIncludePaths_Reformatted() {
+	public function testGetIncludePaths_Reformatted(): void {
 		$paths = [
 			'foo',
 			'bar',
@@ -265,14 +265,14 @@ class RequestParserTest extends TestCase {
 		parent::assertSame($expected, $requestParser->getIncludePaths());
 	}
 	
-	public function testGetIncludePaths_Raw() {
+	public function testGetIncludePaths_Raw(): void {
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useNestedIncludePaths' => false];
 		parent::assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
-	public function testGetIncludePaths_Empty() {
+	public function testGetIncludePaths_Empty(): void {
 		$queryParameters = ['include' => ''];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		
@@ -280,7 +280,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getIncludePaths());
 	}
 	
-	public function testHasSparseFieldset() {
+	public function testHasSparseFieldset(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasSparseFieldset('foo'));
 		
@@ -289,7 +289,7 @@ class RequestParserTest extends TestCase {
 		parent::assertTrue($requestParser->hasSparseFieldset('foo'));
 	}
 	
-	public function testGetSparseFieldset() {
+	public function testGetSparseFieldset(): void {
 		$queryParameters = ['fields' => ['foo' => 'bar,baz']];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		parent::assertSame(['bar', 'baz'], $requestParser->getSparseFieldset('foo'));
@@ -299,7 +299,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getSparseFieldset('foo'));
 	}
 	
-	public function testHasSortFields() {
+	public function testHasSortFields(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasSortFields());
 		
@@ -308,7 +308,7 @@ class RequestParserTest extends TestCase {
 		parent::assertTrue($requestParser->hasSortFields());
 	}
 	
-	public function testGetSortFields_Reformatted() {
+	public function testGetSortFields_Reformatted(): void {
 		$queryParameters = ['sort' => 'foo'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		parent::assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending]], $requestParser->getSortFields());
@@ -322,14 +322,14 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending], ['field' => 'bar', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
-	public function testGetSortFields_Raw() {
+	public function testGetSortFields_Raw(): void {
 		$queryParameters = ['sort' => 'foo,-bar'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		$options = ['useAnnotatedSortFields' => false];
 		parent::assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
 	
-	public function testGetSortFields_Empty() {
+	public function testGetSortFields_Empty(): void {
 		$queryParameters = ['sort' => ''];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		
@@ -337,7 +337,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame([], $requestParser->getSortFields());
 	}
 	
-	public function testHasPagination() {
+	public function testHasPagination(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasPagination());
 		
@@ -346,13 +346,13 @@ class RequestParserTest extends TestCase {
 		parent::assertTrue($requestParser->hasPagination());
 	}
 	
-	public function testGetPagination() {
+	public function testGetPagination(): void {
 		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		parent::assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 	}
 	
-	public function testHasFilter() {
+	public function testHasFilter(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasFilter());
 		
@@ -361,7 +361,7 @@ class RequestParserTest extends TestCase {
 		parent::assertTrue($requestParser->hasFilter());
 	}
 	
-	public function testGetFilter() {
+	public function testGetFilter(): void {
 		$queryParameters = ['filter' => 'foo'];
 		$requestParser = new RequestParser($selfLink='', $queryParameters);
 		parent::assertSame('foo', $requestParser->getFilter());
@@ -371,7 +371,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame(['foo' => 'bar'], $requestParser->getFilter());
 	}
 	
-	public function testHasLocalId() {
+	public function testHasLocalId(): void {
 		$document = [
 			'data' => [
 				'id' => 'foo',
@@ -396,7 +396,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame('foo', $requestParser->getLocalId());
 	}
 	
-	public function testHasAttribute() {
+	public function testHasAttribute(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasAttribute('foo'));
 		parent::assertFalse($requestParser->hasAttribute('bar'));
@@ -414,7 +414,7 @@ class RequestParserTest extends TestCase {
 		parent::assertFalse($requestParser->hasAttribute('bar'));
 	}
 	
-	public function testGetAttribute() {
+	public function testGetAttribute(): void {
 		$document = [
 			'data' => [
 				'attributes' => [
@@ -427,7 +427,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame('bar', $requestParser->getAttribute('foo'));
 	}
 	
-	public function testHasRelationship() {
+	public function testHasRelationship(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasRelationship('foo'));
 		parent::assertFalse($requestParser->hasRelationship('bar'));
@@ -450,7 +450,7 @@ class RequestParserTest extends TestCase {
 		parent::assertFalse($requestParser->hasRelationship('bar'));
 	}
 	
-	public function testGetRelationship() {
+	public function testGetRelationship(): void {
 		$document = [
 			'data' => [
 				'relationships' => [
@@ -468,7 +468,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame(['data' => ['type' => 'bar', 'id' => '42']], $requestParser->getRelationship('foo'));
 	}
 	
-	public function testHasMeta() {
+	public function testHasMeta(): void {
 		$requestParser = new RequestParser();
 		parent::assertFalse($requestParser->hasMeta('foo'));
 		parent::assertFalse($requestParser->hasMeta('bar'));
@@ -484,7 +484,7 @@ class RequestParserTest extends TestCase {
 		parent::assertFalse($requestParser->hasMeta('bar'));
 	}
 	
-	public function testGetMeta() {
+	public function testGetMeta(): void {
 		$document = [
 			'meta' => [
 				'foo' => 'bar',
@@ -495,7 +495,7 @@ class RequestParserTest extends TestCase {
 		parent::assertSame('bar', $requestParser->getMeta('foo'));
 	}
 	
-	public function testGetDocument() {
+	public function testGetDocument(): void {
 		$document = [
 			'data' => [
 				'attributes' => [

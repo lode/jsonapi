@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class CollectionDocumentTest extends TestCase {
-	public function testConstructor_NoResources() {
+	public function testConstructor_NoResources(): void {
 		$document = new CollectionDocument();
 		
 		$array = $document->toArray();
@@ -20,7 +20,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertSame([], $array['data']);
 	}
 	
-	public function testAdd_WithIdentifiers() {
+	public function testAdd_WithIdentifiers(): void {
 		$document = new CollectionDocument();
 		
 		$document->add('user', 1);
@@ -47,7 +47,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertSame('42', $array['data'][1]['id']);
 	}
 	
-	public function testAdd_WithAttributes() {
+	public function testAdd_WithAttributes(): void {
 		$document = new CollectionDocument();
 		
 		$document->add('user', 1, ['name' => 'foo']);
@@ -80,7 +80,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertSame('bar', $secondResource['attributes']['name']);
 	}
 	
-	public function testSetPaginationLinks_HappyPath() {
+	public function testSetPaginationLinks_HappyPath(): void {
 		$document = new CollectionDocument();
 		$baseUrl  = 'https://jsonapi.org/?page=';
 		
@@ -101,7 +101,7 @@ class CollectionDocumentTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderSetPaginationLinks_IndividualLinks')]
-	public function testSetPaginationLinks_IndividualLinks($key, $previous, $next, $first, $last) {
+	public function testSetPaginationLinks_IndividualLinks($key, $previous, $next, $first, $last): void {
 		$document = new CollectionDocument();
 		
 		$document->setPaginationLinks($previous, $next, $first, $last);
@@ -129,7 +129,7 @@ class CollectionDocumentTest extends TestCase {
 		];
 	}
 	
-	public function testAddResource_HappyPath() {
+	public function testAddResource_HappyPath(): void {
 		$document = new CollectionDocument();
 		$document->addResource(new ResourceObject('user', 42));
 		
@@ -141,7 +141,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('attributes', $array['data'][0]);
 	}
 	
-	public function testAddResource_WithIncluded() {
+	public function testAddResource_WithIncluded(): void {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
@@ -162,7 +162,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertSame('24', $array['included'][0]['id']);
 	}
 	
-	public function testAddResource_DoNotIncludeContainedResources() {
+	public function testAddResource_DoNotIncludeContainedResources(): void {
 		$relatedResourceObject = new ResourceObject('user', 24);
 		$relatedResourceObject->add('foo', 'bar');
 		
@@ -183,7 +183,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertSame('24', $array['data'][0]['relationships']['foo']['data']['id']);
 	}
 	
-	public function testAddResource_RequiresIdentification() {
+	public function testAddResource_RequiresIdentification(): void {
 		$document = new CollectionDocument();
 		
 		$this->expectException(InputException::class);
@@ -191,7 +191,7 @@ class CollectionDocumentTest extends TestCase {
 		$document->addResource(new ResourceObject());
 	}
 	
-	public function testAddResource_RequiresFullIdentification() {
+	public function testAddResource_RequiresFullIdentification(): void {
 		$document = new CollectionDocument();
 		
 		$this->expectException(InputException::class);
@@ -199,7 +199,7 @@ class CollectionDocumentTest extends TestCase {
 		$document->addResource(new ResourceObject('user'));
 	}
 	
-	public function testGetContainedResources_HappyPath() {
+	public function testGetContainedResources_HappyPath(): void {
 		$document = new CollectionDocument();
 		
 		parent::assertCount(0, $document->getContainedResources());
@@ -213,7 +213,7 @@ class CollectionDocumentTest extends TestCase {
 		parent::assertCount(2, $document->getContainedResources());
 	}
 	
-	public function testGetContainedResources_NoNestedResources() {
+	public function testGetContainedResources_NoNestedResources(): void {
 		$document = new CollectionDocument();
 		
 		$resourceObject = new ResourceObject('user', 42);
