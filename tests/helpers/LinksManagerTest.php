@@ -4,16 +4,31 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\helpers;
 
+use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitLinksManager as LinksManager;
 use PHPUnit\Framework\TestCase;
 
 class LinksManagerTest extends TestCase {
+	private object $linksManager;
+	
+	public function setUp(): void {
+		// using LinksManager to make it non-trait to test against it
+		$this->linksManager = new class {
+			use LinksManager;
+			
+			/**
+			 * @return array<string, string|array{href: string}>
+			 */
+			public function toArray(): array {
+				return $this->links->toArray();
+			}
+		};
+	}
+	
 	public function testAddLink_HappyPath() {
-		$linksManager = new LinksManager();
-		$linksManager->addLink('foo', 'https://jsonapi.org');
+		$this->linksManager->addLink('foo', 'https://jsonapi.org');
 		
-		$array = $linksManager->toArray();
+		$array = $this->linksManager->toArray();
 		
 		parent::assertCount(1, $array);
 		parent::assertArrayHasKey('foo', $array);
@@ -21,10 +36,9 @@ class LinksManagerTest extends TestCase {
 	}
 	
 	public function testAddLinkObject_HappyPath() {
-		$linksManager = new LinksManager();
-		$linksManager->addLinkObject('foo', new LinkObject('https://jsonapi.org'));
+		$this->linksManager->addLinkObject('foo', new LinkObject('https://jsonapi.org'));
 		
-		$array = $linksManager->toArray();
+		$array = $this->linksManager->toArray();
 		
 		parent::assertCount(1, $array);
 		parent::assertArrayHasKey('foo', $array);

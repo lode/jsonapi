@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
-use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
 class JsonapiObjectTest extends TestCase {
@@ -44,7 +44,7 @@ class JsonapiObjectTest extends TestCase {
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addExtension(new TestExtension());
+		$jsonapiObject->addExtension(parent::createStub(ExtensionInterface::class));
 		
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}
@@ -57,7 +57,7 @@ class JsonapiObjectTest extends TestCase {
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addProfile(new TestProfile());
+		$jsonapiObject->addProfile(parent::createStub(ProfileInterface::class));
 		
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}
@@ -70,7 +70,7 @@ class JsonapiObjectTest extends TestCase {
 		
 		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$jsonapiObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}

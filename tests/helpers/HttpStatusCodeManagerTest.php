@@ -5,35 +5,38 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitHttpStatusCodeManager as HttpStatusCodeManager;
+use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use PHPUnit\Framework\TestCase;
 
 class HttpStatusCodeManagerTest extends TestCase {
+	private static object $helper;
+	
+	public static function setUpBeforeClass(): void {
+		// using HttpStatusCodeManager to make it non-trait to test against it
+		self::$helper = new class {
+			use HttpStatusCodeManager;
+		};
+	}
+	
 	public function testSetHttpStatusCode_HappyPath() {
-		$helper = new HttpStatusCodeManager();
+		parent::assertFalse(self::$helper->hasHttpStatusCode());
 		
-		parent::assertFalse($helper->hasHttpStatusCode());
+		self::$helper->setHttpStatusCode(204);
 		
-		$helper->setHttpStatusCode(204);
-		
-		parent::assertTrue($helper->hasHttpStatusCode());
-		parent::assertSame(204, $helper->getHttpStatusCode());
+		parent::assertTrue(self::$helper->hasHttpStatusCode());
+		parent::assertSame(204, self::$helper->getHttpStatusCode());
 	}
 	
 	public function testSetHttpStatusCode_InvalidForHttp() {
-		$helper = new HttpStatusCodeManager();
-		
 		$this->expectException(InputException::class);
 		
-		$helper->setHttpStatusCode(42);
+		self::$helper->setHttpStatusCode(42);
 	}
 	
 	public function testSetHttpStatusCode_AllowsYetUnknownHttpCodes() {
-		$helper = new HttpStatusCodeManager();
+		self::$helper->setHttpStatusCode(299);
 		
-		$helper->setHttpStatusCode(299);
-		
-		parent::assertTrue($helper->hasHttpStatusCode());
-		parent::assertSame(299, $helper->getHttpStatusCode());
+		parent::assertTrue(self::$helper->hasHttpStatusCode());
+		parent::assertSame(299, self::$helper->getHttpStatusCode());
 	}
 }

@@ -8,11 +8,11 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipObjectTest extends TestCase {
@@ -306,7 +306,7 @@ class RelationshipObjectTest extends TestCase {
 		
 		parent::assertTrue($relationshipObject->isEmpty());
 		
-		$relationshipObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$relationshipObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($relationshipObject->isEmpty());
 	}

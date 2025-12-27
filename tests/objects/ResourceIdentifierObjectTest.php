@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
-use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
@@ -186,7 +186,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		
 		parent::assertTrue($resourceIdentifierObject->isEmpty());
 		
-		$resourceIdentifierObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$resourceIdentifierObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($resourceIdentifierObject->isEmpty());
 	}

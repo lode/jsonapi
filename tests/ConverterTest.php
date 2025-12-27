@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
-use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
 class ConverterTest extends TestCase {
 	public function testObjectToArray_HappyPath() {
@@ -28,7 +28,13 @@ class ConverterTest extends TestCase {
 	}
 	
 	public function testObjectToArray_MethodsAndPrivateProperties() {
-		$object = new TestObject();
+		$object = new class {
+			public $foo = 'bar';
+			public $baz = 42;
+			private $secret = 'value'; // @phpstan-ignore property.onlyWritten
+			public function method() {}
+		};
+		
 		$array = Converter::objectToArray($object);
 		
 		parent::assertCount(2, $array);
@@ -78,8 +84,7 @@ class ConverterTest extends TestCase {
 	 * @group Extensions
 	 */
 	public function testPrepareContentType_WithExtensionStringLink() {
-		$extension = new TestExtension();
-		$extension->setOfficialLink('bar');
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
@@ -88,8 +93,7 @@ class ConverterTest extends TestCase {
 	 * @group Profiles
 	 */
 	public function testPrepareContentType_WithProfileStringLink() {
-		$profile = new TestProfile();
-		$profile->setOfficialLink('bar');
+		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
@@ -99,25 +103,14 @@ class ConverterTest extends TestCase {
 	 * @group Profiles
 	 */
 	public function testPrepareContentType_WithMultipleExtensionsAndProfiles() {
-		$extension1 = new TestExtension();
-		$extension1->setOfficialLink('bar');
+		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
+		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'baz']);
+		$profile1   = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
+		$profile2   = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'baz']);
 		
-		$extension2 = new TestExtension();
-		$extension2->setOfficialLink('baz');
+		$expectedContentType  = ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"';
+		$convertedContentType = Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]);
 		
-		$profile1 = new TestProfile();
-		$profile1->setOfficialLink('bar');
-		
-		$profile2 = new TestProfile();
-		$profile2->setOfficialLink('baz');
-		
-		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]));
+		parent::assertSame($expectedContentType, $convertedContentType);
 	}
-}
-
-class TestObject {
-	public $foo = 'bar';
-	public $baz = 42;
-	private $secret = 'value'; // @phpstan-ignore property.onlyWritten
-	public function method() {}
 }

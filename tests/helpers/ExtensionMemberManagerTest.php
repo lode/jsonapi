@@ -5,55 +5,58 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitExtensionMemberManager as ExtensionMemberManager;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
+use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @group Extensions
  */
 class ExtensionMemberManagerTest extends TestCase {
+	private static object $helper;
+	
+	public static function setUpBeforeClass(): void {
+		// using ExtensionMemberManager to make it non-trait to test against it
+		self::$helper = new class {
+			use ExtensionMemberManager;
+		};
+	}
+	
 	public function testAddExtensionMember_HappyPath() {
-		$helper    = new ExtensionMemberManager();
-		$extension = new TestExtension();
-		$extension->setNamespace('test');
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
-		parent::assertFalse($helper->hasExtensionMembers());
-		parent::assertSame([], $helper->getExtensionMembers());
+		parent::assertFalse(self::$helper->hasExtensionMembers());
+		parent::assertSame([], self::$helper->getExtensionMembers());
 		
-		$helper->addExtensionMember($extension, 'foo', 'bar');
+		self::$helper->addExtensionMember($extension, 'foo', 'bar');
 		
-		$array = $helper->getExtensionMembers();
+		$array = self::$helper->getExtensionMembers();
 		
-		parent::assertTrue($helper->hasExtensionMembers());
+		parent::assertTrue(self::$helper->hasExtensionMembers());
 		parent::assertCount(1, $array);
 		parent::assertArrayHasKey('test:foo', $array);
 		parent::assertSame('bar', $array['test:foo']);
 	}
 	
 	public function testAddExtensionMember_WithNamespacePrefixed() {
-		$helper    = new ExtensionMemberManager();
-		$extension = new TestExtension();
-		$extension->setNamespace('test');
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
-		$helper->addExtensionMember($extension, 'test:foo', 'bar');
+		self::$helper->addExtensionMember($extension, 'test:foo', 'bar');
 		
-		$array = $helper->getExtensionMembers();
+		$array = self::$helper->getExtensionMembers();
 		
 		parent::assertArrayHasKey('test:foo', $array);
 	}
 	
 	public function testAddExtensionMember_WithObjectValue() {
-		$helper    = new ExtensionMemberManager();
-		$extension = new TestExtension();
-		$extension->setNamespace('test');
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
-		$helper->addExtensionMember($extension, 'foo', $object);
+		self::$helper->addExtensionMember($extension, 'foo', $object);
 		
-		$array = $helper->getExtensionMembers();
+		$array = self::$helper->getExtensionMembers();
 		
 		parent::assertArrayHasKey('test:foo', $array);
 		parent::assertArrayHasKey('bar', $array['test:foo']);
@@ -61,12 +64,10 @@ class ExtensionMemberManagerTest extends TestCase {
 	}
 	
 	public function testAddExtensionMember_InvalidNamespaceOrCharacter() {
-		$helper    = new ExtensionMemberManager();
-		$extension = new TestExtension();
-		$extension->setNamespace('test');
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		$this->expectException(InputException::class);
 		
-		$helper->addExtensionMember($extension, 'foo:bar', 'baz');
+		self::$helper->addExtensionMember($extension, 'foo:bar', 'baz');
 	}
 }

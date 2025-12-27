@@ -7,9 +7,11 @@ namespace alsvanzelf\jsonapiTests\helpers;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
-use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
-use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
 class RequestParserTest extends TestCase {
 	public function testFromSuperglobals_HappyPath() {
@@ -142,10 +144,17 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$request = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => json_encode($document)]),
+			'getUri'         => parent::createConfiguredStub(UriInterface::class, [
+				'__toString' => $selfLink,
+				'getQuery'   => http_build_query($queryParameters),
+			]),
+		]);
+		
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
-		parent::assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
+		parent::assertSame($selfLink, $requestParser->getSelfLink());
 		
 		parent::assertTrue($requestParser->hasIncludePaths());
 		parent::assertTrue($requestParser->hasSparseFieldset('user'));
@@ -175,7 +184,11 @@ class RequestParserTest extends TestCase {
 		$queryParameters = [];
 		$document        = null;
 		
-		$request       = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
+			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery'   => '']),
+		]);
+		
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
 		parent::assertSame([], $requestParser->getDocument());
@@ -186,12 +199,15 @@ class RequestParserTest extends TestCase {
 			'sort' => 'name,-location',
 		];
 		$selfLink = 'https://example.org/user/42?'.http_build_query($queryParameters);
-		$document = [];
 		
-		$request = new TestableNonInterfaceServerRequestInterface($selfLink, $queryParameters, $document);
+		$request = parent::createConfiguredStub(ServerRequestInterface::class, [
+			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
+			'getQueryParams' => $queryParameters,
+			'getUri'         => parent::createConfiguredStub(UriInterface::class, ['__toString' => $selfLink]),
+		]);
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
-		parent::assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
+		parent::assertSame($selfLink, $requestParser->getSelfLink());
 		parent::assertTrue($requestParser->hasSortFields());
 		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}

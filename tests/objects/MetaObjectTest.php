@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class MetaObjectTest extends TestCase {
@@ -57,7 +57,7 @@ class MetaObjectTest extends TestCase {
 		
 		parent::assertTrue($metaObject->isEmpty());
 		
-		$metaObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$metaObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($metaObject->isEmpty());
 	}

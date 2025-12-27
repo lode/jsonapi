@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
-use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class AttributesObjectTest extends TestCase {
@@ -71,26 +70,9 @@ class AttributesObjectTest extends TestCase {
 	/**
 	 * @group Extensions
 	 */
-	public function testAdd_BlocksExtensionMembersViaRegularAdd() {
-		$attributesObject = new AttributesObject();
-		$extension        = new TestExtension();
-		$extension->setNamespace('test');
-		
-		parent::assertSame([], $attributesObject->toArray());
-		
-		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('invalid member name "test:foo"');
-		
-		$attributesObject->add('test:foo', 'bar');
-	}
-	
-	/**
-	 * @group Extensions
-	 */
 	public function testAddExtensionMember_HappyPath() {
 		$attributesObject = new AttributesObject();
-		$extension        = new TestExtension();
-		$extension->setNamespace('test');
+		$extension        = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
 		parent::assertSame([], $attributesObject->toArray());
 		

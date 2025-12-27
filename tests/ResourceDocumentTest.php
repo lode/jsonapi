@@ -8,6 +8,7 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
@@ -58,6 +59,19 @@ class ResourceDocumentTest extends TestCase {
 		$this->expectException(Exception::class);
 		
 		$document->add('foo', 'bar');
+	}
+	
+	/**
+	 * @group Extensions
+	 */
+	public function testAdd_BlocksExtensionMembersViaRegularAdd() {
+		$document = new ResourceDocument();
+		$document->applyExtension(parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']));
+		
+		$this->expectException(InputException::class);
+		$this->expectExceptionMessage('invalid member name "test:foo"');
+		
+		$document->add('test:foo', 'bar');
 	}
 	
 	public function testAddRelationship_WithIncluded() {

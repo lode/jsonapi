@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class LinkObjectTest extends TestCase {
@@ -163,7 +163,7 @@ class LinkObjectTest extends TestCase {
 		
 		parent::assertTrue($linkObject->isEmpty());
 		
-		$linkObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$linkObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($linkObject->isEmpty());
 	}

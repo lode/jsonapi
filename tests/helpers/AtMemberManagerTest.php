@@ -5,45 +5,48 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitAtMemberManager as AtMemberManager;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use PHPUnit\Framework\TestCase;
 
 class AtMemberManagerTest extends TestCase {
+	private static object $helper;
+	
+	public static function setUpBeforeClass(): void {
+		// using AtMemberManager to make it non-trait to test against it
+		self::$helper = new class {
+			use AtMemberManager;
+		};
+	}
+	
 	public function testAddAtMember_HappyPath() {
-		$helper = new AtMemberManager();
+		parent::assertFalse(self::$helper->hasAtMembers());
+		parent::assertSame([], self::$helper->getAtMembers());
 		
-		parent::assertFalse($helper->hasAtMembers());
-		parent::assertSame([], $helper->getAtMembers());
+		self::$helper->addAtMember('@foo', 'bar');
 		
-		$helper->addAtMember('@foo', 'bar');
+		$array = self::$helper->getAtMembers();
 		
-		$array = $helper->getAtMembers();
-		
-		parent::assertTrue($helper->hasAtMembers());
+		parent::assertTrue(self::$helper->hasAtMembers());
 		parent::assertCount(1, $array);
 		parent::assertArrayHasKey('@foo', $array);
 		parent::assertSame('bar', $array['@foo']);
 	}
 	
 	public function testAddAtMember_WithoutAtSign() {
-		$helper = new AtMemberManager();
+		self::$helper->addAtMember('foo', 'bar');
 		
-		$helper->addAtMember('foo', 'bar');
-		
-		$array = $helper->getAtMembers();
+		$array = self::$helper->getAtMembers();
 		
 		parent::assertArrayHasKey('@foo', $array);
 	}
 	
 	public function testAddAtMember_WithObjectValue() {
-		$helper = new AtMemberManager();
-		
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
-		$helper->addAtMember('foo', $object);
+		self::$helper->addAtMember('foo', $object);
 		
-		$array = $helper->getAtMembers();
+		$array = self::$helper->getAtMembers();
 		
 		parent::assertArrayHasKey('@foo', $array);
 		parent::assertArrayHasKey('bar', $array['@foo']);
@@ -51,10 +54,8 @@ class AtMemberManagerTest extends TestCase {
 	}
 	
 	public function testAddAtMember_InvalidDoubleAt() {
-		$helper = new AtMemberManager();
-		
 		$this->expectException(InputException::class);
 		
-		$helper->addAtMember('@@foo', 'bar');
+		self::$helper->addAtMember('@@foo', 'bar');
 	}
 }
