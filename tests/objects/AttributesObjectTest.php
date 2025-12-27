@@ -18,9 +18,9 @@ class AttributesObjectTest extends TestCase {
 		
 		$array = $attributesObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('bar', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('bar', $array['foo']);
 	}
 	
 	public function testAdd_HappyPath() {
@@ -29,9 +29,9 @@ class AttributesObjectTest extends TestCase {
 		
 		$array = $attributesObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('bar', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('bar', $array['foo']);
 	}
 	
 	public function testAdd_AllowsMixedValue() {
@@ -48,7 +48,7 @@ class AttributesObjectTest extends TestCase {
 		
 		$array = $attributesObject->toArray();
 		
-		$this->assertCount(9, $array);
+		parent::assertCount(9, $array);
 	}
 	
 	public function testAdd_WithObject() {
@@ -60,12 +60,12 @@ class AttributesObjectTest extends TestCase {
 		
 		$array = $attributesObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
 		
-		$this->assertCount(1, $array['foo']);
-		$this->assertArrayHasKey('bar', $array['foo']);
-		$this->assertSame('baz', $array['foo']['bar']);
+		parent::assertCount(1, $array['foo']);
+		parent::assertArrayHasKey('bar', $array['foo']);
+		parent::assertSame('baz', $array['foo']['bar']);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class AttributesObjectTest extends TestCase {
 		$extension        = new TestExtension();
 		$extension->setNamespace('test');
 		
-		$this->assertSame([], $attributesObject->toArray());
+		parent::assertSame([], $attributesObject->toArray());
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('invalid member name "test:foo"');
@@ -92,13 +92,13 @@ class AttributesObjectTest extends TestCase {
 		$extension        = new TestExtension();
 		$extension->setNamespace('test');
 		
-		$this->assertSame([], $attributesObject->toArray());
+		parent::assertSame([], $attributesObject->toArray());
 		
 		$attributesObject->addExtensionMember($extension, 'foo', 'bar');
 		
 		$array = $attributesObject->toArray();
 		
-		$this->assertArrayHasKey('test:foo', $array);
-		$this->assertSame('bar', $array['test:foo']);
+		parent::assertArrayHasKey('test:foo', $array);
+		parent::assertSame('bar', $array['test:foo']);
 	}
 }

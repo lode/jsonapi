@@ -20,22 +20,22 @@ class ConverterTest extends TestCase {
 		
 		$array = Converter::objectToArray($object);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertSame('bar', $array['foo']);
-		$this->assertSame(42, $array['baz']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertSame('bar', $array['foo']);
+		parent::assertSame(42, $array['baz']);
 	}
 	
 	public function testObjectToArray_MethodsAndPrivateProperties() {
 		$object = new TestObject();
 		$array = Converter::objectToArray($object);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertArrayNotHasKey('secret', $array);
-		$this->assertArrayNotHasKey('method', $array);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertArrayNotHasKey('secret', $array);
+		parent::assertArrayNotHasKey('method', $array);
 	}
 	
 	public function testObjectToArray_FromInternalObject() {
@@ -44,16 +44,16 @@ class ConverterTest extends TestCase {
 		
 		$array = Converter::objectToArray($attributesObject);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertSame('bar', $array['foo']);
-		$this->assertSame(42, $array['baz']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertSame('bar', $array['foo']);
+		parent::assertSame(42, $array['baz']);
 	}
 	
 	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
 	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput) {
-		$this->assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
+		parent::assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
 	public static function dataProviderCamelCaseToWords_HappyPath() {
@@ -71,7 +71,7 @@ class ConverterTest extends TestCase {
 	 * @group Profiles
 	 */
 	public function testPrepareContentType_HappyPath() {
-		$this->assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
+		parent::assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class ConverterTest extends TestCase {
 		$extension = new TestExtension();
 		$extension->setOfficialLink('bar');
 		
-		$this->assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
+		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class ConverterTest extends TestCase {
 		$profile = new TestProfile();
 		$profile->setOfficialLink('bar');
 		
-		$this->assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
+		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
 	
 	/**
@@ -111,7 +111,7 @@ class ConverterTest extends TestCase {
 		$profile2 = new TestProfile();
 		$profile2->setOfficialLink('baz');
 		
-		$this->assertSame(ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]));
+		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]));
 	}
 }
 

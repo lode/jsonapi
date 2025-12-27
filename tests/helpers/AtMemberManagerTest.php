@@ -12,17 +12,17 @@ class AtMemberManagerTest extends TestCase {
 	public function testAddAtMember_HappyPath() {
 		$helper = new AtMemberManager();
 		
-		$this->assertFalse($helper->hasAtMembers());
-		$this->assertSame([], $helper->getAtMembers());
+		parent::assertFalse($helper->hasAtMembers());
+		parent::assertSame([], $helper->getAtMembers());
 		
 		$helper->addAtMember('@foo', 'bar');
 		
 		$array = $helper->getAtMembers();
 		
-		$this->assertTrue($helper->hasAtMembers());
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('@foo', $array);
-		$this->assertSame('bar', $array['@foo']);
+		parent::assertTrue($helper->hasAtMembers());
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('@foo', $array);
+		parent::assertSame('bar', $array['@foo']);
 	}
 	
 	public function testAddAtMember_WithoutAtSign() {
@@ -32,7 +32,7 @@ class AtMemberManagerTest extends TestCase {
 		
 		$array = $helper->getAtMembers();
 		
-		$this->assertArrayHasKey('@foo', $array);
+		parent::assertArrayHasKey('@foo', $array);
 	}
 	
 	public function testAddAtMember_WithObjectValue() {
@@ -45,9 +45,9 @@ class AtMemberManagerTest extends TestCase {
 		
 		$array = $helper->getAtMembers();
 		
-		$this->assertArrayHasKey('@foo', $array);
-		$this->assertArrayHasKey('bar', $array['@foo']);
-		$this->assertSame('baz', $array['@foo']['bar']);
+		parent::assertArrayHasKey('@foo', $array);
+		parent::assertArrayHasKey('bar', $array['@foo']);
+		parent::assertSame('baz', $array['@foo']['bar']);
 	}
 	
 	public function testAddAtMember_InvalidDoubleAt() {

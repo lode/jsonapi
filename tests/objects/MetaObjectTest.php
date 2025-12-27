@@ -23,7 +23,7 @@ class MetaObjectTest extends TestCase {
 		
 		$array = $metaObject->toArray();
 		
-		$this->assertCount(9, $array);
+		parent::assertCount(9, $array);
 	}
 	
 	public function testFromObject_HappyPath() {
@@ -34,19 +34,19 @@ class MetaObjectTest extends TestCase {
 		
 		$array = $metaObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('bar', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('bar', $array['foo']);
 	}
 	
 	public function testIsEmpty_WithAtMembers() {
 		$metaObject = new MetaObject();
 		
-		$this->assertTrue($metaObject->isEmpty());
+		parent::assertTrue($metaObject->isEmpty());
 		
 		$metaObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($metaObject->isEmpty());
+		parent::assertFalse($metaObject->isEmpty());
 	}
 	
 	/**
@@ -55,10 +55,10 @@ class MetaObjectTest extends TestCase {
 	public function testIsEmpty_WithExtensionMembers() {
 		$metaObject = new MetaObject();
 		
-		$this->assertTrue($metaObject->isEmpty());
+		parent::assertTrue($metaObject->isEmpty());
 		
 		$metaObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
 		
-		$this->assertFalse($metaObject->isEmpty());
+		parent::assertFalse($metaObject->isEmpty());
 	}
 }

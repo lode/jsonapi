@@ -27,19 +27,19 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $collection->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(2, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['prev']);
-		$this->assertArrayHasKey('href', $array['links']['next']);
-		$this->assertSame('/people?page[size]=10&page[before]='.$firstCursor, $array['links']['prev']['href']);
-		$this->assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(2, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['prev']);
+		parent::assertArrayHasKey('href', $array['links']['next']);
+		parent::assertSame('/people?page[size]=10&page[before]='.$firstCursor, $array['links']['prev']['href']);
+		parent::assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
 	}
 	
 	public function test_WithRelationship() {
@@ -68,29 +68,29 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayHasKey('relationships', $array['data']);
-		$this->assertArrayHasKey('people', $array['data']['relationships']);
-		$this->assertArrayHasKey('links', $array['data']['relationships']['people']);
-		$this->assertArrayHasKey('data', $array['data']['relationships']['people']);
-		$this->assertArrayHasKey('meta', $array['data']['relationships']['people']);
-		$this->assertArrayHasKey('prev', $array['data']['relationships']['people']['links']);
-		$this->assertArrayHasKey('next', $array['data']['relationships']['people']['links']);
-		$this->assertArrayHasKey('page', $array['data']['relationships']['people']['meta']);
-		$this->assertArrayHasKey('href', $array['data']['relationships']['people']['links']['prev']);
-		$this->assertArrayHasKey('href', $array['data']['relationships']['people']['links']['next']);
-		$this->assertArrayHasKey('total', $array['data']['relationships']['people']['meta']['page']);
-		$this->assertArrayHasKey('estimatedTotal', $array['data']['relationships']['people']['meta']['page']);
-		$this->assertArrayHasKey('bestGuess', $array['data']['relationships']['people']['meta']['page']['estimatedTotal']);
-		$this->assertCount(3, $array['data']['relationships']['people']['data']);
-		$this->assertArrayHasKey('meta', $array['data']['relationships']['people']['data'][0]);
-		$this->assertArrayHasKey('page', $array['data']['relationships']['people']['data'][0]['meta']);
-		$this->assertArrayHasKey('cursor', $array['data']['relationships']['people']['data'][0]['meta']['page']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayHasKey('relationships', $array['data']);
+		parent::assertArrayHasKey('people', $array['data']['relationships']);
+		parent::assertArrayHasKey('links', $array['data']['relationships']['people']);
+		parent::assertArrayHasKey('data', $array['data']['relationships']['people']);
+		parent::assertArrayHasKey('meta', $array['data']['relationships']['people']);
+		parent::assertArrayHasKey('prev', $array['data']['relationships']['people']['links']);
+		parent::assertArrayHasKey('next', $array['data']['relationships']['people']['links']);
+		parent::assertArrayHasKey('page', $array['data']['relationships']['people']['meta']);
+		parent::assertArrayHasKey('href', $array['data']['relationships']['people']['links']['prev']);
+		parent::assertArrayHasKey('href', $array['data']['relationships']['people']['links']['next']);
+		parent::assertArrayHasKey('total', $array['data']['relationships']['people']['meta']['page']);
+		parent::assertArrayHasKey('estimatedTotal', $array['data']['relationships']['people']['meta']['page']);
+		parent::assertArrayHasKey('bestGuess', $array['data']['relationships']['people']['meta']['page']['estimatedTotal']);
+		parent::assertCount(3, $array['data']['relationships']['people']['data']);
+		parent::assertArrayHasKey('meta', $array['data']['relationships']['people']['data'][0]);
+		parent::assertArrayHasKey('page', $array['data']['relationships']['people']['data'][0]['meta']);
+		parent::assertArrayHasKey('cursor', $array['data']['relationships']['people']['data'][0]['meta']['page']);
 	}
 	
 	public function testSetLinksFirstPage_HappyPath() {
@@ -104,18 +104,18 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $collection->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(2, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertNull($array['links']['prev']);
-		$this->assertArrayHasKey('href', $array['links']['next']);
-		$this->assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(2, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertNull($array['links']['prev']);
+		parent::assertArrayHasKey('href', $array['links']['next']);
+		parent::assertSame('/people?page[size]=10&page[after]='.$lastCursor, $array['links']['next']['href']);
 	}
 	
 	public function testSetLinksLastPage_HappyPath() {
@@ -129,18 +129,18 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $collection->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(2, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['prev']);
-		$this->assertNull($array['links']['next']);
-		$this->assertSame('/people?page[size]=10&page[before]='.$firstCursor, $array['links']['prev']['href']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(2, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['prev']);
+		parent::assertNull($array['links']['next']);
+		parent::assertSame('/people?page[size]=10&page[before]='.$firstCursor, $array['links']['prev']['href']);
 	}
 	
 	public function testSetCursor() {
@@ -152,16 +152,16 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $resourceDocument->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayHasKey('meta', $array['data']);
-		$this->assertArrayHasKey('page', $array['data']['meta']);
-		$this->assertArrayHasKey('cursor', $array['data']['meta']['page']);
-		$this->assertSame('foo', $array['data']['meta']['page']['cursor']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayHasKey('meta', $array['data']);
+		parent::assertArrayHasKey('page', $array['data']['meta']);
+		parent::assertArrayHasKey('cursor', $array['data']['meta']['page']);
+		parent::assertSame('foo', $array['data']['meta']['page']['cursor']);
 	}
 	
 	public function testSetPaginationLinkObjectsExplicitlyEmpty_HapptPath() {
@@ -173,17 +173,17 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $collection->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(2, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertNull($array['links']['prev']);
-		$this->assertNull($array['links']['next']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(2, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertNull($array['links']['prev']);
+		parent::assertNull($array['links']['next']);
 	}
 	
 	public function testSetPaginationMeta() {
@@ -198,20 +198,20 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $collection->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertSame($profile->getOfficialLink(), $array['jsonapi']['profile'][0]);
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('page', $array['meta']);
-		$this->assertArrayHasKey('total', $array['meta']['page']);
-		$this->assertArrayHasKey('estimatedTotal', $array['meta']['page']);
-		$this->assertArrayHasKey('bestGuess', $array['meta']['page']['estimatedTotal']);
-		$this->assertArrayHasKey('rangeTruncated', $array['meta']['page']);
-		$this->assertSame(42, $array['meta']['page']['total']);
-		$this->assertSame(100, $array['meta']['page']['estimatedTotal']['bestGuess']);
-		$this->assertTrue($array['meta']['page']['rangeTruncated']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('page', $array['meta']);
+		parent::assertArrayHasKey('total', $array['meta']['page']);
+		parent::assertArrayHasKey('estimatedTotal', $array['meta']['page']);
+		parent::assertArrayHasKey('bestGuess', $array['meta']['page']['estimatedTotal']);
+		parent::assertArrayHasKey('rangeTruncated', $array['meta']['page']);
+		parent::assertSame(42, $array['meta']['page']['total']);
+		parent::assertSame(100, $array['meta']['page']['estimatedTotal']['bestGuess']);
+		parent::assertTrue($array['meta']['page']['rangeTruncated']);
 	}
 	
 	public function testGetUnsupportedSortErrorObject_HappyPath() {
@@ -223,20 +223,20 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('status', $array);
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('title', $array);
-		$this->assertArrayHasKey('detail', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertArrayHasKey('source', $array);
-		$this->assertArrayHasKey('parameter', $array['source']);
-		$this->assertSame('400', $array['status']);
-		$this->assertSame('Unsupported sort', $array['code']);
-		$this->assertSame($genericTitle, $array['title']);
-		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort', $array['links']['type']);
-		$this->assertSame('sort', $array['source']['parameter']);
+		parent::assertArrayHasKey('status', $array);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('title', $array);
+		parent::assertArrayHasKey('detail', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('type', $array['links']);
+		parent::assertArrayHasKey('source', $array);
+		parent::assertArrayHasKey('parameter', $array['source']);
+		parent::assertSame('400', $array['status']);
+		parent::assertSame('Unsupported sort', $array['code']);
+		parent::assertSame($genericTitle, $array['title']);
+		parent::assertSame($specificDetails, $array['detail']);
+		parent::assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/unsupported-sort', $array['links']['type']);
+		parent::assertSame('sort', $array['source']['parameter']);
 	}
 	
 	public function testGetMaxPageSizeExceededErrorObject_HappyPath() {
@@ -249,24 +249,24 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('status', $array);
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('title', $array);
-		$this->assertArrayHasKey('detail', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertArrayHasKey('source', $array);
-		$this->assertArrayHasKey('parameter', $array['source']);
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('page', $array['meta']);
-		$this->assertArrayHasKey('maxSize', $array['meta']['page']);
-		$this->assertSame('400', $array['status']);
-		$this->assertSame('Max page size exceeded', $array['code']);
-		$this->assertSame($genericTitle, $array['title']);
-		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('page[size]', $array['source']['parameter']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded', $array['links']['type']);
-		$this->assertSame(42, $array['meta']['page']['maxSize']);
+		parent::assertArrayHasKey('status', $array);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('title', $array);
+		parent::assertArrayHasKey('detail', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('type', $array['links']);
+		parent::assertArrayHasKey('source', $array);
+		parent::assertArrayHasKey('parameter', $array['source']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('page', $array['meta']);
+		parent::assertArrayHasKey('maxSize', $array['meta']['page']);
+		parent::assertSame('400', $array['status']);
+		parent::assertSame('Max page size exceeded', $array['code']);
+		parent::assertSame($genericTitle, $array['title']);
+		parent::assertSame($specificDetails, $array['detail']);
+		parent::assertSame('page[size]', $array['source']['parameter']);
+		parent::assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded', $array['links']['type']);
+		parent::assertSame(42, $array['meta']['page']['maxSize']);
 	}
 	
 	public function testGetInvalidParameterValueErrorObject_HappyPath() {
@@ -280,20 +280,20 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('status', $array);
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('title', $array);
-		$this->assertArrayHasKey('detail', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertArrayHasKey('source', $array);
-		$this->assertArrayHasKey('parameter', $array['source']);
-		$this->assertSame('400', $array['status']);
-		$this->assertSame('Invalid parameter value', $array['code']);
-		$this->assertSame($genericTitle, $array['title']);
-		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('page[size]', $array['source']['parameter']);
-		$this->assertSame('https://jsonapi.org', $array['links']['type']);
+		parent::assertArrayHasKey('status', $array);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('title', $array);
+		parent::assertArrayHasKey('detail', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('type', $array['links']);
+		parent::assertArrayHasKey('source', $array);
+		parent::assertArrayHasKey('parameter', $array['source']);
+		parent::assertSame('400', $array['status']);
+		parent::assertSame('Invalid parameter value', $array['code']);
+		parent::assertSame($genericTitle, $array['title']);
+		parent::assertSame($specificDetails, $array['detail']);
+		parent::assertSame('page[size]', $array['source']['parameter']);
+		parent::assertSame('https://jsonapi.org', $array['links']['type']);
 	}
 	
 	public function testGetRangePaginationNotSupportedErrorObject_HappyPath() {
@@ -305,17 +305,17 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('status', $array);
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('title', $array);
-		$this->assertArrayHasKey('detail', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertSame('400', $array['status']);
-		$this->assertSame('Range pagination not supported', $array['code']);
-		$this->assertSame($genericTitle, $array['title']);
-		$this->assertSame($specificDetails, $array['detail']);
-		$this->assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported', $array['links']['type']);
+		parent::assertArrayHasKey('status', $array);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('title', $array);
+		parent::assertArrayHasKey('detail', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('type', $array['links']);
+		parent::assertSame('400', $array['status']);
+		parent::assertSame('Range pagination not supported', $array['code']);
+		parent::assertSame($genericTitle, $array['title']);
+		parent::assertSame($specificDetails, $array['detail']);
+		parent::assertSame('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/range-pagination-not-supported', $array['links']['type']);
 	}
 	
 	public function testSetQueryParameter_HappyPath() {
@@ -328,7 +328,7 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$newUrl = $method->invoke($profile, $url, $key, $value);
 		
-		$this->assertSame('/people?sort=x&page[size]=10&page[after]=bar', $newUrl);
+		parent::assertSame('/people?sort=x&page[size]=10&page[after]=bar', $newUrl);
 	}
 	
 	public function testSetQueryParameter_EncodedUrl() {
@@ -341,6 +341,6 @@ class CursorPaginationProfileTest extends TestCase {
 		
 		$newUrl = $method->invoke($profile, $url, $key, $value);
 		
-		$this->assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
+		parent::assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
 	}
 }

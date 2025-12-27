@@ -20,32 +20,32 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
 	}
 	
 	public function testSetHttpStatusCode_HappyPath() {
 		$document = new Document();
 		
-		$this->assertTrue($document->hasHttpStatusCode());
-		$this->assertSame(200, $document->getHttpStatusCode());
+		parent::assertTrue($document->hasHttpStatusCode());
+		parent::assertSame(200, $document->getHttpStatusCode());
 	}
 	
 	public function testAddLink_HappyPath() {
 		$document = new Document();
 		
 		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
+		parent::assertArrayNotHasKey('links', $array);
 		
 		$document->addLink('foo', 'https://jsonapi.org');
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertIsString($array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('foo', $array['links']);
+		parent::assertIsString($array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
 	
 	public function testAddLink_WithMeta() {
@@ -54,15 +54,15 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(1, $array['links']);
-		$this->assertIsArray($array['links']['foo']);
-		$this->assertCount(2, $array['links']['foo']);
-		$this->assertArrayHasKey('href', $array['links']['foo']);
-		$this->assertArrayHasKey('meta', $array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
-		$this->assertCount(1, $array['links']['foo']['meta']);
-		$this->assertArrayHasKey('bar', $array['links']['foo']['meta']);
-		$this->assertSame('baz', $array['links']['foo']['meta']['bar']);
+		parent::assertCount(1, $array['links']);
+		parent::assertIsArray($array['links']['foo']);
+		parent::assertCount(2, $array['links']['foo']);
+		parent::assertArrayHasKey('href', $array['links']['foo']);
+		parent::assertArrayHasKey('meta', $array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+		parent::assertCount(1, $array['links']['foo']['meta']);
+		parent::assertArrayHasKey('bar', $array['links']['foo']['meta']);
+		parent::assertSame('baz', $array['links']['foo']['meta']['bar']);
 	}
 	
 	public function testAddLink_BlocksJsonapiLevel() {
@@ -87,15 +87,15 @@ class DocumentTest extends TestCase {
 		$document = new Document();
 		
 		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
+		parent::assertArrayNotHasKey('links', $array);
 		
 		$document->setSelfLink('https://jsonapi.org/foo');
 		
 		$array = $document->toArray();
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']);
 	}
 	
 	public function testSetDescribedByLink_HappyPath() {
@@ -104,66 +104,66 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(1, $array['links']);
-		$this->assertIsArray($array['links']['describedby']);
-		$this->assertCount(2, $array['links']['describedby']);
-		$this->assertArrayHasKey('href', $array['links']['describedby']);
-		$this->assertArrayHasKey('meta', $array['links']['describedby']);
-		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']['href']);
-		$this->assertCount(1, $array['links']['describedby']['meta']);
-		$this->assertArrayHasKey('version', $array['links']['describedby']['meta']);
-		$this->assertSame('1.1', $array['links']['describedby']['meta']['version']);
+		parent::assertCount(1, $array['links']);
+		parent::assertIsArray($array['links']['describedby']);
+		parent::assertCount(2, $array['links']['describedby']);
+		parent::assertArrayHasKey('href', $array['links']['describedby']);
+		parent::assertArrayHasKey('meta', $array['links']['describedby']);
+		parent::assertSame('https://jsonapi.org/format', $array['links']['describedby']['href']);
+		parent::assertCount(1, $array['links']['describedby']['meta']);
+		parent::assertArrayHasKey('version', $array['links']['describedby']['meta']);
+		parent::assertSame('1.1', $array['links']['describedby']['meta']['version']);
 	}
 	
 	public function testSetDescribedByLink_WithMeta() {
 		$document = new Document();
 		
 		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
+		parent::assertArrayNotHasKey('links', $array);
 		
 		$document->setDescribedByLink('https://jsonapi.org/format');
 		
 		$array = $document->toArray();
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('describedby', $array['links']);
-		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('describedby', $array['links']);
+		parent::assertSame('https://jsonapi.org/format', $array['links']['describedby']);
 	}
 	
 	public function testAddMeta_HappyPath() {
 		$document = new Document();
 		
 		$array = $document->toArray();
-		$this->assertArrayNotHasKey('meta', $array);
+		parent::assertArrayNotHasKey('meta', $array);
 		
 		$document->addMeta('foo', 'bar');
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertIsString($array['meta']['foo']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertIsString($array['meta']['foo']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
 	public function testAddMeta_AtJsonapiLevel() {
 		$document = new Document();
 		
 		$array = $document->toArray();
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayNotHasKey('meta', $array['jsonapi']);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayNotHasKey('meta', $array['jsonapi']);
 		
 		$document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('meta', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['meta']);
-		$this->assertArrayHasKey('foo', $array['jsonapi']['meta']);
-		$this->assertIsString($array['jsonapi']['meta']['foo']);
-		$this->assertSame('bar', $array['jsonapi']['meta']['foo']);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('meta', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['meta']);
+		parent::assertArrayHasKey('foo', $array['jsonapi']['meta']);
+		parent::assertIsString($array['jsonapi']['meta']['foo']);
+		parent::assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}
 	
 	public function testAddMeta_BlocksResourceLevel() {
@@ -183,12 +183,12 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('foo', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
 	/**
@@ -206,24 +206,24 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(3, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertCount(2, $array['jsonapi']);
-		$this->assertSame('1.1', $array['jsonapi']['version']);
-		$this->assertArrayHasKey('ext', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['ext']);
-		$this->assertArrayHasKey(0, $array['jsonapi']['ext']);
-		$this->assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
-		$this->assertArrayHasKey('test:foo', $array);
-		$this->assertSame('bar', $array['test:foo']);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertCount(2, $array['links']['self']);
-		$this->assertArrayHasKey('href', $array['links']['self']);
-		$this->assertArrayHasKey('type', $array['links']['self']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
-		$this->assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
+		parent::assertCount(3, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(2, $array['jsonapi']);
+		parent::assertSame('1.1', $array['jsonapi']['version']);
+		parent::assertArrayHasKey('ext', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['ext']);
+		parent::assertArrayHasKey(0, $array['jsonapi']['ext']);
+		parent::assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
+		parent::assertArrayHasKey('test:foo', $array);
+		parent::assertSame('bar', $array['test:foo']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertCount(2, $array['links']['self']);
+		parent::assertArrayHasKey('href', $array['links']['self']);
+		parent::assertArrayHasKey('type', $array['links']['self']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		parent::assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
 	}
 	
 	/**
@@ -276,35 +276,35 @@ class DocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertCount(2, $array['jsonapi']);
-		$this->assertSame('1.1', $array['jsonapi']['version']);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertArrayHasKey(0, $array['jsonapi']['profile']);
-		$this->assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertCount(2, $array['links']['self']);
-		$this->assertArrayHasKey('href', $array['links']['self']);
-		$this->assertArrayHasKey('type', $array['links']['self']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
-		$this->assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(2, $array['jsonapi']);
+		parent::assertSame('1.1', $array['jsonapi']['version']);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertArrayHasKey(0, $array['jsonapi']['profile']);
+		parent::assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertCount(2, $array['links']['self']);
+		parent::assertArrayHasKey('href', $array['links']['self']);
+		parent::assertArrayHasKey('type', $array['links']['self']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		parent::assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
 	}
 	
 	public function testToJson_HappyPath() {
 		$document = new Document();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.1"}}', $document->toJson());
+		parent::assertSame('{"jsonapi":{"version":"1.1"}}', $document->toJson());
 	}
 	
 	public function testToJson_CustomArray() {
 		$document = new Document();
 		
 		$options = ['array' => ['foo' => 42]];
-		$this->assertSame('{"foo":42}', $document->toJson($options));
+		parent::assertSame('{"foo":42}', $document->toJson($options));
 	}
 	
 	public function testToJson_PrettyPrint() {
@@ -312,14 +312,14 @@ class DocumentTest extends TestCase {
 		
 		$options = ['prettyPrint' => true];
 		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.1"'.PHP_EOL.'    }'.PHP_EOL.'}';
-		$this->assertSame($expectedJson, $document->toJson($options));
+		parent::assertSame($expectedJson, $document->toJson($options));
 	}
 	
 	public function testToJson_JsonEncodeOptions() {
 		$document = new Document();
 		
 		$options = ['encodeOptions' => JSON_FORCE_OBJECT, 'array' => ['foo' => [4,2]]];
-		$this->assertSame('{"foo":{"0":4,"1":2}}', $document->toJson($options));
+		parent::assertSame('{"foo":{"0":4,"1":2}}', $document->toJson($options));
 	}
 	
 	public function testToJson_JsonpCallback() {
@@ -328,7 +328,7 @@ class DocumentTest extends TestCase {
 		
 		$options = ['jsonpCallback' => 'baz'];
 		$json    = $document->toJson($options);
-		$this->assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
+		parent::assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
 	}
 	
 	public function testToJson_InvalidUtf8() {
@@ -348,6 +348,6 @@ class DocumentTest extends TestCase {
 		
 		$json = $document->toJson();
 		
-		$this->assertSame($json, json_encode($document));
+		parent::assertSame($json, json_encode($document));
 	}
 }

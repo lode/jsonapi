@@ -29,10 +29,10 @@ class ExampleOutputTest extends TestCase {
 		$actualJsonPath = __DIR__.'/example_output/'.$testName.'/'.$testName.'.json';
 		if ($expectedJson === null && file_exists($actualJsonPath) === false) {
 			file_put_contents($actualJsonPath, $actualJson);
-			$this->markTestSkipped('no stored json to test against, try again');
+			parent::markTestSkipped('no stored json to test against, try again');
 		}
 		
-		$this->assertSame($expectedJson, $actualJson);
+		parent::assertSame($expectedJson, $actualJson);
 	}
 	
 	public static function dataProviderTestOutput() {

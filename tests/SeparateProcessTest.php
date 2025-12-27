@@ -24,7 +24,7 @@ class SeparateProcessTest extends TestCase {
 		$document->sendResponse();
 		$output = ob_get_clean();
 		
-		$this->assertSame('{"jsonapi":{"version":"1.1"}}', $output);
+		parent::assertSame('{"jsonapi":{"version":"1.1"}}', $output);
 	}
 	
 	/**
@@ -38,8 +38,8 @@ class SeparateProcessTest extends TestCase {
 		$document->sendResponse();
 		$output = ob_get_clean();
 		
-		$this->assertSame('', $output);
-		$this->assertSame(204, http_response_code());
+		parent::assertSame('', $output);
+		parent::assertSame(204, http_response_code());
 	}
 	
 	/**
@@ -47,7 +47,7 @@ class SeparateProcessTest extends TestCase {
 	 */
 	public function testSendResponse_ContentTypeHeader() {
 		if (extension_loaded('xdebug') === false) {
-			$this->markTestSkipped('can not run without xdebug');
+			parent::markTestSkipped('can not run without xdebug');
 		}
 		
 		$document = new TestableNonAbstractDocument();
@@ -55,25 +55,25 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value], xdebug_get_headers());
 		
 		$options = ['contentType' => ContentTypeEnum::Official];
 		ob_start();
 		$document->sendResponse($options);
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value], xdebug_get_headers());
 		
 		$options = ['contentType' => ContentTypeEnum::Debug];
 		ob_start();
 		$document->sendResponse($options);
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Debug->value], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Debug->value], xdebug_get_headers());
 		
 		$options = ['contentType' => ContentTypeEnum::Jsonp];
 		ob_start();
 		$document->sendResponse($options);
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Jsonp->value], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Jsonp->value], xdebug_get_headers());
 	}
 	
 	/**
@@ -82,7 +82,7 @@ class SeparateProcessTest extends TestCase {
 	 */
 	public function testSendResponse_ContentTypeHeaderWithExtensions() {
 		if (extension_loaded('xdebug') === false) {
-			$this->markTestSkipped('can not run without xdebug');
+			parent::markTestSkipped('can not run without xdebug');
 		}
 		
 		$extension = new TestExtension();
@@ -95,7 +95,7 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; ext="https://jsonapi.org"'], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; ext="https://jsonapi.org"'], xdebug_get_headers());
 		
 		$extension = new TestExtension();
 		$extension->setNamespace('two');
@@ -105,7 +105,7 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; ext="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; ext="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class SeparateProcessTest extends TestCase {
 	 */
 	public function testSendResponse_ContentTypeHeaderWithProfiles() {
 		if (extension_loaded('xdebug') === false) {
-			$this->markTestSkipped('can not run without xdebug');
+			parent::markTestSkipped('can not run without xdebug');
 		}
 		
 		$profile = new TestProfile();
@@ -126,7 +126,7 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; profile="https://jsonapi.org"'], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; profile="https://jsonapi.org"'], xdebug_get_headers());
 		
 		$profile = new TestProfile();
 		$profile->setOfficialLink('https://jsonapi.org/2');
@@ -135,7 +135,7 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; profile="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
+		parent::assertSame(['Content-Type: '.ContentTypeEnum::Official->value.'; profile="https://jsonapi.org https://jsonapi.org/2"'], xdebug_get_headers());
 	}
 	
 	/**
@@ -147,25 +147,25 @@ class SeparateProcessTest extends TestCase {
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(200, http_response_code());
+		parent::assertSame(200, http_response_code());
 		
 		$document->setHttpStatusCode(201);
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(201, http_response_code());
+		parent::assertSame(201, http_response_code());
 		
 		$document->setHttpStatusCode(422);
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(422, http_response_code());
+		parent::assertSame(422, http_response_code());
 		
 		$document->setHttpStatusCode(503);
 		ob_start();
 		$document->sendResponse();
 		ob_end_clean();
-		$this->assertSame(503, http_response_code());
+		parent::assertSame(503, http_response_code());
 	}
 	
 	/**
@@ -179,6 +179,6 @@ class SeparateProcessTest extends TestCase {
 		$document->sendResponse($options);
 		$output = ob_get_clean();
 		
-		$this->assertSame('{"foo":42}', $output);
+		parent::assertSame('{"foo":42}', $output);
 	}
 }

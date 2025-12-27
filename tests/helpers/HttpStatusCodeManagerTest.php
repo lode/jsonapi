@@ -12,12 +12,12 @@ class HttpStatusCodeManagerTest extends TestCase {
 	public function testSetHttpStatusCode_HappyPath() {
 		$helper = new HttpStatusCodeManager();
 		
-		$this->assertFalse($helper->hasHttpStatusCode());
+		parent::assertFalse($helper->hasHttpStatusCode());
 		
 		$helper->setHttpStatusCode(204);
 		
-		$this->assertTrue($helper->hasHttpStatusCode());
-		$this->assertSame(204, $helper->getHttpStatusCode());
+		parent::assertTrue($helper->hasHttpStatusCode());
+		parent::assertSame(204, $helper->getHttpStatusCode());
 	}
 	
 	public function testSetHttpStatusCode_InvalidForHttp() {
@@ -33,7 +33,7 @@ class HttpStatusCodeManagerTest extends TestCase {
 		
 		$helper->setHttpStatusCode(299);
 		
-		$this->assertTrue($helper->hasHttpStatusCode());
-		$this->assertSame(299, $helper->getHttpStatusCode());
+		parent::assertTrue($helper->hasHttpStatusCode());
+		parent::assertSame(299, $helper->getHttpStatusCode());
 	}
 }

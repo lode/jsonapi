@@ -16,8 +16,8 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertSame([], $array['data']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertSame([], $array['data']);
 	}
 	
 	public function testAdd_WithIdentifiers() {
@@ -28,23 +28,23 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayNotHasKey('included', $array);
-		$this->assertCount(2, $array['data']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayNotHasKey('included', $array);
+		parent::assertCount(2, $array['data']);
 		
-		$this->assertCount(2, $array['data'][0]);
-		$this->assertArrayHasKey('type', $array['data'][0]);
-		$this->assertArrayHasKey('id', $array['data'][0]);
-		$this->assertArrayNotHasKey('attributes', $array['data'][0]);
-		$this->assertSame('user', $array['data'][0]['type']);
-		$this->assertSame('1', $array['data'][0]['id']);
+		parent::assertCount(2, $array['data'][0]);
+		parent::assertArrayHasKey('type', $array['data'][0]);
+		parent::assertArrayHasKey('id', $array['data'][0]);
+		parent::assertArrayNotHasKey('attributes', $array['data'][0]);
+		parent::assertSame('user', $array['data'][0]['type']);
+		parent::assertSame('1', $array['data'][0]['id']);
 		
-		$this->assertCount(2, $array['data'][1]);
-		$this->assertArrayHasKey('type', $array['data'][1]);
-		$this->assertArrayHasKey('id', $array['data'][1]);
-		$this->assertArrayNotHasKey('attributes', $array['data'][1]);
-		$this->assertSame('user', $array['data'][1]['type']);
-		$this->assertSame('42', $array['data'][1]['id']);
+		parent::assertCount(2, $array['data'][1]);
+		parent::assertArrayHasKey('type', $array['data'][1]);
+		parent::assertArrayHasKey('id', $array['data'][1]);
+		parent::assertArrayNotHasKey('attributes', $array['data'][1]);
+		parent::assertSame('user', $array['data'][1]['type']);
+		parent::assertSame('42', $array['data'][1]['id']);
 	}
 	
 	public function testAdd_WithAttributes() {
@@ -55,29 +55,29 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayNotHasKey('included', $array);
-		$this->assertCount(2, $array['data']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayNotHasKey('included', $array);
+		parent::assertCount(2, $array['data']);
 		
 		$firstResource = $array['data'][0];
-		$this->assertCount(3, $firstResource);
-		$this->assertArrayHasKey('type', $firstResource);
-		$this->assertArrayHasKey('id', $firstResource);
-		$this->assertArrayHasKey('attributes', $firstResource);
-		$this->assertSame('user', $firstResource['type']);
-		$this->assertSame('1', $firstResource['id']);
-		$this->assertArrayHasKey('name', $firstResource['attributes']);
-		$this->assertSame('foo', $firstResource['attributes']['name']);
+		parent::assertCount(3, $firstResource);
+		parent::assertArrayHasKey('type', $firstResource);
+		parent::assertArrayHasKey('id', $firstResource);
+		parent::assertArrayHasKey('attributes', $firstResource);
+		parent::assertSame('user', $firstResource['type']);
+		parent::assertSame('1', $firstResource['id']);
+		parent::assertArrayHasKey('name', $firstResource['attributes']);
+		parent::assertSame('foo', $firstResource['attributes']['name']);
 		
 		$secondResource = $array['data'][1];
-		$this->assertCount(3, $secondResource);
-		$this->assertArrayHasKey('type', $secondResource);
-		$this->assertArrayHasKey('id', $secondResource);
-		$this->assertArrayHasKey('attributes', $secondResource);
-		$this->assertSame('user', $secondResource['type']);
-		$this->assertSame('42', $secondResource['id']);
-		$this->assertArrayHasKey('name', $secondResource['attributes']);
-		$this->assertSame('bar', $secondResource['attributes']['name']);
+		parent::assertCount(3, $secondResource);
+		parent::assertArrayHasKey('type', $secondResource);
+		parent::assertArrayHasKey('id', $secondResource);
+		parent::assertArrayHasKey('attributes', $secondResource);
+		parent::assertSame('user', $secondResource['type']);
+		parent::assertSame('42', $secondResource['id']);
+		parent::assertArrayHasKey('name', $secondResource['attributes']);
+		parent::assertSame('bar', $secondResource['attributes']['name']);
 	}
 	
 	public function testSetPaginationLinks_HappyPath() {
@@ -88,16 +88,16 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(4, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertArrayHasKey('first', $array['links']);
-		$this->assertArrayHasKey('last', $array['links']);
-		$this->assertSame($baseUrl.'prev', $array['links']['prev']);
-		$this->assertSame($baseUrl.'next', $array['links']['next']);
-		$this->assertSame($baseUrl.'first', $array['links']['first']);
-		$this->assertSame($baseUrl.'last', $array['links']['last']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(4, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertArrayHasKey('first', $array['links']);
+		parent::assertArrayHasKey('last', $array['links']);
+		parent::assertSame($baseUrl.'prev', $array['links']['prev']);
+		parent::assertSame($baseUrl.'next', $array['links']['next']);
+		parent::assertSame($baseUrl.'first', $array['links']['first']);
+		parent::assertSame($baseUrl.'last', $array['links']['last']);
 	}
 	
 	#[DataProvider('dataProviderSetPaginationLinks_IndividualLinks')]
@@ -109,13 +109,13 @@ class CollectionDocumentTest extends TestCase {
 		$array = $document->toArray();
 		
 		if ($key === null) {
-			$this->assertArrayNotHasKey('links', $array);
+			parent::assertArrayNotHasKey('links', $array);
 		}
 		else {
-			$this->assertArrayHasKey('links', $array);
-			$this->assertCount(1, $array['links']);
-			$this->assertArrayHasKey($key, $array['links']);
-			$this->assertSame('https://jsonapi.org', $array['links'][$key]);
+			parent::assertArrayHasKey('links', $array);
+			parent::assertCount(1, $array['links']);
+			parent::assertArrayHasKey($key, $array['links']);
+			parent::assertSame('https://jsonapi.org', $array['links'][$key]);
 		}
 	}
 	
@@ -135,10 +135,10 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertCount(1, $array['data']);
-		$this->assertSame('user', $array['data'][0]['type']);
-		$this->assertSame('42', $array['data'][0]['id']);
-		$this->assertArrayNotHasKey('attributes', $array['data'][0]);
+		parent::assertCount(1, $array['data']);
+		parent::assertSame('user', $array['data'][0]['type']);
+		parent::assertSame('42', $array['data'][0]['id']);
+		parent::assertArrayNotHasKey('attributes', $array['data'][0]);
 	}
 	
 	public function testAddResource_WithIncluded() {
@@ -153,13 +153,13 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayHasKey('included', $array);
-		$this->assertArrayHasKey('relationships', $array['data'][0]);
-		$this->assertArrayHasKey('attributes', $array['included'][0]);
-		$this->assertSame('42', $array['data'][0]['id']);
-		$this->assertSame('24', $array['data'][0]['relationships']['foo']['data']['id']);
-		$this->assertSame('24', $array['included'][0]['id']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayHasKey('included', $array);
+		parent::assertArrayHasKey('relationships', $array['data'][0]);
+		parent::assertArrayHasKey('attributes', $array['included'][0]);
+		parent::assertSame('42', $array['data'][0]['id']);
+		parent::assertSame('24', $array['data'][0]['relationships']['foo']['data']['id']);
+		parent::assertSame('24', $array['included'][0]['id']);
 	}
 	
 	public function testAddResource_DoNotIncludeContainedResources() {
@@ -176,11 +176,11 @@ class CollectionDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayNotHasKey('included', $array);
-		$this->assertArrayHasKey('relationships', $array['data'][0]);
-		$this->assertSame('42', $array['data'][0]['id']);
-		$this->assertSame('24', $array['data'][0]['relationships']['foo']['data']['id']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayNotHasKey('included', $array);
+		parent::assertArrayHasKey('relationships', $array['data'][0]);
+		parent::assertSame('42', $array['data'][0]['id']);
+		parent::assertSame('24', $array['data'][0]['relationships']['foo']['data']['id']);
 	}
 	
 	public function testAddResource_RequiresIdentification() {
@@ -202,15 +202,15 @@ class CollectionDocumentTest extends TestCase {
 	public function testGetContainedResources_HappyPath() {
 		$document = new CollectionDocument();
 		
-		$this->assertCount(0, $document->getContainedResources());
+		parent::assertCount(0, $document->getContainedResources());
 		
 		$document->add('user', 42);
 		
-		$this->assertCount(1, $document->getContainedResources());
+		parent::assertCount(1, $document->getContainedResources());
 		
 		$document->add('user', 24);
 		
-		$this->assertCount(2, $document->getContainedResources());
+		parent::assertCount(2, $document->getContainedResources());
 	}
 	
 	public function testGetContainedResources_NoNestedResources() {
@@ -220,6 +220,6 @@ class CollectionDocumentTest extends TestCase {
 		$resourceObject->addRelationship('foo', new ResourceObject('user', 24));
 		$document->addResource($resourceObject);
 		
-		$this->assertCount(1, $document->getContainedResources());
+		parent::assertCount(1, $document->getContainedResources());
 	}
 }

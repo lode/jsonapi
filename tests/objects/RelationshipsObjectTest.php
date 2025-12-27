@@ -19,13 +19,13 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
 	public function testAddRelationshipObject_HappyPath() {
@@ -36,13 +36,13 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
 	public function testAddRelationshipObject_WithPredefinedKey() {
@@ -53,13 +53,13 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
 	public function testAddRelationshipObject_InvalidKey() {
@@ -80,9 +80,9 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('bar', $array);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('bar', $array);
 	}
 	
 	public function testAddRelationshipObject_MultipleReusingKeys() {
@@ -104,10 +104,10 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertFalse($relationshipsObject->isEmpty());
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertNull($array['foo']['data']);
+		parent::assertFalse($relationshipsObject->isEmpty());
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertNull($array['foo']['data']);
 	}
 }

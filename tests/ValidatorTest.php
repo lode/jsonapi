@@ -92,7 +92,7 @@ class ValidatorTest extends TestCase {
 		catch (DuplicateException) {
 			$thrown = true;
 		}
-		$this->assertTrue($thrown);
+		parent::assertTrue($thrown);
 		
 		$objectContainer = ObjectContainerEnum::Attributes;
 		$validator->clearUsedFields($objectContainer);
@@ -179,7 +179,7 @@ class ValidatorTest extends TestCase {
 	
 	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
 	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode) {
-		$this->assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
+		parent::assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
 	}
 	
 	public static function dataProviderCheckHttpStatusCode_HappyPath() {

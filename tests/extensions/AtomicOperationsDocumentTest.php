@@ -27,35 +27,35 @@ class AtomicOperationsDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('ext', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['ext']);
-		$this->assertSame((new AtomicOperationsExtension())->getOfficialLink(), $array['jsonapi']['ext'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('ext', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['ext']);
+		parent::assertSame((new AtomicOperationsExtension())->getOfficialLink(), $array['jsonapi']['ext'][0]);
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['self']);
-		$this->assertArrayHasKey('type', $array['links']['self']);
-		$this->assertSame('https://example.org/operations', $array['links']['self']['href']);
-		$this->assertSame('application/vnd.api+json; ext="'.(new AtomicOperationsExtension())->getOfficialLink().'"', $array['links']['self']['type']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['self']);
+		parent::assertArrayHasKey('type', $array['links']['self']);
+		parent::assertSame('https://example.org/operations', $array['links']['self']['href']);
+		parent::assertSame('application/vnd.api+json; ext="'.(new AtomicOperationsExtension())->getOfficialLink().'"', $array['links']['self']['type']);
 		
-		$this->assertArrayHasKey('atomic:results', $array);
-		$this->assertCount(3, $array['atomic:results']);
-		$this->assertSame(['data' => $resource1->toArray()], $array['atomic:results'][0]);
-		$this->assertSame(['data' => $resource2->toArray()], $array['atomic:results'][1]);
-		$this->assertSame(['data' => $resource3->toArray()], $array['atomic:results'][2]);
+		parent::assertArrayHasKey('atomic:results', $array);
+		parent::assertCount(3, $array['atomic:results']);
+		parent::assertSame(['data' => $resource1->toArray()], $array['atomic:results'][0]);
+		parent::assertSame(['data' => $resource2->toArray()], $array['atomic:results'][1]);
+		parent::assertSame(['data' => $resource3->toArray()], $array['atomic:results'][2]);
 	}
 	
 	public function testSetResults_EmptySuccessResults() {
 		$document = new AtomicOperationsDocument();
 		$array    = $document->toArray();
 		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('ext', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['ext']);
-		$this->assertSame((new AtomicOperationsExtension())->getOfficialLink(), $array['jsonapi']['ext'][0]);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('ext', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['ext']);
+		parent::assertSame((new AtomicOperationsExtension())->getOfficialLink(), $array['jsonapi']['ext'][0]);
 		
-		$this->assertArrayHasKey('atomic:results', $array);
-		$this->assertCount(0, $array['atomic:results']);
+		parent::assertArrayHasKey('atomic:results', $array);
+		parent::assertCount(0, $array['atomic:results']);
 	}
 }

@@ -12,11 +12,11 @@ class MetaDocumentTest extends TestCase {
 		$document = new MetaDocument();
 		
 		$array = $document->toArray();
-		$this->assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('meta', $array);
 		
 		// verify meta is an object, not an array
 		$json = $document->toJson();
-		$this->assertSame('{"jsonapi":{"version":"1.1"},"meta":{}}', $json);
+		parent::assertSame('{"jsonapi":{"version":"1.1"},"meta":{}}', $json);
 	}
 	
 	public function testFromArray_HappyPath() {
@@ -24,10 +24,10 @@ class MetaDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
 	public function testFromObject_HappyPath() {
@@ -38,10 +38,10 @@ class MetaDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
 	public function testAddMeta_HappyPath() {
@@ -50,10 +50,10 @@ class MetaDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
 	public function testAdd_HappyPath() {
@@ -62,13 +62,13 @@ class MetaDocumentTest extends TestCase {
 		
 		$array = $document->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayNotHasKey('data', $array);
-		$this->assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(2, $array);
+		parent::assertArrayNotHasKey('data', $array);
+		parent::assertArrayHasKey('jsonapi', $array);
 	}
 }
