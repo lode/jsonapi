@@ -88,11 +88,15 @@ class RequestParserTest extends TestCase {
 		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
 		$_GET  = [];
-		$_POST = [];
+		$_POST = [
+			'meta' => [
+				'foo' => 'bar',
+			],
+		];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
-		parent::assertSame([], $requestParser->getDocument());
+		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
 	public function testFromSuperglobals_WithoutServerContext(): void {
@@ -101,12 +105,16 @@ class RequestParserTest extends TestCase {
 		unset($_SERVER['REQUEST_URI']);
 		unset($_SERVER['CONTENT_TYPE']);
 		
-		$_GET    = [];
-		$_POST   = [];
+		$_GET  = [];
+		$_POST = [
+			'meta' => [
+				'foo' => 'bar',
+			],
+		];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
-		parent::assertSame([], $requestParser->getDocument());
+		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
 	public function testFromPsrRequest_WithRequestInterface(): void {
@@ -145,7 +153,7 @@ class RequestParserTest extends TestCase {
 		];
 		
 		$request = parent::createConfiguredStub(RequestInterface::class, [
-			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => json_encode($document)]),
+			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => json_encode($document, flags: JSON_THROW_ON_ERROR)]),
 			'getUri'         => parent::createConfiguredStub(UriInterface::class, [
 				'__toString' => $selfLink,
 				'getQuery'   => http_build_query($queryParameters),
@@ -210,6 +218,28 @@ class RequestParserTest extends TestCase {
 		parent::assertSame($selfLink, $requestParser->getSelfLink());
 		parent::assertTrue($requestParser->hasSortFields());
 		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
+	}
+	
+	public function testFromPsrRequest_WithTooBigJson(): void {
+		$document = ['meta' => 'foo'];
+		$currentKey =& $document['meta'];
+		for ($i=0; $i<513; $i++) {
+			$currentKey = ['foo' => 'bar'];
+			$currentKey =& $currentKey['foo'];
+		}
+		
+		$json = json_encode($document, depth: 514, flags: JSON_THROW_ON_ERROR);
+		
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => $json]),
+			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery' => '']),
+		]);
+		
+		$this->expectException(\JsonException::class);
+		$this->expectExceptionMessage('Maximum stack depth exceeded');
+		$this->expectExceptionCode(JSON_ERROR_DEPTH);
+		
+		RequestParser::fromPsrRequest($request);
 	}
 	
 	public function testGetSelfLink(): void {

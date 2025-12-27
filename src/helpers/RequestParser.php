@@ -29,6 +29,8 @@ class RequestParser {
 	 * @param string                                         $selfLink        the uri used to make this request {@see getSelfLink()}
 	 * @param array<string, string|array<array-key, string>> $queryParameters all query parameters defined by the specification
 	 * @param array<string, mixed>                           $document        the request jsonapi document
+	 * 
+	 * @throws \JsonException if $document's content type is json but it can't be json decoded
 	 */
 	public function __construct(
 		private readonly string $selfLink='',
@@ -49,18 +51,21 @@ class RequestParser {
 			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
 			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
-			if ($documentIsJsonapi || $documentIsJson) {
-				$document = json_decode(file_get_contents('php://input'), true);
-				
-				if ($document === null) {
-					$document = [];
-				}
+			$document = file_get_contents('php://input');
+			if ($document === '') {
+				$document = [];
+			}
+			elseif ($documentIsJsonapi || $documentIsJson) {
+				$document = json_decode($document, true, flags: JSON_THROW_ON_ERROR);
 			}
 		}
 		
 		return new self($selfLink, $queryParameters, $document);
 	}
 	
+	/**
+	 * @throws \JsonException if the requests' document can't be json decoded
+	 */
 	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): self {
 		$selfLink = (string) $request->getUri();
 		
@@ -76,11 +81,7 @@ class RequestParser {
 			$document = [];
 		}
 		else {
-			$document = json_decode($request->getBody()->getContents(), true);
-			
-			if ($document === null) {
-				$document = [];
-			}
+			$document = json_decode($request->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
 		}
 		
 		return new self($selfLink, $queryParameters, $document);

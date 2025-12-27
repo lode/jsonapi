@@ -53,7 +53,7 @@ class ExampleOutputTest extends TestCase {
 				$expectedJson = file_get_contents($directory.'/'.$testName.'.json');
 			}
 			if (file_exists($directory.'/options.txt')) {
-				$options = json_decode(file_get_contents($directory.'/options.txt'), true);
+				$options = json_decode(file_get_contents($directory.'/options.txt'), true, flags: JSON_THROW_ON_ERROR);
 			}
 			
 			$testCases[$testName] = [$generator, $expectedJson, $options, $testName];

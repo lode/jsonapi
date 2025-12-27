@@ -305,8 +305,9 @@ class DocumentTest extends TestCase {
 	public function testToJson_InvalidUtf8(): void {
 		$options = ['array' => ['foo' => "\xB1\x31"]];
 		
-		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('failed to generate json: Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectException(\JsonException::class);
+		$this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectExceptionCode(JSON_ERROR_UTF8);
 		
 		$this->document->toJson($options);
 	}
@@ -316,6 +317,6 @@ class DocumentTest extends TestCase {
 		
 		$json = $this->document->toJson();
 		
-		parent::assertSame($json, json_encode($this->document));
+		parent::assertSame($json, json_encode($this->document, flags: JSON_THROW_ON_ERROR));
 	}
 }

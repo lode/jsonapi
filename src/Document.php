@@ -48,7 +48,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		/**
 		 * encode to json with these default options
 		 */
-		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
+		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR,
 		
 		/**
 		 * encode to human-readable json, useful when debugging
@@ -253,6 +253,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $array;
 	}
 	
+	/**
+	 * @throws \JsonException
+	 */
 	public function toJson(array $options=[]): string {
 		$options = array_merge(self::$defaults, $options);
 		
@@ -263,9 +266,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		}
 		
 		$json = json_encode($array, $options['encodeOptions']);
-		if ($json === false) {
-			throw new Exception('failed to generate json: '.json_last_error_msg());
-		}
 		
 		if ($options['jsonpCallback'] !== null) {
 			$json = $options['jsonpCallback'].'('.$json.')';
