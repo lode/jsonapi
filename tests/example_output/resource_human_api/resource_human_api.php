@@ -17,12 +17,12 @@ class resource_human_api {
 		$user42->name  = 'Zaphod Beeblebrox';
 		$user42->heads = 2;
 		
-		$document = ResourceDocument::fromObject($user1, $type='user', $user1->id);
+		$document = ResourceDocument::fromObject($user1, 'user', $user1->id);
 		$document->add('location', $user1->getCurrentLocation());
 		$document->addLink('homepage', 'https://jsonapi.org');
 		$document->addMeta('difference', 'is in the code to generate this');
 		
-		$relation = ResourceDocument::fromObject($user42, $type='user', $user42->id);
+		$relation = ResourceDocument::fromObject($user42, 'user', $user42->id);
 		$document->addRelationship('friend', $relation);
 		
 		return $document;

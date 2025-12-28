@@ -32,7 +32,7 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
 		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
@@ -68,15 +68,15 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$this->expectException(InputException::class);
 		
-		$relationshipsObject->addRelationshipObject($key='-foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('-foo', $relationshipObject);
 	}
 	
 	public function testAddRelationshipObject_MultipleRelationships(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
-		$relationshipsObject->addRelationshipObject($key='bar', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('bar', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
@@ -89,18 +89,18 @@ class RelationshipsObjectTest extends TestCase {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$this->expectException(DuplicateException::class);
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 	}
 	
 	public function testToArray_EmptyRelationship(): void {
 		$relationshipObject  = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		

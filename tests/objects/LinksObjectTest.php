@@ -26,7 +26,7 @@ class LinksObjectTest extends TestCase {
 	
 	public function testAddLinkString_HappyPath(): void {
 		$linksObject = new LinksObject();
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org');
 		
 		$array = $linksObject->toArray();
 		
@@ -40,23 +40,23 @@ class LinksObjectTest extends TestCase {
 		
 		$this->expectException(InputException::class);
 		
-		$linksObject->addLinkString($key='-foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('-foo', 'https://jsonapi.org');
 	}
 	
 	public function testAddLinkString_ExistingKey(): void {
 		$linksObject = new LinksObject();
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org');
 		
 		$this->expectException(DuplicateException::class);
 		
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org/2');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org/2');
 	}
 	
 	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
 		$linksObject = new LinksObject();
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 		
 		$array = $linksObject->toArray();
 		
@@ -72,20 +72,20 @@ class LinksObjectTest extends TestCase {
 		
 		$this->expectException(InputException::class);
 		
-		$linksObject->addLinkObject($key='-foo', $linkObject);
+		$linksObject->addLinkObject('-foo', $linkObject);
 	}
 	
 	public function testAddLinkObject_ExistingKey(): void {
 		$linksObject = new LinksObject();
 		
 		$linkObject = new LinkObject('https://jsonapi.org');
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 		
 		$linkObject = new LinkObject('https://jsonapi.org/2');
 		
 		$this->expectException(DuplicateException::class);
 		
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 	}
 	
 	public function testToArray_ExplicitlyEmpty(): void {

@@ -42,9 +42,9 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		// always mark as used, as these keys are reserved
-		$this->validator->claimUsedFields($fieldNames=['type'], ObjectContainerEnum::Type);
-		$this->validator->claimUsedFields($fieldNames=['id'], ObjectContainerEnum::Id);
-		$this->validator->claimUsedFields($fieldNames=['lid'], ObjectContainerEnum::Lid);
+		$this->validator->claimUsedFields(['type'], ObjectContainerEnum::Type);
+		$this->validator->claimUsedFields(['id'], ObjectContainerEnum::Id);
+		$this->validator->claimUsedFields(['lid'], ObjectContainerEnum::Lid);
 	}
 	
 	/**

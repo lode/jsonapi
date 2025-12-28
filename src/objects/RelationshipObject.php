@@ -280,14 +280,14 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			case RelationshipTypeEnum::ToOne:
 				$array['data'] = null;
 				if (isset($this->resource)) {
-					$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
+					$array['data'] = $this->resource->getResource(identifierOnly: true)->toArray();
 				}
 				break;
 			
 			case RelationshipTypeEnum::ToMany:
 				$array['data'] = [];
 				foreach ($this->resources as $resource) {
-					$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
+					$array['data'][] = $resource->getResource(identifierOnly: true)->toArray();
 				}
 				break;
 		}

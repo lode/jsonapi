@@ -40,13 +40,13 @@ class relationships {
 		 */
 		
 		$options = ['includeContainedResources' => false];
-		$document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
+		$document->addRelationship('excluded-ship', $ship2Resource, options: $options);
 		
 		/**
 		 * to-many relationship, one-by-one
 		 */
 		
-		$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource($friend1Resource);
 		$relationshipObject->addResource($friend2Resource);
 		
@@ -66,7 +66,7 @@ class relationships {
 		 * to-many relationship, different types
 		 */
 		
-		$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
+		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource($ship1Resource);
 		$relationshipObject->addResource($dockResource);
 		

@@ -30,7 +30,7 @@ $extension->setVersion($document, '2019');
  * get the json
  */
 
-$contentType = Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, extensions: [$extension], profiles: []);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

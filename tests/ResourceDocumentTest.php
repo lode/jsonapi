@@ -93,7 +93,7 @@ class ResourceDocumentTest extends TestCase {
 		$options = ['includeContainedResources' => false];
 		
 		$document = new ResourceDocument('test', 1);
-		$document->addRelationship('foo', $resourceObject, $links=[], $meta=[], $options);
+		$document->addRelationship('foo', $resourceObject, options: $options);
 		
 		$array = $document->toArray();
 		
@@ -102,9 +102,9 @@ class ResourceDocumentTest extends TestCase {
 	
 	public function testAddMeta_HappyPath(): void {
 		$document = new ResourceDocument();
-		$document->addMeta('foo', 'root', $level=DocumentLevelEnum::Root);
-		$document->addMeta('bar', 'resource', $level=DocumentLevelEnum::Resource);
-		$document->addMeta('baz', 'jsonapi', $level=DocumentLevelEnum::Jsonapi);
+		$document->addMeta('foo', 'root', DocumentLevelEnum::Root);
+		$document->addMeta('bar', 'resource', DocumentLevelEnum::Resource);
+		$document->addMeta('baz', 'jsonapi', DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		
@@ -138,7 +138,7 @@ class ResourceDocumentTest extends TestCase {
 		
 		parent::assertArrayNotHasKey('jsonapi', $array);
 		
-		$document->addMeta('baz', 'jsonapi', $level=DocumentLevelEnum::Jsonapi);
+		$document->addMeta('baz', 'jsonapi', DocumentLevelEnum::Jsonapi);
 		
 		$array = $document->toArray();
 		

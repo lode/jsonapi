@@ -55,7 +55,7 @@ class DocumentTest extends TestCase {
 	}
 	
 	public function testAddLink_WithMeta(): void {
-		$this->document->addLink('foo', 'https://jsonapi.org', $meta=['bar' => 'baz']);
+		$this->document->addLink('foo', 'https://jsonapi.org', ['bar' => 'baz']);
 		
 		$array = $this->document->toArray();
 		
@@ -74,14 +74,14 @@ class DocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
 		
-		$this->document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Jsonapi);
+		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Jsonapi);
 	}
 	
 	public function testAddLink_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$this->document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=DocumentLevelEnum::Resource);
+		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Resource);
 	}
 	
 	public function testSetSelfLink_HappyPath(): void {
@@ -146,7 +146,7 @@ class DocumentTest extends TestCase {
 		parent::assertArrayHasKey('jsonapi', $array);
 		parent::assertArrayNotHasKey('meta', $array['jsonapi']);
 		
-		$this->document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Jsonapi);
+		$this->document->addMeta('foo', 'bar', DocumentLevelEnum::Jsonapi);
 		
 		$array = $this->document->toArray();
 		
@@ -162,13 +162,13 @@ class DocumentTest extends TestCase {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$this->document->addMeta('foo', 'bar', $level=DocumentLevelEnum::Resource);
+		$this->document->addMeta('foo', 'bar', DocumentLevelEnum::Resource);
 	}
 	
 	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
-		$this->document->addLinkObject($key='foo', $linkObject);
+		$this->document->addLinkObject('foo', $linkObject);
 		
 		$array = $this->document->toArray();
 		

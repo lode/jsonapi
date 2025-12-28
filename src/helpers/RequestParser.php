@@ -61,7 +61,7 @@ class RequestParser {
 				$document = [];
 			}
 			elseif ($documentIsJsonapi || $documentIsJson) {
-				$document = json_decode($document, true, flags: JSON_THROW_ON_ERROR);
+				$document = json_decode($document, associative: true, flags: JSON_THROW_ON_ERROR);
 			}
 		}
 		
@@ -86,7 +86,7 @@ class RequestParser {
 			$document = [];
 		}
 		else {
-			$document = json_decode($request->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
+			$document = json_decode($request->getBody()->getContents(), associative: true, flags: JSON_THROW_ON_ERROR);
 		}
 		
 		return new static($selfLink, $queryParameters, $document);

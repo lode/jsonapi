@@ -136,7 +136,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setDescribedByLink(string $href, array $meta=[]): void {
-		$this->addLink('describedby', $href, $meta, $level=DocumentLevelEnum::Root);
+		$this->addLink('describedby', $href, $meta, DocumentLevelEnum::Root);
 	}
 	
 	/**

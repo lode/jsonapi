@@ -32,7 +32,7 @@ If you used v1 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on h
 ```php
 use alsvanzelf\jsonapi\ResourceDocument;
 
-$document = new ResourceDocument($type='user', $id=42);
+$document = new ResourceDocument(type: 'user', id: 42);
 $document->add('name', 'Zaphod Beeblebrox');
 $document->add('heads', 2);
 $document->sendResponse();

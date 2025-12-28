@@ -69,7 +69,7 @@ class RelationshipObjectTest extends TestCase {
 		$resourceObject = new ResourceObject('user', 42);
 		$type           = RelationshipTypeEnum::ToMany;
 		
-		$relationshipObject = RelationshipObject::fromResource($resourceObject, $links=[], $meta=[], $type);
+		$relationshipObject = RelationshipObject::fromResource($resourceObject, type: $type);
 		
 		$array = $relationshipObject->toArray();
 		
@@ -99,7 +99,7 @@ class RelationshipObjectTest extends TestCase {
 		$resourceObject = new ResourceObject('user', 42);
 		$meta          = ['foo' => 'bar'];
 		
-		$relationshipObject = RelationshipObject::fromResource($resourceObject, $links=[], $meta);
+		$relationshipObject = RelationshipObject::fromResource($resourceObject, meta: $meta);
 		
 		$array = $relationshipObject->toArray();
 		
@@ -113,7 +113,7 @@ class RelationshipObjectTest extends TestCase {
 		$collectionDocument = CollectionDocument::fromResources(new ResourceObject('user', 42));
 		$meta               = ['foo' => 'bar'];
 		
-		$relationshipObject = RelationshipObject::fromCollectionDocument($collectionDocument, $links=[], $meta);
+		$relationshipObject = RelationshipObject::fromCollectionDocument($collectionDocument, meta: $meta);
 		
 		$array = $relationshipObject->toArray();
 		

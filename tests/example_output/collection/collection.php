@@ -27,7 +27,7 @@ class collection {
 		$collection = [];
 		
 		foreach ($users as $user) {
-			$resource = ResourceObject::fromObject($user, $type='user', $user->id);
+			$resource = ResourceObject::fromObject($user, 'user', $user->id);
 			
 			if ($user->id == 42) {
 				$ship = new ResourceObject('ship', 5);

@@ -29,7 +29,7 @@ class resource_nested_relations {
 		 * building up the json response
 		 */
 		
-		$document = ResourceDocument::fromObject($user42, $type='user', $user42->id);
+		$document = ResourceDocument::fromObject($user42, 'user', $user42->id);
 		$document->addRelationship('ship', $ship);
 		
 		return $document;
