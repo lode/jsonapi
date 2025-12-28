@@ -58,8 +58,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		?string $type=null,
 		string|int|null $id=null,
 		array $options=[],
-	): self {
-		$resourceDocument = new self();
+	): static {
+		$resourceDocument = new static();
 		$resourceDocument->setPrimaryResource(ResourceObject::fromArray($attributes, $type, $id, $options), $options);
 		
 		return $resourceDocument;
@@ -73,10 +73,10 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		?string $type=null,
 		string|int|null $id=null,
 		array $options=[],
-	): self {
+	): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array, $type, $id, $options);
+		return static::fromArray($array, $type, $id, $options);
 	}
 	
 	/**

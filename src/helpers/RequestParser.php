@@ -9,6 +9,11 @@ use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class RequestParser {
 	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
@@ -38,7 +43,7 @@ class RequestParser {
 		private readonly array $document=[],
 	) {}
 	
-	public static function fromSuperglobals(): self {
+	public static function fromSuperglobals(): static {
 		$selfLink = '';
 		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -60,13 +65,13 @@ class RequestParser {
 			}
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
 	/**
 	 * @throws \JsonException if the requests' document can't be json decoded
 	 */
-	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): self {
+	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): static {
 		$selfLink = (string) $request->getUri();
 		
 		if ($request instanceof ServerRequestInterface) {
@@ -84,7 +89,7 @@ class RequestParser {
 			$document = json_decode($request->getBody()->getContents(), true, flags: JSON_THROW_ON_ERROR);
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
 	/**

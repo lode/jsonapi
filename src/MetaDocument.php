@@ -21,8 +21,8 @@ class MetaDocument extends Document {
 	/**
 	 * @param  array<string, mixed> $meta
 	 */
-	public static function fromArray(array $meta): self {
-		$metaDocument = new self();
+	public static function fromArray(array $meta): static {
+		$metaDocument = new static();
 		$metaDocument->setMetaObject(MetaObject::fromArray($meta));
 		
 		return $metaDocument;
@@ -31,10 +31,10 @@ class MetaDocument extends Document {
 	/**
 	 * @param object $meta
 	 */
-	public static function fromObject(object $meta): self {
+	public static function fromObject(object $meta): static {
 		$array = Converter::objectToArray($meta);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**

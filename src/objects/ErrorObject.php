@@ -13,6 +13,11 @@ use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaInterface {
 	use HttpStatusCodeManager;
 	use LinksManager;
@@ -68,10 +73,10 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	/**
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorObject::$defaults}
 	 */
-	public static function fromException(\Throwable $exception, array $options=[]): self {
+	public static function fromException(\Throwable $exception, array $options=[]): static {
 		$options = [...self::$defaults, ...$options];
 		
-		$errorObject = new self();
+		$errorObject = new static();
 		
 		$className = $exception::class;
 		if (str_contains($className, '\\')) {

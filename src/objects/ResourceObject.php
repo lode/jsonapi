@@ -45,7 +45,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * @param array<string, mixed>             $attributes
 	 * @param PHPStanTypeAlias_InternalOptions $options    {@see ResourceObject::$defaults}
 	 */
-	public static function fromArray(array $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): self {
+	public static function fromArray(array $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		if (isset($attributes['id'])) {
 			if ($id === null) {
 				$id = $attributes['id'];
@@ -54,7 +54,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 			unset($attributes['id']);
 		}
 		
-		$resourceObject = new self($type, $id);
+		$resourceObject = new static($type, $id);
 		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes), $options);
 		
 		return $resourceObject;
@@ -63,10 +63,10 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	/**
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
-	public static function fromObject(object $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): self {
+	public static function fromObject(object $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array, $type, $id, $options);
+		return static::fromArray($array, $type, $id, $options);
 	}
 	
 	/**

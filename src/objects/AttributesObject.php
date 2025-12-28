@@ -8,6 +8,11 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class AttributesObject extends AbstractObject {
 	/** @var array<string, mixed> */
 	protected array $attributes = [];
@@ -20,10 +25,10 @@ class AttributesObject extends AbstractObject {
 	 * @note if an `id` is set inside $attributes, it is removed from there
 	 *       it is common to find it inside, and not doing so will cause an exception
 	 */
-	public static function fromArray(array $attributes): self {
+	public static function fromArray(array $attributes): static {
 		unset($attributes['id']);
 		
-		$attributesObject = new self();
+		$attributesObject = new static();
 		
 		foreach ($attributes as $key => $value) {
 			$attributesObject->add($key, $value);
@@ -32,10 +37,10 @@ class AttributesObject extends AbstractObject {
 		return $attributesObject;
 	}
 	
-	public static function fromObject(object $attributes): self {
+	public static function fromObject(object $attributes): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**

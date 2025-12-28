@@ -38,8 +38,8 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * 
 	 * adds included resources if found inside the resource's relationships, use {@see ->addResource()} to change that behavior
 	 */
-	public static function fromResources(ResourceInterface ...$resources): self {
-		$collectionDocument = new self();
+	public static function fromResources(ResourceInterface ...$resources): static {
+		$collectionDocument = new static();
 		
 		foreach ($resources as $resource) {
 			$collectionDocument->addResource($resource);

@@ -18,6 +18,11 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class RelationshipObject extends AbstractObject implements PaginableInterface, RecursiveResourceContainerInterface, HasLinksInterface, HasMetaInterface {
 	use LinksManager;
 	
@@ -47,16 +52,16 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		array|CollectionDocument|ResourceInterface|null $relation,
 		array $links=[],
 		array $meta=[],
-	): self {
+	): static {
 		if (is_array($relation)) {
 			$relation = CollectionDocument::fromResources(...$relation);
 		}
 		
 		if ($relation instanceof ResourceInterface) {
-			$relationshipObject = self::fromResource($relation, $links, $meta);
+			$relationshipObject = static::fromResource($relation, $links, $meta);
 		}
 		elseif ($relation instanceof CollectionDocument) {
-			$relationshipObject = self::fromCollectionDocument($relation, $links, $meta);
+			$relationshipObject = static::fromCollectionDocument($relation, $links, $meta);
 		}
 		elseif ($relation === null) {
 			$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
@@ -77,8 +82,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		array $links=[],
 		array $meta=[],
 		RelationshipTypeEnum $type=RelationshipTypeEnum::ToOne,
-	): self {
-		$relationshipObject = new self($type);
+	): static {
+		$relationshipObject = new static($type);
 		
 		match ($type) {
 			RelationshipTypeEnum::ToOne  => $relationshipObject->setResource($resource),
@@ -99,8 +104,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * @param array<string, ?string> $links
 	 * @param array<string, mixed>   $meta
 	 */
-	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): self {
-		$relationshipObject = new self(RelationshipTypeEnum::ToMany);
+	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): static {
+		$relationshipObject = new static(RelationshipTypeEnum::ToMany);
 		
 		foreach ($collectionDocument->getContainedResources() as $resource) {
 			$relationshipObject->addResource($resource);

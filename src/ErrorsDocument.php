@@ -44,10 +44,10 @@ class ErrorsDocument extends Document {
 	/**
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
-	public static function fromException(\Throwable $exception, array $options=[]): self {
+	public static function fromException(\Throwable $exception, array $options=[]): static {
 		$options = [...self::$defaults, ...$options];
 		
-		$errorsDocument = new self();
+		$errorsDocument = new static();
 		$errorsDocument->addException($exception, $options);
 		
 		return $errorsDocument;
