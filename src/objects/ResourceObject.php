@@ -75,7 +75,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
 	 */
 	public function add(string $key, mixed $value, array $options=[]): void {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		if (isset($this->attributes) === false) {
 			$this->attributes = new AttributesObject();

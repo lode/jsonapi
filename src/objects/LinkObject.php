@@ -43,7 +43,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 			$this->setHreflang($language);
 		}
 		else {
-			$this->setHreflang(...array_merge($this->hreflang, [$language]));
+			$this->setHreflang(...[...$this->hreflang, $language]);
 		}
 	}
 	
@@ -133,10 +133,10 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if (isset($this->href)) {

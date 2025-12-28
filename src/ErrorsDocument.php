@@ -45,7 +45,7 @@ class ErrorsDocument extends Document {
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): self {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$errorsDocument = new self();
 		$errorsDocument->addException($exception, $options);
@@ -61,7 +61,7 @@ class ErrorsDocument extends Document {
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
 	 */
 	public function addException(\Throwable $exception, array $options=[]): void {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));
 		

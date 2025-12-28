@@ -259,10 +259,10 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if ($this->hasLinks()) {
@@ -312,7 +312,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			}
 			
 			$resourceObjects[] = $resourceObject;
-			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getNestedContainedResourceObjects());
+			$resourceObjects   = [...$resourceObjects, ...$resourceObject->getNestedContainedResourceObjects()];
 		}
 		
 		return $resourceObjects;

@@ -234,10 +234,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if (isset($this->jsonapi) && $this->jsonapi->isEmpty() === false) {
@@ -257,7 +257,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @throws \JsonException
 	 */
 	public function toJson(array $options=[]): string {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$array = $options['array'] ?? $this->toArray();
 		
@@ -275,7 +275,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	public function sendResponse(array $options=[]): void {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);

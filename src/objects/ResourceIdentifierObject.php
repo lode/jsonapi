@@ -200,10 +200,10 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if (isset($this->meta) && $this->meta->isEmpty() === false) {

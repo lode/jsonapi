@@ -69,7 +69,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorObject::$defaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): self {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$errorObject = new self();
 		
@@ -285,10 +285,10 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		if (isset($this->id)) {
 			$array['id'] = $this->id;

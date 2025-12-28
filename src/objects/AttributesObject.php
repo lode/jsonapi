@@ -87,12 +87,12 @@ class AttributesObject extends AbstractObject {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
-		return array_merge($array, $this->attributes);
+		return [...$array, ...$this->attributes];
 	}
 }

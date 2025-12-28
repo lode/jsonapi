@@ -98,7 +98,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 			throw new InputException('does not make sense to add empty resources to a collection');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->validator->claimUsedResourceIdentifier($resource);
 		

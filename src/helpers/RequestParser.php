@@ -116,7 +116,7 @@ class RequestParser {
 		
 		$includePaths = explode(',', (string) $this->queryParameters['include']);
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		if ($options['useNestedIncludePaths'] === false) {
 			return $includePaths;
 		}
@@ -177,7 +177,7 @@ class RequestParser {
 		
 		$fields = explode(',', (string) $this->queryParameters['sort']);
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		if ($options['useAnnotatedSortFields'] === false) {
 			return $fields;
 		}

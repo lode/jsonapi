@@ -114,7 +114,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
@@ -213,7 +213,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
@@ -234,7 +234,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource->setRelationshipsObject($relationshipsObject);
 		
@@ -263,7 +263,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		
 		/** @var ResourceIdentifierObject|ResourceObject $resource */
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource = $resource;
 		
