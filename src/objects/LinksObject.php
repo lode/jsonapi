@@ -10,6 +10,11 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class LinksObject extends AbstractObject {
 	/** @var array<string, string|LinkObject> */
 	protected array $links = [];
@@ -22,7 +27,7 @@ class LinksObject extends AbstractObject {
 	 * @param array<string, ?string> $links key-value with values being href strings
 	 */
 	public static function fromArray(array $links): LinksObject {
-		$linksObject = new self();
+		$linksObject = new static();
 		
 		foreach ($links as $key => $href) {
 			$linksObject->add($key, $href);
@@ -34,7 +39,7 @@ class LinksObject extends AbstractObject {
 	public static function fromObject(object $links): LinksObject {
 		$array = Converter::objectToArray($links);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**
@@ -101,10 +106,10 @@ class LinksObject extends AbstractObject {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		foreach ($this->links as $key => $link) {

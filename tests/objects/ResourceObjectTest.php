@@ -15,17 +15,17 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceObjectTest extends TestCase {
-	public function testConstructor_ClientDocumentWithoutId() {
+	public function testConstructor_ClientDocumentWithoutId(): void {
 		$resourceObject = new ResourceObject('user');
 		$resourceObject->add('foo', 'bar');
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertArrayHasKey('attributes', $array);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertArrayHasKey('attributes', $array);
 	}
 	
-	public function testFromArray_WithoutId() {
+	public function testFromArray_WithoutId(): void {
 		$type       = 'user';
 		$id         = null;
 		$attributes = [
@@ -36,13 +36,13 @@ class ResourceObjectTest extends TestCase {
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertArrayHasKey('attributes', $array);
-		$this->assertArrayHasKey('foo', $array['attributes']);
-		$this->assertSame('bar', $array['attributes']['foo']);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertArrayHasKey('attributes', $array);
+		parent::assertArrayHasKey('foo', $array['attributes']);
+		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testFromArray_IdViaArgument() {
+	public function testFromArray_IdViaArgument(): void {
 		$type       = 'user';
 		$id         = 42;
 		$attributes = [
@@ -52,14 +52,14 @@ class ResourceObjectTest extends TestCase {
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayHasKey('id', $array);
-		$this->assertArrayHasKey('attributes', $array);
-		$this->assertArrayHasKey('foo', $array['attributes']);
-		$this->assertSame('42', $array['id']);
-		$this->assertSame('bar', $array['attributes']['foo']);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertArrayHasKey('attributes', $array);
+		parent::assertArrayHasKey('foo', $array['attributes']);
+		parent::assertSame('42', $array['id']);
+		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testFromArray_IdViaAttributes() {
+	public function testFromArray_IdViaAttributes(): void {
 		$type       = 'user';
 		$id         = null;
 		$attributes = [
@@ -70,66 +70,66 @@ class ResourceObjectTest extends TestCase {
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayHasKey('id', $array);
-		$this->assertArrayHasKey('attributes', $array);
-		$this->assertArrayHasKey('foo', $array['attributes']);
-		$this->assertArrayNotHasKey('id', $array['attributes']);
-		$this->assertSame('42', $array['id']);
-		$this->assertSame('bar', $array['attributes']['foo']);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertArrayHasKey('attributes', $array);
+		parent::assertArrayHasKey('foo', $array['attributes']);
+		parent::assertArrayNotHasKey('id', $array['attributes']);
+		parent::assertSame('42', $array['id']);
+		parent::assertSame('bar', $array['attributes']['foo']);
 	}
 	
-	public function testHasIdentifierPropertiesOnly_Yes() {
+	public function testHasIdentifierPropertiesOnly_Yes(): void {
 		$resourceObject = new ResourceObject('user', 42);
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject();
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->setAttributesObject(new AttributesObject());
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->setRelationshipsObject(new RelationshipsObject());
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->setLinksObject(new LinksObject());
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->setAttributesObject(new AttributesObject());
 		$resourceObject->setRelationshipsObject(new RelationshipsObject());
 		$resourceObject->setLinksObject(new LinksObject());
-		$this->assertTrue($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertTrue($resourceObject->hasIdentifierPropertiesOnly());
 	}
 	
-	public function testHasIdentifierPropertiesOnly_No() {
+	public function testHasIdentifierPropertiesOnly_No(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
-		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addRelationship('foo', new ResourceObject('user', 24));
-		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addLink('foo', 'https://jsonapi.org');
-		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addLinkObject('foo', new LinkObject());
-		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 		
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->add('foo', 'bar');
 		$resourceObject->addRelationship('baz', new ResourceObject('user', 24));
 		$resourceObject->addLink('foo', 'https://jsonapi.org');
 		$resourceObject->addLinkObject('bar', new LinkObject());
-		$this->assertFalse($resourceObject->hasIdentifierPropertiesOnly());
+		parent::assertFalse($resourceObject->hasIdentifierPropertiesOnly());
 	}
 	
-	public function testAddRelationshipObject_HappyPath() {
+	public function testAddRelationshipObject_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
@@ -138,22 +138,22 @@ class ResourceObjectTest extends TestCase {
 		
 		$array = $resourceObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('id', $array);
-		$this->assertSame('user', $array['type']);
-		$this->assertSame('24', $array['id']);
+		parent::assertArrayHasKey('type', $array);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertSame('user', $array['type']);
+		parent::assertSame('24', $array['id']);
 		
-		$this->assertArrayHasKey('relationships', $array);
-		$this->assertCount(1, $array['relationships']);
-		$this->assertArrayHasKey('foo', $array['relationships']);
-		$this->assertArrayHasKey('data', $array['relationships']['foo']);
-		$this->assertArrayHasKey('type', $array['relationships']['foo']['data']);
-		$this->assertArrayHasKey('id', $array['relationships']['foo']['data']);
-		$this->assertSame('user', $array['relationships']['foo']['data']['type']);
-		$this->assertSame('42', $array['relationships']['foo']['data']['id']);
+		parent::assertArrayHasKey('relationships', $array);
+		parent::assertCount(1, $array['relationships']);
+		parent::assertArrayHasKey('foo', $array['relationships']);
+		parent::assertArrayHasKey('data', $array['relationships']['foo']);
+		parent::assertArrayHasKey('type', $array['relationships']['foo']['data']);
+		parent::assertArrayHasKey('id', $array['relationships']['foo']['data']);
+		parent::assertSame('user', $array['relationships']['foo']['data']['type']);
+		parent::assertSame('42', $array['relationships']['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_BlockDrosteEffect() {
+	public function testAddRelationshipObject_BlockDrosteEffect(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
@@ -164,23 +164,23 @@ class ResourceObjectTest extends TestCase {
 		$resourceObject->addRelationshipObject('foo', $relationshipObject);
 	}
 	
-	public function testIsEmpty_All() {
+	public function testIsEmpty_All(): void {
 		$resourceObject = new ResourceObject();
-		$this->assertTrue($resourceObject->isEmpty());
+		parent::assertTrue($resourceObject->isEmpty());
 		
 		$resourceObject = new ResourceObject('user', 42);
-		$this->assertFalse($resourceObject->isEmpty());
+		parent::assertFalse($resourceObject->isEmpty());
 		
 		$resourceObject = new ResourceObject();
 		$resourceObject->add('foo', 'bar');
-		$this->assertFalse($resourceObject->isEmpty());
+		parent::assertFalse($resourceObject->isEmpty());
 		
 		$resourceObject = new ResourceObject('test', 1);
 		$resourceObject->addRelationship('foo', new ResourceObject('user', 24));
-		$this->assertFalse($resourceObject->isEmpty());
+		parent::assertFalse($resourceObject->isEmpty());
 		
 		$resourceObject = new ResourceObject();
 		$resourceObject->addLink('foo', 'https://jsonapi.org');
-		$this->assertFalse($resourceObject->isEmpty());
+		parent::assertFalse($resourceObject->isEmpty());
 	}
 }

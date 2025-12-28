@@ -13,39 +13,22 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipsObjectTest extends TestCase {
-	public function testAdd_HappyPath() {
+	public function testAdd_HappyPath(): void {
 		$relationshipsObject = new RelationshipsObject();
 		$relationshipsObject->add('foo', new ResourceObject('user', 42));
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_HappyPath() {
-		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
-		
-		$relationshipsObject = new RelationshipsObject();
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
-		
-		$array = $relationshipsObject->toArray();
-		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
-	}
-	
-	public function testAddRelationshipObject_WithPredefinedKey() {
+	public function testAddRelationshipObject_HappyPath(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		
 		$relationshipsObject = new RelationshipsObject();
@@ -53,61 +36,78 @@ class RelationshipsObjectTest extends TestCase {
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertArrayHasKey('type', $array['foo']['data']);
-		$this->assertArrayHasKey('id', $array['foo']['data']);
-		$this->assertSame('user', $array['foo']['data']['type']);
-		$this->assertSame('42', $array['foo']['data']['id']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
 	}
 	
-	public function testAddRelationshipObject_InvalidKey() {
+	public function testAddRelationshipObject_WithPredefinedKey(): void {
+		$relationshipObject = RelationshipObject::fromAnything(new ResourceObject('user', 42));
+		
+		$relationshipsObject = new RelationshipsObject();
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
+		
+		$array = $relationshipsObject->toArray();
+		
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertArrayHasKey('type', $array['foo']['data']);
+		parent::assertArrayHasKey('id', $array['foo']['data']);
+		parent::assertSame('user', $array['foo']['data']['type']);
+		parent::assertSame('42', $array['foo']['data']['id']);
+	}
+	
+	public function testAddRelationshipObject_InvalidKey(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
 		$this->expectException(InputException::class);
 		
-		$relationshipsObject->addRelationshipObject($key='-foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('-foo', $relationshipObject);
 	}
 	
-	public function testAddRelationshipObject_MultipleRelationships() {
+	public function testAddRelationshipObject_MultipleRelationships(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
-		$relationshipsObject->addRelationshipObject($key='bar', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('bar', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('bar', $array);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('bar', $array);
 	}
 	
-	public function testAddRelationshipObject_MultipleReusingKeys() {
+	public function testAddRelationshipObject_MultipleReusingKeys(): void {
 		$relationshipObject  = RelationshipObject::fromAnything(new ResourceObject('user', 42));
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$this->expectException(DuplicateException::class);
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 	}
 	
-	public function testToArray_EmptyRelationship() {
+	public function testToArray_EmptyRelationship(): void {
 		$relationshipObject  = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipsObject = new RelationshipsObject();
 		
-		$relationshipsObject->addRelationshipObject($key='foo', $relationshipObject);
+		$relationshipsObject->addRelationshipObject('foo', $relationshipObject);
 		
 		$array = $relationshipsObject->toArray();
 		
-		$this->assertFalse($relationshipsObject->isEmpty());
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('data', $array['foo']);
-		$this->assertNull($array['foo']['data']);
+		parent::assertFalse($relationshipsObject->isEmpty());
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('data', $array['foo']);
+		parent::assertNull($array['foo']['data']);
 	}
 }

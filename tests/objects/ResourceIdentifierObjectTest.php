@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
-use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
+use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
-	public function testSetId_HappyPath() {
+	public function testSetId_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setId('1');
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('id', $array);
-		$this->assertArrayNotHasKey('lid', $array);
-		$this->assertSame('1', $array['id']);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertArrayNotHasKey('lid', $array);
+		parent::assertSame('1', $array['id']);
 	}
 	
-	public function testSetId_WithLocalIdAlreadySet() {
+	public function testSetId_WithLocalIdAlreadySet(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setLocalId('uuid-1');
@@ -33,19 +33,19 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->setId('1');
 	}
 	
-	public function testSetLocalId_HappyPath() {
+	public function testSetLocalId_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setLocalId('uuid-1');
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('lid', $array);
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertSame('uuid-1', $array['lid']);
+		parent::assertArrayHasKey('lid', $array);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertSame('uuid-1', $array['lid']);
 	}
 	
-	public function testSetLocalId_WithIdAlreadySet() {
+	public function testSetLocalId_WithIdAlreadySet(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');
 		$resourceIdentifierObject->setId('1');
@@ -55,16 +55,16 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->setLocalId('uuid-1');
 	}
 	
-	public function testEquals_HappyPath() {
+	public function testEquals_HappyPath(): void {
 		$one = new ResourceIdentifierObject('test', 1);
 		$two = new ResourceIdentifierObject('test', 2);
 		$new = new ResourceIdentifierObject('test', 1);
 		
-		$this->assertFalse($one->equals($two));
-		$this->assertTrue($one->equals($new));
+		parent::assertFalse($one->equals($two));
+		parent::assertTrue($one->equals($new));
 	}
 	
-	public function testEquals_WithoutIdentification() {
+	public function testEquals_WithoutIdentification(): void {
 		$one = new ResourceIdentifierObject('test', 1);
 		$two = new ResourceIdentifierObject();
 		
@@ -73,7 +73,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$one->equals($two);
 	}
 	
-	public function testEquals_WithLocalId() {
+	public function testEquals_WithLocalId(): void {
 		$one = new ResourceIdentifierObject('test');
 		$two = new ResourceIdentifierObject('test');
 		$new = new ResourceIdentifierObject('test');
@@ -82,46 +82,46 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$two->setLocalId('uuid-2');
 		$new->setLocalId('uuid-1');
 		
-		$this->assertFalse($one->equals($two));
-		$this->assertTrue($one->equals($new));
+		parent::assertFalse($one->equals($two));
+		parent::assertTrue($one->equals($new));
 	}
 	
-	public function testGetIdentificationKey_HappyPath() {
+	public function testGetIdentificationKey_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user', 42);
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('id', $array);
-		$this->assertArrayNotHasKey('lid', $array);
-		$this->assertSame('user', $array['type']);
-		$this->assertSame('42', $array['id']);
-		$this->assertTrue($resourceIdentifierObject->hasIdentification());
-		$this->assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
+		parent::assertArrayHasKey('type', $array);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertArrayNotHasKey('lid', $array);
+		parent::assertSame('user', $array['type']);
+		parent::assertSame('42', $array['id']);
+		parent::assertTrue($resourceIdentifierObject->hasIdentification());
+		parent::assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_SetAfterwards() {
+	public function testGetIdentificationKey_SetAfterwards(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
-		$this->assertFalse($resourceIdentifierObject->hasIdentification());
+		parent::assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$resourceIdentifierObject->setType('user');
 		
-		$this->assertFalse($resourceIdentifierObject->hasIdentification());
+		parent::assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$resourceIdentifierObject->setId(42);
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('id', $array);
-		$this->assertSame('user', $array['type']);
-		$this->assertSame('42', $array['id']);
-		$this->assertTrue($resourceIdentifierObject->hasIdentification());
-		$this->assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
+		parent::assertArrayHasKey('type', $array);
+		parent::assertArrayHasKey('id', $array);
+		parent::assertSame('user', $array['type']);
+		parent::assertSame('42', $array['id']);
+		parent::assertTrue($resourceIdentifierObject->hasIdentification());
+		parent::assertSame('user|42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_WithLocalId() {
+	public function testGetIdentificationKey_WithLocalId(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		$resourceIdentifierObject->setType('user');
@@ -129,65 +129,65 @@ class ResourceIdentifierObjectTest extends TestCase {
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayHasKey('lid', $array);
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertSame('user', $array['type']);
-		$this->assertSame('uuid-42', $array['lid']);
-		$this->assertTrue($resourceIdentifierObject->hasIdentification());
-		$this->assertSame('user|uuid-42', $resourceIdentifierObject->getIdentificationKey());
+		parent::assertArrayHasKey('type', $array);
+		parent::assertArrayHasKey('lid', $array);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertSame('user', $array['type']);
+		parent::assertSame('uuid-42', $array['lid']);
+		parent::assertTrue($resourceIdentifierObject->hasIdentification());
+		parent::assertSame('user|uuid-42', $resourceIdentifierObject->getIdentificationKey());
 	}
 	
-	public function testGetIdentificationKey_NoIdentification() {
+	public function testGetIdentificationKey_NoIdentification(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayNotHasKey('type', $array);
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertSame([], $array);
-		$this->assertFalse($resourceIdentifierObject->hasIdentification());
+		parent::assertArrayNotHasKey('type', $array);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertSame([], $array);
+		parent::assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$this->expectException(Exception::class);
 		
 		$resourceIdentifierObject->getIdentificationKey();
 	}
 	
-	public function testGetIdentificationKey_NoFullIdentification() {
+	public function testGetIdentificationKey_NoFullIdentification(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject('user');
 		
 		$array = $resourceIdentifierObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertArrayNotHasKey('id', $array);
-		$this->assertSame('user', $array['type']);
-		$this->assertFalse($resourceIdentifierObject->hasIdentification());
+		parent::assertArrayHasKey('type', $array);
+		parent::assertArrayNotHasKey('id', $array);
+		parent::assertSame('user', $array['type']);
+		parent::assertFalse($resourceIdentifierObject->hasIdentification());
 		
 		$this->expectException(Exception::class);
 		
 		$resourceIdentifierObject->getIdentificationKey();
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
-		$this->assertTrue($resourceIdentifierObject->isEmpty());
+		parent::assertTrue($resourceIdentifierObject->isEmpty());
 		
 		$resourceIdentifierObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($resourceIdentifierObject->isEmpty());
+		parent::assertFalse($resourceIdentifierObject->isEmpty());
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
-		$this->assertTrue($resourceIdentifierObject->isEmpty());
+		parent::assertTrue($resourceIdentifierObject->isEmpty());
 		
-		$resourceIdentifierObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$resourceIdentifierObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
-		$this->assertFalse($resourceIdentifierObject->isEmpty());
+		parent::assertFalse($resourceIdentifierObject->isEmpty());
 	}
 }

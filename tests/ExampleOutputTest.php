@@ -16,8 +16,8 @@ class ExampleOutputTest extends TestCase {
 	];
 	
 	#[DataProvider('dataProviderTestOutput')]
-	public function testOutput($generator, $expectedJson, array $options=[], $testName=null) {
-		$options = array_merge(self::$defaults, $options);
+	public function testOutput($generator, $expectedJson, array $options=[], $testName=null): void {
+		$options = [...self::$defaults, ...$options];
 		
 		$document   = $generator::createJsonapiDocument();
 		$actualJson = $document->toJson($options);
@@ -29,10 +29,10 @@ class ExampleOutputTest extends TestCase {
 		$actualJsonPath = __DIR__.'/example_output/'.$testName.'/'.$testName.'.json';
 		if ($expectedJson === null && file_exists($actualJsonPath) === false) {
 			file_put_contents($actualJsonPath, $actualJson);
-			$this->markTestSkipped('no stored json to test against, try again');
+			parent::markTestSkipped('no stored json to test against, try again');
 		}
 		
-		$this->assertSame($expectedJson, $actualJson);
+		parent::assertSame($expectedJson, $actualJson);
 	}
 	
 	public static function dataProviderTestOutput() {
@@ -53,7 +53,7 @@ class ExampleOutputTest extends TestCase {
 				$expectedJson = file_get_contents($directory.'/'.$testName.'.json');
 			}
 			if (file_exists($directory.'/options.txt')) {
-				$options = json_decode(file_get_contents($directory.'/options.txt'), true);
+				$options = json_decode(file_get_contents($directory.'/options.txt'), associative: true, flags: JSON_THROW_ON_ERROR);
 			}
 			
 			$testCases[$testName] = [$generator, $expectedJson, $options, $testName];

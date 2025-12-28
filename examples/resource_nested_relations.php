@@ -28,7 +28,7 @@ $ship->addRelationship('wing', $wing);
  * building up the json response
  */
 
-$document = ResourceDocument::fromObject($userEntity, $type='user', $userEntity->id);
+$document = ResourceDocument::fromObject($userEntity, type: 'user', id: $userEntity->id);
 $document->addRelationship('ship', $ship);
 
 /**

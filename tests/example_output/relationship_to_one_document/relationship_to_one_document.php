@@ -11,7 +11,7 @@ class relationship_to_one_document {
 	public static function createJsonapiDocument() {
 		$document = new ResourceDocument('author', 12);
 		
-		$document->setSelfLink('/articles/1/relationship/author', $meta=[], $level=DocumentLevelEnum::Root);
+		$document->setSelfLink('/articles/1/relationship/author', level: DocumentLevelEnum::Root);
 		$document->addLink('related', '/articles/1/author');
 		
 		return $document;

@@ -8,29 +8,29 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class RelationshipObjectTest extends TestCase {
-	public function testConstructor_ToOne() {
+	public function testConstructor_ToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testConstructor_ToMany() {
+	public function testConstructor_ToMany(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceObject() {
+	public function testFromAnything_WithResourceObject(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$resourceObject->addMeta('foo', 'bar');
 		
@@ -39,19 +39,19 @@ class RelationshipObjectTest extends TestCase {
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceIdentifierObject() {
+	public function testFromAnything_WithResourceIdentifierObject(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceIdentifierObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceDocument() {
+	public function testFromAnything_WithResourceDocument(): void {
 		$relationshipObject = RelationshipObject::fromAnything(new ResourceDocument('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithCollectionDocument() {
+	public function testFromAnything_WithCollectionDocument(): void {
 		$resourceObject     = new ResourceObject('user', 42);
 		$collectionDocument = CollectionDocument::fromResources($resourceObject);
 		$relationshipObject = RelationshipObject::fromAnything($collectionDocument);
@@ -59,29 +59,29 @@ class RelationshipObjectTest extends TestCase {
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromAnything_WithResourceObjects() {
+	public function testFromAnything_WithResourceObjects(): void {
 		$relationshipObject = RelationshipObject::fromAnything([new ResourceObject('user', 42)]);
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testFromResource_ToMany() {
+	public function testFromResource_ToMany(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$type           = RelationshipTypeEnum::ToMany;
 		
-		$relationshipObject = RelationshipObject::fromResource($resourceObject, $links=[], $meta=[], $type);
+		$relationshipObject = RelationshipObject::fromResource($resourceObject, type: $type);
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertCount(1, $array['data']);
-		$this->assertArrayHasKey('type', $array['data'][0]);
-		$this->assertArrayHasKey('id', $array['data'][0]);
-		$this->assertSame('user', $array['data'][0]['type']);
-		$this->assertSame('42', $array['data'][0]['id']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertCount(1, $array['data']);
+		parent::assertArrayHasKey('type', $array['data'][0]);
+		parent::assertArrayHasKey('id', $array['data'][0]);
+		parent::assertSame('user', $array['data'][0]['type']);
+		parent::assertSame('42', $array['data'][0]['id']);
 	}
 	
-	public function testFromResource_WithLinks() {
+	public function testFromResource_WithLinks(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$links          = ['self' => 'https://jsonapi.org'];
 		
@@ -89,63 +89,63 @@ class RelationshipObjectTest extends TestCase {
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertSame('https://jsonapi.org', $array['links']['self']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertSame('https://jsonapi.org', $array['links']['self']);
 	}
 	
-	public function testFromResource_WithMeta() {
+	public function testFromResource_WithMeta(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		$meta          = ['foo' => 'bar'];
 		
-		$relationshipObject = RelationshipObject::fromResource($resourceObject, $links=[], $meta);
+		$relationshipObject = RelationshipObject::fromResource($resourceObject, meta: $meta);
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testFromCollectionDocument_WithMeta() {
+	public function testFromCollectionDocument_WithMeta(): void {
 		$collectionDocument = CollectionDocument::fromResources(new ResourceObject('user', 42));
 		$meta               = ['foo' => 'bar'];
 		
-		$relationshipObject = RelationshipObject::fromCollectionDocument($collectionDocument, $links=[], $meta);
+		$relationshipObject = RelationshipObject::fromCollectionDocument($collectionDocument, meta: $meta);
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testSetSelfLink_HappyPath() {
+	public function testSetSelfLink_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setSelfLink('https://jsonapi.org');
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertSame('https://jsonapi.org', $array['links']['self']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertSame('https://jsonapi.org', $array['links']['self']);
 	}
 	
-	public function testSetRelatedLink_HappyPath() {
+	public function testSetRelatedLink_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setRelatedLink('https://jsonapi.org');
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('related', $array['links']);
-		$this->assertSame('https://jsonapi.org', $array['links']['related']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('related', $array['links']);
+		parent::assertSame('https://jsonapi.org', $array['links']['related']);
 	}
 	
-	public function testSetPaginationLinks_HappyPath() {
+	public function testSetPaginationLinks_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$baseUrl            = 'https://jsonapi.org/?page=';
 		
@@ -153,19 +153,19 @@ class RelationshipObjectTest extends TestCase {
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(4, $array['links']);
-		$this->assertArrayHasKey('prev', $array['links']);
-		$this->assertArrayHasKey('next', $array['links']);
-		$this->assertArrayHasKey('first', $array['links']);
-		$this->assertArrayHasKey('last', $array['links']);
-		$this->assertSame($baseUrl.'prev', $array['links']['prev']);
-		$this->assertSame($baseUrl.'next', $array['links']['next']);
-		$this->assertSame($baseUrl.'first', $array['links']['first']);
-		$this->assertSame($baseUrl.'last', $array['links']['last']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(4, $array['links']);
+		parent::assertArrayHasKey('prev', $array['links']);
+		parent::assertArrayHasKey('next', $array['links']);
+		parent::assertArrayHasKey('first', $array['links']);
+		parent::assertArrayHasKey('last', $array['links']);
+		parent::assertSame($baseUrl.'prev', $array['links']['prev']);
+		parent::assertSame($baseUrl.'next', $array['links']['next']);
+		parent::assertSame($baseUrl.'first', $array['links']['first']);
+		parent::assertSame($baseUrl.'last', $array['links']['last']);
 	}
 	
-	public function testSetPaginationLinks_BlockedOnToOne() {
+	public function testSetPaginationLinks_BlockedOnToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$this->expectException(InputException::class);
@@ -173,63 +173,63 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->setPaginationLinks('foo');
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
-		$this->assertTrue($relationshipObject->isEmpty());
+		parent::assertTrue($relationshipObject->isEmpty());
 		
 		$relationshipObject->addMeta('foo', 'bar');
 		
-		$this->assertFalse($relationshipObject->isEmpty());
+		parent::assertFalse($relationshipObject->isEmpty());
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testHasResource_ToMany() {
+	public function testHasResource_ToMany(): void {
 		$resourceObject = new ResourceObject('user', 42);
 		
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource($resourceObject);
 		
-		$this->assertTrue($relationshipObject->hasResource($resourceObject));
-		$this->assertTrue($relationshipObject->hasResource(new ResourceObject('user', 42)));
-		$this->assertFalse($relationshipObject->hasResource(new ResourceObject('user', 24)));
+		parent::assertTrue($relationshipObject->hasResource($resourceObject));
+		parent::assertTrue($relationshipObject->hasResource(new ResourceObject('user', 42)));
+		parent::assertFalse($relationshipObject->hasResource(new ResourceObject('user', 24)));
 	}
 	
-	public function testGetContainedResources_SkipsResourceIdentifierObjects() {
+	public function testGetContainedResources_SkipsResourceIdentifierObjects(): void {
 		$relationshipObject           = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$resourceIdentifierObject     = new ResourceIdentifierObject('user', 24);
 		$resourceObjectIdentifierOnly = new ResourceObject('user', 42);
 		$resourceObjectWithAttributes = new ResourceObject('user', 42);
 		$resourceObjectWithAttributes->add('foo', 'bar');
 		
-		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
+		parent::assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceIdentifierObject);
 		
-		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
+		parent::assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceObjectIdentifierOnly);
 		
-		$this->assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
+		parent::assertCount(0, $relationshipObject->getNestedContainedResourceObjects());
 		
 		$relationshipObject->addResource($resourceObjectWithAttributes);
 		
-		$this->assertCount(1, $relationshipObject->getNestedContainedResourceObjects());
+		parent::assertCount(1, $relationshipObject->getNestedContainedResourceObjects());
 	}
 	
-	public function testSetResource_HappyPath() {
+	public function testSetResource_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 		
 		$this->validateToOneRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testSetResource_RequiresToOneType() {
+	public function testSetResource_RequiresToOneType(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		
 		$this->expectException(InputException::class);
@@ -237,14 +237,14 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->setResource(new ResourceObject('user', 42));
 	}
 	
-	public function testAddResource_HappyPath() {
+	public function testAddResource_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 		
 		$this->validateToManyRelationshipArray($relationshipObject->toArray());
 	}
 	
-	public function testAddResource_RequiresToOneType() {
+	public function testAddResource_RequiresToOneType(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$this->expectException(InputException::class);
@@ -252,82 +252,82 @@ class RelationshipObjectTest extends TestCase {
 		$relationshipObject->addResource(new ResourceObject('user', 42));
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
-		$this->assertTrue($relationshipObject->isEmpty());
+		parent::assertTrue($relationshipObject->isEmpty());
 		
 		$relationshipObject->addLinkObject('foo', new LinkObject('https://jsonapi.org'));
 		
-		$this->assertFalse($relationshipObject->isEmpty());
+		parent::assertFalse($relationshipObject->isEmpty());
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['foo']);
-		$this->assertArrayNotHasKey('meta', $array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('foo', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['foo']);
+		parent::assertArrayNotHasKey('meta', $array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
-	public function testToArray_EmptyResource() {
+	public function testToArray_EmptyResource(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertNull($array['data']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertNull($array['data']);
 	}
 	
-	public function testToArray_EmptyResources() {
+	public function testToArray_EmptyResources(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToMany);
 		
 		$array = $relationshipObject->toArray();
 		
-		$this->assertArrayHasKey('data', $array);
-		$this->assertIsArray($array['data']);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertIsArray($array['data']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
-		$this->assertTrue($relationshipObject->isEmpty());
+		parent::assertTrue($relationshipObject->isEmpty());
 		
 		$relationshipObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($relationshipObject->isEmpty());
+		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
-		$this->assertTrue($relationshipObject->isEmpty());
+		parent::assertTrue($relationshipObject->isEmpty());
 		
-		$relationshipObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$relationshipObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
-		$this->assertFalse($relationshipObject->isEmpty());
+		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
 	private function validateToOneRelationshipArray(array $array) {
-		$this->assertNotEmpty($array);
-		$this->assertArrayHasKey('data', $array);
-		$this->assertArrayHasKey('type', $array['data']);
-		$this->assertArrayHasKey('id', $array['data']);
-		$this->assertSame('user', $array['data']['type']);
-		$this->assertSame('42', $array['data']['id']);
+		parent::assertNotEmpty($array);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertArrayHasKey('type', $array['data']);
+		parent::assertArrayHasKey('id', $array['data']);
+		parent::assertSame('user', $array['data']['type']);
+		parent::assertSame('42', $array['data']['id']);
 	}
 	
 	private function validateToManyRelationshipArray(array $array) {
-		$this->assertNotEmpty($array);
-		$this->assertArrayHasKey('data', $array);
-		$this->assertCount(1, $array['data']);
-		$this->assertArrayHasKey(0, $array['data']);
-		$this->assertArrayHasKey('type', $array['data'][0]);
-		$this->assertArrayHasKey('id', $array['data'][0]);
-		$this->assertSame('user', $array['data'][0]['type']);
-		$this->assertSame('42', $array['data'][0]['id']);
+		parent::assertNotEmpty($array);
+		parent::assertArrayHasKey('data', $array);
+		parent::assertCount(1, $array['data']);
+		parent::assertArrayHasKey(0, $array['data']);
+		parent::assertArrayHasKey('type', $array['data'][0]);
+		parent::assertArrayHasKey('id', $array['data'][0]);
+		parent::assertSame('user', $array['data'][0]['type']);
+		parent::assertSame('42', $array['data'][0]['id']);
 	}
 }

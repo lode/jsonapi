@@ -4,74 +4,74 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
-use alsvanzelf\jsonapiTests\profiles\TestProfile;
 use PHPUnit\Framework\TestCase;
 
 class JsonapiObjectTest extends TestCase {
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
-		$this->assertTrue($jsonapiObject->isEmpty());
+		parent::assertTrue($jsonapiObject->isEmpty());
 		
 		$jsonapiObject->addMeta('foo', 'bar');
 		
-		$this->assertFalse($jsonapiObject->isEmpty());
+		parent::assertFalse($jsonapiObject->isEmpty());
 		
 		$array = $jsonapiObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
-		$this->assertTrue($jsonapiObject->isEmpty());
+		parent::assertTrue($jsonapiObject->isEmpty());
 		
 		$jsonapiObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($jsonapiObject->isEmpty());
+		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionLink() {
+	public function testIsEmpty_WithExtensionLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
-		$this->assertTrue($jsonapiObject->isEmpty());
+		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addExtension(new TestExtension());
+		$jsonapiObject->addExtension(parent::createStub(ExtensionInterface::class));
 		
-		$this->assertFalse($jsonapiObject->isEmpty());
+		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
 	/**
 	 * @group Profiles
 	 */
-	public function testIsEmpty_WithProfileLink() {
+	public function testIsEmpty_WithProfileLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
-		$this->assertTrue($jsonapiObject->isEmpty());
+		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addProfile(new TestProfile());
+		$jsonapiObject->addProfile(parent::createStub(ProfileInterface::class));
 		
-		$this->assertFalse($jsonapiObject->isEmpty());
+		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
-		$this->assertTrue($jsonapiObject->isEmpty());
+		parent::assertTrue($jsonapiObject->isEmpty());
 		
-		$jsonapiObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$jsonapiObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
-		$this->assertFalse($jsonapiObject->isEmpty());
+		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 }

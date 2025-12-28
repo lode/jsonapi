@@ -13,7 +13,7 @@ require 'bootstrap_examples.php';
 
 $relationshipDocument = new ResourceDocument('author', 12);
 
-$relationshipDocument->setSelfLink('/articles/1/relationship/author', $meta=[], $level=DocumentLevelEnum::Root);
+$relationshipDocument->setSelfLink('/articles/1/relationship/author', level: DocumentLevelEnum::Root);
 $relationshipDocument->addLink('related', '/articles/1/author');
 
 /**

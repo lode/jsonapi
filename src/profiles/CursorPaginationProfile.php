@@ -165,7 +165,7 @@ class CursorPaginationProfile implements ProfileInterface {
 		];
 		
 		if ($resource instanceof ResourceDocument) {
-			$resource->addMeta('page', $metadata, $level=DocumentLevelEnum::Resource);
+			$resource->addMeta('page', $metadata, DocumentLevelEnum::Resource);
 		}
 		else {
 			$resource->addMeta('page', $metadata);
@@ -240,7 +240,7 @@ class CursorPaginationProfile implements ProfileInterface {
 		$errorObject->setTypeLink('https://jsonapi.org/profiles/ethanresnick/cursor-pagination/max-size-exceeded');
 		$errorObject->blameQueryParameter('page[size]');
 		$errorObject->setHttpStatusCode(400);
-		$errorObject->addMeta('page', $value=['maxSize' => $maxSize]);
+		$errorObject->addMeta('page', ['maxSize' => $maxSize]);
 		
 		if ($genericTitle !== null) {
 			$errorObject->setHumanExplanation($genericTitle, $specificDetails);

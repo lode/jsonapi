@@ -38,7 +38,7 @@ class Validator {
 	 * @throws DuplicateException
 	 */
 	public function claimUsedFields(array $fieldNames, ObjectContainerEnum $objectContainer, array $options=[]): void {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		foreach ($fieldNames as $fieldName) {
 			if (isset($this->usedFields[$fieldName]) === false) {

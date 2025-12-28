@@ -27,6 +27,10 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 /**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ * 
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable, HasLinksInterface, HasMetaInterface, HasExtensionMembersInterface {
@@ -48,7 +52,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		/**
 		 * encode to json with these default options
 		 */
-		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
+		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR,
 		
 		/**
 		 * encode to human-readable json, useful when debugging
@@ -132,7 +136,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setDescribedByLink(string $href, array $meta=[]): void {
-		$this->addLink('describedby', $href, $meta, $level=DocumentLevelEnum::Root);
+		$this->addLink('describedby', $href, $meta, DocumentLevelEnum::Root);
 	}
 	
 	/**
@@ -140,25 +144,28 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
-		if ($level === DocumentLevelEnum::Root) {
-			if (isset($this->meta) === false) {
-				$this->setMetaObject(new MetaObject());
-			}
+		switch ($level) {
+			case DocumentLevelEnum::Root:
+				if (isset($this->meta) === false) {
+					$this->setMetaObject(new MetaObject());
+				}
+				
+				$this->meta->add($key, $value);
+				break;
 			
-			$this->meta->add($key, $value);
-		}
-		elseif ($level === DocumentLevelEnum::Jsonapi) {
-			if (isset($this->jsonapi) === false) {
-				$this->setJsonapiObject(new JsonapiObject());
-			}
+			case DocumentLevelEnum::Jsonapi:
+				if (isset($this->jsonapi) === false) {
+					$this->setJsonapiObject(new JsonapiObject());
+				}
+				
+				$this->jsonapi->addMeta($key, $value);
+				break;
 			
-			$this->jsonapi->addMeta($key, $value);
-		}
-		elseif ($level === DocumentLevelEnum::Resource) {
-			throw new InputException('level "resource" can only be set on a ResourceDocument');
-		}
-		else {
-			throw new InputException('unknown level "'.$level->value.'"');
+			case DocumentLevelEnum::Resource:
+				throw new InputException('level "resource" can only be set on a ResourceDocument');
+			
+			default:
+				throw new InputException('unknown level "'.$level->value.'"');
 		}
 	}
 	
@@ -234,10 +241,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if (isset($this->jsonapi) && $this->jsonapi->isEmpty() === false) {
@@ -253,8 +260,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $array;
 	}
 	
+	/**
+	 * @throws \JsonException
+	 */
 	public function toJson(array $options=[]): string {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$array = $options['array'] ?? $this->toArray();
 		
@@ -263,9 +273,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		}
 		
 		$json = json_encode($array, $options['encodeOptions']);
-		if ($json === false) {
-			throw new Exception('failed to generate json: '.json_last_error_msg());
-		}
 		
 		if ($options['jsonpCallback'] !== null) {
 			$json = $options['jsonpCallback'].'('.$json.')';
@@ -275,7 +282,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	public function sendResponse(array $options=[]): void {
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);

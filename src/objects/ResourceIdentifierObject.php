@@ -14,6 +14,11 @@ use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class ResourceIdentifierObject extends AbstractObject implements HasMetaInterface, ResourceInterface {
 	protected string $type;
 	protected string $id;
@@ -37,9 +42,9 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		// always mark as used, as these keys are reserved
-		$this->validator->claimUsedFields($fieldNames=['type'], ObjectContainerEnum::Type);
-		$this->validator->claimUsedFields($fieldNames=['id'], ObjectContainerEnum::Id);
-		$this->validator->claimUsedFields($fieldNames=['lid'], ObjectContainerEnum::Lid);
+		$this->validator->claimUsedFields(['type'], ObjectContainerEnum::Type);
+		$this->validator->claimUsedFields(['id'], ObjectContainerEnum::Id);
+		$this->validator->claimUsedFields(['lid'], ObjectContainerEnum::Lid);
 	}
 	
 	/**
@@ -105,12 +110,12 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 * 
 	 * @throws InputException if the $resourceoObject's type or id is not set yet
 	 */
-	public static function fromResourceObject(ResourceObject $resourceObject): self {
+	public static function fromResourceObject(ResourceObject $resourceObject): static {
 		if ($resourceObject->hasIdentification() === false) {
 			throw new InputException('resource has no identification yet<');
 		}
 		
-		$resourceIdentifierObject = new self($resourceObject->type, $resourceObject->primaryId());
+		$resourceIdentifierObject = new static($resourceObject->type, $resourceObject->primaryId());
 		
 		if (isset($resourceObject->meta)) {
 			$resourceIdentifierObject->setMetaObject($resourceObject->meta);
@@ -200,10 +205,10 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 		}
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if (isset($this->meta) && $this->meta->isEmpty() === false) {

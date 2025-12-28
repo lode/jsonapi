@@ -32,7 +32,7 @@ $profile->setTimestamps($document, $created, $updated);
  * get the json
  */
 
-$contentType = Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, extensions: [], profiles: [$profile]);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

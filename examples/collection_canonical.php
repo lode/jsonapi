@@ -54,7 +54,7 @@ foreach ($articleRecords as $articleId => $articleRecord) {
 }
 
 $document->setSelfLink('http://example.com/articles');
-$document->setPaginationLinks($previous=null, $next='http://example.com/articles?page[offset]=2', $first=null, $last='http://example.com/articles?page[offset]=10');
+$document->setPaginationLinks(previousHref: null, nextHref: 'http://example.com/articles?page[offset]=2', firstHref: null, lastHref: 'http://example.com/articles?page[offset]=10');
 $document->unsetJsonapiObject();
 
 /**

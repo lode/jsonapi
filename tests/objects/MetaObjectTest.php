@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
 use PHPUnit\Framework\TestCase;
 
 class MetaObjectTest extends TestCase {
-	public function testAdd_AllowsMixedValue() {
+	public function testAdd_AllowsMixedValue(): void {
 		$metaObject = new MetaObject();
 		$metaObject->add('array-list', ['foo']);
 		$metaObject->add('array-int-key', [42 => 'foo']);
@@ -23,10 +23,10 @@ class MetaObjectTest extends TestCase {
 		
 		$array = $metaObject->toArray();
 		
-		$this->assertCount(9, $array);
+		parent::assertCount(9, $array);
 	}
 	
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		
@@ -34,31 +34,31 @@ class MetaObjectTest extends TestCase {
 		
 		$array = $metaObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('bar', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('bar', $array['foo']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$metaObject = new MetaObject();
 		
-		$this->assertTrue($metaObject->isEmpty());
+		parent::assertTrue($metaObject->isEmpty());
 		
 		$metaObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($metaObject->isEmpty());
+		parent::assertFalse($metaObject->isEmpty());
 	}
 	
 	/**
 	 * @group Extensions
 	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$metaObject = new MetaObject();
 		
-		$this->assertTrue($metaObject->isEmpty());
+		parent::assertTrue($metaObject->isEmpty());
 		
-		$metaObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$metaObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
-		$this->assertFalse($metaObject->isEmpty());
+		parent::assertFalse($metaObject->isEmpty());
 	}
 }

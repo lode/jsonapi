@@ -22,12 +22,12 @@ $user42 = ExampleDataset::getEntity('user', 42);
  * objects are converted into arrays using their public keys
  */
 
-$document = ResourceDocument::fromObject($user1, $type='user', $user1->id);
+$document = ResourceDocument::fromObject($user1, type: 'user', id: $user1->id);
 $document->add('location', $user1->getCurrentLocation());
 $document->addLink('homepage', 'https://jsonapi.org');
 $document->addMeta('difference', 'is in the code to generate this');
 
-$relation = ResourceDocument::fromObject($user42, $type='user', $user42->id);
+$relation = ResourceDocument::fromObject($user42, type: 'user', id: $user42->id);
 $document->addRelationship('friend', $relation);
 
 /**

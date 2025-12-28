@@ -42,13 +42,13 @@ $document->addRelationship('included-ship', $ship1Resource);
  */
 
 $options = ['includeContainedResources' => false];
-$document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
+$document->addRelationship('excluded-ship', $ship2Resource, options: $options);
 
 /**
  * to-many relationship, one-by-one
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
+$relationshipObject = new RelationshipObject(type: RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($friend1Resource);
 $relationshipObject->addResource($friend2Resource);
 
@@ -68,7 +68,7 @@ $document->addRelationship('included-friends', $friends);
  * to-many relationship, different types
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipTypeEnum::ToMany);
+$relationshipObject = new RelationshipObject(type: RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($ship1Resource);
 $relationshipObject->addResource($dockResource);
 
@@ -78,10 +78,10 @@ $document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
  * custom
  */
 $jsonapi = new ResourceDocument('user', 1);
-$custom_relation = [
+$customRelation = [
 	'data' => ['cus' => 'tom'],
 ];
-$jsonapi->addRelationship('custom', $custom_relation);
+$jsonapi->addRelationship('custom', $customRelation);
 
 /**
  * sending the response

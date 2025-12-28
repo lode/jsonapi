@@ -8,6 +8,11 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class MetaObject extends AbstractObject {
 	/** @var array<string, mixed> */
 	protected array $meta = [];
@@ -19,8 +24,8 @@ class MetaObject extends AbstractObject {
 	/**
 	 * @param array<string, mixed> $meta
 	 */
-	public static function fromArray(array $meta): self {
-		$metaObject = new self();
+	public static function fromArray(array $meta): static {
+		$metaObject = new static();
 		
 		foreach ($meta as $key => $value) {
 			$metaObject->add($key, $value);
@@ -29,10 +34,10 @@ class MetaObject extends AbstractObject {
 		return $metaObject;
 	}
 	
-	public static function fromObject(object $meta): self {
+	public static function fromObject(object $meta): static {
 		$array = Converter::objectToArray($meta);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**
@@ -71,12 +76,12 @@ class MetaObject extends AbstractObject {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
-		return array_merge($array, $this->meta);
+		return [...$array, ...$this->meta];
 	}
 }

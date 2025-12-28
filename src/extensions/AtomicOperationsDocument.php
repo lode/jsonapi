@@ -33,7 +33,7 @@ class AtomicOperationsDocument extends Document {
 	 * @param ResourceInterface[] ...$resources
 	 */
 	public function addResults(ResourceInterface ...$resources): void {
-		$this->results = array_merge($this->results, $resources);
+		$this->results = [...$this->results, ...$resources];
 	}
 	
 	/**

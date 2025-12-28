@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use PHPUnit\Framework\TestCase;
 
 class LinksObjectTest extends TestCase {
-	public function testFromObject_HappyPath() {
+	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'https://jsonapi.org';
 		
@@ -19,83 +19,83 @@ class LinksObjectTest extends TestCase {
 		
 		$array = $linksObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('https://jsonapi.org', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('https://jsonapi.org', $array['foo']);
 	}
 	
-	public function testAddLinkString_HappyPath() {
+	public function testAddLinkString_HappyPath(): void {
 		$linksObject = new LinksObject();
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org');
 		
 		$array = $linksObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertSame('https://jsonapi.org', $array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertSame('https://jsonapi.org', $array['foo']);
 	}
 	
-	public function testAddLinkString_InvalidKey() {
+	public function testAddLinkString_InvalidKey(): void {
 		$linksObject = new LinksObject();
 		
 		$this->expectException(InputException::class);
 		
-		$linksObject->addLinkString($key='-foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('-foo', 'https://jsonapi.org');
 	}
 	
-	public function testAddLinkString_ExistingKey() {
+	public function testAddLinkString_ExistingKey(): void {
 		$linksObject = new LinksObject();
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org');
 		
 		$this->expectException(DuplicateException::class);
 		
-		$linksObject->addLinkString($key='foo', 'https://jsonapi.org/2');
+		$linksObject->addLinkString('foo', 'https://jsonapi.org/2');
 	}
 	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
 		$linksObject = new LinksObject();
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 		
 		$array = $linksObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('href', $array['foo']);
-		$this->assertSame('https://jsonapi.org', $array['foo']['href']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('href', $array['foo']);
+		parent::assertSame('https://jsonapi.org', $array['foo']['href']);
 	}
 	
-	public function testAddLinkObject_InvalidKey() {
+	public function testAddLinkObject_InvalidKey(): void {
 		$linkObject  = new LinkObject('https://jsonapi.org');
 		$linksObject = new LinksObject();
 		
 		$this->expectException(InputException::class);
 		
-		$linksObject->addLinkObject($key='-foo', $linkObject);
+		$linksObject->addLinkObject('-foo', $linkObject);
 	}
 	
-	public function testAddLinkObject_ExistingKey() {
+	public function testAddLinkObject_ExistingKey(): void {
 		$linksObject = new LinksObject();
 		
 		$linkObject = new LinkObject('https://jsonapi.org');
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 		
 		$linkObject = new LinkObject('https://jsonapi.org/2');
 		
 		$this->expectException(DuplicateException::class);
 		
-		$linksObject->addLinkObject($key='foo', $linkObject);
+		$linksObject->addLinkObject('foo', $linkObject);
 	}
 	
-	public function testToArray_ExplicitlyEmpty() {
+	public function testToArray_ExplicitlyEmpty(): void {
 		$linksObject = new LinksObject();
 		$linksObject->addLinkObject('foo', new LinkObject());
 		
 		$array = $linksObject->toArray();
 		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertNull($array['foo']);
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertNull($array['foo']);
 	}
 }

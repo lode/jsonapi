@@ -25,8 +25,8 @@ $profile->setCursor($user42, 'zaphod');
 $document = CollectionDocument::fromResources($user1, $user2, $user42);
 $document->applyProfile($profile);
 
-$profile->setCount($document, $exactTotal=3, $bestGuessTotal=10);
-$profile->setLinksFirstPage($document, $currentUrl='/users?sort=42&page[size]=10', $lastCursor='zaphod');
+$profile->setCount($document, exactTotal: 3, bestGuessTotal: 10);
+$profile->setLinksFirstPage($document, baseOrCurrentUrl: '/users?sort=42&page[size]=10', lastCursor: 'zaphod');
 
 /**
  * get the json

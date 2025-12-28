@@ -9,6 +9,11 @@ use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class RequestParser {
 	/** @var PHPStanTypeAlias_InternalOptions */
 	protected static array $defaults = [
@@ -29,6 +34,8 @@ class RequestParser {
 	 * @param string                                         $selfLink        the uri used to make this request {@see getSelfLink()}
 	 * @param array<string, string|array<array-key, string>> $queryParameters all query parameters defined by the specification
 	 * @param array<string, mixed>                           $document        the request jsonapi document
+	 * 
+	 * @throws \JsonException if $document's content type is json but it can't be json decoded
 	 */
 	public function __construct(
 		private readonly string $selfLink='',
@@ -36,7 +43,7 @@ class RequestParser {
 		private readonly array $document=[],
 	) {}
 	
-	public static function fromSuperglobals(): self {
+	public static function fromSuperglobals(): static {
 		$selfLink = '';
 		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -49,19 +56,22 @@ class RequestParser {
 			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
 			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
-			if ($documentIsJsonapi || $documentIsJson) {
-				$document = json_decode(file_get_contents('php://input'), true);
-				
-				if ($document === null) {
-					$document = [];
-				}
+			$document = file_get_contents('php://input');
+			if ($document === '') {
+				$document = [];
+			}
+			elseif ($documentIsJsonapi || $documentIsJson) {
+				$document = json_decode($document, associative: true, flags: JSON_THROW_ON_ERROR);
 			}
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
-	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): self {
+	/**
+	 * @throws \JsonException if the requests' document can't be json decoded
+	 */
+	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): static {
 		$selfLink = (string) $request->getUri();
 		
 		if ($request instanceof ServerRequestInterface) {
@@ -76,14 +86,10 @@ class RequestParser {
 			$document = [];
 		}
 		else {
-			$document = json_decode($request->getBody()->getContents(), true);
-			
-			if ($document === null) {
-				$document = [];
-			}
+			$document = json_decode($request->getBody()->getContents(), associative: true, flags: JSON_THROW_ON_ERROR);
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
 	/**
@@ -115,7 +121,7 @@ class RequestParser {
 		
 		$includePaths = explode(',', (string) $this->queryParameters['include']);
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		if ($options['useNestedIncludePaths'] === false) {
 			return $includePaths;
 		}
@@ -176,7 +182,7 @@ class RequestParser {
 		
 		$fields = explode(',', (string) $this->queryParameters['sort']);
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		if ($options['useAnnotatedSortFields'] === false) {
 			return $fields;
 		}

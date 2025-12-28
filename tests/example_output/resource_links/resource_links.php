@@ -14,15 +14,15 @@ class resource_links {
 		$user42->name  = 'Zaphod Beeblebrox';
 		$user42->heads = 2;
 		
-		$document = ResourceDocument::fromObject($user42, $type='user', $user42->id);
+		$document = ResourceDocument::fromObject($user42, 'user', $user42->id);
 		
 		$selfResourceMeta = ['level' => DocumentLevelEnum::Resource->name];
 		$partnerMeta      = ['level' => DocumentLevelEnum::Resource->name];
 		$redirectMeta     = ['level' => DocumentLevelEnum::Root->name];
 		
 		$document->setSelfLink('/user/42',        $selfResourceMeta);
-		$document->addLink('partner',  '/user/1', $partnerMeta,  $level=DocumentLevelEnum::Resource);
-		$document->addLink('redirect', '/login',  $redirectMeta, $level=DocumentLevelEnum::Root);
+		$document->addLink('partner',  '/user/1', $partnerMeta,  DocumentLevelEnum::Resource);
+		$document->addLink('redirect', '/login',  $redirectMeta, DocumentLevelEnum::Root);
 		
 		return $document;
 	}

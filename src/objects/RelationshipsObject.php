@@ -92,10 +92,10 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		foreach ($this->relationships as $key => $relationshipObject) {
@@ -113,7 +113,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 		$resourceObjects = [];
 		
 		foreach ($this->relationships as $relationship) {
-			$resourceObjects = array_merge($resourceObjects, $relationship->getNestedContainedResourceObjects());
+			$resourceObjects = [...$resourceObjects, ...$relationship->getNestedContainedResourceObjects()];
 		}
 		
 		return $resourceObjects;

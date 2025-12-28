@@ -58,8 +58,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		?string $type=null,
 		string|int|null $id=null,
 		array $options=[],
-	): self {
-		$resourceDocument = new self();
+	): static {
+		$resourceDocument = new static();
 		$resourceDocument->setPrimaryResource(ResourceObject::fromArray($attributes, $type, $id, $options), $options);
 		
 		return $resourceDocument;
@@ -73,10 +73,10 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		?string $type=null,
 		string|int|null $id=null,
 		array $options=[],
-	): self {
+	): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array, $type, $id, $options);
+		return static::fromArray($array, $type, $id, $options);
 	}
 	
 	/**
@@ -114,7 +114,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
@@ -133,12 +133,11 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->addLink($key, $href, $meta);
-		}
-		else {
-			parent::addLink($key, $href, $meta, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->addLink($key, $href, $meta),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::addLink($key, $href, $meta, $level),
+		};
 	}
 	
 	/**
@@ -151,21 +150,19 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->setSelfLink($href, $meta);
-		}
-		else {
-			parent::setSelfLink($href, $meta, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->setSelfLink($href, $meta),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::setSelfLink($href, $meta, $level),
+		};
 	}
 	
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->addMeta($key, $value);
-		}
-		else {
-			parent::addMeta($key, $value, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->addMeta($key, $value),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::addMeta($key, $value, $level),
+		};
 	}
 	
 	/**
@@ -213,7 +210,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
@@ -234,7 +231,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource->setRelationshipsObject($relationshipsObject);
 		
@@ -263,7 +260,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		
 		/** @var ResourceIdentifierObject|ResourceObject $resource */
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$defaults, ...$options];
 		
 		$this->resource = $resource;
 		

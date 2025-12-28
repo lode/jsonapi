@@ -18,6 +18,11 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class RelationshipObject extends AbstractObject implements PaginableInterface, RecursiveResourceContainerInterface, HasLinksInterface, HasMetaInterface {
 	use LinksManager;
 	
@@ -47,22 +52,22 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		array|CollectionDocument|ResourceInterface|null $relation,
 		array $links=[],
 		array $meta=[],
-	): self {
+	): static {
 		if (is_array($relation)) {
 			$relation = CollectionDocument::fromResources(...$relation);
 		}
 		
 		if ($relation instanceof ResourceInterface) {
-			$relationshipObject = self::fromResource($relation, $links, $meta);
+			$relationshipObject = static::fromResource($relation, $links, $meta);
 		}
 		elseif ($relation instanceof CollectionDocument) {
-			$relationshipObject = self::fromCollectionDocument($relation, $links, $meta);
+			$relationshipObject = static::fromCollectionDocument($relation, $links, $meta);
 		}
 		elseif ($relation === null) {
 			$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		}
 		else {
-			throw new InputException('unknown format of relation "'.gettype($relation).'"');
+			throw new InputException('unknown format of relation "'.get_debug_type($relation).'"');
 		}
 		
 		return $relationshipObject;
@@ -77,8 +82,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		array $links=[],
 		array $meta=[],
 		RelationshipTypeEnum $type=RelationshipTypeEnum::ToOne,
-	): self {
-		$relationshipObject = new self($type);
+	): static {
+		$relationshipObject = new static($type);
 		
 		match ($type) {
 			RelationshipTypeEnum::ToOne  => $relationshipObject->setResource($resource),
@@ -99,8 +104,8 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * @param array<string, ?string> $links
 	 * @param array<string, mixed>   $meta
 	 */
-	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): self {
-		$relationshipObject = new self(RelationshipTypeEnum::ToMany);
+	public static function fromCollectionDocument(CollectionDocument $collectionDocument, array $links=[], array $meta=[]): static {
+		$relationshipObject = new static(RelationshipTypeEnum::ToMany);
 		
 		foreach ($collectionDocument->getContainedResources() as $resource) {
 			$relationshipObject->addResource($resource);
@@ -233,12 +238,14 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 */
 	
 	public function isEmpty(): bool {
-		if ($this->type === RelationshipTypeEnum::ToOne && isset($this->resource)) {
+		$resourceIsNotEmpty = match ($this->type) {
+			RelationshipTypeEnum::ToOne  => isset($this->resource),
+			RelationshipTypeEnum::ToMany => $this->resources !== [],
+		};
+		if ($resourceIsNotEmpty) {
 			return false;
 		}
-		if ($this->type === RelationshipTypeEnum::ToMany && $this->resources !== []) {
-			return false;
-		}
+		
 		if ($this->hasLinks()) {
 			return false;
 		}
@@ -259,27 +266,32 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
-		if ($this->type === RelationshipTypeEnum::ToOne) {
-			$array['data'] = null;
-			if (isset($this->resource)) {
-				$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
-			}
+		
+		switch ($this->type) {
+			case RelationshipTypeEnum::ToOne:
+				$array['data'] = null;
+				if (isset($this->resource)) {
+					$array['data'] = $this->resource->getResource(identifierOnly: true)->toArray();
+				}
+				break;
+			
+			case RelationshipTypeEnum::ToMany:
+				$array['data'] = [];
+				foreach ($this->resources as $resource) {
+					$array['data'][] = $resource->getResource(identifierOnly: true)->toArray();
+				}
+				break;
 		}
-		if ($this->type === RelationshipTypeEnum::ToMany) {
-			$array['data'] = [];
-			foreach ($this->resources as $resource) {
-				$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
-			}
-		}
+		
 		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
@@ -296,7 +308,11 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			return [];
 		}
 		
-		$resources       = ($this->type === RelationshipTypeEnum::ToOne) ? [$this->resource] : $this->resources;
+		$resources = match ($this->type) {
+			RelationshipTypeEnum::ToOne  => [$this->resource],
+			RelationshipTypeEnum::ToMany => $this->resources,
+		};
+		
 		$resourceObjects = [];
 		
 		foreach ($resources as $resource) {
@@ -312,7 +328,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			}
 			
 			$resourceObjects[] = $resourceObject;
-			$resourceObjects   = array_merge($resourceObjects, $resourceObject->getNestedContainedResourceObjects());
+			$resourceObjects   = [...$resourceObjects, ...$resourceObject->getNestedContainedResourceObjects()];
 		}
 		
 		return $resourceObjects;
