@@ -67,7 +67,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		}
 		else {
-			throw new InputException('unknown format of relation "'.gettype($relation).'"');
+			throw new InputException('unknown format of relation "'.get_debug_type($relation).'"');
 		}
 		
 		return $relationshipObject;
