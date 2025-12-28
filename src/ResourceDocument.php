@@ -133,12 +133,11 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->addLink($key, $href, $meta);
-		}
-		else {
-			parent::addLink($key, $href, $meta, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->addLink($key, $href, $meta),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::addLink($key, $href, $meta, $level),
+		};
 	}
 	
 	/**
@@ -151,21 +150,19 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->setSelfLink($href, $meta);
-		}
-		else {
-			parent::setSelfLink($href, $meta, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->setSelfLink($href, $meta),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::setSelfLink($href, $meta, $level),
+		};
 	}
 	
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
-		if ($level === DocumentLevelEnum::Resource) {
-			$this->resource->addMeta($key, $value);
-		}
-		else {
-			parent::addMeta($key, $value, $level);
-		}
+		match ($level) {
+			DocumentLevelEnum::Resource => $this->resource->addMeta($key, $value),
+			DocumentLevelEnum::Jsonapi,
+			DocumentLevelEnum::Root     => parent::addMeta($key, $value, $level),
+		};
 	}
 	
 	/**

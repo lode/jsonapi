@@ -140,25 +140,28 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
-		if ($level === DocumentLevelEnum::Root) {
-			if (isset($this->meta) === false) {
-				$this->setMetaObject(new MetaObject());
-			}
+		switch ($level) {
+			case DocumentLevelEnum::Root:
+				if (isset($this->meta) === false) {
+					$this->setMetaObject(new MetaObject());
+				}
+				
+				$this->meta->add($key, $value);
+				break;
 			
-			$this->meta->add($key, $value);
-		}
-		elseif ($level === DocumentLevelEnum::Jsonapi) {
-			if (isset($this->jsonapi) === false) {
-				$this->setJsonapiObject(new JsonapiObject());
-			}
+			case DocumentLevelEnum::Jsonapi:
+				if (isset($this->jsonapi) === false) {
+					$this->setJsonapiObject(new JsonapiObject());
+				}
+				
+				$this->jsonapi->addMeta($key, $value);
+				break;
 			
-			$this->jsonapi->addMeta($key, $value);
-		}
-		elseif ($level === DocumentLevelEnum::Resource) {
-			throw new InputException('level "resource" can only be set on a ResourceDocument');
-		}
-		else {
-			throw new InputException('unknown level "'.$level->value.'"');
+			case DocumentLevelEnum::Resource:
+				throw new InputException('level "resource" can only be set on a ResourceDocument');
+			
+			default:
+				throw new InputException('unknown level "'.$level->value.'"');
 		}
 	}
 	

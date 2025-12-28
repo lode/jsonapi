@@ -233,12 +233,14 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 */
 	
 	public function isEmpty(): bool {
-		if ($this->type === RelationshipTypeEnum::ToOne && isset($this->resource)) {
+		$resourceIsNotEmpty = match ($this->type) {
+			RelationshipTypeEnum::ToOne  => isset($this->resource),
+			RelationshipTypeEnum::ToMany => $this->resources !== [],
+		};
+		if ($resourceIsNotEmpty) {
 			return false;
 		}
-		if ($this->type === RelationshipTypeEnum::ToMany && $this->resources !== []) {
-			return false;
-		}
+		
 		if ($this->hasLinks()) {
 			return false;
 		}
@@ -268,18 +270,23 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
-		if ($this->type === RelationshipTypeEnum::ToOne) {
-			$array['data'] = null;
-			if (isset($this->resource)) {
-				$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
-			}
+		
+		switch ($this->type) {
+			case RelationshipTypeEnum::ToOne:
+				$array['data'] = null;
+				if (isset($this->resource)) {
+					$array['data'] = $this->resource->getResource($identifierOnly=true)->toArray();
+				}
+				break;
+			
+			case RelationshipTypeEnum::ToMany:
+				$array['data'] = [];
+				foreach ($this->resources as $resource) {
+					$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
+				}
+				break;
 		}
-		if ($this->type === RelationshipTypeEnum::ToMany) {
-			$array['data'] = [];
-			foreach ($this->resources as $resource) {
-				$array['data'][] = $resource->getResource($identifierOnly=true)->toArray();
-			}
-		}
+		
 		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
@@ -296,7 +303,11 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 			return [];
 		}
 		
-		$resources       = ($this->type === RelationshipTypeEnum::ToOne) ? [$this->resource] : $this->resources;
+		$resources = match ($this->type) {
+			RelationshipTypeEnum::ToOne  => [$this->resource],
+			RelationshipTypeEnum::ToMany => $this->resources,
+		};
+		
 		$resourceObjects = [];
 		
 		foreach ($resources as $resource) {
