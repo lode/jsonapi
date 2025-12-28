@@ -74,7 +74,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 		$errorObject = new self();
 		
 		$className = $exception::class;
-		if (strpos($className, '\\')) {
+		if (str_contains($className, '\\')) {
 			$exploded  = explode('\\', $className);
 			$className = end($exploded);
 		}
