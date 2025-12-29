@@ -4,9 +4,9 @@ includes:
 
 parameters:
 	level: 10
-
+	
 	treatPhpDocTypesAsCertain: true
-
+	
 	# @see https://github.com/phpstan/phpstan-strict-rules
 	strictRules:
 		allRules: true

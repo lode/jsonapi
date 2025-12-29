@@ -152,12 +152,7 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 			$array['type'] = $this->type;
 		}
 		if ($this->hreflang !== []) {
-			if (count($this->hreflang) === 1) {
-				$array['hreflang'] = $this->hreflang[0];
-			}
-			else {
-				$array['hreflang'] = $this->hreflang;
-			}
+			$array['hreflang'] = $this->getHrefLanguages();
 		}
 		if (isset($this->describedby) && $this->describedby->isEmpty() === false) {
 			$array['describedby'] = $this->describedby->toArray();
@@ -167,5 +162,12 @@ class LinkObject extends AbstractObject implements HasMetaInterface {
 		}
 		
 		return $array;
+	}
+	
+	/**
+	 * @return string|string[]
+	 */
+	private function getHrefLanguages(): string|array {
+		return (count($this->hreflang) === 1) ? $this->hreflang[0] : $this->hreflang;
 	}
 }

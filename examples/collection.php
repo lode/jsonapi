@@ -18,7 +18,7 @@ $collection = [];
 foreach ($users as $user) {
 	$resource = ResourceObject::fromObject($user, type: 'user', id: $user->id);
 	
-	if ($user->id == 42) {
+	if ($user->id === 42) {
 		$ship = new ResourceObject('ship', 5);
 		$ship->add('name', 'Heart of Gold');
 		$resource->addRelationship('ship', $ship);

@@ -21,5 +21,7 @@
 	<rule ref="Generic.Metrics.CyclomaticComplexity"/>
 	<rule ref="Generic.Metrics.NestingLevel"/>
 	
-	<rule ref="Squiz.Operators.ComparisonOperatorUsage"/>
+	<rule ref="Squiz.Operators.ComparisonOperatorUsage">
+		<exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+	</rule>
 </ruleset>
