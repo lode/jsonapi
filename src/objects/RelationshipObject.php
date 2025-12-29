@@ -316,6 +316,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		$resourceObjects = [];
 		
 		foreach ($resources as $resource) {
+			// @phpstan-ignore instanceof.alwaysTrue, identical.alwaysFalse (we _can_ have both ResourceObject and ResourceIdentifierObject here)
 			if ($resource->getResource() instanceof ResourceObject === false) {
 				continue;
 			}

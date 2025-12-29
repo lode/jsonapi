@@ -151,14 +151,11 @@ class ExampleTimestampsProfile implements ProfileInterface {
 	 * optionally helpers for the specific profile
 	 */
 	
-	/**
-	 * @param ResourceInterface&HasAttributesInterface $resource
-	 */
-	public function setTimestamps(ResourceInterface $resource, ?\DateTimeInterface $created=null, ?\DateTimeInterface $updated=null) {
-		if ($resource instanceof HasAttributesInterface === false) {
-			throw new \Exception('cannot add attributes to identifier objects');
-		}
-		
+	public function setTimestamps(
+		ResourceInterface & HasAttributesInterface $resource,
+		?\DateTimeInterface $created=null,
+		?\DateTimeInterface $updated=null,
+	) {
 		$timestamps = [];
 		if ($created !== null) {
 			$timestamps['created'] = $created->format(\DateTime::ISO8601);

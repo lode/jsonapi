@@ -112,7 +112,7 @@ class RequestParser {
 	 * the raw format allows for custom processing
 	 * 
 	 * @param  PHPStanTypeAlias_InternalOptions $options {@see RequestParser::$defaults}
-	 * @return string[]|array
+	 * @return array<string>|array<array-key, mixed>
 	 */
 	public function getIncludePaths(array $options=[]): array {
 		if ($this->queryParameters['include'] === '') {
