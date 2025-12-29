@@ -45,8 +45,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * @param  CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param  array<string, ?string>                                        $links
 	 * @param  array<string, mixed>                                          $meta
-	 * 
-	 * @throws InputException if $relation is not one of the supported formats
 	 */
 	public static function fromAnything(
 		array|CollectionDocument|ResourceInterface|null $relation,
@@ -65,9 +63,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		}
 		elseif ($relation === null) {
 			$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
-		}
-		else {
-			throw new InputException('unknown format of relation "'.get_debug_type($relation).'"');
 		}
 		
 		return $relationshipObject;

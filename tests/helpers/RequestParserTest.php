@@ -87,12 +87,9 @@ class RequestParserTest extends TestCase {
 		$_SERVER['REQUEST_URI']    = '/';
 		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
+		// empty $_POST so we get a bit more test coverage for input stream processing
 		$_GET  = [];
-		$_POST = [
-			'meta' => [
-				'foo' => 'bar',
-			],
-		];
+		$_POST = [];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		

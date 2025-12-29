@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
@@ -98,6 +99,66 @@ class ResourceDocumentTest extends TestCase {
 		$array = $document->toArray();
 		
 		parent::assertArrayNotHasKey('included', $array);
+	}
+	
+	public function testAddRelationship_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addRelationship('foo', null);
+	}
+	
+	public function testAddLink_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addLink('foo', null);
+	}
+	
+	public function testSetSelfLink_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setSelfLink('https://jsonapi.org');
+	}
+	
+	public function testSetAttributesObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setAttributesObject(new AttributesObject());
+	}
+	
+	public function testAddRelationshipObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addRelationshipObject('foo', new RelationshipObject(RelationshipTypeEnum::ToOne));
+	}
+	
+	public function testSetRelationshipsObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setRelationshipsObject(new RelationshipsObject());
 	}
 	
 	public function testAddMeta_HappyPath(): void {

@@ -6,8 +6,10 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
+use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceIdentifierObjectTest extends TestCase {
@@ -53,6 +55,35 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$this->expectException(DuplicateException::class);
 		
 		$resourceIdentifierObject->setLocalId('uuid-1');
+	}
+	
+	public function testFromResourceObject_HappyPath(): void {
+		$resource = new ResourceObject('test', 1);
+		$resource->addAttribute('foo', 'bar');
+		
+		$array = $resource->toArray();
+		
+		parent::assertSame('test', $array['type']);
+		parent::assertSame('1', $array['id']);
+		parent::assertArrayHasKey('attributes', $array);
+		
+		$resourceIdentifierObject = ResourceIdentifierObject::fromResourceObject($resource);
+		
+		$array = $resourceIdentifierObject->toArray();
+		
+		parent::assertSame('test', $array['type']);
+		parent::assertSame('1', $array['id']);
+		parent::assertArrayNotHasKey('attributes', $array);
+	}
+	
+	public function testFromResourceObject_NoFullIdentification(): void {
+		$resource = new ResourceObject();
+		$array = $resource->toArray();
+		
+		$this->expectException(InputException::class);
+		$this->expectExceptionMessage('resource has no identification yet');
+		
+		ResourceIdentifierObject::fromResourceObject($resource);
 	}
 	
 	public function testEquals_HappyPath(): void {
@@ -168,6 +199,13 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->getIdentificationKey();
 	}
 	
+	public function testIsEmpty_IdWithoutType(): void {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$resourceIdentifierObject->setId(42);
+		
+		parent::assertFalse($resourceIdentifierObject->isEmpty());
+	}
+	
 	public function testIsEmpty_WithAtMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		
@@ -189,5 +227,15 @@ class ResourceIdentifierObjectTest extends TestCase {
 		$resourceIdentifierObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
 		parent::assertFalse($resourceIdentifierObject->isEmpty());
+	}
+	
+	public function testPrimaryId_NoFullIdentification(): void {
+		$resourceIdentifierObject = new ResourceIdentifierObject();
+		$primaryIdMethod = new \ReflectionMethod($resourceIdentifierObject, 'primaryId');
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('resource has no identification yet');
+		
+		$primaryIdMethod->invoke($resourceIdentifierObject);
 	}
 }

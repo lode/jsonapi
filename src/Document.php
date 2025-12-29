@@ -140,7 +140,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	/**
-	 * @throws InputException if the $level is unknown
 	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
@@ -163,9 +162,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 			
 			case DocumentLevelEnum::Resource:
 				throw new InputException('level "resource" can only be set on a ResourceDocument');
-			
-			default:
-				throw new InputException('unknown level "'.$level->value.'"');
 		}
 	}
 	
