@@ -75,15 +75,6 @@ $relationshipObject->addResource($dockResource);
 $document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
 
 /**
- * custom
- */
-$jsonapi = new ResourceDocument('user', 1);
-$customRelation = [
-	'data' => ['cus' => 'tom'],
-];
-$jsonapi->addRelationship('custom', $customRelation);
-
-/**
  * sending the response
  */
 

@@ -56,10 +56,10 @@ class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * set links to paginate the data using cursors of the paginated data
 	 * 
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
 	public function setLinks(
-		PaginableInterface $paginable,
+		PaginableInterface & HasLinksInterface $paginable,
 		string $baseOrCurrentUrl,
 		string $firstCursor,
 		string $lastCursor,
@@ -71,32 +71,32 @@ class CursorPaginationProfile implements ProfileInterface {
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksFirstPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
+	public function setLinksFirstPage(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjectsWithoutPrevious($paginable, $baseOrCurrentUrl, $lastCursor);
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksLastPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
+	public function setLinksLastPage(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjectsWithoutNext($paginable, $baseOrCurrentUrl, $firstCursor);
 	}
 	
 	/**
 	 * set the cursor of a specific resource to allow pagination after or before this resource
 	 */
-	public function setCursor(ResourceInterface $resource, string $cursor): void {
+	public function setCursor(ResourceInterface & HasMetaInterface $resource, string $cursor): void {
 		$this->setItemMeta($resource, $cursor);
 	}
 	
 	/**
 	 * set count(s) to tell about the (estimated) total size
 	 * 
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasMetaInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setCount(PaginableInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null) {
+	public function setCount(PaginableInterface & HasMetaInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null) {
 		$this->setPaginationMeta($paginable, $exactTotal, $bestGuessTotal);
 	}
 	
@@ -137,15 +137,15 @@ class CursorPaginationProfile implements ProfileInterface {
 		$paginable->addLinkObject('next', $nextLinkObject);
 	}
 	
-	public function setPaginationLinkObjectsWithoutNext(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
+	public function setPaginationLinkObjectsWithoutNext(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject($this->generatePreviousLink($baseOrCurrentUrl, $firstCursor)), new LinkObject());
 	}
 	
-	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
+	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject($this->generateNextLink($baseOrCurrentUrl, $lastCursor)));
 	}
 	
-	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface $paginable): void {
+	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface & HasLinksInterface $paginable): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject());
 	}
 	

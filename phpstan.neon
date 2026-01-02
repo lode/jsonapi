@@ -1,13 +1,14 @@
 parameters:
 	# slowly increase
-	level: 4
+	level: 5
 	paths:
 		- src/
 		- tests/
 		- examples/
 	
 	typeAliases:
-		PHPStanTypeAlias_InternalOptions: 'array<string, bool|int|null|\alsvanzelf\jsonapi\enums\ContentTypeEnum>'
+		PHPStanTypeAlias_InternalOptions: 'array<string, bool|int|null|string|\alsvanzelf\jsonapi\enums\ContentTypeEnum|PHPStanTypeAlias_Document>'
+		PHPStanTypeAlias_Document: 'array<string, mixed>'
 	
 	treatPhpDocTypesAsCertain: true
 	
