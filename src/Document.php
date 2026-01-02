@@ -47,8 +47,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	protected array $extensions = [];
 	/** @var ProfileInterface[] */
 	protected array $profiles = [];
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_DocumentOptions */
+	protected static array $documentDefaults = [
 		/**
 		 * encode to json with these default options
 		 */
@@ -260,7 +260,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * @throws \JsonException
 	 */
 	public function toJson(array $options=[]): string {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$documentDefaults, ...$options];
 		
 		$array = $options['array'] ?? $this->toArray();
 		
@@ -278,7 +278,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	public function sendResponse(array $options=[]): void {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$documentDefaults, ...$options];
 		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);

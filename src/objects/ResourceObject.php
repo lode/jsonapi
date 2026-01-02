@@ -23,8 +23,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	
 	protected AttributesObject $attributes;
 	protected RelationshipsObject $relationships;
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_ValidatorOptions */
+	protected static array $resourceObjectDefaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
 		 * the specification doesn't allow this as 'type' is already set at the root of a resource
@@ -42,8 +42,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 *       and if $id is null, it is filled with that value
 	 *       it is common to find it inside, and not doing so will cause an exception
 	 * 
-	 * @param array<string, mixed>             $attributes
-	 * @param PHPStanTypeAlias_InternalOptions $options    {@see ResourceObject::$defaults}
+	 * @param array<string, mixed>              $attributes
+	 * @param PHPStanTypeAlias_ValidatorOptions $options    {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public static function fromArray(array $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		if (isset($attributes['id'])) {
@@ -61,7 +61,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_ValidatorOptions $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public static function fromObject(object $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		$array = Converter::objectToArray($attributes);
@@ -72,10 +72,10 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	/**
 	 * add key-value pairs to attributes
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_ValidatorOptions $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public function add(string $key, mixed $value, array $options=[]): void {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$resourceObjectDefaults, ...$options];
 		
 		if (isset($this->attributes) === false) {
 			$this->attributes = new AttributesObject();
@@ -90,7 +90,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param array<string, ?string>                                        $links
 	 * @param array<string, mixed>                                          $meta
-	 * @param PHPStanTypeAlias_InternalOptions                              $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_ValidatorOptions                             $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public function addRelationship(
 		string $key,
@@ -118,7 +118,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 */
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_ValidatorOptions $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]): void {
 		$newKeys = $attributesObject->getKeys();
@@ -129,7 +129,7 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_ValidatorOptions $options {@see ResourceObject::$resourceObjectDefaults}
 	 * 
 	 * @throws DuplicateException if the resource is contained as a resource in the relationship
 	 */

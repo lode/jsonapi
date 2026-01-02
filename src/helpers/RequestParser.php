@@ -15,8 +15,8 @@ use Psr\Http\Message\ServerRequestInterface;
  * that might break the class since we use `new static()`
  */
 class RequestParser {
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_RequestParserOptions */
+	protected static array $requestParserDefaults = [
 		/**
 		 * reformat the include query parameter paths to nested arrays
 		 * this allows easier processing on each step of the chain
@@ -111,7 +111,7 @@ class RequestParser {
 	 * the nested format allows easier processing on each step of the chain
 	 * the raw format allows for custom processing
 	 * 
-	 * @param  PHPStanTypeAlias_InternalOptions $options {@see RequestParser::$defaults}
+	 * @param  PHPStanTypeAlias_RequestParserOptions $options {@see RequestParser::$requestParserDefaults}
 	 * @return array<string>|array<array-key, mixed>
 	 */
 	public function getIncludePaths(array $options=[]): array {
@@ -121,7 +121,7 @@ class RequestParser {
 		
 		$includePaths = explode(',', (string) $this->queryParameters['include']);
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useNestedIncludePaths'] === false) {
 			return $includePaths;
 		}
@@ -169,7 +169,7 @@ class RequestParser {
 	 * 
 	 * @todo return some kind of SortFieldObject
 	 * 
-	 * @param  PHPStanTypeAlias_InternalOptions $options {@see RequestParser::$defaults}
+	 * @param  PHPStanTypeAlias_RequestParserOptions $options {@see RequestParser::$requestParserDefaults}
 	 * @return string[]|array<array{
 	 *         field: string, // the sort field, without any minus sign for descending sort order
 	 *         order: SortOrderEnum,
@@ -182,7 +182,7 @@ class RequestParser {
 		
 		$fields = explode(',', (string) $this->queryParameters['sort']);
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useAnnotatedSortFields'] === false) {
 			return $fields;
 		}

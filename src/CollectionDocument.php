@@ -21,8 +21,8 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 class CollectionDocument extends DataDocument implements PaginableInterface, ResourceContainerInterface {
 	/** @var ResourceInterface[] */
 	protected array $resources = [];
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_CollectionDocumentOptions */
+	protected static array $collectionDocumentDefaults = [
 		/**
 		 * add resources inside relationships to /included when adding resources to the collection
 		 */
@@ -89,7 +89,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 	 * 
 	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see CollectionDocument::$defaults}
+	 * @param PHPStanTypeAlias_CollectionDocumentOptions $options {@see CollectionDocument::$collectionDocumentDefaults}
 	 * 
 	 * @throws InputException if the resource is empty
 	 */
@@ -98,7 +98,7 @@ class CollectionDocument extends DataDocument implements PaginableInterface, Res
 			throw new InputException('does not make sense to add empty resources to a collection');
 		}
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$collectionDocumentDefaults, ...$options];
 		
 		$this->validator->claimUsedResourceIdentifier($resource);
 		

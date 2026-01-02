@@ -17,8 +17,8 @@ class Validator {
 	protected array $usedFields = [];
 	/** @var array<string, true> */
 	protected array $usedResourceIdentifiers = [];
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_ValidatorOptions */
+	protected static array $validatorDefaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
 		 * the specification doesn't allow this as 'type' is already set at the root of a resource
@@ -33,12 +33,12 @@ class Validator {
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
 	 * @param  string[]                         $fieldNames
-	 * @param  PHPStanTypeAlias_InternalOptions $options    {@see Validator::$defaults}
+	 * @param  PHPStanTypeAlias_ValidatorOptions $options    {@see Validator::$validatorDefaults}
 	 * 
 	 * @throws DuplicateException
 	 */
 	public function claimUsedFields(array $fieldNames, ObjectContainerEnum $objectContainer, array $options=[]): void {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$validatorDefaults, ...$options];
 		
 		foreach ($fieldNames as $fieldName) {
 			if (isset($this->usedFields[$fieldName]) === false) {

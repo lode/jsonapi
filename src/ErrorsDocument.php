@@ -15,8 +15,8 @@ class ErrorsDocument extends Document {
 	protected array $errors = [];
 	/** @var array<number, array<number, true>> */
 	protected array $httpStatusCodes;
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_ErrorsDocumentOptions */
+	protected static array $errorsDocumentDefaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
 		 * in some cases it might be handy to disable if traces are too big
@@ -42,10 +42,10 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
+	 * @param PHPStanTypeAlias_ErrorsDocumentOptions $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): static {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$errorsDocumentDefaults, ...$options];
 		
 		$errorsDocument = new static();
 		$errorsDocument->addException($exception, $options);
@@ -58,10 +58,10 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ErrorsDocument::$defaults}
+	 * @param PHPStanTypeAlias_ErrorsDocumentAndErrorObjectOptions $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
 	public function addException(\Throwable $exception, array $options=[]): void {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$errorsDocumentDefaults, ...$options];
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));
 		

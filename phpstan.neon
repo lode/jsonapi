@@ -7,8 +7,16 @@ parameters:
 		- examples/
 	
 	typeAliases:
-		PHPStanTypeAlias_InternalOptions: 'array<string, bool|int|null|string|\alsvanzelf\jsonapi\enums\ContentTypeEnum|PHPStanTypeAlias_Document>'
-		PHPStanTypeAlias_Document: 'array<string, mixed>'
+		PHPStanTypeAlias_CollectionDocumentOptions: 'array{includeContainedResources?: bool}'
+		PHPStanTypeAlias_DocumentOptions: 'array{encodeOptions?: int, prettyPrint?: bool, contentType?: \alsvanzelf\jsonapi\enums\ContentTypeEnum, array?: ?PHPStanTypeAlias_DocumentArray, json?: ?string, jsonpCallback?: ?string}'
+		PHPStanTypeAlias_ErrorsDocumentOptions: 'array{includeExceptionTrace?: bool, includeExceptionPrevious?: bool}'
+		PHPStanTypeAlias_ResourceDocumentOptions: 'array{includeContainedResources?: bool}'
+		PHPStanTypeAlias_ResourceDocumentAndValidatorOptions: 'array{includeContainedResources?: bool, enforceTypeFieldNamespace?: bool}'
+		PHPStanTypeAlias_ValidatorOptions: 'array{enforceTypeFieldNamespace?: bool}'
+		PHPStanTypeAlias_RequestParserOptions: 'array{useNestedIncludePaths?: bool, useAnnotatedSortFields?: bool}'
+		PHPStanTypeAlias_ErrorObjectOptions: 'array{includeExceptionTrace?: bool, stripExceptionBasePath?: ?string}'
+		PHPStanTypeAlias_ErrorsDocumentAndErrorObjectOptions: 'array{includeExceptionTrace?: bool, includeExceptionPrevious?: bool, stripExceptionBasePath?: ?string}'
+		PHPStanTypeAlias_DocumentArray: 'array<string, mixed>'
 	
 	treatPhpDocTypesAsCertain: true
 	

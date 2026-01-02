@@ -17,7 +17,7 @@ interface DocumentInterface {
 	/**
 	 * generate json with the contents of the document, used by {@see ->sendResponse()}
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options
+	 * @param PHPStanTypeAlias_DocumentOptions $options
 	 * 
 	 * @throws Exception if generating json fails
 	 */
@@ -28,7 +28,7 @@ interface DocumentInterface {
 	 * 
 	 * @note will set http status code and content type, and echo json
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options
+	 * @param PHPStanTypeAlias_DocumentOptions $options
 	 */
 	public function sendResponse(array $options=[]): void;
 }
