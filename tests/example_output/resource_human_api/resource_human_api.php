@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapiTests\example_output\ExampleUser;
 
 class resource_human_api {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$user1        = new ExampleUser(1);
 		$user1->name  = 'Ford Prefect';
 		$user1->heads = 1;

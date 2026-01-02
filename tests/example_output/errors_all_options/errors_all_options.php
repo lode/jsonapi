@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class errors_all_options {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ErrorsDocument {
 		$errorHumanApi = new ErrorObject('Invalid input', 'Too much options', 'Please, choose a bit less. Consult your ...', 'https://www.example.com/explanation.html', 'https://www.example.com/documentation.html');
 		
 		$errorSpecApi = new ErrorObject();

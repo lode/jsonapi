@@ -18,7 +18,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 		ResourceInterface & HasAttributesInterface $resource,
 		?\DateTimeInterface $created=null,
 		?\DateTimeInterface $updated=null,
-	) {
+	): void {
 		$timestamps = [];
 		if ($created !== null) {
 			$timestamps['created'] = $created->format(\DateTime::ISO8601);

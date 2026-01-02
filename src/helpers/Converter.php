@@ -13,6 +13,9 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
  * @internal
  */
 class Converter {
+	/**
+	 * @return array<string, mixed>
+	 */
 	public static function objectToArray(object $object): array {
 		if ($object instanceof ObjectInterface) {
 			return $object->toArray();

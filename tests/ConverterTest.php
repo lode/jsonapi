@@ -29,10 +29,10 @@ class ConverterTest extends TestCase {
 	
 	public function testObjectToArray_MethodsAndPrivateProperties(): void {
 		$object = new class {
-			public $foo = 'bar';
-			public $baz = 42;
-			private $secret = 'value'; // @phpstan-ignore property.onlyWritten
-			public function method() {}
+			public string $foo = 'bar';
+			public int $baz = 42;
+			private string $secret = 'value'; // @phpstan-ignore property.onlyWritten
+			public function method(): void {}
 		};
 		
 		$array = Converter::objectToArray($object);
@@ -58,11 +58,17 @@ class ConverterTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
-	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput): void {
+	public function testCamelCaseToWords_HappyPath(string $camelCase, string $expectedOutput): void {
 		parent::assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
-	public static function dataProviderCamelCaseToWords_HappyPath() {
+	/**
+	 * @return array<array{
+	 *         0: string,
+	 *         1: string,
+	 * }>
+	 */
+	public static function dataProviderCamelCaseToWords_HappyPath(): array {
 		return [
 			['value',         'value'],
 			['camelValue',    'camel Value'],

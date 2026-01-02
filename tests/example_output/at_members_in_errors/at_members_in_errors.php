@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class at_members_in_errors {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ErrorsDocument {
 		/**
 		 * root
 		 */

@@ -311,7 +311,10 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
-	private function validateToOneRelationshipArray(array $array) {
+	/**
+	 * @param array<string, mixed> $array
+	 */
+	private function validateToOneRelationshipArray(array $array): void {
 		parent::assertNotEmpty($array);
 		parent::assertArrayHasKey('data', $array);
 		parent::assertArrayHasKey('type', $array['data']);
@@ -320,7 +323,10 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('42', $array['data']['id']);
 	}
 	
-	private function validateToManyRelationshipArray(array $array) {
+	/**
+	 * @param array<string, mixed> $array
+	 */
+	private function validateToManyRelationshipArray(array $array): void {
 		parent::assertNotEmpty($array);
 		parent::assertArrayHasKey('data', $array);
 		parent::assertCount(1, $array['data']);

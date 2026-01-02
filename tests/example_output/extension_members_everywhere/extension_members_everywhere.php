@@ -18,7 +18,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapiTests\example_output\ExampleEverywhereExtension;
 
 class extension_members_everywhere {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$extension = new ExampleEverywhereExtension();
 		
 		$document = new ResourceDocument('user', 42);

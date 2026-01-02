@@ -120,7 +120,10 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame($expectedAdvisedErrorCode, $advisedErrorCode);
 	}
 	
-	public static function dataProviderDetermineHttpStatusCode_HappyPath() {
+	/**
+	 * @return array<array{int, non-empty-array<int>}>
+	 */
+	public static function dataProviderDetermineHttpStatusCode_HappyPath(): array {
 		return [
 			[422, [422]],
 			[422, [422, 422]],

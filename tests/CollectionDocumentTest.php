@@ -101,7 +101,7 @@ class CollectionDocumentTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderSetPaginationLinks_IndividualLinks')]
-	public function testSetPaginationLinks_IndividualLinks($key, $previous, $next, $first, $last): void {
+	public function testSetPaginationLinks_IndividualLinks(?string $key, ?string $previous, ?string $next, ?string $first, ?string $last): void {
 		$document = new CollectionDocument();
 		
 		$document->setPaginationLinks($previous, $next, $first, $last);
@@ -119,7 +119,16 @@ class CollectionDocumentTest extends TestCase {
 		}
 	}
 	
-	public static function dataProviderSetPaginationLinks_IndividualLinks() {
+	/**
+	 * @return array<array{
+	 *         0: ?string,
+	 *         1: ?string,
+	 *         2: ?string,
+	 *         3: ?string,
+	 *         4: ?string,
+	 * }>
+	 */
+	public static function dataProviderSetPaginationLinks_IndividualLinks(): array {
 		return [
 			['prev',  'https://jsonapi.org', null, null, null],
 			['next',  null, 'https://jsonapi.org', null, null],

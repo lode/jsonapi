@@ -7,7 +7,7 @@ namespace alsvanzelf\jsonapiTests\example_output\relationship_to_many_document;
 use alsvanzelf\jsonapi\CollectionDocument;
 
 class relationship_to_many_document {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$document = new CollectionDocument();
 		$document->add('tags', 2);
 		$document->add('tags', 3);

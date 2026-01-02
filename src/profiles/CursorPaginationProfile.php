@@ -96,7 +96,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	 * 
 	 * @param PaginableInterface & HasMetaInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setCount(PaginableInterface & HasMetaInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null) {
+	public function setCount(PaginableInterface & HasMetaInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null): void {
 		$this->setPaginationMeta($paginable, $exactTotal, $bestGuessTotal);
 	}
 	
@@ -114,7 +114,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * helper to get generate a correct page[after] link, use to apply manually
 	 */
-	public function generateNextLink($baseOrCurrentUrl, $afterCursor) {
+	public function generateNextLink(string $baseOrCurrentUrl, string $afterCursor): string {
 		return $this->setQueryParameter($baseOrCurrentUrl, 'page[after]', $afterCursor);
 	}
 	

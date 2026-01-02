@@ -19,7 +19,7 @@ class ExampleVersionExtension implements ExtensionInterface {
 		return 'version';
 	}
 	
-	public function setVersion(ResourceInterface $resource, $version) {
+	public function setVersion(ResourceInterface $resource, string $version): void {
 		if ($resource instanceof HasExtensionMembersInterface === false) {
 			throw new InputException('resource doesn\'t have extension members');
 		}

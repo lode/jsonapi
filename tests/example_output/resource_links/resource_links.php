@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapiTests\example_output\ExampleUser;
 
 class resource_links {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$user42        = new ExampleUser(42);
 		$user42->name  = 'Zaphod Beeblebrox';
 		$user42->heads = 2;

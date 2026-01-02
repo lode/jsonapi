@@ -147,11 +147,14 @@ class ValidatorTest extends TestCase {
 	
 	#[DoesNotPerformAssertions]
 	#[DataProvider('dataProviderCheckMemberName_HappyPath')]
-	public function testCheckMemberName_HappyPath($memberName): void {
+	public function testCheckMemberName_HappyPath(string $memberName): void {
 		Validator::checkMemberName($memberName);
 	}
 	
-	public static function dataProviderCheckMemberName_HappyPath() {
+	/**
+	 * @return array<array{0: string}>
+	 */
+	public static function dataProviderCheckMemberName_HappyPath(): array {
 		return [
 			['foo'],
 			['f_o'],
@@ -162,13 +165,16 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCheckMemberName_InvalidNames')]
-	public function testCheckMemberName_InvalidNames($memberName): void {
+	public function testCheckMemberName_InvalidNames(string $memberName): void {
 		$this->expectException(InputException::class);
 		
 		Validator::checkMemberName($memberName);
 	}
 	
-	public static function dataProviderCheckMemberName_InvalidNames() {
+	/**
+	 * @return array<array{0: string}>
+	 */
+	public static function dataProviderCheckMemberName_InvalidNames(): array {
 		return [
 			['_'],
 			['-'],
@@ -178,10 +184,13 @@ class ValidatorTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
-	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode): void {
+	public function testCheckHttpStatusCode_HappyPath(bool $expectedOutput, int|string $httpStatusCode): void {
 		parent::assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
 	}
 	
+	/**
+	 * @return array<array{0: bool, 1: int|string}>
+	 */
 	public static function dataProviderCheckHttpStatusCode_HappyPath() {
 		return [
 			[false, 42],

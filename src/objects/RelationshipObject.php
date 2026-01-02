@@ -117,14 +117,14 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setSelfLink(string $href, array $meta=[]): void {
 		$this->addLink('self', $href, $meta);
 	}
 	
 	/**
-	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setRelatedLink(string $href, array $meta=[]): void {
 		$this->addLink('related', $href, $meta);

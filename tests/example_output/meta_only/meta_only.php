@@ -7,7 +7,7 @@ namespace alsvanzelf\jsonapiTests\example_output\meta_only;
 use alsvanzelf\jsonapi\MetaDocument;
 
 class meta_only {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): MetaDocument {
 		$document = new MetaDocument();
 		$document->addMeta('foo', 'bar');
 		

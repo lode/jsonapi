@@ -6,21 +6,22 @@ namespace alsvanzelf\jsonapiTests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 
 /**
  * @group OutputOnly
  */
 class ExampleOutputTest extends TestCase {
-	private static $defaults = [
+	/** @var PHPStanTypeAlias_DocumentOptions */
+	private static array $defaults = [
 		'prettyPrint' => true,
 	];
 	
 	#[DataProvider('dataProviderTestOutput')]
-	public function testOutput($generator, $expectedJson, array $options=[], $testName=null): void {
-		$options = [...self::$defaults, ...$options];
-		
+	public function testOutput(object $generator, ?string $expectedJson, ?string $testName): void {
+		/** @var DocumentInterface $document */
 		$document   = $generator::createJsonapiDocument();
-		$actualJson = $document->toJson($options);
+		$actualJson = $document->toJson(self::$defaults);
 		
 		// adhere to editorconfig
 		$actualJson = str_replace('    ', "\t", $actualJson).PHP_EOL;
@@ -35,7 +36,14 @@ class ExampleOutputTest extends TestCase {
 		parent::assertSame($expectedJson, $actualJson);
 	}
 	
-	public static function dataProviderTestOutput() {
+	/**
+	 * @return array<string, array{
+	 *         0: object,
+	 *         1: ?string,
+	 *         2: string
+	 * }>
+	 */
+	public static function dataProviderTestOutput(): array {
 		$directories = glob(__DIR__.'/example_output/*', GLOB_ONLYDIR);
 		
 		$testCases = [];
@@ -47,16 +55,12 @@ class ExampleOutputTest extends TestCase {
 			
 			$generator    = new $className;
 			$expectedJson = null;
-			$options      = [];
 			
 			if (file_exists($directory.'/'.$testName.'.json')) {
 				$expectedJson = file_get_contents($directory.'/'.$testName.'.json');
 			}
-			if (file_exists($directory.'/options.txt')) {
-				$options = json_decode(file_get_contents($directory.'/options.txt'), associative: true, flags: JSON_THROW_ON_ERROR);
-			}
 			
-			$testCases[$testName] = [$generator, $expectedJson, $options, $testName];
+			$testCases[$testName] = [$generator, $expectedJson, $testName];
 		}
 		
 		return $testCases;

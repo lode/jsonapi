@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 
 class relationship_to_one_document {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$document = new ResourceDocument('author', 12);
 		
 		$document->setSelfLink('/articles/1/relationship/author', level: DocumentLevelEnum::Root);

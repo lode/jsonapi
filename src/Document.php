@@ -299,6 +299,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * JsonSerializable
 	 */
 	
+	/**
+	 * @return array<string, mixed>
+	 */
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize(): array {
 		return $this->toArray();

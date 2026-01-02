@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\Class_\AddTestsVoidReturnTypeWhereNoReturnRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
@@ -18,6 +19,7 @@ return RectorConfig::configure()
 	->withRules([
 		DeclareStrictTypesRector::class,
 		AddTestsVoidReturnTypeWhereNoReturnRector::class,
+		AddVoidReturnTypeWhereNoReturnRector::class,
 	])
 	->withSkip([
 		// better explicit readability

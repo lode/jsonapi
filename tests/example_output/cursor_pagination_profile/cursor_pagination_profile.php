@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
 
 class cursor_pagination_profile {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$profile = new CursorPaginationProfile();
 		
 		$user1  = new ResourceObject('user', 1);

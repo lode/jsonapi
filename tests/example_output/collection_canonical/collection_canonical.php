@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class collection_canonical {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$articleRecords = [
 			1 => [
 				'title'    => 'JSON:API paints my bikeshed!',

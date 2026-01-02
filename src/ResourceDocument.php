@@ -51,6 +51,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 */
 	
 	/**
+	 * @param array<string, mixed> $attributes
 	 * @param PHPStanTypeAlias_ResourceDocumentAndValidatorOptions $options {@see ResourceDocument::$resourceDocumentDefaults} {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public static function fromArray(

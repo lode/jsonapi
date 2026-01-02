@@ -18,7 +18,8 @@ error_reporting(-1);
 require_once __DIR__.'/../vendor/autoload.php';
 
 class ExampleDataset {
-	private static $records = [
+	/** @var array<string, array<int, array<string, mixed>>> */
+	private static array $records = [
 		'articles' => [
 			1 => [
 				'title'    => 'JSON:API paints my bikeshed!',
@@ -58,7 +59,10 @@ class ExampleDataset {
 		],
 	];
 	
-	public static function getRecord($type, $id) {
+	/**
+	 * @return array<string, mixed>
+	 */
+	public static function getRecord(string $type, int $id): array {
 		if (isset(self::$records[$type][$id]) === false) {
 			throw new \Exception('sorry, we have a limited dataset');
 		}
@@ -66,7 +70,10 @@ class ExampleDataset {
 		return self::$records[$type][$id];
 	}
 	
-	public static function getEntity($type, $id) {
+	/**
+	 * @return ExampleUser
+	 */
+	public static function getEntity(string $type, int $id): ExampleUser {
 		$record = self::getRecord($type, $id);
 		
 		$user = new ExampleUser($id);
@@ -77,11 +84,17 @@ class ExampleDataset {
 		return $user;
 	}
 	
-	public static function findRecords($type) {
+	/**
+	 * @return array<array<string, mixed>>
+	 */
+	public static function findRecords(string $type): array {
 		return self::$records[$type];
 	}
 	
-	public static function findEntities($type) {
+	/**
+	 * @return ExampleUser[]
+	 */
+	public static function findEntities(string $type): array {
 		$records  = self::findRecords($type);
 		$entities = [];
 		
@@ -94,15 +107,15 @@ class ExampleDataset {
 }
 
 class ExampleUser {
-	public $name;
-	public $heads;
-	public $unknown;
+	public string $name;
+	public int|string $heads;
+	public mixed $unknown;
 	
 	public function __construct(
-		public $id,
+		public int $id,
 	) {}
 	
-	function getCurrentLocation() {
+	function getCurrentLocation(): string {
 		return 'Earth';
 	}
 }
@@ -124,7 +137,7 @@ class ExampleVersionExtension implements ExtensionInterface {
 	 * optionally helpers for the specific extension
 	 */
 	
-	public function setVersion(ResourceInterface $resource, $version) {
+	public function setVersion(ResourceInterface $resource, string $version): void {
 		if ($resource instanceof HasExtensionMembersInterface === false) {
 			throw new \Exception('resource doesn\'t have extension members');
 		}
@@ -155,7 +168,7 @@ class ExampleTimestampsProfile implements ProfileInterface {
 		ResourceInterface & HasAttributesInterface $resource,
 		?\DateTimeInterface $created=null,
 		?\DateTimeInterface $updated=null,
-	) {
+	): void {
 		$timestamps = [];
 		if ($created !== null) {
 			$timestamps['created'] = $created->format(\DateTime::ISO8601);
