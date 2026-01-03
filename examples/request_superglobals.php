@@ -60,31 +60,55 @@ $requestParser = RequestParser::fromSuperglobals();
  */
 
 // useful for filling a self link in responses
-var_dump($requestParser->getSelfLink());
+echo '<h2>Get self link</h2>';
+echo '<pre style="font-size: large;">$requestParser->getSelfLink()</pre>';
+echo '<pre>'.var_export($requestParser->getSelfLink(), return: true).'</pre>';
 
 // useful for determining how to process the request (list/get/create/update)
-var_dump($requestParser->hasIncludePaths());
-var_dump($requestParser->hasSparseFieldset('user'));
-var_dump($requestParser->hasSortFields());
-var_dump($requestParser->hasPagination());
-var_dump($requestParser->hasFilter());
+echo '<h2>Check query parameters</h2>';
+echo '<pre style="font-size: large;">$requestParser->hasIncludePaths()</pre>';
+echo '<pre>'.var_export($requestParser->hasIncludePaths(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasSparseFieldset()</pre>';
+echo '<pre>'.var_export($requestParser->hasSparseFieldset('user'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasSortFields()</pre>';
+echo '<pre>'.var_export($requestParser->hasSortFields(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasPagination()</pre>';
+echo '<pre>'.var_export($requestParser->hasPagination(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasFilter()</pre>';
+echo '<pre>'.var_export($requestParser->hasFilter(), return: true).'</pre>';
 
 // these methods often return arrays where comma separated query parameter values are processed for ease of use
-var_dump($requestParser->getIncludePaths());
-var_dump($requestParser->getSparseFieldset('user'));
-var_dump($requestParser->getSortFields());
-var_dump($requestParser->getPagination());
-var_dump($requestParser->getFilter());
+echo '<h2>Get query parameters</h2>';
+echo '<pre style="font-size: large;">$requestParser->getIncludePaths()</pre>';
+echo '<pre>'.var_export($requestParser->getIncludePaths(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getSparseFieldset()</pre>';
+echo '<pre>'.var_export($requestParser->getSparseFieldset('user'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getSortFields()</pre>';
+echo '<pre>'.var_export($requestParser->getSortFields(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getPagination()</pre>';
+echo '<pre>'.var_export($requestParser->getPagination(), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getFilter()</pre>';
+echo '<pre>'.var_export($requestParser->getFilter(), return: true).'</pre>';
 
 // use for determinging whether keys were given without having to dive deep into the POST data yourself
-var_dump($requestParser->hasAttribute('name'));
-var_dump($requestParser->hasRelationship('ship'));
-var_dump($requestParser->hasMeta('lock'));
+echo '<h2>Check parts of the document</h2>';
+echo '<pre style="font-size: large;">$requestParser->hasAttribute()</pre>';
+echo '<pre>'.var_export($requestParser->hasAttribute('name'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasRelationship()</pre>';
+echo '<pre>'.var_export($requestParser->hasRelationship('ship'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->hasMeta()</pre>';
+echo '<pre>'.var_export($requestParser->hasMeta('lock'), return: true).'</pre>';
 
 // get the raw data from the document, this doesn't (yet) return specific objects
-var_dump($requestParser->getAttribute('name'));
-var_dump($requestParser->getRelationship('ship'));
-var_dump($requestParser->getMeta('lock'));
+echo '<h2>Get parts of the document</h2>';
+echo '<pre style="font-size: large;">$requestParser->getAttribute()</pre>';
+echo '<pre>'.var_export($requestParser->getAttribute('name'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getRelationship()</pre>';
+echo '<pre>'.var_export($requestParser->getRelationship('ship'), return: true).'</pre>';
+echo '<pre style="font-size: large;">$requestParser->getMeta()</pre>';
+echo '<pre>'.var_export($requestParser->getMeta('lock'), return: true).'</pre>';
 
 // get the full document for custom processing
-var_dump($requestParser->getDocument());
+echo '<h2>Get full document</h2>';
+echo '<pre style="font-size: large;">$requestParser->getDocument()</pre>';
+echo '<pre>'.var_export($requestParser->getDocument(), return: true).'</pre>';

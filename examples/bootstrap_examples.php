@@ -104,9 +104,9 @@ class ExampleDataset {
 }
 
 class ExampleUser {
-	public string $name;
-	public int|string $heads;
-	public mixed $unknown;
+	public ?string $name = null;
+	public null|int|string $heads = null;
+	public mixed $unknown = null;
 	
 	public function __construct(
 		public int $id,
