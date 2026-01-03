@@ -15,7 +15,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use PHPUnit\Framework\TestCase;
 
 class DocumentTest extends TestCase {
-	private object $document;
+	private Document $document;
 	
 	public function setUp(): void {
 		/**

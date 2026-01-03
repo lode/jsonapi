@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * that might break the class since we use `new static()`
  */
 class RequestParser {
-	/** @var PHPStanTypeAlias_RequestParserOptions */
+	/** @var PHPStanTypeAlias_DefaultOptions_RequestParser */
 	protected static array $requestParserDefaults = [
 		/**
 		 * reformat the include query parameter paths to nested arrays
@@ -31,9 +31,9 @@ class RequestParser {
 	];
 	
 	/**
-	 * @param string                                         $selfLink        the uri used to make this request {@see getSelfLink()}
-	 * @param array<string, string|array<array-key, string>> $queryParameters all query parameters defined by the specification
-	 * @param array<string, mixed>                           $document        the request jsonapi document
+	 * @param string                           $selfLink        the uri used to make this request {@see getSelfLink()}
+	 * @param PHPStanTypeAlias_QueryParameters $queryParameters all query parameters defined by the specification
+	 * @param array<string, mixed>             $document        the request jsonapi document
 	 * 
 	 * @throws \JsonException if $document's content type is json but it can't be json decoded
 	 */
@@ -57,7 +57,7 @@ class RequestParser {
 			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
 			$document = file_get_contents('php://input');
-			if ($document === '') {
+			if ($document === '' || $document === false) {
 				$document = [];
 			}
 			elseif ($documentIsJsonapi || $documentIsJson) {
@@ -102,7 +102,7 @@ class RequestParser {
 	}
 	
 	public function hasIncludePaths(): bool {
-		return isset($this->queryParameters['include']);
+		return $this->hasQueryParameter('include');
 	}
 	
 	/**
@@ -111,15 +111,15 @@ class RequestParser {
 	 * the nested format allows easier processing on each step of the chain
 	 * the raw format allows for custom processing
 	 * 
-	 * @param  PHPStanTypeAlias_RequestParserOptions $options {@see RequestParser::$requestParserDefaults}
+	 * @param  PHPStanTypeAlias_Options_RequestParser $options {@see RequestParser::$requestParserDefaults}
 	 * @return array<string>|array<array-key, mixed>
 	 */
 	public function getIncludePaths(array $options=[]): array {
-		if ($this->queryParameters['include'] === '') {
+		if ($this->getQueryParameter('include') === '') {
 			return [];
 		}
 		
-		$includePaths = explode(',', (string) $this->queryParameters['include']);
+		$includePaths = explode(',', $this->getQueryParameter('include'));
 		
 		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useNestedIncludePaths'] === false) {
@@ -143,22 +143,22 @@ class RequestParser {
 	}
 	
 	public function hasSparseFieldset(string $type): bool {
-		return isset($this->queryParameters['fields'][$type]);
+		return isset($this->getQueryParameter('fields')[$type]);
 	}
 	
 	/**
 	 * @return string[]
 	 */
 	public function getSparseFieldset(string $type): array {
-		if ($this->queryParameters['fields'][$type] === '') {
+		if ($this->getQueryParameter('fields')[$type] === '') {
 			return [];
 		}
 		
-		return explode(',', (string) $this->queryParameters['fields'][$type]);
+		return explode(',', $this->getQueryParameter('fields')[$type]);
 	}
 	
 	public function hasSortFields(): bool {
-		return isset($this->queryParameters['sort']);
+		return $this->hasQueryParameter('sort');
 	}
 	
 	/**
@@ -169,18 +169,18 @@ class RequestParser {
 	 * 
 	 * @todo return some kind of SortFieldObject
 	 * 
-	 * @param  PHPStanTypeAlias_RequestParserOptions $options {@see RequestParser::$requestParserDefaults}
+	 * @param  PHPStanTypeAlias_Options_RequestParser $options {@see RequestParser::$requestParserDefaults}
 	 * @return string[]|array<array{
 	 *         field: string, // the sort field, without any minus sign for descending sort order
 	 *         order: SortOrderEnum,
 	 * }>
 	 */
 	public function getSortFields(array $options=[]): array {
-		if ($this->queryParameters['sort'] === '') {
+		if ($this->getQueryParameter('sort') === '') {
 			return [];
 		}
 		
-		$fields = explode(',', (string) $this->queryParameters['sort']);
+		$fields = explode(',', $this->getQueryParameter('sort'));
 		
 		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useAnnotatedSortFields'] === false) {
@@ -206,7 +206,7 @@ class RequestParser {
 	}
 	
 	public function hasPagination(): bool {
-		return isset($this->queryParameters['page']);
+		return $this->hasQueryParameter('page');
 	}
 	
 	/**
@@ -216,18 +216,18 @@ class RequestParser {
 	 * @return array<string, string>
 	 */
 	public function getPagination(): array {
-		return $this->queryParameters['page'];
+		return $this->getQueryParameter('page');
 	}
 	
 	public function hasFilter(): bool {
-		return isset($this->queryParameters['filter']);
+		return $this->hasQueryParameter('filter');
 	}
 	
 	/**
 	 * @return string|array<array-key, string>
 	 */
 	public function getFilter(): string|array {
-		return $this->queryParameters['filter'];
+		return $this->getQueryParameter('filter');
 	}
 	
 	public function hasLocalId(): bool {
@@ -293,5 +293,29 @@ class RequestParser {
 	 */
 	public function getDocument(): array {
 		return $this->document;
+	}
+	
+	/**
+	 * @internal
+	 */
+	protected function hasQueryParameter(string $key): bool {
+		return isset($this->queryParameters[$key]);
+	}
+	
+	/**
+	 * @internal
+	 * 
+	 * @return ($key is 'fields'|'page' ? array<array-key, string> : string)
+	 */
+	protected function getQueryParameter(string $key): string|array {
+		return match ($key) {
+			// array shape
+			'fields', 'page'  => $this->queryParameters[$key] ?? [],
+			// string shape
+			'include', 'sort' => $this->queryParameters[$key] ?? '',
+			// mixed shape
+			'filter'          => $this->queryParameters[$key] ?? '',
+			default           => $this->queryParameters[$key] ?? '',
+		};
 	}
 }

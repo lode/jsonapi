@@ -47,7 +47,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	protected array $extensions = [];
 	/** @var ProfileInterface[] */
 	protected array $profiles = [];
-	/** @var PHPStanTypeAlias_DocumentOptions */
+	/** @var PHPStanTypeAlias_DefaultOptions_Document */
 	protected static array $documentDefaults = [
 		/**
 		 * encode to json with these default options
@@ -257,7 +257,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	/**
-	 * @throws \JsonException
+	 * @throws \JsonException if encoding fails
+	 * @throws Exception if encoding fails and $options['encodeOptions'] doesn't include JSON_THROW_ON_ERROR
 	 */
 	public function toJson(array $options=[]): string {
 		$options = [...self::$documentDefaults, ...$options];
@@ -269,6 +270,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		}
 		
 		$json = json_encode($array, $options['encodeOptions']);
+		
+		// we can't use exceptions because $options['encodeOptions'] might be overridden to silence them
+		if ($json === false) {
+			throw new Exception('failed to encode json: '.json_last_error().', '.json_last_error_msg());
+		}
 		
 		if ($options['jsonpCallback'] !== null) {
 			$json = $options['jsonpCallback'].'('.$json.')';

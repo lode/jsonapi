@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\interfaces\DocumentInterface;
  * @group OutputOnly
  */
 class ExampleOutputTest extends TestCase {
-	/** @var PHPStanTypeAlias_DocumentOptions */
+	/** @var PHPStanTypeAlias_Options_Document */
 	private static array $defaults = [
 		'prettyPrint' => true,
 	];
@@ -20,7 +20,7 @@ class ExampleOutputTest extends TestCase {
 	#[DataProvider('dataProviderTestOutput')]
 	public function testOutput(object $generator, ?string $expectedJson, ?string $testName): void {
 		/** @var DocumentInterface $document */
-		$document   = $generator::createJsonapiDocument();
+		$document   = $generator::createJsonapiDocument(); // @phpstan-ignore staticMethod.notFound
 		$actualJson = $document->toJson(self::$defaults);
 		
 		// adhere to editorconfig
@@ -45,6 +45,9 @@ class ExampleOutputTest extends TestCase {
 	 */
 	public static function dataProviderTestOutput(): array {
 		$directories = glob(__DIR__.'/example_output/*', GLOB_ONLYDIR);
+		if ($directories === false) {
+			throw new \Exception('failed to fetch example output');
+		}
 		
 		$testCases = [];
 		foreach ($directories as $directory) {
@@ -58,6 +61,9 @@ class ExampleOutputTest extends TestCase {
 			
 			if (file_exists($directory.'/'.$testName.'.json')) {
 				$expectedJson = file_get_contents($directory.'/'.$testName.'.json');
+				if ($expectedJson === false) {
+					throw new \Exception('something went wrong fetching expected output');
+				}
 			}
 			
 			$testCases[$testName] = [$generator, $expectedJson, $testName];

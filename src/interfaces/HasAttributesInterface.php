@@ -10,7 +10,7 @@ interface HasAttributesInterface {
 	 * 
 	 * @see Validator::$validatorDefaults
 	 * 
-	 * @param PHPStanTypeAlias_ValidatorOptions $options
+	 * @param PHPStanTypeAlias_Options_Validator $options
 	 */
 	public function addAttribute(string $key, mixed $value, array $options=[]): void;
 }

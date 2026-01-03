@@ -171,18 +171,12 @@ class ResourceDocumentTest extends TestCase {
 		
 		parent::assertArrayHasKey('meta', $array);
 		parent::assertArrayHasKey('data', $array);
-		parent::assertArrayHasKey('meta', $array['data']);
 		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('meta', $array['data']);
 		parent::assertArrayHasKey('meta', $array['jsonapi']);
-		parent::assertArrayHasKey('foo', $array['meta']);
-		parent::assertArrayHasKey('bar', $array['data']['meta']);
-		parent::assertArrayHasKey('baz', $array['jsonapi']['meta']);
-		parent::assertCount(1, $array['meta']);
-		parent::assertCount(1, $array['data']['meta']);
-		parent::assertCount(1, $array['jsonapi']['meta']);
-		parent::assertSame('root', $array['meta']['foo']);
-		parent::assertSame('resource', $array['data']['meta']['bar']);
-		parent::assertSame('jsonapi', $array['jsonapi']['meta']['baz']);
+		parent::assertSame(['foo' => 'root'], $array['meta']);
+		parent::assertSame(['bar' => 'resource'], $array['data']['meta']);
+		parent::assertSame(['baz' => 'jsonapi'], $array['jsonapi']['meta']);
 	}
 	
 	public function testAddMeta_RecreateJsonapiObject(): void {

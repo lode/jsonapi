@@ -13,9 +13,9 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
 	protected array $errors = [];
-	/** @var array<number, array<number, true>> */
-	protected array $httpStatusCodes;
-	/** @var PHPStanTypeAlias_ErrorsDocumentOptions */
+	/** @var array<string, array<int, true>> */
+	protected array $httpStatusCodes = [];
+	/** @var PHPStanTypeAlias_DefaultOptions_ErrorsDocument */
 	protected static array $errorsDocumentDefaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
@@ -42,7 +42,7 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param PHPStanTypeAlias_ErrorsDocumentOptions $options {@see ErrorsDocument::$errorsDocumentDefaults}
+	 * @param PHPStanTypeAlias_Options_ErrorsDocument $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): static {
 		$options = [...self::$errorsDocumentDefaults, ...$options];
@@ -58,7 +58,7 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param PHPStanTypeAlias_ErrorsDocumentAndErrorObjectOptions $options {@see ErrorsDocument::$errorsDocumentDefaults}
+	 * @param PHPStanTypeAlias_Options_ErrorsDocumentAndErrorObject $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
 	public function addException(\Throwable $exception, array $options=[]): void {
 		$options = [...self::$errorsDocumentDefaults, ...$options];
@@ -137,27 +137,28 @@ class ErrorsDocument extends Document {
 	protected function determineHttpStatusCode(string|int $httpStatusCode): int {
 		// add the new code
 		$category = substr((string) $httpStatusCode, 0, 1);
-		$this->httpStatusCodes[$category][$httpStatusCode] = true;
+		$category .= 'xx'; // help phpstan understand the array-key is a string not an int
+		$this->httpStatusCodes[$category][(int) $httpStatusCode] = true;
 		
-		$advisedStatusCode = $httpStatusCode;
+		$advisedStatusCode = (int) $httpStatusCode;
 		
 		// when there's multiple, give preference to 5xx errors
-		if (isset($this->httpStatusCodes['5']) && isset($this->httpStatusCodes['4'])) {
+		if (isset($this->httpStatusCodes['5xx']) && isset($this->httpStatusCodes['4xx'])) {
 			// use a generic one
 			$advisedStatusCode = 500;
 		}
-		elseif (isset($this->httpStatusCodes['5'])) {
-			if (count($this->httpStatusCodes['5']) === 1) {
-				$advisedStatusCode = key($this->httpStatusCodes['5']);
+		elseif (isset($this->httpStatusCodes['5xx'])) {
+			if (count($this->httpStatusCodes['5xx']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['5xx']);
 			}
 			else {
 				// use a generic one
 				$advisedStatusCode = 500;
 			}
 		}
-		elseif (isset($this->httpStatusCodes['4'])) {
-			if (count($this->httpStatusCodes['4']) === 1) {
-				$advisedStatusCode = key($this->httpStatusCodes['4']);
+		elseif (isset($this->httpStatusCodes['4xx'])) {
+			if (count($this->httpStatusCodes['4xx']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['4xx']);
 			}
 			else {
 				// use a generic one
@@ -165,6 +166,6 @@ class ErrorsDocument extends Document {
 			}
 		}
 		
-		return (int) $advisedStatusCode;
+		return $advisedStatusCode;
 	}
 }

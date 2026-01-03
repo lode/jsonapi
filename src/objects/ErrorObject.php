@@ -29,7 +29,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	/** @var array{pointer?: string, parameter?: string, header?: string} */
 	protected array $source = [];
 	protected MetaObject $meta;
-	/** @var PHPStanTypeAlias_ErrorObjectOptions */
+	/** @var PHPStanTypeAlias_DefaultOptions_ErrorObject */
 	protected static array $errorObjectDefaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
@@ -71,7 +71,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 */
 	
 	/**
-	 * @param PHPStanTypeAlias_ErrorObjectOptions $options {@see ErrorObject::$errorObjectDefaults}
+	 * @param PHPStanTypeAlias_Options_ErrorObject $options {@see ErrorObject::$errorObjectDefaults}
 	 */
 	public static function fromException(\Throwable $exception, array $options=[]): static {
 		$options = [...self::$errorObjectDefaults, ...$options];

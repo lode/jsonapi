@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  * @group SeparateProcess
  */
 class SeparateProcessTest extends TestCase {
-	private object $document;
+	private Document $document;
 	
 	public function setUp(): void {
 		/**

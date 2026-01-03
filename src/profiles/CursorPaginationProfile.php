@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapi\profiles;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
@@ -304,9 +305,15 @@ class CursorPaginationProfile implements ProfileInterface {
 	
 	/**
 	 * add or adjust a key in the query string of a url
+	 * 
+	 * @throws InputException on missing or broken query parameters inside $url
 	 */
 	private function setQueryParameter(string $url, string $key, string $value): string {
-		$originalQuery     = parse_url($url, PHP_URL_QUERY);
+		$originalQuery = parse_url($url, PHP_URL_QUERY);
+		if ($originalQuery === null || $originalQuery === false) {
+			throw new InputException('missing or broken query parameters in url');
+		}
+		
 		$decodedQuery      = urldecode($originalQuery);
 		$originalIsEncoded = ($decodedQuery !== $originalQuery);
 		

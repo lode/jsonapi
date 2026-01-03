@@ -17,7 +17,7 @@ class Validator {
 	protected array $usedFields = [];
 	/** @var array<string, true> */
 	protected array $usedResourceIdentifiers = [];
-	/** @var PHPStanTypeAlias_ValidatorOptions */
+	/** @var PHPStanTypeAlias_DefaultOptions_Validator */
 	protected static array $validatorDefaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
@@ -33,7 +33,7 @@ class Validator {
 	 * @see https://jsonapi.org/format/1.1/#document-resource-object-fields
 	 * 
 	 * @param  string[]                         $fieldNames
-	 * @param  PHPStanTypeAlias_ValidatorOptions $options    {@see Validator::$validatorDefaults}
+	 * @param  PHPStanTypeAlias_Options_Validator $options    {@see Validator::$validatorDefaults}
 	 * 
 	 * @throws DuplicateException
 	 */
