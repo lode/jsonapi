@@ -12,6 +12,7 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class DocumentTest extends TestCase {
@@ -180,9 +181,7 @@ final class DocumentTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_HappyPath(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, [
 			'getNamespace'    => 'test',
@@ -215,9 +214,7 @@ final class DocumentTest extends TestCase {
 		parent::assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_InvalidNamespace(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo-bar']);
 		
@@ -227,9 +224,7 @@ final class DocumentTest extends TestCase {
 		$this->document->applyExtension($extension);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_ConflictingNamespace(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
 		$this->document->applyExtension($extension1);
@@ -245,9 +240,7 @@ final class DocumentTest extends TestCase {
 		$this->document->applyExtension($extension3);
 	}
 	
-	/**
-	 * @group Profiles
-	 */
+	#[Group('Profiles')]
 	public function testApplyProfile_HappyPath(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'https://jsonapi.org/profile']);
 		

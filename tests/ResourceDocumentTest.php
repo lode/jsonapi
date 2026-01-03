@@ -15,6 +15,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class ResourceDocumentTest extends TestCase {
@@ -62,9 +63,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->add('foo', 'bar');
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testAdd_BlocksExtensionMembersViaRegularAdd(): void {
 		$document = new ResourceDocument();
 		$document->applyExtension(parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']));

@@ -10,6 +10,7 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class ResourceIdentifierObjectTest extends TestCase {
@@ -216,9 +217,7 @@ final class ResourceIdentifierObjectTest extends TestCase {
 		parent::assertFalse($resourceIdentifierObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		

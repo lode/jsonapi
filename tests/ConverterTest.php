@@ -10,6 +10,7 @@ use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class ConverterTest extends TestCase {
@@ -73,36 +74,28 @@ final class ConverterTest extends TestCase {
 		yield ['eclipseRCPExt', 'eclipse RCP Ext'];
 	}
 	
-	/**
-	 * @group Extensions
-	 * @group Profiles
-	 */
+	#[Group('Extensions')]
+	#[Group('Profiles')]
 	public function testPrepareContentType_HappyPath(): void {
 		parent::assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testPrepareContentType_WithExtensionStringLink(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
 	
-	/**
-	 * @group Profiles
-	 */
+	#[Group('Profiles')]
 	public function testPrepareContentType_WithProfileStringLink(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
 	
-	/**
-	 * @group Extensions
-	 * @group Profiles
-	 */
+	#[Group('Extensions')]
+	#[Group('Profiles')]
 	public function testPrepareContentType_WithMultipleExtensionsAndProfiles(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'baz']);

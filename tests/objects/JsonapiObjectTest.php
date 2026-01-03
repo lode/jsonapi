@@ -7,6 +7,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class JsonapiObjectTest extends TestCase {
@@ -36,9 +37,7 @@ final class JsonapiObjectTest extends TestCase {
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
@@ -49,9 +48,7 @@ final class JsonapiObjectTest extends TestCase {
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
-	/**
-	 * @group Profiles
-	 */
+	#[Group('Profiles')]
 	public function testIsEmpty_WithProfileLink(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		
@@ -62,9 +59,7 @@ final class JsonapiObjectTest extends TestCase {
 		parent::assertFalse($jsonapiObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		

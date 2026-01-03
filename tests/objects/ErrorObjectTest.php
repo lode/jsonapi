@@ -7,6 +7,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ErrorObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class ErrorObjectTest extends TestCase {
@@ -154,9 +155,7 @@ final class ErrorObjectTest extends TestCase {
 		parent::assertFalse($errorObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testToArray_WithExtensionMembers(): void {
 		$errorObject = new ErrorObject();
 		$extension   = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);

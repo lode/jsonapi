@@ -9,11 +9,10 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Profiles
- */
+#[Group('Profiles')]
 final class CursorPaginationProfileTest extends TestCase {
 	public function testSetLinks_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();

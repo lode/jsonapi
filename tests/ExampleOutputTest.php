@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapiTests;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
-/**
- * @group OutputOnly
- */
+#[Group('OutputOnly')]
 final class ExampleOutputTest extends TestCase {
 	/** @var PHPStanTypeAlias_Options_Document */
 	private static array $defaults = [

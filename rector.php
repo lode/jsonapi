@@ -24,6 +24,7 @@ return RectorConfig::configure()
 		__DIR__ . '/tests',
 		__DIR__ . '/examples',
 	])
+	->withRootFiles()
 	->withRules([
 		DeclareStrictTypesRector::class,
 	])
@@ -54,6 +55,8 @@ return RectorConfig::configure()
 	
 	// tab-based indenting
 	->withIndent(indentChar: "\t", indentSize: 1)
+	// importing FQNs
+	->withImportNames(importShortClasses: false)
 	
 	// lowest supported php version
 	->withPhpSets(php82: true)
@@ -80,4 +83,8 @@ return RectorConfig::configure()
 		// symfonyCodeQuality: true,
 		// symfonyConfigs: true,
 	)
+	
+	// vendor sets
+	->withAttributesSets()
+	->withComposerBased(phpunit: true)
 ;

@@ -7,11 +7,10 @@ namespace alsvanzelf\jsonapiTests\helpers;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Extensions
- */
+#[Group('Extensions')]
 final class ExtensionMemberManagerTest extends TestCase {
 	private static object $helper;
 	

@@ -13,6 +13,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class RelationshipObjectTest extends TestCase {
@@ -298,9 +299,7 @@ final class RelationshipObjectTest extends TestCase {
 		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		

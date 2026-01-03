@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class MetaObjectTest extends TestCase {
@@ -49,9 +50,7 @@ final class MetaObjectTest extends TestCase {
 		parent::assertFalse($metaObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$metaObject = new MetaObject();
 		

@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 final class AttributesObjectTest extends TestCase {
@@ -67,9 +68,7 @@ final class AttributesObjectTest extends TestCase {
 		parent::assertSame('baz', $array['foo']['bar']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testAddExtensionMember_HappyPath(): void {
 		$attributesObject = new AttributesObject();
 		$extension        = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
