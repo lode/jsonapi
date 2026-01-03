@@ -16,7 +16,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
  * that might break the class since we use `new static()`
  */
 class LinksObject extends AbstractObject {
-	/** @var array<string, string|LinkObject> */
+	/** @var array<string, string|LinkObject|null> */
 	protected array $links = [];
 	
 	/**

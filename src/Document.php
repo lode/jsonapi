@@ -173,6 +173,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		$this->meta = $metaObject;
 	}
 	
+	/** @phpstan-assert JsonapiObject $this->jsonapi */
 	public function setJsonapiObject(JsonapiObject $jsonapiObject): void {
 		$this->jsonapi = $jsonapiObject;
 	}
