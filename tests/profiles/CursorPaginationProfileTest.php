@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Profiles
  */
-class CursorPaginationProfileTest extends TestCase {
+final class CursorPaginationProfileTest extends TestCase {
 	public function testSetLinks_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();

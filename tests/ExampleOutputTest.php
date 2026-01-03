@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 /**
  * @group OutputOnly
  */
-class ExampleOutputTest extends TestCase {
+final class ExampleOutputTest extends TestCase {
 	/** @var PHPStanTypeAlias_Options_Document */
 	private static array $defaults = [
 		'prettyPrint' => true,

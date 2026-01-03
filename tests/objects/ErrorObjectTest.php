@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 use PHPUnit\Framework\TestCase;
 
-class ErrorObjectTest extends TestCase {
+final class ErrorObjectTest extends TestCase {
 	public function testFromException_HappyPath(): void {
 		$exception    = new \Exception('foo', 1);
 		$expectedLine = (__LINE__ - 1);

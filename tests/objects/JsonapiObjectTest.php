@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use PHPUnit\Framework\TestCase;
 
-class JsonapiObjectTest extends TestCase {
+final class JsonapiObjectTest extends TestCase {
 	public function testAddMeta_HappyPath(): void {
 		$jsonapiObject = new JsonapiObject($version=null);
 		

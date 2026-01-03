@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use PHPUnit\Framework\TestCase;
 
-class AtMemberManagerTest extends TestCase {
+final class AtMemberManagerTest extends TestCase {
 	private static object $helper;
 	
 	public static function setUpBeforeClass(): void {

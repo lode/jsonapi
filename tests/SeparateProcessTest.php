@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group SeparateProcess
  */
-class SeparateProcessTest extends TestCase {
+final class SeparateProcessTest extends TestCase {
 	private Document $document;
 	
 	protected function setUp(): void {

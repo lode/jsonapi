@@ -13,6 +13,7 @@ use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
+use Rector\TypeDeclarationDocblocks\Rector\ClassMethod\DocblockGetterReturnArrayFromPropertyDocblockVarRector;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
 // @see https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md for more rules
@@ -39,6 +40,9 @@ return RectorConfig::configure()
 		NewlineBetweenClassLikeStmtsRector::class,
 		SimplifyQuoteEscapeRector::class,
 		
+		// rely on types from interfaces
+		DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
+		
 		// better readability using function declaration sorting
 		SortNamedParamRector::class,
 		
@@ -54,11 +58,26 @@ return RectorConfig::configure()
 	// lowest supported php version
 	->withPhpSets(php82: true)
 	
-	// slowly expand keys
+	// expand with new keys
 	->withPreparedSets(
 		deadCode: true,
 		codeQuality: true,
 		codingStyle: true,
 		typeDeclarations: true,
+		typeDeclarationDocblocks: true,
+		privatization: true,
+		phpunitCodeQuality: true,
+		
+		// prefer own style
+		// naming: true,
+		// instanceOf: true,
+		// earlyReturn: true,
+		// rectorPreset: true,
+		
+		// not used
+		// carbon: true,
+		// doctrineCodeQuality: true,
+		// symfonyCodeQuality: true,
+		// symfonyConfigs: true,
 	)
 ;

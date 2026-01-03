@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\MetaObject;
 use PHPUnit\Framework\TestCase;
 
-class MetaObjectTest extends TestCase {
+final class MetaObjectTest extends TestCase {
 	public function testAdd_AllowsMixedValue(): void {
 		$metaObject = new MetaObject();
 		$metaObject->add('array-list', ['foo']);

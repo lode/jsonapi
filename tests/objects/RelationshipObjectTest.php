@@ -15,7 +15,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
-class RelationshipObjectTest extends TestCase {
+final class RelationshipObjectTest extends TestCase {
 	public function testConstructor_ToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));

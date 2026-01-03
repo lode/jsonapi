@@ -14,7 +14,7 @@ use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
-class ResourceObjectTest extends TestCase {
+final class ResourceObjectTest extends TestCase {
 	public function testConstructor_ClientDocumentWithoutId(): void {
 		$resourceObject = new ResourceObject('user');
 		$resourceObject->add('foo', 'bar');

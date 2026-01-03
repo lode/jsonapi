@@ -14,7 +14,7 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use PHPUnit\Framework\TestCase;
 
-class DocumentTest extends TestCase {
+final class DocumentTest extends TestCase {
 	private Document $document;
 	
 	protected function setUp(): void {

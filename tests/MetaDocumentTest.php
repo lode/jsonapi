@@ -7,7 +7,7 @@ namespace alsvanzelf\jsonapiTests;
 use alsvanzelf\jsonapi\MetaDocument;
 use PHPUnit\Framework\TestCase;
 
-class MetaDocumentTest extends TestCase {
+final class MetaDocumentTest extends TestCase {
 	public function testConstructor_NoMeta(): void {
 		$document = new MetaDocument();
 		

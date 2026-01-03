@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class RequestParserTest extends TestCase {
+final class RequestParserTest extends TestCase {
 	public function testFromSuperglobals_HappyPath(): void {
 		$_GET = [
 			'include' => 'ship,ship.wing',

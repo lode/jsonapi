@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\TestCase;
 
-class AttributesObjectTest extends TestCase {
+final class AttributesObjectTest extends TestCase {
 	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';

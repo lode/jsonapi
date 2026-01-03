@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use PHPUnit\Framework\TestCase;
 
-class LinksObjectTest extends TestCase {
+final class LinksObjectTest extends TestCase {
 	public function testFromObject_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'https://jsonapi.org';

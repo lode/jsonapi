@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
-class ResourceIdentifierObjectTest extends TestCase {
+final class ResourceIdentifierObjectTest extends TestCase {
 	public function testSetId_HappyPath(): void {
 		$resourceIdentifierObject = new ResourceIdentifierObject();
 		$resourceIdentifierObject->setType('test');

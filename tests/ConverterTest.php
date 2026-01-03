@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase {
+final class ConverterTest extends TestCase {
 	public function testObjectToArray_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
@@ -63,19 +63,14 @@ class ConverterTest extends TestCase {
 	}
 	
 	/**
-	 * @return array<array{
-	 *         0: string,
-	 *         1: string,
-	 * }>
+	 * @return \Iterator<(int | string), array{string, string}>
 	 */
-	public static function dataProviderCamelCaseToWords_HappyPath(): array {
-		return [
-			['value',         'value'],
-			['camelValue',    'camel Value'],
-			['TitleValue',    'Title Value'],
-			['VALUE',         'VALUE'],
-			['eclipseRCPExt', 'eclipse RCP Ext'],
-		];
+	public static function dataProviderCamelCaseToWords_HappyPath(): \Iterator {
+		yield ['value',         'value'];
+		yield ['camelValue',    'camel Value'];
+		yield ['TitleValue',    'Title Value'];
+		yield ['VALUE',         'VALUE'];
+		yield ['eclipseRCPExt', 'eclipse RCP Ext'];
 	}
 	
 	/**

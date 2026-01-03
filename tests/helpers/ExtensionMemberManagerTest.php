@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Extensions
  */
-class ExtensionMemberManagerTest extends TestCase {
+final class ExtensionMemberManagerTest extends TestCase {
 	private static object $helper;
 	
 	public static function setUpBeforeClass(): void {

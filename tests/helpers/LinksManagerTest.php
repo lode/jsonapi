@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use PHPUnit\Framework\TestCase;
 
-class LinksManagerTest extends TestCase {
+final class LinksManagerTest extends TestCase {
 	private object $linksManager;
 	
 	protected function setUp(): void {

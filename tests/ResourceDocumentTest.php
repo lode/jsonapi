@@ -17,7 +17,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
-class ResourceDocumentTest extends TestCase {
+final class ResourceDocumentTest extends TestCase {
 	public function testConstructor_NoResource(): void {
 		$document = new ResourceDocument();
 		

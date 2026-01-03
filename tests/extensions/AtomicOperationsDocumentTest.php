@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @group Extensions
  */
-class AtomicOperationsDocumentTest extends TestCase {
+final class AtomicOperationsDocumentTest extends TestCase {
 	public function testSetResults_HappyPath(): void {
 		$document = new AtomicOperationsDocument();
 		

@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase {
+final class ValidatorTest extends TestCase {
 	#[DoesNotPerformAssertions]
 	public function testClaimUsedFields_HappyPath(): void {
 		$validator = new Validator();
@@ -152,16 +152,14 @@ class ValidatorTest extends TestCase {
 	}
 	
 	/**
-	 * @return array<array{0: string}>
+	 * @return \Iterator<(int | string), array{string}>
 	 */
-	public static function dataProviderCheckMemberName_HappyPath(): array {
-		return [
-			['foo'],
-			['f_o'],
-			['f-o'],
-			['42foo'],
-			['42'],
-		];
+	public static function dataProviderCheckMemberName_HappyPath(): \Iterator {
+		yield ['foo'];
+		yield ['f_o'];
+		yield ['f-o'];
+		yield ['42foo'];
+		yield ['42'];
 	}
 	
 	#[DataProvider('dataProviderCheckMemberName_InvalidNames')]
@@ -172,15 +170,13 @@ class ValidatorTest extends TestCase {
 	}
 	
 	/**
-	 * @return array<array{0: string}>
+	 * @return \Iterator<(int | string), array{string}>
 	 */
-	public static function dataProviderCheckMemberName_InvalidNames(): array {
-		return [
-			['_'],
-			['-'],
-			['foo-'],
-			['-foo'],
-		];
+	public static function dataProviderCheckMemberName_InvalidNames(): \Iterator {
+		yield ['_'];
+		yield ['-'];
+		yield ['foo-'];
+		yield ['-foo'];
 	}
 	
 	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
@@ -189,19 +185,17 @@ class ValidatorTest extends TestCase {
 	}
 	
 	/**
-	 * @return array<array{0: bool, 1: int|string}>
+	 * @return \Iterator<(int | string), array{bool, (int | string)}>
 	 */
-	public static function dataProviderCheckHttpStatusCode_HappyPath(): array {
-		return [
-			[false, 42],
-			[true,  100],
-			[true,  200],
-			[true,  300],
-			[true,  400],
-			[true,  500],
-			[false, 600],
-			[false, '42'],
-			[true,  '100'],
-		];
+	public static function dataProviderCheckHttpStatusCode_HappyPath(): \Iterator {
+		yield [false, 42];
+		yield [true,  100];
+		yield [true,  200];
+		yield [true,  300];
+		yield [true,  400];
+		yield [true,  500];
+		yield [false, 600];
+		yield [false, '42'];
+		yield [true,  '100'];
 	}
 }
