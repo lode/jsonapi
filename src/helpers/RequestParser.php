@@ -44,11 +44,21 @@ class RequestParser {
 	) {}
 	
 	public static function fromSuperglobals(): static {
+		/**
+		 * @var array{
+		 *      REQUEST_SCHEME?: string,
+		 *      HTTP_HOST?: string,
+		 *      REQUEST_URI?: string,
+		 *      CONTENT_TYPE?: string
+		 * } $_SERVER
+		 */
+		
 		$selfLink = '';
 		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		}
 		
+		/** @var PHPStanTypeAlias_QueryParameters $queryParameters */
 		$queryParameters = $_GET;
 		
 		$document = $_POST;
@@ -81,6 +91,8 @@ class RequestParser {
 			$queryParameters = [];
 			parse_str($request->getUri()->getQuery(), $queryParameters);
 		}
+		
+		/** @var PHPStanTypeAlias_QueryParameters $queryParameters */
 		
 		if ($request->getBody()->getContents() === '') {
 			$document = [];
@@ -235,7 +247,7 @@ class RequestParser {
 	}
 	
 	public function getLocalId(): string {
-		return $this->document['data']['lid'];
+		return $this->document['data']['lid']; // @phpstan-ignore return.type (implementation returns mixed)
 	}
 	
 	public function hasAttribute(string $attributeName): bool {
@@ -270,7 +282,7 @@ class RequestParser {
 	 * @return ?array<string, mixed>
 	 */
 	public function getRelationship(string $relationshipName): ?array {
-		return $this->document['data']['relationships'][$relationshipName];
+		return $this->document['data']['relationships'][$relationshipName]; // @phpstan-ignore return.type (implementation returns mixed)
 	}
 	
 	public function hasMeta(string $metaKey): bool {

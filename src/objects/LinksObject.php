@@ -37,6 +37,7 @@ class LinksObject extends AbstractObject {
 	}
 	
 	public static function fromObject(object $links): LinksObject {
+		/** @var array<string, ?string> $array */
 		$array = Converter::objectToArray($links);
 		
 		return static::fromArray($array);

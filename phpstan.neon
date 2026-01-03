@@ -1,6 +1,6 @@
 parameters:
 	# slowly increase
-	level: 8
+	level: 9
 	paths:
 		- src/
 		- tests/
@@ -42,33 +42,57 @@ parameters:
 		
 		# testing AtMemberManager trait
 		- messages:
-		  	- '#Call to an undefined method object::hasAtMembers\(\)\.#'
-		  	- '#Call to an undefined method object::getAtMembers\(\)\.#'
-		  	- '#Call to an undefined method object::addAtMember\(\)\.#'
+		  	- '#Call to an undefined method object::hasAtMembers\(\)#'
+		  	- '#Call to an undefined method object::getAtMembers\(\)#'
+		  	- '#Call to an undefined method object::addAtMember\(\)#'
 		  identifier: method.notFound
 		  path: tests/helpers/AtMemberManagerTest.php
 		
 		# testing ExtensionMemberManager trait
 		- messages:
-		  	- '#Call to an undefined method object::addExtensionMember\(\)\.#'
-		  	- '#Call to an undefined method object::hasExtensionMembers\(\)\.#'
-		  	- '#Call to an undefined method object::getExtensionMembers\(\)\.#'
+		  	- '#Call to an undefined method object::addExtensionMember\(\)#'
+		  	- '#Call to an undefined method object::hasExtensionMembers\(\)#'
+		  	- '#Call to an undefined method object::getExtensionMembers\(\)#'
 		  identifier: method.notFound
 		  path: tests/helpers/ExtensionMemberManagerTest.php
 		
 		# testing HttpStatusCodeManager trait
 		- messages:
-		  	- '#Call to an undefined method object::setHttpStatusCode\(\)\.#'
-		  	- '#Call to an undefined method object::hasHttpStatusCode\(\)\.#'
-		  	- '#Call to an undefined method object::getHttpStatusCode\(\)\.#'
+		  	- '#Call to an undefined method object::setHttpStatusCode\(\)#'
+		  	- '#Call to an undefined method object::hasHttpStatusCode\(\)#'
+		  	- '#Call to an undefined method object::getHttpStatusCode\(\)#'
 		  identifier: method.notFound
 		  path: tests/helpers/HttpStatusCodeManagerTest.php
 		
 		# testing LinksManager trait
 		- messages:
-		  	- '#Call to an undefined method object::addLink\(\)\.#'
-		  	- '#Call to an undefined method object::addLinkObject\(\)\.#'
-		  	- '#Call to an undefined method object::setLinksObject\(\)\.#'
-		  	- '#Call to an undefined method object::toArray\(\)\.#'
+		  	- '#Call to an undefined method object::addLink\(\)#'
+		  	- '#Call to an undefined method object::addLinkObject\(\)#'
+		  	- '#Call to an undefined method object::setLinksObject\(\)#'
+		  	- '#Call to an undefined method object::toArray\(\)#'
 		  identifier: method.notFound
 		  path: tests/helpers/LinksManagerTest.php
+
+		# mixed is only used for input from library implementations
+		- identifier: argument.type
+		  message: '#Parameter \#\d \$.+ of function .+ expects .+, mixed given#'
+		  path: src/helpers/RequestParser.php
+
+		# mixed is only used for input from library implementations
+		- identifier: argument.type
+		  message: '#Parameter \#\d \$.+ of class .+ constructor expects .+, mixed given#'
+		  paths:
+		    - src/helpers/RequestParser.php
+		    - src/objects/ResourceObject.php
+
+		# mixed is only used for input from library implementations
+		- identifier: argument.type
+		  message: '#Parameter \#\d \$.+ of static method .+ expects .+, mixed given#'
+		  path: tests/*
+
+		# mixed is only used for input from library implementations
+		- identifier: offsetAccess.nonOffsetAccessible
+		  message: '#Cannot access offset .+ on mixed#'
+		  paths:
+		    - src/helpers/RequestParser.php
+		    - tests/*

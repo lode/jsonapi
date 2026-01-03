@@ -3,7 +3,7 @@ includes:
 	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
-	level: 10
+	level: max
 	
 	# @see https://github.com/phpstan/phpstan-strict-rules
 	strictRules:

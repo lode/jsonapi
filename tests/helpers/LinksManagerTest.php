@@ -20,7 +20,7 @@ class LinksManagerTest extends TestCase {
 			 * @return array<string, string|array{href: string}>
 			 */
 			public function toArray(): array {
-				return $this->links->toArray();
+				return $this->links->toArray(); // @phpstan-ignore return.type (toArray() methods don't have explicit array shapes yet)
 			}
 		};
 	}

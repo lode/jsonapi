@@ -18,7 +18,7 @@ error_reporting(-1);
 require_once __DIR__.'/../vendor/autoload.php';
 
 class ExampleDataset {
-	/** @var array<string, array<int, array<string, mixed>>> */
+	/** @var array<string, array<int, array<string, string|int>>> */
 	private static array $records = [
 		'articles' => [
 			1 => [
@@ -60,7 +60,7 @@ class ExampleDataset {
 	];
 	
 	/**
-	 * @return array<string, mixed>
+	 * @return array<string, string|int>
 	 */
 	public static function getRecord(string $type, int $id): array {
 		if (isset(self::$records[$type][$id]) === false) {
@@ -85,7 +85,7 @@ class ExampleDataset {
 	}
 	
 	/**
-	 * @return array<array<string, mixed>>
+	 * @return array<array<string, string|int>>
 	 */
 	public static function findRecords(string $type): array {
 		return self::$records[$type];
