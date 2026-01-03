@@ -1,10 +1,5 @@
 includes:
 	- phpstan.neon
-	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
 	level: max
-	
-	# @see https://github.com/phpstan/phpstan-strict-rules
-	strictRules:
-		allRules: true

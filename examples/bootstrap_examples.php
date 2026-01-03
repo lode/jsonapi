@@ -75,7 +75,7 @@ class ExampleDataset {
 		
 		$user = new ExampleUser($id);
 		foreach ($record as $key => $value) {
-			$user->$key = $value;
+			$user->$key = $value; // @phpstan-ignore property.dynamicName
 		}
 		
 		return $user;
