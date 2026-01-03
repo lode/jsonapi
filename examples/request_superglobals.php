@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * preparing request data in superglobals from a webserver

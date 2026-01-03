@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 class DocumentTest extends TestCase {
 	private Document $document;
 	
-	public function setUp(): void {
+	protected function setUp(): void {
 		/**
 		 * extending Document to make it non-abstract to test against it
 		 * 

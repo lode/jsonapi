@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $userEntity = ExampleDataset::getEntity('user', 42);
 

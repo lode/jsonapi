@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $user1  = ExampleDataset::getEntity('user', 1);
 $user42 = ExampleDataset::getEntity('user', 42);

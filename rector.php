@@ -2,7 +2,14 @@
 
 declare(strict_types=1);
 
+use Rector\CodeQuality\Rector\FuncCall\SortNamedParamRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
+use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
+use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
+use Rector\CodingStyle\Rector\ClassLike\NewlineBetweenClassLikeStmtsRector;
+use Rector\CodingStyle\Rector\ClassMethod\NewlineBeforeNewAssignSetRector;
+use Rector\CodingStyle\Rector\Stmt\NewlineAfterStatementRector;
+use Rector\CodingStyle\Rector\String_\SimplifyQuoteEscapeRector;
 use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector\Property\RemoveUnusedPrivatePropertyRector;
 use Rector\Php70\Rector\StmtsAwareInterface\IfIssetToCoalescingRector;
@@ -21,9 +28,20 @@ return RectorConfig::configure()
 	])
 	->withSkip([
 		// better explicit readability
+		FlipTypeControlToUseExclusiveTypeRector::class,
 		IfIssetToCoalescingRector::class,
-		// better explicit readability
 		SimplifyUselessVariableRector::class,
+		SimplifyIfReturnBoolRector::class,
+		
+		// not all rules from code style
+		NewlineAfterStatementRector::class,
+		NewlineBeforeNewAssignSetRector::class,
+		NewlineBetweenClassLikeStmtsRector::class,
+		SimplifyQuoteEscapeRector::class,
+		
+		// better readability using function declaration sorting
+		SortNamedParamRector::class,
+		
 		// explicit testing private properties
 		RemoveUnusedPrivatePropertyRector::class => [
 			'tests/ConverterTest.php',
@@ -39,6 +57,8 @@ return RectorConfig::configure()
 	// slowly expand keys
 	->withPreparedSets(
 		deadCode: true,
+		codeQuality: true,
+		codingStyle: true,
 		typeDeclarations: true,
 	)
 ;

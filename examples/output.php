@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\MetaDocument;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $document = new MetaDocument();
 $document->add('foo', 'bar');

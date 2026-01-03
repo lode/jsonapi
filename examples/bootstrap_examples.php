@@ -92,10 +92,10 @@ class ExampleDataset {
 	 * @return ExampleUser[]
 	 */
 	public static function findEntities(string $type): array {
-		$records  = self::findRecords($type);
-		$entities = [];
+		$recordIds = array_keys(self::findRecords($type));
+		$entities  = [];
 		
-		foreach ($records as $id => $record) {
+		foreach ($recordIds as $id) {
 			$entities[$id] = self::getEntity($type, $id);
 		}
 		
@@ -112,7 +112,7 @@ class ExampleUser {
 		public int $id,
 	) {}
 	
-	function getCurrentLocation(): string {
+	public function getCurrentLocation(): string {
 		return 'Earth';
 	}
 }

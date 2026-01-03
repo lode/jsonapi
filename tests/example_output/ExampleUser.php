@@ -13,7 +13,7 @@ class ExampleUser {
 		public int $id,
 	) {}
 	
-	function getCurrentLocation(): string {
+	public function getCurrentLocation(): string {
 		return 'Earth';
 	}
 }

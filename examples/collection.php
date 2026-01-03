@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $users = ExampleDataset::findEntities('user');
 

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class LinksManagerTest extends TestCase {
 	private object $linksManager;
 	
-	public function setUp(): void {
+	protected function setUp(): void {
 		// using LinksManager to make it non-trait to test against it
 		$this->linksManager = new class {
 			use LinksManager;
