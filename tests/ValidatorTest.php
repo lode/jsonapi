@@ -191,7 +191,7 @@ class ValidatorTest extends TestCase {
 	/**
 	 * @return array<array{0: bool, 1: int|string}>
 	 */
-	public static function dataProviderCheckHttpStatusCode_HappyPath() {
+	public static function dataProviderCheckHttpStatusCode_HappyPath(): array {
 		return [
 			[false, 42],
 			[true,  100],

@@ -28,9 +28,6 @@ class MetaDocument extends Document {
 		return $metaDocument;
 	}
 	
-	/**
-	 * @param object $meta
-	 */
 	public static function fromObject(object $meta): static {
 		$array = Converter::objectToArray($meta);
 		

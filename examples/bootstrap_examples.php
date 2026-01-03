@@ -70,9 +70,6 @@ class ExampleDataset {
 		return self::$records[$type][$id];
 	}
 	
-	/**
-	 * @return ExampleUser
-	 */
 	public static function getEntity(string $type, int $id): ExampleUser {
 		$record = self::getRecord($type, $id);
 		

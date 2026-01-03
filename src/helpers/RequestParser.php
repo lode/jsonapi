@@ -63,8 +63,8 @@ class RequestParser {
 		
 		$document = $_POST;
 		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
-			$documentIsJsonapi = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
-			$documentIsJson    = (str_contains((string) $_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
+			$documentIsJsonapi = (str_contains($_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
+			$documentIsJson    = (str_contains($_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
 			$document = file_get_contents('php://input');
 			if ($document === '' || $document === false) {

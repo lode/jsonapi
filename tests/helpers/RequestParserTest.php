@@ -185,10 +185,6 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testFromPsrRequest_WithEmptyDocument(): void {
-		$selfLink        = '';
-		$queryParameters = [];
-		$document        = null;
-		
 		$request = parent::createConfiguredStub(RequestInterface::class, [
 			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
 			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery'   => '']),

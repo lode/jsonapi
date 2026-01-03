@@ -42,7 +42,6 @@ class ErrorObjectTest extends TestCase {
 	
 	public function testFromException_DoNotExposeTrace(): void {
 		$exception    = new \Exception('foo', 1);
-		$expectedLine = (__LINE__ - 1);
 		$options      = ['includeExceptionTrace' => false];
 		$errorObject  = ErrorObject::fromException($exception, $options);
 		

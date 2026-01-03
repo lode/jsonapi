@@ -78,7 +78,7 @@ class ResourceIdentifierObjectTest extends TestCase {
 	
 	public function testFromResourceObject_NoFullIdentification(): void {
 		$resource = new ResourceObject();
-		$array = $resource->toArray();
+		$resource->toArray();
 		
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('resource has no identification yet');
