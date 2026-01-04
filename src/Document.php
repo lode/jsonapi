@@ -274,7 +274,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		
 		// we can't use exceptions because $options['encodeOptions'] might be overridden to silence them
 		if ($json === false) {
-			throw new Exception('failed to encode json: '.json_last_error().', '.json_last_error_msg());
+			throw new Exception('failed to encode json: '.json_last_error_msg());
 		}
 		
 		if ($options['jsonpCallback'] !== null) {

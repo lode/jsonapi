@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapiTests\profiles;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
@@ -350,5 +351,19 @@ final class CursorPaginationProfileTest extends TestCase {
 		$newUrl = $method->invoke($profile, $url, $key, $value);
 		
 		parent::assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
+	}
+	
+	public function testSetQueryParameter_WithBrokenUrl(): void {
+		$profile = new CursorPaginationProfile();
+		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
+		
+		$url   = 'foo';
+		$key   = 'page[after]';
+		$value = 'bar';
+		
+		$this->expectException(InputException::class);
+		$this->expectExceptionMessage('missing or broken query parameters in url');
+		
+		$method->invoke($profile, $url, $key, $value);
 	}
 }

@@ -305,6 +305,15 @@ final class DocumentTest extends TestCase {
 		$this->document->toJson($options);
 	}
 	
+	public function testToJson_InvalidUtf8CustomException(): void {
+		$options = ['array' => ['foo' => "\xB1\x31"], 'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE];
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('failed to encode json: Malformed UTF-8 characters, possibly incorrectly encoded');
+		
+		$this->document->toJson($options);
+	}
+	
 	public function testJsonSerialize_HappyPath(): void {
 		$this->document->addMeta('foo', 'bar');
 		
