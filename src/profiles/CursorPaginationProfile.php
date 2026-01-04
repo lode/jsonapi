@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapi\profiles;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
@@ -56,10 +57,10 @@ class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * set links to paginate the data using cursors of the paginated data
 	 * 
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
 	public function setLinks(
-		PaginableInterface $paginable,
+		PaginableInterface & HasLinksInterface $paginable,
 		string $baseOrCurrentUrl,
 		string $firstCursor,
 		string $lastCursor,
@@ -71,32 +72,32 @@ class CursorPaginationProfile implements ProfileInterface {
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksFirstPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
+	public function setLinksFirstPage(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjectsWithoutPrevious($paginable, $baseOrCurrentUrl, $lastCursor);
 	}
 	
 	/**
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasLinksInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setLinksLastPage(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
+	public function setLinksLastPage(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjectsWithoutNext($paginable, $baseOrCurrentUrl, $firstCursor);
 	}
 	
 	/**
 	 * set the cursor of a specific resource to allow pagination after or before this resource
 	 */
-	public function setCursor(ResourceInterface $resource, string $cursor): void {
+	public function setCursor(ResourceInterface & HasMetaInterface $resource, string $cursor): void {
 		$this->setItemMeta($resource, $cursor);
 	}
 	
 	/**
 	 * set count(s) to tell about the (estimated) total size
 	 * 
-	 * @param PaginableInterface $paginable a CollectionDocument or RelationshipObject
+	 * @param PaginableInterface & HasMetaInterface $paginable a CollectionDocument or RelationshipObject
 	 */
-	public function setCount(PaginableInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null) {
+	public function setCount(PaginableInterface & HasMetaInterface $paginable, ?int $exactTotal=null, ?int $bestGuessTotal=null): void {
 		$this->setPaginationMeta($paginable, $exactTotal, $bestGuessTotal);
 	}
 	
@@ -114,7 +115,7 @@ class CursorPaginationProfile implements ProfileInterface {
 	/**
 	 * helper to get generate a correct page[after] link, use to apply manually
 	 */
-	public function generateNextLink($baseOrCurrentUrl, $afterCursor) {
+	public function generateNextLink(string $baseOrCurrentUrl, string $afterCursor): string {
 		return $this->setQueryParameter($baseOrCurrentUrl, 'page[after]', $afterCursor);
 	}
 	
@@ -137,15 +138,15 @@ class CursorPaginationProfile implements ProfileInterface {
 		$paginable->addLinkObject('next', $nextLinkObject);
 	}
 	
-	public function setPaginationLinkObjectsWithoutNext(PaginableInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
+	public function setPaginationLinkObjectsWithoutNext(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $firstCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject($this->generatePreviousLink($baseOrCurrentUrl, $firstCursor)), new LinkObject());
 	}
 	
-	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
+	public function setPaginationLinkObjectsWithoutPrevious(PaginableInterface & HasLinksInterface $paginable, string $baseOrCurrentUrl, string $lastCursor): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject($this->generateNextLink($baseOrCurrentUrl, $lastCursor)));
 	}
 	
-	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface $paginable): void {
+	public function setPaginationLinkObjectsExplicitlyEmpty(PaginableInterface & HasLinksInterface $paginable): void {
 		$this->setPaginationLinkObjects($paginable, new LinkObject(), new LinkObject());
 	}
 	
@@ -304,9 +305,15 @@ class CursorPaginationProfile implements ProfileInterface {
 	
 	/**
 	 * add or adjust a key in the query string of a url
+	 * 
+	 * @throws InputException on missing or broken query parameters inside $url
 	 */
 	private function setQueryParameter(string $url, string $key, string $value): string {
-		$originalQuery     = parse_url($url, PHP_URL_QUERY);
+		$originalQuery = parse_url($url, PHP_URL_QUERY);
+		if ($originalQuery === null || $originalQuery === false) {
+			throw new InputException('missing or broken query parameters in url');
+		}
+		
 		$decodedQuery      = urldecode($originalQuery);
 		$originalIsEncoded = ($decodedQuery !== $originalQuery);
 		

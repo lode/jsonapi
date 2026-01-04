@@ -12,12 +12,13 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class DocumentTest extends TestCase {
-	private object $document;
+final class DocumentTest extends TestCase {
+	private Document $document;
 	
-	public function setUp(): void {
+	protected function setUp(): void {
 		/**
 		 * extending Document to make it non-abstract to test against it
 		 * 
@@ -180,9 +181,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_HappyPath(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, [
 			'getNamespace'    => 'test',
@@ -215,9 +214,7 @@ class DocumentTest extends TestCase {
 		parent::assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_InvalidNamespace(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo-bar']);
 		
@@ -227,9 +224,7 @@ class DocumentTest extends TestCase {
 		$this->document->applyExtension($extension);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testApplyExtension_ConflictingNamespace(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
 		$this->document->applyExtension($extension1);
@@ -245,9 +240,7 @@ class DocumentTest extends TestCase {
 		$this->document->applyExtension($extension3);
 	}
 	
-	/**
-	 * @group Profiles
-	 */
+	#[Group('Profiles')]
 	public function testApplyProfile_HappyPath(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'https://jsonapi.org/profile']);
 		
@@ -308,6 +301,15 @@ class DocumentTest extends TestCase {
 		$this->expectException(\JsonException::class);
 		$this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
 		$this->expectExceptionCode(JSON_ERROR_UTF8);
+		
+		$this->document->toJson($options);
+	}
+	
+	public function testToJson_InvalidUtf8CustomException(): void {
+		$options = ['array' => ['foo' => "\xB1\x31"], 'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE];
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('failed to encode json: Malformed UTF-8 characters, possibly incorrectly encoded');
 		
 		$this->document->toJson($options);
 	}

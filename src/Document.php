@@ -47,8 +47,8 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	protected array $extensions = [];
 	/** @var ProfileInterface[] */
 	protected array $profiles = [];
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_DefaultOptions_Document */
+	protected static array $documentDefaults = [
 		/**
 		 * encode to json with these default options
 		 */
@@ -140,7 +140,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	/**
-	 * @throws InputException if the $level is unknown
 	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
 	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
@@ -163,9 +162,6 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 			
 			case DocumentLevelEnum::Resource:
 				throw new InputException('level "resource" can only be set on a ResourceDocument');
-			
-			default:
-				throw new InputException('unknown level "'.$level->value.'"');
 		}
 	}
 	
@@ -177,6 +173,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		$this->meta = $metaObject;
 	}
 	
+	/** @phpstan-assert JsonapiObject $this->jsonapi */
 	public function setJsonapiObject(JsonapiObject $jsonapiObject): void {
 		$this->jsonapi = $jsonapiObject;
 	}
@@ -261,10 +258,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	/**
-	 * @throws \JsonException
+	 * @throws \JsonException if encoding fails
+	 * @throws Exception if encoding fails and $options['encodeOptions'] doesn't include JSON_THROW_ON_ERROR
 	 */
 	public function toJson(array $options=[]): string {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$documentDefaults, ...$options];
 		
 		$array = $options['array'] ?? $this->toArray();
 		
@@ -274,6 +272,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		
 		$json = json_encode($array, $options['encodeOptions']);
 		
+		// we can't use exceptions because $options['encodeOptions'] might be overridden to silence them
+		if ($json === false) {
+			throw new Exception('failed to encode json: '.json_last_error_msg());
+		}
+		
 		if ($options['jsonpCallback'] !== null) {
 			$json = $options['jsonpCallback'].'('.$json.')';
 		}
@@ -282,7 +285,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	}
 	
 	public function sendResponse(array $options=[]): void {
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$documentDefaults, ...$options];
 		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);
@@ -303,6 +306,9 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * JsonSerializable
 	 */
 	
+	/**
+	 * @return array<string, mixed>
+	 */
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize(): array {
 		return $this->toArray();

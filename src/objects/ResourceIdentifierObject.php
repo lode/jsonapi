@@ -112,7 +112,7 @@ class ResourceIdentifierObject extends AbstractObject implements HasMetaInterfac
 	 */
 	public static function fromResourceObject(ResourceObject $resourceObject): static {
 		if ($resourceObject->hasIdentification() === false) {
-			throw new InputException('resource has no identification yet<');
+			throw new InputException('resource has no identification yet');
 		}
 		
 		$resourceIdentifierObject = new static($resourceObject->type, $resourceObject->primaryId());

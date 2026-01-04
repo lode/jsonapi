@@ -11,7 +11,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class relationships {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$document = new ResourceDocument('user', 1);
 		
 		$ship1Resource = new ResourceObject('ship', 24);

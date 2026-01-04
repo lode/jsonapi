@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -13,6 +14,9 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
  * @internal
  */
 class Converter {
+	/**
+	 * @return array<string, mixed>
+	 */
 	public static function objectToArray(object $object): array {
 		if ($object instanceof ObjectInterface) {
 			return $object->toArray();
@@ -23,9 +27,15 @@ class Converter {
 	
 	/**
 	 * @see https://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced/7599674#7599674
+	 * 
+	 * @throws Exception if string is impossible to split to words
 	 */
 	public static function camelCaseToWords(string $camelCase): string {
 		$parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $camelCase);
+		
+		if ($parts === false) {
+			throw new Exception('failed to convert camel case string to words');
+		}
 		
 		return implode(' ', $parts);
 	}

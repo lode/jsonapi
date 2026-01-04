@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapiTests\example_output\ExampleTimestampsProfile;
 
 class profile {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$profile = new ExampleTimestampsProfile();
 		
 		$document = new ResourceDocument('user', 42);

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $users = ExampleDataset::findEntities('user');
 
@@ -18,7 +18,7 @@ $collection = [];
 foreach ($users as $user) {
 	$resource = ResourceObject::fromObject($user, type: 'user', id: $user->id);
 	
-	if ($user->id == 42) {
+	if ($user->id === 42) {
 		$ship = new ResourceObject('ship', 5);
 		$ship->add('name', 'Heart of Gold');
 		$resource->addRelationship('ship', $ship);

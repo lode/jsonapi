@@ -24,6 +24,8 @@ class AttributesObject extends AbstractObject {
 	/**
 	 * @note if an `id` is set inside $attributes, it is removed from there
 	 *       it is common to find it inside, and not doing so will cause an exception
+	 * 
+	 * @param array<string, mixed> $attributes
 	 */
 	public static function fromArray(array $attributes): static {
 		unset($attributes['id']);

@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 
-class ValidatorTest extends TestCase {
+final class ValidatorTest extends TestCase {
 	#[DoesNotPerformAssertions]
 	public function testClaimUsedFields_HappyPath(): void {
 		$validator = new Validator();
@@ -147,52 +147,55 @@ class ValidatorTest extends TestCase {
 	
 	#[DoesNotPerformAssertions]
 	#[DataProvider('dataProviderCheckMemberName_HappyPath')]
-	public function testCheckMemberName_HappyPath($memberName): void {
+	public function testCheckMemberName_HappyPath(string $memberName): void {
 		Validator::checkMemberName($memberName);
 	}
 	
-	public static function dataProviderCheckMemberName_HappyPath() {
-		return [
-			['foo'],
-			['f_o'],
-			['f-o'],
-			['42foo'],
-			['42'],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{string}>
+	 */
+	public static function dataProviderCheckMemberName_HappyPath(): \Iterator {
+		yield ['foo'];
+		yield ['f_o'];
+		yield ['f-o'];
+		yield ['42foo'];
+		yield ['42'];
 	}
 	
 	#[DataProvider('dataProviderCheckMemberName_InvalidNames')]
-	public function testCheckMemberName_InvalidNames($memberName): void {
+	public function testCheckMemberName_InvalidNames(string $memberName): void {
 		$this->expectException(InputException::class);
 		
 		Validator::checkMemberName($memberName);
 	}
 	
-	public static function dataProviderCheckMemberName_InvalidNames() {
-		return [
-			['_'],
-			['-'],
-			['foo-'],
-			['-foo'],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{string}>
+	 */
+	public static function dataProviderCheckMemberName_InvalidNames(): \Iterator {
+		yield ['_'];
+		yield ['-'];
+		yield ['foo-'];
+		yield ['-foo'];
 	}
 	
 	#[DataProvider('dataProviderCheckHttpStatusCode_HappyPath')]
-	public function testCheckHttpStatusCode_HappyPath($expectedOutput, $httpStatusCode): void {
+	public function testCheckHttpStatusCode_HappyPath(bool $expectedOutput, int|string $httpStatusCode): void {
 		parent::assertSame($expectedOutput, Validator::checkHttpStatusCode($httpStatusCode));
 	}
 	
-	public static function dataProviderCheckHttpStatusCode_HappyPath() {
-		return [
-			[false, 42],
-			[true,  100],
-			[true,  200],
-			[true,  300],
-			[true,  400],
-			[true,  500],
-			[false, 600],
-			[false, '42'],
-			[true,  '100'],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{bool, (int | string)}>
+	 */
+	public static function dataProviderCheckHttpStatusCode_HappyPath(): \Iterator {
+		yield [false, 42];
+		yield [true,  100];
+		yield [true,  200];
+		yield [true,  300];
+		yield [true,  400];
+		yield [true,  500];
+		yield [false, 600];
+		yield [false, '42'];
+		yield [true,  '100'];
 	}
 }

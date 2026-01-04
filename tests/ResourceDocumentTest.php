@@ -6,6 +6,7 @@ namespace alsvanzelf\jsonapiTests;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
@@ -14,9 +15,10 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class ResourceDocumentTest extends TestCase {
+final class ResourceDocumentTest extends TestCase {
 	public function testConstructor_NoResource(): void {
 		$document = new ResourceDocument();
 		
@@ -61,9 +63,7 @@ class ResourceDocumentTest extends TestCase {
 		$document->add('foo', 'bar');
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testAdd_BlocksExtensionMembersViaRegularAdd(): void {
 		$document = new ResourceDocument();
 		$document->applyExtension(parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']));
@@ -100,6 +100,66 @@ class ResourceDocumentTest extends TestCase {
 		parent::assertArrayNotHasKey('included', $array);
 	}
 	
+	public function testAddRelationship_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addRelationship('foo', null);
+	}
+	
+	public function testAddLink_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addLink('foo', null);
+	}
+	
+	public function testSetSelfLink_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setSelfLink('https://jsonapi.org');
+	}
+	
+	public function testSetAttributesObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setAttributesObject(new AttributesObject());
+	}
+	
+	public function testAddRelationshipObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->addRelationshipObject('foo', new RelationshipObject(RelationshipTypeEnum::ToOne));
+	}
+	
+	public function testSetRelationshipsObject_IdentifierOnlyObject(): void {
+		$document = new ResourceDocument();
+		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
+		
+		$this->expectException(Exception::class);
+		$this->expectExceptionMessage('the resource is an identifier-only object');
+		
+		$document->setRelationshipsObject(new RelationshipsObject());
+	}
+	
 	public function testAddMeta_HappyPath(): void {
 		$document = new ResourceDocument();
 		$document->addMeta('foo', 'root', DocumentLevelEnum::Root);
@@ -110,18 +170,12 @@ class ResourceDocumentTest extends TestCase {
 		
 		parent::assertArrayHasKey('meta', $array);
 		parent::assertArrayHasKey('data', $array);
-		parent::assertArrayHasKey('meta', $array['data']);
 		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('meta', $array['data']);
 		parent::assertArrayHasKey('meta', $array['jsonapi']);
-		parent::assertArrayHasKey('foo', $array['meta']);
-		parent::assertArrayHasKey('bar', $array['data']['meta']);
-		parent::assertArrayHasKey('baz', $array['jsonapi']['meta']);
-		parent::assertCount(1, $array['meta']);
-		parent::assertCount(1, $array['data']['meta']);
-		parent::assertCount(1, $array['jsonapi']['meta']);
-		parent::assertSame('root', $array['meta']['foo']);
-		parent::assertSame('resource', $array['data']['meta']['bar']);
-		parent::assertSame('jsonapi', $array['jsonapi']['meta']['baz']);
+		parent::assertSame(['foo' => 'root'], $array['meta']);
+		parent::assertSame(['bar' => 'resource'], $array['data']['meta']);
+		parent::assertSame(['baz' => 'jsonapi'], $array['jsonapi']['meta']);
 	}
 	
 	public function testAddMeta_RecreateJsonapiObject(): void {

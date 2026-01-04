@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\MetaDocument;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $document = new MetaDocument();
 $document->add('foo', 'bar');
@@ -69,10 +69,6 @@ echo '<pre>'.var_export($document->toJson($options), return: true).'</pre>';
  * send json response
  */
 
-$options = ['prettyPrint' => true, 'contentType' => 'text/html'];
 echo '<h2>Send json response</h2>';
 echo '<pre style="font-size: large;">$document->sendResponse();</pre>';
-echo '<pre>';
-$document->sendResponse($options);
-echo '</pre>';
-echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.ContentTypeEnum::Official->value.']</em></p>';
+echo '<p><em>Echo\'s the result of <code style="font-size: large;">$document->toJson()</code> and sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.ContentTypeEnum::Official->value.']</em></p>';

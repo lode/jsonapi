@@ -27,8 +27,8 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
  */
 class ResourceDocument extends DataDocument implements HasAttributesInterface, ResourceInterface {
 	protected ResourceIdentifierObject|ResourceObject $resource;
-	/** @var PHPStanTypeAlias_InternalOptions */
-	protected static array $defaults = [
+	/** @var PHPStanTypeAlias_DefaultOptions_ResourceDocument */
+	protected static array $resourceDocumentDefaults = [
 		/**
 		 * add resources inside relationships to /included when adding resources to the collection
 		 */
@@ -51,7 +51,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 */
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults} {@see ResourceObject::$defaults}
+	 * @param array<string, mixed> $attributes
+	 * @param PHPStanTypeAlias_Options_ResourceDocumentAndValidator $options {@see ResourceDocument::$resourceDocumentDefaults} {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public static function fromArray(
 		array $attributes,
@@ -66,7 +67,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	}
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_Options_ResourceDocumentAndValidator $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 */
 	public static function fromObject(
 		object $attributes,
@@ -82,8 +83,8 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	/**
 	 * add key-value pairs to the resource's attributes
 	 * 
-	 * @param mixed                            $value   objects will be converted using `get_object_vars()`
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
+	 * @param mixed                             $value   objects will be converted using `get_object_vars()`
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 */
 	public function add(string $key, mixed $value, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
@@ -101,7 +102,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param array<string, ?string>                                        $links
 	 * @param array<string, mixed>                                          $meta
-	 * @param PHPStanTypeAlias_InternalOptions                              $options {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_Options_ResourceDocument                     $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 */
 	public function addRelationship(
 		string $key,
@@ -114,7 +115,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$resourceDocumentDefaults, ...$options];
 		
 		$relationshipObject = $this->resource->addRelationship($key, $relation, $links, $meta);
 		
@@ -188,7 +189,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	}
 	
 	/**
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
 	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
@@ -203,14 +204,14 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the RelationshipObject, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_Options_ResourceDocument $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 */
 	public function addRelationshipObject(string $key, RelationshipObject $relationshipObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$resourceDocumentDefaults, ...$options];
 		
 		$this->resource->addRelationshipObject($key, $relationshipObject);
 		
@@ -224,14 +225,14 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the RelationshipObjects inside the RelationshipsObject, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_Options_ResourceDocument $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 */
 	public function setRelationshipsObject(RelationshipsObject $relationshipsObject, array $options=[]): void {
 		if ($this->resource instanceof ResourceObject === false) {
 			throw new Exception('the resource is an identifier-only object');
 		}
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$resourceDocumentDefaults, ...$options];
 		
 		$this->resource->setRelationshipsObject($relationshipsObject);
 		
@@ -249,7 +250,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 * 
 	 * adds included resources if found inside the resource's relationships, unless $options['includeContainedResources'] is set to false
 	 * 
-	 * @param PHPStanTypeAlias_InternalOptions $options {@see ResourceDocument::$defaults}
+	 * @param PHPStanTypeAlias_Options_ResourceDocument $options {@see ResourceDocument::$resourceDocumentDefaults}
 	 * 
 	 * @throws InputException if the $resource is a ResourceDocument itself
 	 */
@@ -260,7 +261,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 		
 		/** @var ResourceIdentifierObject|ResourceObject $resource */
 		
-		$options = [...self::$defaults, ...$options];
+		$options = [...self::$resourceDocumentDefaults, ...$options];
 		
 		$this->resource = $resource;
 		
@@ -293,7 +294,7 @@ class ResourceDocument extends DataDocument implements HasAttributesInterface, R
 	 */
 	
 	public function addAttribute(string $key, mixed $value, array $options=[]): void {
-		$this->add($key, $value);
+		$this->add($key, $value, $options);
 	}
 	
 	/**

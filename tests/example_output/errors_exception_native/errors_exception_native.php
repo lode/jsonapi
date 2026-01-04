@@ -7,7 +7,7 @@ namespace alsvanzelf\jsonapiTests\example_output\errors_exception_native;
 use alsvanzelf\jsonapi\ErrorsDocument;
 
 class errors_exception_native {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ErrorsDocument {
 		$exception = new \Exception('unknown user', 404);
 		$options = [
 			'includeExceptionTrace'    => false,

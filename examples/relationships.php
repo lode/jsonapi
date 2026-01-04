@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * the different ways of adding relationships to a resource
@@ -73,15 +73,6 @@ $relationshipObject->addResource($ship1Resource);
 $relationshipObject->addResource($dockResource);
 
 $document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
-
-/**
- * custom
- */
-$jsonapi = new ResourceDocument('user', 1);
-$customRelation = [
-	'data' => ['cus' => 'tom'],
-];
-$jsonapi->addRelationship('custom', $customRelation);
 
 /**
  * sending the response

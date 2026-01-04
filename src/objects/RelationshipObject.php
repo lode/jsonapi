@@ -45,8 +45,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	 * @param  CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
 	 * @param  array<string, ?string>                                        $links
 	 * @param  array<string, mixed>                                          $meta
-	 * 
-	 * @throws InputException if $relation is not one of the supported formats
 	 */
 	public static function fromAnything(
 		array|CollectionDocument|ResourceInterface|null $relation,
@@ -65,9 +63,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		}
 		elseif ($relation === null) {
 			$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
-		}
-		else {
-			throw new InputException('unknown format of relation "'.get_debug_type($relation).'"');
 		}
 		
 		return $relationshipObject;
@@ -122,14 +117,14 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 	}
 	
 	/**
-	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setSelfLink(string $href, array $meta=[]): void {
 		$this->addLink('self', $href, $meta);
 	}
 	
 	/**
-	 * @param array $meta if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
 	public function setRelatedLink(string $href, array $meta=[]): void {
 		$this->addLink('related', $href, $meta);
@@ -316,6 +311,7 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 		$resourceObjects = [];
 		
 		foreach ($resources as $resource) {
+			// @phpstan-ignore instanceof.alwaysTrue, identical.alwaysFalse (we _can_ have both ResourceObject and ResourceIdentifierObject here)
 			if ($resource->getResource() instanceof ResourceObject === false) {
 				continue;
 			}

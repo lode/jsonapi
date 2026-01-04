@@ -12,7 +12,7 @@ use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use PHPUnit\Framework\TestCase;
 
-class RelationshipsObjectTest extends TestCase {
+final class RelationshipsObjectTest extends TestCase {
 	public function testAdd_HappyPath(): void {
 		$relationshipsObject = new RelationshipsObject();
 		$relationshipsObject->add('foo', new ResourceObject('user', 42));

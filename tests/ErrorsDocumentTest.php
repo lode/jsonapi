@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
-class ErrorsDocumentTest extends TestCase {
+final class ErrorsDocumentTest extends TestCase {
 	public function testFromException_HappyPath(): void {
 		$document = ErrorsDocument::fromException(new \Exception('foo', 42));
 		
@@ -120,19 +120,20 @@ class ErrorsDocumentTest extends TestCase {
 		parent::assertSame($expectedAdvisedErrorCode, $advisedErrorCode);
 	}
 	
-	public static function dataProviderDetermineHttpStatusCode_HappyPath() {
-		return [
-			[422, [422]],
-			[422, [422, 422]],
-			[400, [422, 404]],
-			[400, [400]],
-			[501, [501]],
-			[501, [501, 501]],
-			[500, [501, 503]],
-			[500, [422, 404, 501, 503]],
-			[500, [500]],
-			[302, [302]],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{int, non-empty-array<int>}>
+	 */
+	public static function dataProviderDetermineHttpStatusCode_HappyPath(): \Iterator {
+		yield [422, [422]];
+		yield [422, [422, 422]];
+		yield [400, [422, 404]];
+		yield [400, [400]];
+		yield [501, [501]];
+		yield [501, [501, 501]];
+		yield [500, [501, 503]];
+		yield [500, [422, 404, 501, 503]];
+		yield [500, [500]];
+		yield [302, [302]];
 	}
 	
 	public function testDetermineHttpStatusCode_Override(): void {

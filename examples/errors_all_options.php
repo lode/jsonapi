@@ -5,7 +5,7 @@ declare(strict_types=1);
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * setting all options

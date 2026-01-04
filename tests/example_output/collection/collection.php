@@ -9,7 +9,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapiTests\example_output\ExampleUser;
 
 class collection {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$user1        = new ExampleUser(1);
 		$user1->name  = 'Ford Prefect';
 		$user1->heads = 1;
@@ -29,7 +29,7 @@ class collection {
 		foreach ($users as $user) {
 			$resource = ResourceObject::fromObject($user, 'user', $user->id);
 			
-			if ($user->id == 42) {
+			if ($user->id === 42) {
 				$ship = new ResourceObject('ship', 5);
 				$ship->add('name', 'Heart of Gold');
 				$resource->addRelationship('ship', $ship);

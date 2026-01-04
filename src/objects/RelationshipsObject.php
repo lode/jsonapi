@@ -29,7 +29,7 @@ class RelationshipsObject extends AbstractObject implements RecursiveResourceCon
 	 */
 	public function add(
 		string $key,
-		$relation,
+		array|CollectionDocument|ResourceInterface|null $relation,
 		array $links=[],
 		array $meta=[],
 	): RelationshipObject {

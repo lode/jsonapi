@@ -10,7 +10,6 @@ use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
-use alsvanzelf\jsonapi\objects\ResourceObject;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -18,7 +17,8 @@ error_reporting(-1);
 require_once __DIR__.'/../vendor/autoload.php';
 
 class ExampleDataset {
-	private static $records = [
+	/** @var array<string, array<int, array<string, string|int>>> */
+	private static array $records = [
 		'articles' => [
 			1 => [
 				'title'    => 'JSON:API paints my bikeshed!',
@@ -58,34 +58,43 @@ class ExampleDataset {
 		],
 	];
 	
-	public static function getRecord($type, $id) {
-		if (!isset(self::$records[$type][$id])) {
+	/**
+	 * @return array<string, string|int>
+	 */
+	public static function getRecord(string $type, int $id): array {
+		if (isset(self::$records[$type][$id]) === false) {
 			throw new \Exception('sorry, we have a limited dataset');
 		}
 		
 		return self::$records[$type][$id];
 	}
 	
-	public static function getEntity($type, $id) {
+	public static function getEntity(string $type, int $id): ExampleUser {
 		$record = self::getRecord($type, $id);
 		
 		$user = new ExampleUser($id);
 		foreach ($record as $key => $value) {
-			$user->$key = $value;
+			$user->$key = $value; // @phpstan-ignore property.dynamicName
 		}
 		
 		return $user;
 	}
 	
-	public static function findRecords($type) {
+	/**
+	 * @return array<array<string, string|int>>
+	 */
+	public static function findRecords(string $type): array {
 		return self::$records[$type];
 	}
 	
-	public static function findEntities($type) {
-		$records  = self::findRecords($type);
-		$entities = [];
+	/**
+	 * @return ExampleUser[]
+	 */
+	public static function findEntities(string $type): array {
+		$recordIds = array_keys(self::findRecords($type));
+		$entities  = [];
 		
-		foreach ($records as $id => $record) {
+		foreach ($recordIds as $id) {
 			$entities[$id] = self::getEntity($type, $id);
 		}
 		
@@ -94,15 +103,15 @@ class ExampleDataset {
 }
 
 class ExampleUser {
-	public $name;
-	public $heads;
-	public $unknown;
+	public ?string $name = null;
+	public null|int|string $heads = null;
+	public mixed $unknown = null;
 	
 	public function __construct(
-		public $id,
+		public int $id,
 	) {}
 	
-	function getCurrentLocation() {
+	public function getCurrentLocation(): string {
 		return 'Earth';
 	}
 }
@@ -124,11 +133,7 @@ class ExampleVersionExtension implements ExtensionInterface {
 	 * optionally helpers for the specific extension
 	 */
 	
-	public function setVersion(ResourceInterface $resource, $version) {
-		if ($resource instanceof HasExtensionMembersInterface === false) {
-			throw new \Exception('resource doesn\'t have extension members');
-		}
-		
+	public function setVersion(ResourceInterface & HasExtensionMembersInterface $resource, string $version): void {
 		if ($resource instanceof ResourceDocument) {
 			$resource->getResource()->addExtensionMember($this, 'id', $version);
 		}
@@ -151,14 +156,11 @@ class ExampleTimestampsProfile implements ProfileInterface {
 	 * optionally helpers for the specific profile
 	 */
 	
-	/**
-	 * @param ResourceInterface&HasAttributesInterface $resource
-	 */
-	public function setTimestamps(ResourceInterface $resource, ?\DateTimeInterface $created=null, ?\DateTimeInterface $updated=null) {
-		if ($resource instanceof HasAttributesInterface === false) {
-			throw new \Exception('cannot add attributes to identifier objects');
-		}
-		
+	public function setTimestamps(
+		ResourceInterface & HasAttributesInterface $resource,
+		?\DateTimeInterface $created=null,
+		?\DateTimeInterface $updated=null,
+	): void {
 		$timestamps = [];
 		if ($created !== null) {
 			$timestamps['created'] = $created->format(\DateTime::ISO8601);

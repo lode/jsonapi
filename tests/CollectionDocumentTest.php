@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-class CollectionDocumentTest extends TestCase {
+final class CollectionDocumentTest extends TestCase {
 	public function testConstructor_NoResources(): void {
 		$document = new CollectionDocument();
 		
@@ -101,7 +101,7 @@ class CollectionDocumentTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderSetPaginationLinks_IndividualLinks')]
-	public function testSetPaginationLinks_IndividualLinks($key, $previous, $next, $first, $last): void {
+	public function testSetPaginationLinks_IndividualLinks(?string $key, ?string $previous, ?string $next, ?string $first, ?string $last): void {
 		$document = new CollectionDocument();
 		
 		$document->setPaginationLinks($previous, $next, $first, $last);
@@ -119,14 +119,15 @@ class CollectionDocumentTest extends TestCase {
 		}
 	}
 	
-	public static function dataProviderSetPaginationLinks_IndividualLinks() {
-		return [
-			['prev',  'https://jsonapi.org', null, null, null],
-			['next',  null, 'https://jsonapi.org', null, null],
-			['first', null, null, 'https://jsonapi.org', null],
-			['last',  null, null, null, 'https://jsonapi.org'],
-			[null,    null, null, null, null],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{(string | null), (string | null), (string | null), (string | null), (string | null)}>
+	 */
+	public static function dataProviderSetPaginationLinks_IndividualLinks(): \Iterator {
+		yield ['prev',  'https://jsonapi.org', null, null, null];
+		yield ['next',  null, 'https://jsonapi.org', null, null];
+		yield ['first', null, null, 'https://jsonapi.org', null];
+		yield ['last',  null, null, null, 'https://jsonapi.org'];
+		yield [null,    null, null, null, null];
 	}
 	
 	public function testAddResource_HappyPath(): void {

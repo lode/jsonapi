@@ -8,10 +8,10 @@ use alsvanzelf\jsonapi\helpers\LinksManager;
 use alsvanzelf\jsonapi\objects\LinkObject;
 use PHPUnit\Framework\TestCase;
 
-class LinksManagerTest extends TestCase {
+final class LinksManagerTest extends TestCase {
 	private object $linksManager;
 	
-	public function setUp(): void {
+	protected function setUp(): void {
 		// using LinksManager to make it non-trait to test against it
 		$this->linksManager = new class {
 			use LinksManager;
@@ -20,7 +20,7 @@ class LinksManagerTest extends TestCase {
 			 * @return array<string, string|array{href: string}>
 			 */
 			public function toArray(): array {
-				return $this->links->toArray();
+				return $this->links->toArray(); // @phpstan-ignore return.type (toArray() methods don't have explicit array shapes yet)
 			}
 		};
 	}

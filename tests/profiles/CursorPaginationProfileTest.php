@@ -6,15 +6,15 @@ namespace alsvanzelf\jsonapiTests\profiles;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Profiles
- */
-class CursorPaginationProfileTest extends TestCase {
+#[Group('Profiles')]
+final class CursorPaginationProfileTest extends TestCase {
 	public function testSetLinks_HappyPath(): void {
 		$profile          = new CursorPaginationProfile();
 		$collection       = new CollectionDocument();
@@ -76,21 +76,30 @@ class CursorPaginationProfileTest extends TestCase {
 		parent::assertArrayHasKey('data', $array);
 		parent::assertArrayHasKey('relationships', $array['data']);
 		parent::assertArrayHasKey('people', $array['data']['relationships']);
-		parent::assertArrayHasKey('links', $array['data']['relationships']['people']);
-		parent::assertArrayHasKey('data', $array['data']['relationships']['people']);
-		parent::assertArrayHasKey('meta', $array['data']['relationships']['people']);
-		parent::assertArrayHasKey('prev', $array['data']['relationships']['people']['links']);
-		parent::assertArrayHasKey('next', $array['data']['relationships']['people']['links']);
-		parent::assertArrayHasKey('page', $array['data']['relationships']['people']['meta']);
-		parent::assertArrayHasKey('href', $array['data']['relationships']['people']['links']['prev']);
-		parent::assertArrayHasKey('href', $array['data']['relationships']['people']['links']['next']);
-		parent::assertArrayHasKey('total', $array['data']['relationships']['people']['meta']['page']);
-		parent::assertArrayHasKey('estimatedTotal', $array['data']['relationships']['people']['meta']['page']);
-		parent::assertArrayHasKey('bestGuess', $array['data']['relationships']['people']['meta']['page']['estimatedTotal']);
-		parent::assertCount(3, $array['data']['relationships']['people']['data']);
-		parent::assertArrayHasKey('meta', $array['data']['relationships']['people']['data'][0]);
-		parent::assertArrayHasKey('page', $array['data']['relationships']['people']['data'][0]['meta']);
-		parent::assertArrayHasKey('cursor', $array['data']['relationships']['people']['data'][0]['meta']['page']);
+		
+		// re-map nested arrays to variables to speed up phpstan
+		// without it, this file takes 10 seconds (!) more to process
+		
+		$people = $array['data']['relationships']['people'];
+		parent::assertArrayHasKey('links', $people);
+		parent::assertArrayHasKey('data', $people);
+		parent::assertArrayHasKey('meta', $people);
+		parent::assertArrayHasKey('prev', $people['links']);
+		parent::assertArrayHasKey('next', $people['links']);
+		parent::assertArrayHasKey('page', $people['meta']);
+		parent::assertArrayHasKey('href', $people['links']['prev']);
+		parent::assertArrayHasKey('href', $people['links']['next']);
+		
+		$peopleMeta = $people['meta'];
+		parent::assertArrayHasKey('total', $peopleMeta['page']);
+		parent::assertArrayHasKey('estimatedTotal', $peopleMeta['page']);
+		parent::assertArrayHasKey('bestGuess', $peopleMeta['page']['estimatedTotal']);
+		parent::assertCount(3, $people['data']);
+		
+		$firstPerson = $people['data'][0];
+		parent::assertArrayHasKey('meta', $firstPerson);
+		parent::assertArrayHasKey('page', $firstPerson['meta']);
+		parent::assertArrayHasKey('cursor', $firstPerson['meta']['page']);
 	}
 	
 	public function testSetLinksFirstPage_HappyPath(): void {
@@ -342,5 +351,19 @@ class CursorPaginationProfileTest extends TestCase {
 		$newUrl = $method->invoke($profile, $url, $key, $value);
 		
 		parent::assertSame('/people?sort=x&page%5Bsize%5D=10&page%5Bafter%5D=bar', $newUrl);
+	}
+	
+	public function testSetQueryParameter_WithBrokenUrl(): void {
+		$profile = new CursorPaginationProfile();
+		$method  = new \ReflectionMethod($profile, 'setQueryParameter');
+		
+		$url   = 'foo';
+		$key   = 'page[after]';
+		$value = 'bar';
+		
+		$this->expectException(InputException::class);
+		$this->expectExceptionMessage('missing or broken query parameters in url');
+		
+		$method->invoke($profile, $url, $key, $value);
 	}
 }

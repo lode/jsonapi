@@ -10,9 +10,10 @@ use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase {
+final class ConverterTest extends TestCase {
 	public function testObjectToArray_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
@@ -29,10 +30,10 @@ class ConverterTest extends TestCase {
 	
 	public function testObjectToArray_MethodsAndPrivateProperties(): void {
 		$object = new class {
-			public $foo = 'bar';
-			public $baz = 42;
-			private $secret = 'value'; // @phpstan-ignore property.onlyWritten
-			public function method() {}
+			public string $foo = 'bar';
+			public int $baz = 42;
+			private string $secret = 'value'; // @phpstan-ignore property.onlyWritten
+			public function method(): void {}
 		};
 		
 		$array = Converter::objectToArray($object);
@@ -58,50 +59,43 @@ class ConverterTest extends TestCase {
 	}
 	
 	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
-	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput): void {
+	public function testCamelCaseToWords_HappyPath(string $camelCase, string $expectedOutput): void {
 		parent::assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
-	public static function dataProviderCamelCaseToWords_HappyPath() {
-		return [
-			['value',         'value'],
-			['camelValue',    'camel Value'],
-			['TitleValue',    'Title Value'],
-			['VALUE',         'VALUE'],
-			['eclipseRCPExt', 'eclipse RCP Ext'],
-		];
+	/**
+	 * @return \Iterator<(int | string), array{string, string}>
+	 */
+	public static function dataProviderCamelCaseToWords_HappyPath(): \Iterator {
+		yield ['value',         'value'];
+		yield ['camelValue',    'camel Value'];
+		yield ['TitleValue',    'Title Value'];
+		yield ['VALUE',         'VALUE'];
+		yield ['eclipseRCPExt', 'eclipse RCP Ext'];
 	}
 	
-	/**
-	 * @group Extensions
-	 * @group Profiles
-	 */
+	#[Group('Extensions')]
+	#[Group('Profiles')]
 	public function testPrepareContentType_HappyPath(): void {
 		parent::assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testPrepareContentType_WithExtensionStringLink(): void {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
 	
-	/**
-	 * @group Profiles
-	 */
+	#[Group('Profiles')]
 	public function testPrepareContentType_WithProfileStringLink(): void {
 		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
 		
 		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
 	
-	/**
-	 * @group Extensions
-	 * @group Profiles
-	 */
+	#[Group('Extensions')]
+	#[Group('Profiles')]
 	public function testPrepareContentType_WithMultipleExtensionsAndProfiles(): void {
 		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'baz']);

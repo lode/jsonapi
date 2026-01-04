@@ -6,7 +6,7 @@ use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * use an extension extend the document with new members

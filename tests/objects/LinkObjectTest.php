@@ -6,9 +6,10 @@ namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class LinkObjectTest extends TestCase {
+final class LinkObjectTest extends TestCase {
 	public function testSetDescribedBy_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
@@ -155,9 +156,7 @@ class LinkObjectTest extends TestCase {
 		parent::assertFalse($linkObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$linkObject = new LinkObject();
 		

@@ -7,12 +7,11 @@ namespace alsvanzelf\jsonapiTests\extensions;
 use alsvanzelf\jsonapi\extensions\AtomicOperationsDocument;
 use alsvanzelf\jsonapi\extensions\AtomicOperationsExtension;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @group Extensions
- */
-class AtomicOperationsDocumentTest extends TestCase {
+#[Group('Extensions')]
+final class AtomicOperationsDocumentTest extends TestCase {
 	public function testSetResults_HappyPath(): void {
 		$document = new AtomicOperationsDocument();
 		

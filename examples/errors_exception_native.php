@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use alsvanzelf\jsonapi\ErrorsDocument;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * via an exception
@@ -17,12 +17,12 @@ require 'bootstrap_examples.php';
 try {
 	throw new \Exception('unknown user', 404);
 }
-catch (Exception $e) {
+catch (Exception $exception) {
 	$options = [
 		'includeExceptionTrace'    => true,
 		'includeExceptionPrevious' => true,
 	];
-	$document = ErrorsDocument::fromException($e, $options);
+	$document = ErrorsDocument::fromException($exception, $options);
 	
 	$options = [
 		'prettyPrint' => true,

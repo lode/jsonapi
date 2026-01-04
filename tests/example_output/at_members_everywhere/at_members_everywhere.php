@@ -17,7 +17,7 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class at_members_everywhere {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		/**
 		 * root
 		 */

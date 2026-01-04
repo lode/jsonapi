@@ -10,7 +10,7 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 
 class null_values {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$document = new ResourceDocument('user', 42);
 		
 		$document->add('foo', null);

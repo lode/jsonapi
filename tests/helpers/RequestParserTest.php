@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 
-class RequestParserTest extends TestCase {
+final class RequestParserTest extends TestCase {
 	public function testFromSuperglobals_HappyPath(): void {
 		$_GET = [
 			'include' => 'ship,ship.wing',
@@ -87,12 +87,9 @@ class RequestParserTest extends TestCase {
 		$_SERVER['REQUEST_URI']    = '/';
 		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
+		// empty $_POST so we get a bit more test coverage for input stream processing
 		$_GET  = [];
-		$_POST = [
-			'meta' => [
-				'foo' => 'bar',
-			],
-		];
+		$_POST = [];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
@@ -188,10 +185,6 @@ class RequestParserTest extends TestCase {
 	}
 	
 	public function testFromPsrRequest_WithEmptyDocument(): void {
-		$selfLink        = '';
-		$queryParameters = [];
-		$document        = null;
-		
 		$request = parent::createConfiguredStub(RequestInterface::class, [
 			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
 			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery'   => '']),

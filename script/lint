@@ -5,7 +5,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd $SCRIPT_DIR/..
 
 # whether to run bonus levels by default, or only when requested
-BONUS_DEFAULT=0
+BONUS_DEFAULT=1
 
 # docker configured and not inside docker
 CONSOLE_PREFIX=""

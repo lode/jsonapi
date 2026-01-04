@@ -13,9 +13,10 @@ use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class RelationshipObjectTest extends TestCase {
+final class RelationshipObjectTest extends TestCase {
 	public function testConstructor_ToOne(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationshipObject->setResource(new ResourceObject('user', 42));
@@ -298,9 +299,7 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
+	#[Group('Extensions')]
 	public function testIsEmpty_WithExtensionMembers(): void {
 		$relationshipObject = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		
@@ -311,7 +310,10 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertFalse($relationshipObject->isEmpty());
 	}
 	
-	private function validateToOneRelationshipArray(array $array) {
+	/**
+	 * @param array<string, mixed> $array
+	 */
+	private function validateToOneRelationshipArray(array $array): void {
 		parent::assertNotEmpty($array);
 		parent::assertArrayHasKey('data', $array);
 		parent::assertArrayHasKey('type', $array['data']);
@@ -320,7 +322,10 @@ class RelationshipObjectTest extends TestCase {
 		parent::assertSame('42', $array['data']['id']);
 	}
 	
-	private function validateToManyRelationshipArray(array $array) {
+	/**
+	 * @param array<string, mixed> $array
+	 */
+	private function validateToManyRelationshipArray(array $array): void {
 		parent::assertNotEmpty($array);
 		parent::assertArrayHasKey('data', $array);
 		parent::assertCount(1, $array['data']);

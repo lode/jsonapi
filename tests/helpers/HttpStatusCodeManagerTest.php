@@ -8,7 +8,7 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use PHPUnit\Framework\TestCase;
 
-class HttpStatusCodeManagerTest extends TestCase {
+final class HttpStatusCodeManagerTest extends TestCase {
 	private static object $helper;
 	
 	public static function setUpBeforeClass(): void {
