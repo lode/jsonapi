@@ -10,7 +10,6 @@ use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
-use alsvanzelf\jsonapi\objects\ResourceObject;
 
 ini_set('display_errors', 1);
 error_reporting(-1);
@@ -134,11 +133,7 @@ class ExampleVersionExtension implements ExtensionInterface {
 	 * optionally helpers for the specific extension
 	 */
 	
-	public function setVersion(ResourceInterface $resource, string $version): void {
-		if ($resource instanceof HasExtensionMembersInterface === false) {
-			throw new \Exception('resource doesn\'t have extension members');
-		}
-		
+	public function setVersion(ResourceInterface & HasExtensionMembersInterface $resource, string $version): void {
 		if ($resource instanceof ResourceDocument) {
 			$resource->getResource()->addExtensionMember($this, 'id', $version);
 		}
