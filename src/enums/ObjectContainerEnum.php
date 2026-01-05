@@ -7,10 +7,10 @@ namespace alsvanzelf\jsonapi\enums;
 /**
  * @internal
  */
-enum ObjectContainerEnum: string {
-	case Type          = 'type';
-	case Id            = 'id';
-	case Lid           = 'lid';
-	case Attributes    = 'attributes';
-	case Relationships = 'relationships';
+enum ObjectContainerEnum {
+	case Type;
+	case Id;
+	case Lid;
+	case Attributes;
+	case Relationships;
 }
