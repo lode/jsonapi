@@ -56,7 +56,7 @@ class Validator {
 				continue;
 			}
 			
-			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName]->value.'"');
+			throw new DuplicateException('field name "'.$fieldName.'" already in use at "data.'.$this->usedFields[$fieldName]->name.'"');
 		}
 	}
 	
