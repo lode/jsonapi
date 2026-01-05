@@ -8,6 +8,8 @@ while being easy to understand for people without knowledge of the jsonapi stand
 The JSON:API standard makes it easy for clients to fetch multiple resources in one call and understand the relations between them.
 Read more about it at [jsonapi.org](https://jsonapi.org/).
 
+The library's code uses strict typing and is checked against a high standard in phpstan and rector. It is tested extensively with 99% coverage.
+
 
 ## Installation
 
@@ -19,9 +21,9 @@ composer require alsvanzelf/jsonapi
 
 The library requires php 8.2. Use the latest [v2.x release](/releases/tag/v2.5.0) for lower php versions.
 
-#### Upgrading from v1
+#### Upgrading from v1 or v2
 
-If you used v1 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) on how to upgrade.
+If you used v1 or v2 of this library, see [UPGRADE_1_TO_2.md](/UPGRADE_1_TO_2.md) or [UPGRADE_2_TO_3.md](/UPGRADE_1_TO_2.md) on how to upgrade.
 
 
 
