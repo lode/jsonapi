@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Rector\CodeQuality\Rector\FuncCall\SortNamedParamRector;
+use Rector\CodeQuality\Rector\FuncCall\SortCallLikeNamedArgsRector;
 use Rector\CodeQuality\Rector\FunctionLike\SimplifyUselessVariableRector;
 use Rector\CodeQuality\Rector\Identical\FlipTypeControlToUseExclusiveTypeRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfReturnBoolRector;
@@ -45,7 +45,7 @@ return RectorConfig::configure()
 		DocblockGetterReturnArrayFromPropertyDocblockVarRector::class,
 		
 		// better readability using function declaration sorting
-		SortNamedParamRector::class,
+		SortCallLikeNamedArgsRector::class,
 		
 		// explicit testing private properties
 		RemoveUnusedPrivatePropertyRector::class => [
