@@ -95,6 +95,10 @@ class JsonapiObject extends AbstractObject implements HasMetaInterface {
 			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		if (isset($this->version)) {
+			if ($this->version === JsonapiVersionEnum::Latest) {
+				$this->version = JsonapiVersionEnum::latest();
+			}
+			
 			$array['version'] = $this->version->value;
 		}
 		if ($this->extensions !== []) {
