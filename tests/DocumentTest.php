@@ -309,7 +309,7 @@ final class DocumentTest extends TestCase {
 		$options = ['array' => ['foo' => "\xB1\x31"], 'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE];
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('failed to encode json: Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectExceptionMessage('failed to generate json: Malformed UTF-8 characters, possibly incorrectly encoded');
 		
 		$this->document->toJson($options);
 	}
