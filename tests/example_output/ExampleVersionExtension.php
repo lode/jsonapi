@@ -1,27 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output;
 
 use alsvanzelf\jsonapi\ResourceDocument;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
 class ExampleVersionExtension implements ExtensionInterface {
-	public function getOfficialLink() {
+	public function getOfficialLink(): string {
 		return 'https://jsonapi.org/format/1.1/#extension-rules';
 	}
 	
-	public function getNamespace() {
+	public function getNamespace(): string {
 		return 'version';
 	}
 	
-	public function setVersion(ResourceInterface $resource, $version) {
-		if ($resource instanceof HasExtensionMembersInterface === false) {
-			throw new InputException('resource doesn\'t have extension members');
-		}
-		
+	public function setVersion(ResourceInterface & HasExtensionMembersInterface $resource, string $version): void {
 		if ($resource instanceof ResourceDocument) {
 			$resource->getResource()->addExtensionMember($this, 'id', $version);
 		}

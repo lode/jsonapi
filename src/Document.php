@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
@@ -23,39 +27,32 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 /**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ * 
  * @see ResourceDocument, CollectionDocument, ErrorsDocument or MetaDocument
  */
 abstract class Document implements DocumentInterface, \JsonSerializable, HasLinksInterface, HasMetaInterface, HasExtensionMembersInterface {
-	use AtMemberManager, ExtensionMemberManager, HttpStatusCodeManager, LinksManager {
+	use AtMemberManager;
+	use ExtensionMemberManager;
+	use HttpStatusCodeManager;
+	use LinksManager {
 		LinksManager::addLink as linkManagerAddLink;
 	}
 	
-	const JSONAPI_VERSION_1_0 = '1.0';
-	const JSONAPI_VERSION_1_1 = '1.1';
-	const JSONAPI_VERSION_LATEST = Document::JSONAPI_VERSION_1_1;
-	
-	const CONTENT_TYPE_OFFICIAL = 'application/vnd.api+json';
-	const CONTENT_TYPE_DEBUG    = 'application/json';
-	const CONTENT_TYPE_JSONP    = 'application/javascript';
-	
-	const LEVEL_ROOT     = 'root';
-	const LEVEL_JSONAPI  = 'jsonapi';
-	const LEVEL_RESOURCE = 'resource';
-	
-	/** @var MetaObject */
-	protected $meta;
-	/** @var ?JsonapiObject */
-	protected $jsonapi;
+	protected MetaObject $meta;
+	protected ?JsonapiObject $jsonapi;
 	/** @var ExtensionInterface[] */
-	protected $extensions = [];
+	protected array $extensions = [];
 	/** @var ProfileInterface[] */
-	protected $profiles = [];
-	/** @var array */
-	protected static $defaults = [
+	protected array $profiles = [];
+	/** @var PHPStanTypeAlias_DefaultOptions_Document */
+	protected static array $documentDefaults = [
 		/**
 		 * encode to json with these default options
 		 */
-		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE,
+		'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR,
 		
 		/**
 		 * encode to human-readable json, useful when debugging
@@ -66,7 +63,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		 * send out the official jsonapi content-type header
 		 * overwrite for jsonp or if clients don't support it
 		 */
-		'contentType' => Document::CONTENT_TYPE_OFFICIAL,
+		'contentType' => ContentTypeEnum::Official,
 		
 		/**
 		 * overwrite the array to encode to json
@@ -94,26 +91,18 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 */
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 * if $meta is given, a LinkObject is added, otherwise a link string is added
 	 * 
-	 * @throws InputException if the $level is Document::LEVEL_JSONAPI, Document::LEVEL_RESOURCE, or unknown
+	 * @param array<string, mixed> $meta
+	 * 
+	 * @throws InputException if the $level is not DocumentLevelEnum::Root
 	 */
-	public function addLink($key, $href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT) {
-			$this->linkManagerAddLink($key, $href, $meta);
-		}
-		elseif ($level === Document::LEVEL_JSONAPI) {
-			throw new InputException('level "jsonapi" can not be used for links');
-		}
-		elseif ($level === Document::LEVEL_RESOURCE) {
-			throw new InputException('level "resource" can only be set on a ResourceDocument');
-		}
-		else {
-			throw new InputException('unknown level "'.$level.'"');
-		}
+	public function addLink(string $key, ?string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
+		match ($level) {
+			DocumentLevelEnum::Root     => $this->linkManagerAddLink($key, $href, $meta),
+			DocumentLevelEnum::Jsonapi  => throw new InputException('level "jsonapi" can not be used for links'),
+			DocumentLevelEnum::Resource => throw new InputException('level "resource" can only be set on a ResourceDocument'),
+		};
 	}
 	
 	/**
@@ -121,13 +110,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @note a LinkObject is added when extensions or profiles are applied
 	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setSelfLink($href, array $meta=[], $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT && ($this->extensions !== [] || $this->profiles !== [])) {
-			$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, $this->extensions, $this->profiles);
+	public function setSelfLink(string $href, array $meta=[], DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
+		if ($level === DocumentLevelEnum::Root && ($this->extensions !== [] || $this->profiles !== [])) {
+			$contentType = Converter::prepareContentType(ContentTypeEnum::Official, $this->extensions, $this->profiles);
 			
 			$linkObject = new LinkObject($href, $meta);
 			$linkObject->setMediaType($contentType);
@@ -144,43 +131,37 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * for example this could link to an OpenAPI or JSON Schema document
 	 * 
-	 * @note according to the spec, this can only be set to Document::LEVEL_ROOT
+	 * @note according to the spec, this can only be set to DocumentLevelEnum::Root
 	 * 
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setDescribedByLink($href, array $meta=[]) {
-		$this->addLink('describedby', $href, $meta, $level=Document::LEVEL_ROOT);
+	public function setDescribedByLink(string $href, array $meta=[]): void {
+		$this->addLink('describedby', $href, $meta, DocumentLevelEnum::Root);
 	}
 	
 	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param string $level one of the Document::LEVEL_* constants, optional, defaults to Document::LEVEL_ROOT
-	 * 
-	 * @throws InputException if the $level is unknown
-	 * @throws InputException if the $level is Document::LEVEL_RESOURCE
+	 * @throws InputException if the $level is DocumentLevelEnum::Resource
 	 */
-	public function addMeta($key, $value, $level=Document::LEVEL_ROOT) {
-		if ($level === Document::LEVEL_ROOT) {
-			if ($this->meta === null) {
-				$this->setMetaObject(new MetaObject());
-			}
+	public function addMeta(string $key, mixed $value, DocumentLevelEnum $level=DocumentLevelEnum::Root): void {
+		switch ($level) {
+			case DocumentLevelEnum::Root:
+				if (isset($this->meta) === false) {
+					$this->setMetaObject(new MetaObject());
+				}
+				
+				$this->meta->add($key, $value);
+				break;
 			
-			$this->meta->add($key, $value);
-		}
-		elseif ($level === Document::LEVEL_JSONAPI) {
-			if ($this->jsonapi === null) {
-				$this->setJsonapiObject(new JsonapiObject());
-			}
+			case DocumentLevelEnum::Jsonapi:
+				if (isset($this->jsonapi) === false) {
+					$this->setJsonapiObject(new JsonapiObject());
+				}
+				
+				$this->jsonapi->addMeta($key, $value);
+				break;
 			
-			$this->jsonapi->addMeta($key, $value);
-		}
-		elseif ($level === Document::LEVEL_RESOURCE) {
-			throw new InputException('level "resource" can only be set on a ResourceDocument');
-		}
-		else {
-			throw new InputException('unknown level "'.$level.'"');
+			case DocumentLevelEnum::Resource:
+				throw new InputException('level "resource" can only be set on a ResourceDocument');
 		}
 	}
 	
@@ -188,24 +169,19 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * spec api
 	 */
 	
-	/**
-	 * @param MetaObject $metaObject
-	 */
-	public function setMetaObject(MetaObject $metaObject) {
+	public function setMetaObject(MetaObject $metaObject): void {
 		$this->meta = $metaObject;
 	}
 	
-	/**
-	 * @param JsonapiObject $jsonapiObject
-	 */
-	public function setJsonapiObject(JsonapiObject $jsonapiObject) {
+	/** @phpstan-assert JsonapiObject $this->jsonapi */
+	public function setJsonapiObject(JsonapiObject $jsonapiObject): void {
 		$this->jsonapi = $jsonapiObject;
 	}
 	
 	/**
 	 * hide that this api supports jsonapi, or which version it is using
 	 */
-	public function unsetJsonapiObject() {
+	public function unsetJsonapiObject(): void {
 		$this->jsonapi = null;
 	}
 	
@@ -218,12 +194,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * 
 	 * @see https://jsonapi.org/extensions/#extensions
 	 * 
-	 * @param ExtensionInterface $extension
-	 * 
 	 * @throws Exception if namespace uses illegal characters
 	 * @throws DuplicateException if namespace conflicts with another applied extension
 	 */
-	public function applyExtension(ExtensionInterface $extension) {
+	public function applyExtension(ExtensionInterface $extension): void {
 		$namespace = $extension->getNamespace();
 		if (strlen($namespace) < 1 || preg_match('{[^a-zA-Z0-9]}', $namespace) === 1) {
 			throw new Exception('invalid namespace "'.$namespace.'"');
@@ -234,7 +208,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		
 		$this->extensions[$namespace] = $extension;
 		
-		if ($this->jsonapi !== null) {
+		if (isset($this->jsonapi)) {
 			$this->jsonapi->addExtension($extension);
 		}
 	}
@@ -247,13 +221,11 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * however the $profile could have custom methods to help
 	 * 
 	 * @see https://jsonapi.org/extensions/#profiles
-	 * 
-	 * @param ProfileInterface $profile
 	 */
-	public function applyProfile(ProfileInterface $profile) {
+	public function applyProfile(ProfileInterface $profile): void {
 		$this->profiles[] = $profile;
 		
-		if ($this->jsonapi !== null) {
+		if (isset($this->jsonapi)) {
 			$this->jsonapi->addProfile($profile);
 		}
 	}
@@ -262,39 +234,45 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
-		if ($this->jsonapi !== null && $this->jsonapi->isEmpty() === false) {
+		if (isset($this->jsonapi) && $this->jsonapi->isEmpty() === false) {
 			$array['jsonapi'] = $this->jsonapi->toArray();
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
-		if ($this->meta !== null && $this->meta->isEmpty() === false) {
+		if (isset($this->meta) && $this->meta->isEmpty() === false) {
 			$array['meta'] = $this->meta->toArray();
 		}
 		
 		return $array;
 	}
 	
-	public function toJson(array $options=[]) {
-		$options = array_merge(self::$defaults, $options);
+	/**
+	 * @throws \JsonException if encoding fails
+	 * @throws Exception if encoding fails and $options['encodeOptions'] doesn't include JSON_THROW_ON_ERROR
+	 */
+	public function toJson(array $options=[]): string {
+		$options = [...self::$documentDefaults, ...$options];
 		
-		$array = ($options['array'] !== null) ? $options['array'] : $this->toArray();
+		$array = $options['array'] ?? $this->toArray();
 		
 		if ($options['prettyPrint']) {
 			$options['encodeOptions'] |= JSON_PRETTY_PRINT;
 		}
 		
 		$json = json_encode($array, $options['encodeOptions']);
+		
+		// we can't use exceptions because $options['encodeOptions'] might be overridden to silence them
 		if ($json === false) {
 			throw new Exception('failed to generate json: '.json_last_error_msg());
 		}
@@ -306,15 +284,15 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		return $json;
 	}
 	
-	public function sendResponse(array $options=[]) {
-		$options = array_merge(self::$defaults, $options);
+	public function sendResponse(array $options=[]): void {
+		$options = [...self::$documentDefaults, ...$options];
 		
 		if ($this->httpStatusCode === 204) {
 			http_response_code($this->httpStatusCode);
 			return;
 		}
 		
-		$json = ($options['json'] !== null) ? $options['json'] : $this->toJson($options);
+		$json = $options['json'] ?? $this->toJson($options);
 		
 		http_response_code($this->httpStatusCode);
 		
@@ -328,8 +306,10 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 	 * JsonSerializable
 	 */
 	
-	#[\ReturnTypeWillChange]
-	public function jsonSerialize() {
+	/**
+	 * @return array<string, mixed>
+	 */
+	public function jsonSerialize(): array {
 		return $this->toArray();
 	}
 }

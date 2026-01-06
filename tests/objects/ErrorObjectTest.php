@@ -1,63 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\objects;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ErrorObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class ErrorObjectTest extends TestCase {
-	public function testFromException_HappyPath() {
+final class ErrorObjectTest extends TestCase {
+	public function testFromException_HappyPath(): void {
 		$exception    = new \Exception('foo', 1);
 		$expectedLine = (__LINE__ - 1);
 		$errorObject  = ErrorObject::fromException($exception);
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertSame('Exception', $array['code']);
-		$this->assertCount(6, $array['meta']);
-		$this->assertArrayHasKey('type', $array['meta']);
-		$this->assertArrayHasKey('message', $array['meta']);
-		$this->assertArrayHasKey('code', $array['meta']);
-		$this->assertArrayHasKey('file', $array['meta']);
-		$this->assertArrayHasKey('line', $array['meta']);
-		$this->assertArrayHasKey('trace', $array['meta']);
-		$this->assertSame('Exception', $array['meta']['type']);
-		$this->assertSame('foo', $array['meta']['message']);
-		$this->assertSame(1, $array['meta']['code']);
-		$this->assertSame(__FILE__, $array['meta']['file']);
-		$this->assertSame($expectedLine, $array['meta']['line']);
-		$this->assertGreaterThan(1, $array['meta']['trace']);
-		$this->assertArrayHasKey('function', $array['meta']['trace'][0]);
-		$this->assertArrayHasKey('class', $array['meta']['trace'][0]);
-		$this->assertSame(__FUNCTION__, $array['meta']['trace'][0]['function']);
-		$this->assertSame(self::class, $array['meta']['trace'][0]['class']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertSame('Exception', $array['code']);
+		parent::assertCount(6, $array['meta']);
+		parent::assertArrayHasKey('type', $array['meta']);
+		parent::assertArrayHasKey('message', $array['meta']);
+		parent::assertArrayHasKey('code', $array['meta']);
+		parent::assertArrayHasKey('file', $array['meta']);
+		parent::assertArrayHasKey('line', $array['meta']);
+		parent::assertArrayHasKey('trace', $array['meta']);
+		parent::assertSame('Exception', $array['meta']['type']);
+		parent::assertSame('foo', $array['meta']['message']);
+		parent::assertSame(1, $array['meta']['code']);
+		parent::assertSame(__FILE__, $array['meta']['file']);
+		parent::assertSame($expectedLine, $array['meta']['line']);
+		parent::assertGreaterThan(1, $array['meta']['trace']);
+		parent::assertArrayHasKey('function', $array['meta']['trace'][0]);
+		parent::assertArrayHasKey('class', $array['meta']['trace'][0]);
+		parent::assertSame(__FUNCTION__, $array['meta']['trace'][0]['function']);
+		parent::assertSame(self::class, $array['meta']['trace'][0]['class']);
 	}
 	
-	public function testFromException_DoNotExposeTrace() {
+	public function testFromException_DoNotExposeTrace(): void {
 		$exception    = new \Exception('foo', 1);
-		$expectedLine = (__LINE__ - 1);
 		$options      = ['includeExceptionTrace' => false];
 		$errorObject  = ErrorObject::fromException($exception, $options);
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertSame('Exception', $array['code']);
-		$this->assertCount(5, $array['meta']);
-		$this->assertArrayHasKey('type', $array['meta']);
-		$this->assertArrayHasKey('message', $array['meta']);
-		$this->assertArrayHasKey('code', $array['meta']);
-		$this->assertArrayHasKey('file', $array['meta']);
-		$this->assertArrayHasKey('line', $array['meta']);
-		$this->assertArrayNotHasKey('trace', $array['meta']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertSame('Exception', $array['code']);
+		parent::assertCount(5, $array['meta']);
+		parent::assertArrayHasKey('type', $array['meta']);
+		parent::assertArrayHasKey('message', $array['meta']);
+		parent::assertArrayHasKey('code', $array['meta']);
+		parent::assertArrayHasKey('file', $array['meta']);
+		parent::assertArrayHasKey('line', $array['meta']);
+		parent::assertArrayNotHasKey('trace', $array['meta']);
 	}
 	
-	public function testFromException_StripFilePath() {
+	public function testFromException_StripFilePath(): void {
 		$exception   = new \Exception('foo', 1);
 		$basePath    = realpath(__DIR__.'/../../').'/';
 		$options     = ['stripExceptionBasePath' => $basePath];
@@ -65,140 +67,108 @@ class ErrorObjectTest extends TestCase {
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('file', $array['meta']);
-		$this->assertArrayHasKey('trace', $array['meta']);
-		$this->assertSame('tests/objects/ErrorObjectTest.php', $array['meta']['file']);
-		$this->assertGreaterThan(2, $array['meta']['trace']);
-		$this->assertArrayHasKey('file', $array['meta']['trace'][1]);
-		$this->assertSame('vendor/phpunit/phpunit/src/Framework/TestCase.php', $array['meta']['trace'][1]['file']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('file', $array['meta']);
+		parent::assertArrayHasKey('trace', $array['meta']);
+		parent::assertSame('tests/objects/ErrorObjectTest.php', $array['meta']['file']);
+		parent::assertGreaterThan(2, $array['meta']['trace']);
+		parent::assertArrayHasKey('file', $array['meta']['trace'][1]);
+		parent::assertSame('vendor/phpunit/phpunit/src/Framework/TestCase.php', $array['meta']['trace'][1]['file']);
 	}
 	
-	public function testFromException_NamespacedException() {
+	public function testFromException_NamespacedException(): void {
 		$exception   = new InputException();
 		$errorObject = ErrorObject::fromException($exception);
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('type', $array['meta']);
-		$this->assertSame('Input Exception', $array['code']);
-		$this->assertSame('alsvanzelf\jsonapi\exceptions\InputException', $array['meta']['type']);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('type', $array['meta']);
+		parent::assertSame('Input Exception', $array['code']);
+		parent::assertSame('alsvanzelf\jsonapi\exceptions\InputException', $array['meta']['type']);
 	}
 	
-	/**
-	 * @group non-php5
-	 */
-	public function testFromException_NamespacedThrowable() {
+	public function testFromException_NamespacedThrowable(): void {
 		$exception   = new TestError();
 		$errorObject = ErrorObject::fromException($exception);
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('code', $array);
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('type', $array['meta']);
-		$this->assertSame('Test Error', $array['code']);
-		$this->assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
+		parent::assertArrayHasKey('code', $array);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('type', $array['meta']);
+		parent::assertSame('Test Error', $array['code']);
+		parent::assertSame('alsvanzelf\jsonapiTests\objects\TestError', $array['meta']['type']);
 	}
 	
-	public function testFromException_BlocksNonException() {
-		$this->expectException(InputException::class);
-		
-		ErrorObject::fromException(new \stdClass());
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore
-	 */
-	public function testAppendTypeLink_HappyPath() {
+	public function testIsEmpty_All(): void {
 		$errorObject = new ErrorObject();
-		$this->assertTrue($errorObject->isEmpty());
-		
-		$errorObject->appendTypeLink('https://jsonapi.org');
-		
-		$this->assertFalse($errorObject->isEmpty());
-		
-		$array = $errorObject->toArray();
-		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('type', $array['links']);
-		$this->assertSame(['https://jsonapi.org'], $array['links']['type']);
-	}
-	
-	public function testIsEmpty_All() {
-		$errorObject = new ErrorObject();
-		$this->assertTrue($errorObject->isEmpty());
+		parent::assertTrue($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->setUniqueIdentifier(42);
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->setHttpStatusCode(422);
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->setApplicationCode(42);
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->setHumanTitle('foo');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->setHumanDetails('foo');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addLink('foo', 'https://jsonapi.org');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addSource('pointer', '/bar');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addSource('parameter', 'bar');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addSource('header', 'X-Bar');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addMeta('foo', 'bar');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
 		$errorObject->addAtMember('context', 'test');
-		$this->assertFalse($errorObject->isEmpty());
+		parent::assertFalse($errorObject->isEmpty());
 		
 		$errorObject = new ErrorObject();
-		$errorObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
-		$this->assertFalse($errorObject->isEmpty());
+		$errorObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
+		parent::assertFalse($errorObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testToArray_WithExtensionMembers() {
+	#[Group('Extensions')]
+	public function testToArray_WithExtensionMembers(): void {
 		$errorObject = new ErrorObject();
-		$extension   = new TestExtension();
-		$extension->setNamespace('test');
+		$extension   = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']);
 		
-		$this->assertSame([], $errorObject->toArray());
+		parent::assertSame([], $errorObject->toArray());
 		
 		$errorObject->addExtensionMember($extension, 'foo', 'bar');
 		
 		$array = $errorObject->toArray();
 		
-		$this->assertArrayHasKey('test:foo', $array);
-		$this->assertSame('bar', $array['test:foo']);
+		parent::assertArrayHasKey('test:foo', $array);
+		parent::assertSame('bar', $array['test:foo']);
 	}
 }
 
-if (PHP_MAJOR_VERSION >= 7) {
-	class TestError extends \Error {}
-}
+class TestError extends \Error {}

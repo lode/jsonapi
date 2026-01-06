@@ -1,132 +1,110 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
-use alsvanzelf\jsonapiTests\profiles\TestProfile;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\AttributesObject;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
 
-class ConverterTest extends TestCase {
-	public function testObjectToArray_HappyPath() {
+final class ConverterTest extends TestCase {
+	public function testObjectToArray_HappyPath(): void {
 		$object = new \stdClass();
 		$object->foo = 'bar';
 		$object->baz = 42;
 		
 		$array = Converter::objectToArray($object);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertSame('bar', $array['foo']);
-		$this->assertSame(42, $array['baz']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertSame('bar', $array['foo']);
+		parent::assertSame(42, $array['baz']);
 	}
 	
-	public function testObjectToArray_MethodsAndPrivateProperties() {
-		$object = new TestObject();
+	public function testObjectToArray_MethodsAndPrivateProperties(): void {
+		$object = new class {
+			public string $foo = 'bar';
+			public int $baz = 42;
+			private string $secret = 'value'; // @phpstan-ignore property.onlyWritten
+			public function method(): void {}
+		};
+		
 		$array = Converter::objectToArray($object);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertArrayNotHasKey('secret', $array);
-		$this->assertArrayNotHasKey('method', $array);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertArrayNotHasKey('secret', $array);
+		parent::assertArrayNotHasKey('method', $array);
 	}
 	
-	public function testObjectToArray_FromInternalObject() {
+	public function testObjectToArray_FromInternalObject(): void {
 		$values = ['foo'=>'bar', 'baz'=>42];
 		$attributesObject = AttributesObject::fromArray($values);
 		
 		$array = Converter::objectToArray($attributesObject);
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('foo', $array);
-		$this->assertArrayHasKey('baz', $array);
-		$this->assertSame('bar', $array['foo']);
-		$this->assertSame(42, $array['baz']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('foo', $array);
+		parent::assertArrayHasKey('baz', $array);
+		parent::assertSame('bar', $array['foo']);
+		parent::assertSame(42, $array['baz']);
 	}
 	
 	#[DataProvider('dataProviderCamelCaseToWords_HappyPath')]
-	public function testCamelCaseToWords_HappyPath($camelCase, $expectedOutput) {
-		$this->assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
-	}
-	
-	public static function dataProviderCamelCaseToWords_HappyPath() {
-		return [
-			['value',         'value'],
-			['camelValue',    'camel Value'],
-			['TitleValue',    'Title Value'],
-			['VALUE',         'VALUE'],
-			['eclipseRCPExt', 'eclipse RCP Ext'],
-		];
+	public function testCamelCaseToWords_HappyPath(string $camelCase, string $expectedOutput): void {
+		parent::assertSame($expectedOutput, Converter::camelCaseToWords($camelCase));
 	}
 	
 	/**
-	 * @group Extensions
-	 * @group Profiles
+	 * @return \Iterator<(int | string), array{string, string}>
 	 */
-	public function testPrepareContentType_HappyPath() {
-		$this->assertSame('foo', Converter::prepareContentType('foo', [], []));
+	public static function dataProviderCamelCaseToWords_HappyPath(): \Iterator {
+		yield ['value',         'value'];
+		yield ['camelValue',    'camel Value'];
+		yield ['TitleValue',    'Title Value'];
+		yield ['VALUE',         'VALUE'];
+		yield ['eclipseRCPExt', 'eclipse RCP Ext'];
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testPrepareContentType_WithExtensionStringLink() {
-		$extension = new TestExtension();
-		$extension->setOfficialLink('bar');
-		
-		$this->assertSame('foo; ext="bar"', Converter::prepareContentType('foo', [$extension], []));
+	#[Group('Extensions')]
+	#[Group('Profiles')]
+	public function testPrepareContentType_HappyPath(): void {
+		parent::assertSame(ContentTypeEnum::Official->value, Converter::prepareContentType(ContentTypeEnum::Official, [], []));
 	}
 	
-	/**
-	 * @group Profiles
-	 */
-	public function testPrepareContentType_WithProfileStringLink() {
-		$profile = new TestProfile();
-		$profile->setOfficialLink('bar');
+	#[Group('Extensions')]
+	public function testPrepareContentType_WithExtensionStringLink(): void {
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
 		
-		$this->assertSame('foo; profile="bar"', Converter::prepareContentType('foo', [], [$profile]));
+		parent::assertSame(ContentTypeEnum::Official->value.'; ext="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [$extension], []));
 	}
 	
-	/**
-	 * @group Extensions
-	 * @group Profiles
-	 */
-	public function testPrepareContentType_WithMultipleExtensionsAndProfiles() {
-		$extension1 = new TestExtension();
-		$extension1->setOfficialLink('bar');
+	#[Group('Profiles')]
+	public function testPrepareContentType_WithProfileStringLink(): void {
+		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
 		
-		$extension2 = new TestExtension();
-		$extension2->setOfficialLink('baz');
-		
-		$profile1 = new TestProfile();
-		$profile1->setOfficialLink('bar');
-		
-		$profile2 = new TestProfile();
-		$profile2->setOfficialLink('baz');
-		
-		$this->assertSame('foo; ext="bar baz"; profile="bar baz"', Converter::prepareContentType('foo', [$extension1, $extension2], [$profile1, $profile2]));
+		parent::assertSame(ContentTypeEnum::Official->value.'; profile="bar"', Converter::prepareContentType(ContentTypeEnum::Official, [], [$profile]));
 	}
 	
-	/**
-	 * test method while it is part of the interface
-	 * @group Profiles
-	 */
-	public function testMergeProfilesInContentType_HappyPath() {
-		$profile = new TestProfile();
-		$profile->setOfficialLink('bar');
+	#[Group('Extensions')]
+	#[Group('Profiles')]
+	public function testPrepareContentType_WithMultipleExtensionsAndProfiles(): void {
+		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'bar']);
+		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getOfficialLink' => 'baz']);
+		$profile1   = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'bar']);
+		$profile2   = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'baz']);
 		
-		$contentType = Converter::mergeProfilesInContentType('foo', [$profile]); // @phpstan-ignore staticMethod.deprecated
-		$this->assertSame('foo; profile="bar"', $contentType);
+		$expectedContentType  = ContentTypeEnum::Official->value.'; ext="bar baz"; profile="bar baz"';
+		$convertedContentType = Converter::prepareContentType(ContentTypeEnum::Official, [$extension1, $extension2], [$profile1, $profile2]);
+		
+		parent::assertSame($expectedContentType, $convertedContentType);
 	}
-}
-
-class TestObject {
-	public $foo = 'bar';
-	public $baz = 42;
-	private $secret = 'value'; // @phpstan-ignore property.onlyWritten
-	public function method() {}
 }

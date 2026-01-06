@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
@@ -7,22 +9,25 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class LinksObject extends AbstractObject {
-	/** @var array with string|LinkObject */
-	protected $links = [];
+	/** @var array<string, string|LinkObject|null> */
+	protected array $links = [];
 	
 	/**
 	 * human api
 	 */
 	
 	/**
-	 * @param  array  $links key-value with values being href strings
-	 * @return LinksObject
+	 * @param array<string, ?string> $links key-value with values being href strings
 	 */
-	public static function fromArray(array $links) {
-		$linksObject = new self();
+	public static function fromArray(array $links): LinksObject {
+		$linksObject = new static();
 		
 		foreach ($links as $key => $href) {
 			$linksObject->add($key, $href);
@@ -31,22 +36,17 @@ class LinksObject extends AbstractObject {
 		return $linksObject;
 	}
 	
-	/**
-	 * @param  object $links
-	 * @return LinksObject
-	 */
-	public static function fromObject($links) {
+	public static function fromObject(object $links): LinksObject {
+		/** @var array<string, ?string> $array */
 		$array = Converter::objectToArray($links);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function add($key, $href, array $meta=[]) {
+	public function add(string $key, ?string $href, array $meta=[]): void {
 		if ($meta === []) {
 			$this->addLinkString($key, $href);
 		}
@@ -56,42 +56,13 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * appends a link to an array of links under a specific key
-	 * 
-	 * @see LinksArray for use cases
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->add()}
-	 * 
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 * 
-	 * @throws DuplicateException if another link is already using that $key but is not an array
-	 */
-	public function append($key, $href, array $meta=[]) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key]) === false) {
-			$this->addLinksArray($key, new LinksArray());
-		}
-		elseif ($this->links[$key] instanceof LinksArray === false) {
-			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
-		}
-		
-		$this->links[$key]->add($href, $meta);
-	}
-	
-	/**
 	 * spec api
 	 */
 	
 	/**
-	 * @param string $key
-	 * @param string $href
-	 * 
 	 * @throws DuplicateException if another link is already using that $key
 	 */
-	public function addLinkString($key, $href) {
+	public function addLinkString(string $key, ?string $href): void {
 		Validator::checkMemberName($key);
 		
 		if (isset($this->links[$key])) {
@@ -102,12 +73,9 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 * 
 	 * @throws DuplicateException if another link is already using that $key
 	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
+	public function addLinkObject(string $key, LinkObject $linkObject): void {
 		Validator::checkMemberName($key);
 		
 		if (isset($this->links[$key])) {
@@ -118,49 +86,10 @@ class LinksObject extends AbstractObject {
 	}
 	
 	/**
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinksArray $linksArray
-	 * 
-	 * @throws DuplicateException if another link is already using that $key
-	 */
-	public function addLinksArray($key, LinksArray $linksArray) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key])) {
-			throw new DuplicateException('link with key "'.$key.'" already set');
-		}
-		
-		$this->links[$key] = $linksArray;
-	}
-	
-	/**
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param  string     $key
-	 * @param  LinkObject $linkObject
-	 * 
-	 * @throws DuplicateException if another link is already using that $key but is not an array
-	 */
-	public function appendLinkObject($key, LinkObject $linkObject) {
-		Validator::checkMemberName($key);
-		
-		if (isset($this->links[$key]) === false) {
-			$this->addLinksArray($key, new LinksArray());
-		}
-		elseif ($this->links[$key] instanceof LinksArray === false) {
-			throw new DuplicateException('can not add to key "'.$key.'", it is not an array of links');
-		}
-		
-		$this->links[$key]->addLinkObject($linkObject);
-	}
-	
-	/**
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->links !== []) {
 			return false;
 		}
@@ -174,22 +103,19 @@ class LinksObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
 		foreach ($this->links as $key => $link) {
 			if ($link instanceof LinkObject && $link->isEmpty() === false) {
 				$array[$key] = $link->toArray();
-			}
-			elseif ($link instanceof LinksArray && $link->isEmpty() === false) { // @phpstan-ignore method.deprecatedClass
-				$array[$key] = $link->toArray(); // @phpstan-ignore method.deprecatedClass
 			}
 			elseif ($link instanceof LinkObject && $link->isEmpty()) {
 				$array[$key] = null;

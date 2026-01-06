@@ -1,10 +1,12 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * use an extension extend the document with new members
@@ -28,7 +30,7 @@ $extension->setVersion($document, '2019');
  * get the json
  */
 
-$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, [$extension], []);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, extensions: [$extension], profiles: []);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

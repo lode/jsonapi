@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\extensions\AtomicOperationsDocument;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * use the atomic operations extension as extension to the document

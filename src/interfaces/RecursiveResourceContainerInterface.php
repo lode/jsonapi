@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\interfaces;
 
 use alsvanzelf\jsonapi\objects\ResourceObject;
@@ -18,5 +20,5 @@ interface RecursiveResourceContainerInterface {
 	 * 
 	 * @return ResourceObject[]
 	 */
-	public function getNestedContainedResourceObjects();
+	public function getNestedContainedResourceObjects(): array;
 }

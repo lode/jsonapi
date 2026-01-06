@@ -1,10 +1,12 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\helpers\Converter;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * use a profile to define rules for members
@@ -30,7 +32,7 @@ $profile->setTimestamps($document, $created, $updated);
  * get the json
  */
 
-$contentType = Converter::prepareContentType(Document::CONTENT_TYPE_OFFICIAL, [], [$profile]);
+$contentType = Converter::prepareContentType(ContentTypeEnum::Official, extensions: [], profiles: [$profile]);
 echo '<code>Content-Type: '.$contentType.'</code>'.PHP_EOL;
 
 $options = [

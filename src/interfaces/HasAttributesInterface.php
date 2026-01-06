@@ -8,10 +8,9 @@ interface HasAttributesInterface {
 	/**
 	 * add key-value pairs to attributes
 	 * 
-	 * @see ResourceObject::$defaults
+	 * @see Validator::$validatorDefaults
 	 * 
-	 * @param string $key
-	 * @param mixed  $value
+	 * @param PHPStanTypeAlias_Options_Validator $options
 	 */
-	public function addAttribute($key, $value, array $options=[]);
+	public function addAttribute(string $key, mixed $value, array $options=[]): void;
 }

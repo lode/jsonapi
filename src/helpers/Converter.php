@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\helpers;
 
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\ObjectInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
@@ -11,10 +15,9 @@ use alsvanzelf\jsonapi\interfaces\ProfileInterface;
  */
 class Converter {
 	/**
-	 * @param  object $object
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public static function objectToArray($object) {
+	public static function objectToArray(object $object): array {
 		if ($object instanceof ObjectInterface) {
 			return $object->toArray();
 		}
@@ -25,11 +28,14 @@ class Converter {
 	/**
 	 * @see https://stackoverflow.com/questions/7593969/regex-to-split-camelcase-or-titlecase-advanced/7599674#7599674
 	 * 
-	 * @param  string $camelCase
-	 * @return string
+	 * @throws Exception if string is impossible to split to words
 	 */
-	public static function camelCaseToWords($camelCase) {
+	public static function camelCaseToWords(string $camelCase): string {
 		$parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $camelCase);
+		
+		if ($parts === false) {
+			throw new Exception('failed to convert camel case string to words');
+		}
 		
 		return implode(' ', $parts);
 	}
@@ -37,12 +43,12 @@ class Converter {
 	/**
 	 * generates the value for a content type header, with extensions and profiles merged in if available
 	 * 
-	 * @param  string               $contentType
-	 * @param  ExtensionInterface[] $extensions
-	 * @param  ProfileInterface[]   $profiles
-	 * @return string
+	 * @param ExtensionInterface[] $extensions
+	 * @param ProfileInterface[]   $profiles
 	 */
-	public static function prepareContentType($contentType, array $extensions, array $profiles) {
+	public static function prepareContentType(ContentTypeEnum $contentType, array $extensions, array $profiles): string {
+		$contentType = $contentType->value;
+		
 		if ($extensions !== []) {
 			$extensionLinks = [];
 			foreach ($extensions as $extension) {
@@ -64,12 +70,5 @@ class Converter {
 		}
 		
 		return $contentType;
-	}
-	
-	/**
-	 * @deprecated {@see prepareContentType()}
-	 */
-	public static function mergeProfilesInContentType($contentType, array $profiles) {
-		return self::prepareContentType($contentType, $extensions=[], $profiles);
 	}
 }

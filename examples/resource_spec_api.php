@@ -1,6 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
@@ -8,7 +11,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\RelationshipsObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $user1  = ExampleDataset::getEntity('user', 1);
 $user42 = ExampleDataset::getEntity('user', 42);
@@ -41,7 +44,7 @@ $resource->setId($user42->id);
 $resource->setType('user');
 $resource->setAttributesObject($attributes42);
 
-$relationship = new RelationshipObject(RelationshipObject::TO_ONE);
+$relationship = new RelationshipObject(RelationshipTypeEnum::ToOne);
 $relationship->setResource($resource);
 $relationships = new RelationshipsObject();
 $relationships->addRelationshipObject('friend', $relationship);

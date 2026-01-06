@@ -1,15 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\helpers;
 
-use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
-use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceRequestInterface;
-use alsvanzelf\jsonapiTests\helpers\TestableNonInterfaceServerRequestInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UriInterface;
 
-class RequestParserTest extends TestCase {
-	public function testFromSuperglobals_HappyPath() {
+final class RequestParserTest extends TestCase {
+	public function testFromSuperglobals_HappyPath(): void {
 		$_GET = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -26,7 +31,7 @@ class RequestParserTest extends TestCase {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/user/42?'.http_build_query($_GET);
-		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
 		$_POST = [
 			'data' => [
@@ -51,60 +56,65 @@ class RequestParserTest extends TestCase {
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
-		$this->assertSame('https://example.org/user/42?'.http_build_query($_GET), $requestParser->getSelfLink());
+		parent::assertSame('https://example.org/user/42?'.http_build_query($_GET), $requestParser->getSelfLink());
 		
-		$this->assertTrue($requestParser->hasIncludePaths());
-		$this->assertTrue($requestParser->hasSparseFieldset('user'));
-		$this->assertTrue($requestParser->hasSortFields());
-		$this->assertTrue($requestParser->hasPagination());
-		$this->assertTrue($requestParser->hasFilter());
+		parent::assertTrue($requestParser->hasIncludePaths());
+		parent::assertTrue($requestParser->hasSparseFieldset('user'));
+		parent::assertTrue($requestParser->hasSortFields());
+		parent::assertTrue($requestParser->hasPagination());
+		parent::assertTrue($requestParser->hasFilter());
 		
-		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
-		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
-		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
-		$this->assertSame('42', $requestParser->getFilter());
+		parent::assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
+		parent::assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
+		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
+		parent::assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
+		parent::assertSame('42', $requestParser->getFilter());
 		
-		$this->assertTrue($requestParser->hasAttribute('name'));
-		$this->assertTrue($requestParser->hasRelationship('ship'));
-		$this->assertTrue($requestParser->hasMeta('lock'));
+		parent::assertTrue($requestParser->hasAttribute('name'));
+		parent::assertTrue($requestParser->hasRelationship('ship'));
+		parent::assertTrue($requestParser->hasMeta('lock'));
 		
-		$this->assertSame('Foo', $requestParser->getAttribute('name'));
-		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
-		$this->assertTrue($requestParser->getMeta('lock'));
+		parent::assertSame('Foo', $requestParser->getAttribute('name'));
+		parent::assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
+		parent::assertTrue($requestParser->getMeta('lock'));
 		
-		$this->assertSame($_POST, $requestParser->getDocument());
+		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
-	public function testFromSuperglobals_WithPhpInputStream() {
+	public function testFromSuperglobals_WithPhpInputStream(): void {
 		$_SERVER['REQUEST_SCHEME'] = 'https';
 		$_SERVER['HTTP_HOST']      = 'example.org';
 		$_SERVER['REQUEST_URI']    = '/';
-		$_SERVER['CONTENT_TYPE']   = Document::CONTENT_TYPE_OFFICIAL;
+		$_SERVER['CONTENT_TYPE']   = ContentTypeEnum::Official->value;
 		
+		// empty $_POST so we get a bit more test coverage for input stream processing
 		$_GET  = [];
 		$_POST = [];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
-		$this->assertSame([], $requestParser->getDocument());
+		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
-	public function testFromSuperglobals_WithoutServerContext() {
+	public function testFromSuperglobals_WithoutServerContext(): void {
 		unset($_SERVER['REQUEST_SCHEME']);
 		unset($_SERVER['HTTP_HOST']);
 		unset($_SERVER['REQUEST_URI']);
 		unset($_SERVER['CONTENT_TYPE']);
 		
-		$_GET    = [];
-		$_POST   = [];
+		$_GET  = [];
+		$_POST = [
+			'meta' => [
+				'foo' => 'bar',
+			],
+		];
 		
 		$requestParser = RequestParser::fromSuperglobals();
 		
-		$this->assertSame([], $requestParser->getDocument());
+		parent::assertSame($_POST, $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithRequestInterface() {
+	public function testFromPsrRequest_WithRequestInterface(): void {
 		$queryParameters = [
 			'include' => 'ship,ship.wing',
 			'fields' => [
@@ -139,81 +149,113 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$request = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => json_encode($document, flags: JSON_THROW_ON_ERROR)]),
+			'getUri'         => parent::createConfiguredStub(UriInterface::class, [
+				'__toString' => $selfLink,
+				'getQuery'   => http_build_query($queryParameters),
+			]),
+		]);
+		
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
-		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
+		parent::assertSame($selfLink, $requestParser->getSelfLink());
 		
-		$this->assertTrue($requestParser->hasIncludePaths());
-		$this->assertTrue($requestParser->hasSparseFieldset('user'));
-		$this->assertTrue($requestParser->hasSortFields());
-		$this->assertTrue($requestParser->hasPagination());
-		$this->assertTrue($requestParser->hasFilter());
+		parent::assertTrue($requestParser->hasIncludePaths());
+		parent::assertTrue($requestParser->hasSparseFieldset('user'));
+		parent::assertTrue($requestParser->hasSortFields());
+		parent::assertTrue($requestParser->hasPagination());
+		parent::assertTrue($requestParser->hasFilter());
 		
-		$this->assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
-		$this->assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
-		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
-		$this->assertSame('42', $requestParser->getFilter());
+		parent::assertSame(['ship' => ['wing' => []]], $requestParser->getIncludePaths());
+		parent::assertSame(['name', 'location'], $requestParser->getSparseFieldset('user'));
+		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
+		parent::assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
+		parent::assertSame('42', $requestParser->getFilter());
 		
-		$this->assertTrue($requestParser->hasAttribute('name'));
-		$this->assertTrue($requestParser->hasRelationship('ship'));
-		$this->assertTrue($requestParser->hasMeta('lock'));
+		parent::assertTrue($requestParser->hasAttribute('name'));
+		parent::assertTrue($requestParser->hasRelationship('ship'));
+		parent::assertTrue($requestParser->hasMeta('lock'));
 		
-		$this->assertSame('Foo', $requestParser->getAttribute('name'));
-		$this->assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
-		$this->assertTrue($requestParser->getMeta('lock'));
+		parent::assertSame('Foo', $requestParser->getAttribute('name'));
+		parent::assertSame(['data' => ['type' => 'ship', 'id' => '42']], $requestParser->getRelationship('ship'));
+		parent::assertTrue($requestParser->getMeta('lock'));
 		
-		$this->assertSame($document, $requestParser->getDocument());
+		parent::assertSame($document, $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithEmptyDocument() {
-		$selfLink        = '';
-		$queryParameters = [];
-		$document        = null;
+	public function testFromPsrRequest_WithEmptyDocument(): void {
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
+			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery'   => '']),
+		]);
 		
-		$request       = new TestableNonInterfaceRequestInterface($selfLink, $queryParameters, $document);
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
-		$this->assertSame([], $requestParser->getDocument());
+		parent::assertSame([], $requestParser->getDocument());
 	}
 	
-	public function testFromPsrRequest_WithServerRequestInterface() {
+	public function testFromPsrRequest_WithServerRequestInterface(): void {
 		$queryParameters = [
 			'sort' => 'name,-location',
 		];
 		$selfLink = 'https://example.org/user/42?'.http_build_query($queryParameters);
-		$document = [];
 		
-		$request = new TestableNonInterfaceServerRequestInterface($selfLink, $queryParameters, $document);
+		$request = parent::createConfiguredStub(ServerRequestInterface::class, [
+			'getBody'        => parent::createConfiguredStub(StreamInterface::class, ['getContents' => '']),
+			'getQueryParams' => $queryParameters,
+			'getUri'         => parent::createConfiguredStub(UriInterface::class, ['__toString' => $selfLink]),
+		]);
 		$requestParser = RequestParser::fromPsrRequest($request);
 		
-		$this->assertSame('https://example.org/user/42?'.http_build_query($queryParameters), $requestParser->getSelfLink());
-		$this->assertTrue($requestParser->hasSortFields());
-		$this->assertSame([['field' => 'name', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'location', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		parent::assertSame($selfLink, $requestParser->getSelfLink());
+		parent::assertTrue($requestParser->hasSortFields());
+		parent::assertSame([['field' => 'name', 'order' => SortOrderEnum::Ascending], ['field' => 'location', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
-	public function testGetSelfLink() {
+	public function testFromPsrRequest_WithTooBigJson(): void {
+		$document = ['meta' => 'foo'];
+		$currentKey =& $document['meta'];
+		for ($i=0; $i<513; $i++) {
+			$currentKey = ['foo' => 'bar'];
+			$currentKey =& $currentKey['foo'];
+		}
+		
+		$json = json_encode($document, depth: 514, flags: JSON_THROW_ON_ERROR);
+		
+		$request = parent::createConfiguredStub(RequestInterface::class, [
+			'getBody' => parent::createConfiguredStub(StreamInterface::class, ['getContents' => $json]),
+			'getUri'  => parent::createConfiguredStub(UriInterface::class, ['getQuery' => '']),
+		]);
+		
+		$this->expectException(\JsonException::class);
+		$this->expectExceptionMessage('Maximum stack depth exceeded');
+		$this->expectExceptionCode(JSON_ERROR_DEPTH);
+		
+		RequestParser::fromPsrRequest($request);
+	}
+	
+	public function testGetSelfLink(): void {
 		$requestParser = new RequestParser('https://example.org/');
-		$this->assertSame('https://example.org/', $requestParser->getSelfLink());
+		parent::assertSame('https://example.org/', $requestParser->getSelfLink());
 		
 		$queryParameters = ['foo' => 'bar'];
 		$selfLink        = 'https://example.org/user/42?'.http_build_query($queryParameters);
 		
 		$requestParser = new RequestParser($selfLink, $queryParameters);
-		$this->assertSame($selfLink, $requestParser->getSelfLink());
+		parent::assertSame($selfLink, $requestParser->getSelfLink());
 	}
 	
-	public function testHasIncludePaths() {
+	public function testHasIncludePaths(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasIncludePaths());
+		parent::assertFalse($requestParser->hasIncludePaths());
 		
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertTrue($requestParser->hasIncludePaths());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertTrue($requestParser->hasIncludePaths());
 	}
 	
-	public function testGetIncludePaths_Reformatted() {
+	public function testGetIncludePaths_Reformatted(): void {
 		$paths = [
 			'foo',
 			'bar',
@@ -242,145 +284,145 @@ class RequestParserTest extends TestCase {
 		];
 		
 		$queryParameters = ['include' => implode(',', $paths)];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame($expected, $requestParser->getIncludePaths());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame($expected, $requestParser->getIncludePaths());
 	}
 	
-	public function testGetIncludePaths_Raw() {
+	public function testGetIncludePaths_Raw(): void {
 		$queryParameters = ['include' => 'foo,bar,baz.baf'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
 		$options = ['useNestedIncludePaths' => false];
-		$this->assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
+		parent::assertSame(['foo', 'bar', 'baz.baf'], $requestParser->getIncludePaths($options));
 	}
 	
-	public function testGetIncludePaths_Empty() {
+	public function testGetIncludePaths_Empty(): void {
 		$queryParameters = ['include' => ''];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
 		
-		$this->assertTrue($requestParser->hasIncludePaths());
-		$this->assertSame([], $requestParser->getIncludePaths());
+		parent::assertTrue($requestParser->hasIncludePaths());
+		parent::assertSame([], $requestParser->getIncludePaths());
 	}
 	
-	public function testHasSparseFieldset() {
+	public function testHasSparseFieldset(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasSparseFieldset('foo'));
+		parent::assertFalse($requestParser->hasSparseFieldset('foo'));
 		
 		$queryParameters = ['fields' => ['foo' => 'bar']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertTrue($requestParser->hasSparseFieldset('foo'));
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertTrue($requestParser->hasSparseFieldset('foo'));
 	}
 	
-	public function testGetSparseFieldset() {
+	public function testGetSparseFieldset(): void {
 		$queryParameters = ['fields' => ['foo' => 'bar,baz']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame(['bar', 'baz'], $requestParser->getSparseFieldset('foo'));
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame(['bar', 'baz'], $requestParser->getSparseFieldset('foo'));
 		
 		$queryParameters = ['fields' => ['foo' => '']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([], $requestParser->getSparseFieldset('foo'));
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame([], $requestParser->getSparseFieldset('foo'));
 	}
 	
-	public function testHasSortFields() {
+	public function testHasSortFields(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasSortFields());
+		parent::assertFalse($requestParser->hasSortFields());
 		
 		$queryParameters = ['sort' => 'foo'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertTrue($requestParser->hasSortFields());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertTrue($requestParser->hasSortFields());
 	}
 	
-	public function testGetSortFields_Reformatted() {
+	public function testGetSortFields_Reformatted(): void {
 		$queryParameters = ['sort' => 'foo'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING]], $requestParser->getSortFields());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => '-bar'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame([['field' => 'bar', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 		
 		$queryParameters = ['sort' => 'foo,-bar'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame([['field' => 'foo', 'order' => RequestParser::SORT_ASCENDING], ['field' => 'bar', 'order' => RequestParser::SORT_DESCENDING]], $requestParser->getSortFields());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame([['field' => 'foo', 'order' => SortOrderEnum::Ascending], ['field' => 'bar', 'order' => SortOrderEnum::Descending]], $requestParser->getSortFields());
 	}
 	
-	public function testGetSortFields_Raw() {
+	public function testGetSortFields_Raw(): void {
 		$queryParameters = ['sort' => 'foo,-bar'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
 		$options = ['useAnnotatedSortFields' => false];
-		$this->assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
+		parent::assertSame(['foo', '-bar'], $requestParser->getSortFields($options));
 	}
 	
-	public function testGetSortFields_Empty() {
+	public function testGetSortFields_Empty(): void {
 		$queryParameters = ['sort' => ''];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
 		
-		$this->assertTrue($requestParser->hasSortFields());
-		$this->assertSame([], $requestParser->getSortFields());
+		parent::assertTrue($requestParser->hasSortFields());
+		parent::assertSame([], $requestParser->getSortFields());
 	}
 	
-	public function testHasPagination() {
+	public function testHasPagination(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasPagination());
+		parent::assertFalse($requestParser->hasPagination());
 		
 		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertTrue($requestParser->hasPagination());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertTrue($requestParser->hasPagination());
 	}
 	
-	public function testGetPagination() {
+	public function testGetPagination(): void {
 		$queryParameters = ['page' => ['number' => '2', 'size' => '10']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame(['number' => '2', 'size' => '10'], $requestParser->getPagination());
 	}
 	
-	public function testHasFilter() {
+	public function testHasFilter(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasFilter());
+		parent::assertFalse($requestParser->hasFilter());
 		
 		$queryParameters = ['filter' => 'foo'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertTrue($requestParser->hasFilter());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertTrue($requestParser->hasFilter());
 	}
 	
-	public function testGetFilter() {
+	public function testGetFilter(): void {
 		$queryParameters = ['filter' => 'foo'];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame('foo', $requestParser->getFilter());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame('foo', $requestParser->getFilter());
 		
 		$queryParameters = ['filter' => ['foo' => 'bar']];
-		$requestParser = new RequestParser($selfLink='', $queryParameters);
-		$this->assertSame(['foo' => 'bar'], $requestParser->getFilter());
+		$requestParser = new RequestParser(queryParameters: $queryParameters);
+		parent::assertSame(['foo' => 'bar'], $requestParser->getFilter());
 	}
 	
-	public function testHasLocalId() {
+	public function testHasLocalId(): void {
 		$document = [
 			'data' => [
 				'id' => 'foo',
 			],
 		];
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
+		$requestParser = new RequestParser(document: $document);
 		
-		$this->assertArrayHasKey('data', $requestParser->getDocument());
-		$this->assertArrayHasKey('id', $requestParser->getDocument()['data']);
-		$this->assertFalse($requestParser->hasLocalId());
+		parent::assertArrayHasKey('data', $requestParser->getDocument());
+		parent::assertArrayHasKey('id', $requestParser->getDocument()['data']);
+		parent::assertFalse($requestParser->hasLocalId());
 		
 		$document = [
 			'data' => [
 				'lid' => 'foo',
 			],
 		];
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
+		$requestParser = new RequestParser(document: $document);
 		
-		$this->assertArrayHasKey('data', $requestParser->getDocument());
-		$this->assertArrayNotHasKey('id', $requestParser->getDocument()['data']);
-		$this->assertTrue($requestParser->hasLocalId());
-		$this->assertSame('foo', $requestParser->getLocalId());
+		parent::assertArrayHasKey('data', $requestParser->getDocument());
+		parent::assertArrayNotHasKey('id', $requestParser->getDocument()['data']);
+		parent::assertTrue($requestParser->hasLocalId());
+		parent::assertSame('foo', $requestParser->getLocalId());
 	}
 	
-	public function testHasAttribute() {
+	public function testHasAttribute(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasAttribute('foo'));
-		$this->assertFalse($requestParser->hasAttribute('bar'));
+		parent::assertFalse($requestParser->hasAttribute('foo'));
+		parent::assertFalse($requestParser->hasAttribute('bar'));
 		
 		$document = [
 			'data' => [
@@ -390,12 +432,12 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertTrue($requestParser->hasAttribute('foo'));
-		$this->assertFalse($requestParser->hasAttribute('bar'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertTrue($requestParser->hasAttribute('foo'));
+		parent::assertFalse($requestParser->hasAttribute('bar'));
 	}
 	
-	public function testGetAttribute() {
+	public function testGetAttribute(): void {
 		$document = [
 			'data' => [
 				'attributes' => [
@@ -404,14 +446,14 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertSame('bar', $requestParser->getAttribute('foo'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertSame('bar', $requestParser->getAttribute('foo'));
 	}
 	
-	public function testHasRelationship() {
+	public function testHasRelationship(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasRelationship('foo'));
-		$this->assertFalse($requestParser->hasRelationship('bar'));
+		parent::assertFalse($requestParser->hasRelationship('foo'));
+		parent::assertFalse($requestParser->hasRelationship('bar'));
 		
 		$document = [
 			'data' => [
@@ -426,12 +468,12 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertTrue($requestParser->hasRelationship('foo'));
-		$this->assertFalse($requestParser->hasRelationship('bar'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertTrue($requestParser->hasRelationship('foo'));
+		parent::assertFalse($requestParser->hasRelationship('bar'));
 	}
 	
-	public function testGetRelationship() {
+	public function testGetRelationship(): void {
 		$document = [
 			'data' => [
 				'relationships' => [
@@ -445,14 +487,14 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertSame(['data' => ['type' => 'bar', 'id' => '42']], $requestParser->getRelationship('foo'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertSame(['data' => ['type' => 'bar', 'id' => '42']], $requestParser->getRelationship('foo'));
 	}
 	
-	public function testHasMeta() {
+	public function testHasMeta(): void {
 		$requestParser = new RequestParser();
-		$this->assertFalse($requestParser->hasMeta('foo'));
-		$this->assertFalse($requestParser->hasMeta('bar'));
+		parent::assertFalse($requestParser->hasMeta('foo'));
+		parent::assertFalse($requestParser->hasMeta('bar'));
 		
 		$document = [
 			'meta' => [
@@ -460,23 +502,23 @@ class RequestParserTest extends TestCase {
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertTrue($requestParser->hasMeta('foo'));
-		$this->assertFalse($requestParser->hasMeta('bar'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertTrue($requestParser->hasMeta('foo'));
+		parent::assertFalse($requestParser->hasMeta('bar'));
 	}
 	
-	public function testGetMeta() {
+	public function testGetMeta(): void {
 		$document = [
 			'meta' => [
 				'foo' => 'bar',
 			],
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertSame('bar', $requestParser->getMeta('foo'));
+		$requestParser = new RequestParser(document: $document);
+		parent::assertSame('bar', $requestParser->getMeta('foo'));
 	}
 	
-	public function testGetDocument() {
+	public function testGetDocument(): void {
 		$document = [
 			'data' => [
 				'attributes' => [
@@ -497,7 +539,7 @@ class RequestParserTest extends TestCase {
 			'foo' => 'bar',
 		];
 		
-		$requestParser = new RequestParser($selfLink='', $queryParameters=[], $document);
-		$this->assertSame($document, $requestParser->getDocument());
+		$requestParser = new RequestParser(document: $document);
+		parent::assertSame($document, $requestParser->getDocument());
 	}
 }

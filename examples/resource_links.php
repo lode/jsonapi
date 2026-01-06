@@ -1,9 +1,11 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\ResourceDocument;
+declare(strict_types=1);
 
-require 'bootstrap_examples.php';
+use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
+
+require __DIR__.'/bootstrap_examples.php';
 
 $userEntity = ExampleDataset::getEntity('user', 42);
 
@@ -11,15 +13,15 @@ $userEntity = ExampleDataset::getEntity('user', 42);
  * add links in different ways to a resource
  * self links are adding both at root and in data levels
  */
-$document = ResourceDocument::fromObject($userEntity, $type='user', $userEntity->id);
+$document = ResourceDocument::fromObject($userEntity, type: 'user', id: $userEntity->id);
 
-$selfResourceMeta = ['level' => Document::LEVEL_RESOURCE];
-$partnerMeta      = ['level' => Document::LEVEL_RESOURCE];
-$redirectMeta     = ['level' => Document::LEVEL_ROOT];
+$selfResourceMeta = ['level' => DocumentLevelEnum::Resource->name];
+$partnerMeta      = ['level' => DocumentLevelEnum::Resource->name];
+$redirectMeta     = ['level' => DocumentLevelEnum::Root->name];
 
 $document->setSelfLink('/user/42',        $selfResourceMeta);
-$document->addLink('partner',  '/user/1', $partnerMeta,  $level=Document::LEVEL_RESOURCE);
-$document->addLink('redirect', '/login',  $redirectMeta, $level=Document::LEVEL_ROOT);
+$document->addLink('partner',  '/user/1', $partnerMeta,  level: DocumentLevelEnum::Resource);
+$document->addLink('redirect', '/login',  $redirectMeta, level: DocumentLevelEnum::Root);
 
 /**
  * sending the response

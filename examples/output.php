@@ -1,9 +1,11 @@
 <?php
 
-use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\MetaDocument;
+declare(strict_types=1);
 
-require 'bootstrap_examples.php';
+use alsvanzelf\jsonapi\MetaDocument;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+
+require __DIR__.'/bootstrap_examples.php';
 
 $document = new MetaDocument();
 $document->add('foo', 'bar');
@@ -14,7 +16,7 @@ $document->add('foo', 'bar');
 
 echo '<h2>Get the array</h2>';
 echo '<pre style="font-size: large;">$document->toArray();</pre>';
-echo '<pre>'.var_export($document->toArray(), true).'</pre>';
+echo '<pre>'.var_export($document->toArray(), return: true).'</pre>';
 
 /**
  * get the json
@@ -23,7 +25,7 @@ echo '<pre>'.var_export($document->toArray(), true).'</pre>';
 $options = ['prettyPrint' => true];
 echo '<h2>Get the json</h2>';
 echo '<pre style="font-size: large;">$document->toJson();</pre>';
-echo '<pre>'.var_export($document->toJson($options), true).'</pre>';
+echo '<pre>'.var_export($document->toJson($options), return: true).'</pre>';
 
 /**
  * use own json_encode
@@ -31,8 +33,8 @@ echo '<pre>'.var_export($document->toJson($options), true).'</pre>';
 
 $options = ['prettyPrint' => true];
 echo '<h2>Use own <code>json_encode()</code></h2>';
-echo '<pre style="font-size: large;">json_encode($document, JSON_PRETTY_PRINT);</pre>';
-echo '<pre>'.var_export(json_encode($document, JSON_PRETTY_PRINT), true).'</pre>';
+echo '<pre style="font-size: large;">json_encode($document, flags: JSON_PRETTY_PRINT);</pre>';
+echo '<pre>'.var_export(json_encode($document, flags: JSON_PRETTY_PRINT), return: true).'</pre>';
 
 /**
  * get custom json (for a non-spec array)
@@ -49,7 +51,7 @@ echo '$customArray[\'custom\'] = \'foo\';'.PHP_EOL;
 echo '$options = [\'array\' => $customArray];'.PHP_EOL;
 echo '$document->toJson($options);'.PHP_EOL;
 echo '</pre>';
-echo '<pre>'.var_export($document->toJson($options), true).'</pre>';
+echo '<pre>'.var_export($document->toJson($options), return: true).'</pre>';
 
 /**
  * get jsonp with callback
@@ -61,16 +63,12 @@ echo '<pre style="font-size: large;">';
 echo '$options = [\'jsonpCallback\' => \'callback\'];'.PHP_EOL;
 echo '$document->toJson($options);'.PHP_EOL;
 echo '</pre>';
-echo '<pre>'.var_export($document->toJson($options), true).'</pre>';
+echo '<pre>'.var_export($document->toJson($options), return: true).'</pre>';
 
 /**
  * send json response
  */
 
-$options = ['prettyPrint' => true, 'contentType' => 'text/html'];
 echo '<h2>Send json response</h2>';
 echo '<pre style="font-size: large;">$document->sendResponse();</pre>';
-echo '<pre>';
-$document->sendResponse($options);
-echo '</pre>';
-echo '<p><em>Also sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.Document::CONTENT_TYPE_OFFICIAL.']</em></p>';
+echo '<p><em>Echo\'s the result of <code style="font-size: large;">$document->toJson()</code> and sends http status code ('.$document->getHttpStatusCode().') and headers: [Content-Type: '.ContentTypeEnum::Official->value.']</em></p>';

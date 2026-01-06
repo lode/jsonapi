@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\at_members_in_errors;
 
 use alsvanzelf\jsonapi\ErrorsDocument;
@@ -10,7 +12,7 @@ use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 class at_members_in_errors {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ErrorsDocument {
 		/**
 		 * root
 		 */

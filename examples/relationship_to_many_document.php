@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\CollectionDocument;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * a to-many relationship response

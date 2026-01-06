@@ -6,7 +6,7 @@
 		"redirect": {
 			"href": "/login",
 			"meta": {
-				"level": "root"
+				"level": "Root"
 			}
 		}
 	},
@@ -22,13 +22,13 @@
 			"self": {
 				"href": "/user/42",
 				"meta": {
-					"level": "resource"
+					"level": "Resource"
 				}
 			},
 			"partner": {
 				"href": "/user/1",
 				"meta": {
-					"level": "resource"
+					"level": "Resource"
 				}
 			}
 		}

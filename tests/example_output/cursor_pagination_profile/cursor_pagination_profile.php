@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\cursor_pagination_profile;
 
 use alsvanzelf\jsonapi\CollectionDocument;
@@ -7,7 +9,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
 
 class cursor_pagination_profile {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$profile = new CursorPaginationProfile();
 		
 		$user1  = new ResourceObject('user', 1);
@@ -21,8 +23,8 @@ class cursor_pagination_profile {
 		$document = CollectionDocument::fromResources($user1, $user2, $user42);
 		$document->applyProfile($profile);
 		
-		$profile->setCount($document, $exactTotal=3, $bestGuessTotal=10);
-		$profile->setLinksFirstPage($document, $currentUrl='/users?sort=42&page[size]=10', $lastCursor='zaphod');
+		$profile->setCount($document, exactTotal: 3, bestGuessTotal: 10);
+		$profile->setLinksFirstPage($document, baseOrCurrentUrl: '/users?sort=42&page[size]=10', lastCursor: 'zaphod');
 		
 		return $document;
 	}

@@ -1,58 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
-use alsvanzelf\jsonapiTests\helpers\TestableNonTraitAtMemberManager as AtMemberManager;
+use alsvanzelf\jsonapi\helpers\AtMemberManager;
 use PHPUnit\Framework\TestCase;
 
-class AtMemberManagerTest extends TestCase {
-	public function testAddAtMember_HappyPath() {
-		$helper = new AtMemberManager();
-		
-		$this->assertFalse($helper->hasAtMembers());
-		$this->assertSame([], $helper->getAtMembers());
-		
-		$helper->addAtMember('@foo', 'bar');
-		
-		$array = $helper->getAtMembers();
-		
-		$this->assertTrue($helper->hasAtMembers());
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('@foo', $array);
-		$this->assertSame('bar', $array['@foo']);
+final class AtMemberManagerTest extends TestCase {
+	private static object $helper;
+	
+	public static function setUpBeforeClass(): void {
+		// using AtMemberManager to make it non-trait to test against it
+		self::$helper = new class {
+			use AtMemberManager;
+		};
 	}
 	
-	public function testAddAtMember_WithoutAtSign() {
-		$helper = new AtMemberManager();
+	public function testAddAtMember_HappyPath(): void {
+		parent::assertFalse(self::$helper->hasAtMembers());
+		parent::assertSame([], self::$helper->getAtMembers());
 		
-		$helper->addAtMember('foo', 'bar');
+		self::$helper->addAtMember('@foo', 'bar');
 		
-		$array = $helper->getAtMembers();
+		$array = self::$helper->getAtMembers();
 		
-		$this->assertArrayHasKey('@foo', $array);
+		parent::assertTrue(self::$helper->hasAtMembers());
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('@foo', $array);
+		parent::assertSame('bar', $array['@foo']);
 	}
 	
-	public function testAddAtMember_WithObjectValue() {
-		$helper = new AtMemberManager();
+	public function testAddAtMember_WithoutAtSign(): void {
+		self::$helper->addAtMember('foo', 'bar');
 		
+		$array = self::$helper->getAtMembers();
+		
+		parent::assertArrayHasKey('@foo', $array);
+	}
+	
+	public function testAddAtMember_WithObjectValue(): void {
 		$object = new \stdClass();
 		$object->bar = 'baz';
 		
-		$helper->addAtMember('foo', $object);
+		self::$helper->addAtMember('foo', $object);
 		
-		$array = $helper->getAtMembers();
+		$array = self::$helper->getAtMembers();
 		
-		$this->assertArrayHasKey('@foo', $array);
-		$this->assertArrayHasKey('bar', $array['@foo']);
-		$this->assertSame('baz', $array['@foo']['bar']);
+		parent::assertArrayHasKey('@foo', $array);
+		parent::assertArrayHasKey('bar', $array['@foo']);
+		parent::assertSame('baz', $array['@foo']['bar']);
 	}
 	
-	public function testAddAtMember_InvalidDoubleAt() {
-		$helper = new AtMemberManager();
-		
+	public function testAddAtMember_InvalidDoubleAt(): void {
 		$this->expectException(InputException::class);
 		
-		$helper->addAtMember('@@foo', 'bar');
+		self::$helper->addAtMember('@@foo', 'bar');
 	}
 }

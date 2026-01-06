@@ -1,30 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\errors_all_options;
 
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 class errors_all_options {
-	public static function createJsonapiDocument() {
-		$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html', $genericTypeLink='https://www.example.com/documentation.html');
+	public static function createJsonapiDocument(): ErrorsDocument {
+		$errorHumanApi = new ErrorObject('Invalid input', 'Too much options', 'Please, choose a bit less. Consult your ...', 'https://www.example.com/explanation.html', 'https://www.example.com/documentation.html');
 		
 		$errorSpecApi = new ErrorObject();
-		$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
-		$errorSpecApi->blameQueryParameter($parameter='filter');
-		$errorSpecApi->blameHeader($headerName='X-Foo');
-		$errorSpecApi->setUniqueIdentifier($id=42);
-		$errorSpecApi->addMeta($key='foo', $value='bar');
-		$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
-		$errorSpecApi->setApplicationCode($genericCode='Invalid input');
-		$errorSpecApi->setHumanTitle($genericTitle='Too much options');
-		$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
-		$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-		$errorSpecApi->setTypeLink($genericTypeLink='https://www.example.com/documentation.html', ['foo'=>'bar']);
+		$errorSpecApi->blameJsonPointer('/data/attributes/title');
+		$errorSpecApi->blameQueryParameter('filter');
+		$errorSpecApi->blameHeader('X-Foo');
+		$errorSpecApi->setUniqueIdentifier(42);
+		$errorSpecApi->addMeta('foo', 'bar');
+		$errorSpecApi->setHttpStatusCode(404);
+		$errorSpecApi->setApplicationCode('Invalid input');
+		$errorSpecApi->setHumanTitle('Too much options');
+		$errorSpecApi->setHumanDetails('Please, choose a bit less. Consult your ...');
+		$errorSpecApi->setAboutLink('https://www.example.com/explanation.html', ['foo'=>'bar']);
+		$errorSpecApi->setTypeLink('https://www.example.com/documentation.html', ['foo'=>'bar']);
 		
 		$metaObject = new \stdClass();
 		$metaObject->property = 'value';
-		$errorSpecApi->addMeta($key='object', $metaObject);
+		$errorSpecApi->addMeta('object', $metaObject);
 		
 		$anotherError      = new ErrorObject('kiss', 'Error objects can be small and simple as well.');
 		$previousException = new \Exception('something went wrong!');
@@ -33,8 +35,8 @@ class errors_all_options {
 		$document = new ErrorsDocument($errorHumanApi);
 		$document->addErrorObject($errorSpecApi);
 		$document->addErrorObject($anotherError);
-		$document->addException($someException, $options=['includeExceptionTrace' => false, 'stripExceptionBasePath' => __DIR__]);
-		$document->add($genericCode='Authentication error', $genericTitle='Not logged in');
+		$document->addException($someException, ['includeExceptionTrace' => false, 'stripExceptionBasePath' => __DIR__]);
+		$document->add('Authentication error', 'Not logged in');
 		$document->addLink('redirect', '/login', ['label'=>'Log in']);
 		$document->setHttpStatusCode(400);
 		

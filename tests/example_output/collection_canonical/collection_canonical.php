@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\collection_canonical;
 
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class collection_canonical {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): CollectionDocument {
 		$articleRecords = [
 			1 => [
 				'title'    => 'JSON:API paints my bikeshed!',
@@ -68,7 +70,7 @@ class collection_canonical {
 		}
 		
 		$document->setSelfLink('http://example.com/articles');
-		$document->setPaginationLinks($previous=null, $next='http://example.com/articles?page[offset]=2', $first=null, $last='http://example.com/articles?page[offset]=10');
+		$document->setPaginationLinks(previousHref: null, nextHref: 'http://example.com/articles?page[offset]=2', firstHref: null, lastHref: 'http://example.com/articles?page[offset]=10');
 		$document->unsetJsonapiObject();
 		
 		return $document;

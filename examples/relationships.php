@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * the different ways of adding relationships to a resource
@@ -39,13 +42,13 @@ $document->addRelationship('included-ship', $ship1Resource);
  */
 
 $options = ['includeContainedResources' => false];
-$document->addRelationship('excluded-ship', $ship2Resource, $links=[], $meta=[], $options);
+$document->addRelationship('excluded-ship', $ship2Resource, options: $options);
 
 /**
  * to-many relationship, one-by-one
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject = new RelationshipObject(type: RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($friend1Resource);
 $relationshipObject->addResource($friend2Resource);
 
@@ -65,20 +68,11 @@ $document->addRelationship('included-friends', $friends);
  * to-many relationship, different types
  */
 
-$relationshipObject = new RelationshipObject($type=RelationshipObject::TO_MANY);
+$relationshipObject = new RelationshipObject(type: RelationshipTypeEnum::ToMany);
 $relationshipObject->addResource($ship1Resource);
 $relationshipObject->addResource($dockResource);
 
 $document->addRelationshipObject('one-by-one-neighbours', $relationshipObject);
-
-/**
- * custom
- */
-$jsonapi = new ResourceDocument('user', 1);
-$custom_relation = [
-	'data' => ['cus' => 'tom'],
-];
-$jsonapi->addRelationship('custom', $custom_relation);
 
 /**
  * sending the response

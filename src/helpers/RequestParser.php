@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\helpers;
 
-use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\ContentTypeEnum;
+use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class RequestParser {
-	const SORT_ASCENDING  = 'ascending';
-	const SORT_DESCENDING = 'descending';
-	
-	/** @var array */
-	protected static $defaults = [
+	/** @var PHPStanTypeAlias_DefaultOptions_RequestParser */
+	protected static array $requestParserDefaults = [
 		/**
 		 * reformat the include query parameter paths to nested arrays
 		 * this allows easier processing on each step of the chain
@@ -24,57 +29,59 @@ class RequestParser {
 		 */
 		'useAnnotatedSortFields' => true,
 	];
-	/** @var string */
-	private $selfLink = '';
-	/** @var array */
-	private $queryParameters = [];
-	/** @var array */
-	private $document = [];
 	
 	/**
-	 * @param string $selfLink        the uri used to make this request {@see getSelfLink()}
-	 * @param array  $queryParameters all query parameters defined by the specification
-	 * @param array  $document        the request jsonapi document
+	 * @param string                           $selfLink        the uri used to make this request {@see getSelfLink()}
+	 * @param PHPStanTypeAlias_QueryParameters $queryParameters all query parameters defined by the specification
+	 * @param array<string, mixed>             $document        the request jsonapi document
+	 * 
+	 * @throws \JsonException if $document's content type is json but it can't be json decoded
 	 */
-	public function __construct($selfLink='', array $queryParameters=[], array $document=[]) {
-		$this->selfLink        = $selfLink;
-		$this->queryParameters = $queryParameters;
-		$this->document        = $document;
-	}
+	public function __construct(
+		private readonly string $selfLink='',
+		private readonly array $queryParameters=[],
+		private readonly array $document=[],
+	) {}
 	
-	/**
-	 * @return self
-	 */
-	public static function fromSuperglobals() {
+	public static function fromSuperglobals(): static {
+		/**
+		 * @var array{
+		 *      REQUEST_SCHEME?: string,
+		 *      HTTP_HOST?: string,
+		 *      REQUEST_URI?: string,
+		 *      CONTENT_TYPE?: string
+		 * } $_SERVER
+		 */
+		
 		$selfLink = '';
 		if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			$selfLink = $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		}
 		
+		/** @var PHPStanTypeAlias_QueryParameters $queryParameters */
 		$queryParameters = $_GET;
 		
 		$document = $_POST;
 		if ($document === [] && isset($_SERVER['CONTENT_TYPE'])) {
-			$documentIsJsonapi = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_OFFICIAL) !== false);
-			$documentIsJson    = (strpos($_SERVER['CONTENT_TYPE'], Document::CONTENT_TYPE_DEBUG)    !== false);
+			$documentIsJsonapi = (str_contains($_SERVER['CONTENT_TYPE'], ContentTypeEnum::Official->value));
+			$documentIsJson    = (str_contains($_SERVER['CONTENT_TYPE'], ContentTypeEnum::Debug->value));
 			
-			if ($documentIsJsonapi || $documentIsJson) {
-				$document = json_decode(file_get_contents('php://input'), true);
-				
-				if ($document === null) {
-					$document = [];
-				}
+			$document = file_get_contents('php://input');
+			if ($document === '' || $document === false) {
+				$document = [];
+			}
+			elseif ($documentIsJsonapi || $documentIsJson) {
+				$document = json_decode($document, associative: true, flags: JSON_THROW_ON_ERROR);
 			}
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
 	/**
-	 * @param  ServerRequestInterface|RequestInterface $request
-	 * @return self
+	 * @throws \JsonException if the requests' document can't be json decoded
 	 */
-	public static function fromPsrRequest(RequestInterface $request) {
+	public static function fromPsrRequest(ServerRequestInterface|RequestInterface $request): static {
 		$selfLink = (string) $request->getUri();
 		
 		if ($request instanceof ServerRequestInterface) {
@@ -85,36 +92,29 @@ class RequestParser {
 			parse_str($request->getUri()->getQuery(), $queryParameters);
 		}
 		
+		/** @var PHPStanTypeAlias_QueryParameters $queryParameters */
+		
 		if ($request->getBody()->getContents() === '') {
 			$document = [];
 		}
 		else {
-			$document = json_decode($request->getBody()->getContents(), true);
-			
-			if ($document === null) {
-				$document = [];
-			}
+			$document = json_decode($request->getBody()->getContents(), associative: true, flags: JSON_THROW_ON_ERROR);
 		}
 		
-		return new self($selfLink, $queryParameters, $document);
+		return new static($selfLink, $queryParameters, $document);
 	}
 	
 	/**
 	 * the full link used to make this request
 	 * 
 	 * this is not a bare self link of a resource and includes query parameters if used
-	 * 
-	 * @return string
 	 */
-	public function getSelfLink() {
+	public function getSelfLink(): string {
 		return $this->selfLink;
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasIncludePaths() {
-		return isset($this->queryParameters['include']);
+	public function hasIncludePaths(): bool {
+		return $this->hasQueryParameter('include');
 	}
 	
 	/**
@@ -123,17 +123,17 @@ class RequestParser {
 	 * the nested format allows easier processing on each step of the chain
 	 * the raw format allows for custom processing
 	 * 
-	 * @param  array $options optional {@see RequestParser::$defaults}
-	 * @return string[]|array
+	 * @param  PHPStanTypeAlias_Options_RequestParser $options {@see RequestParser::$requestParserDefaults}
+	 * @return array<string>|array<array-key, mixed>
 	 */
-	public function getIncludePaths(array $options=[]) {
-		if ($this->queryParameters['include'] === '') {
+	public function getIncludePaths(array $options=[]): array {
+		if ($this->getQueryParameter('include') === '') {
 			return [];
 		}
 		
-		$includePaths = explode(',', $this->queryParameters['include']);
+		$includePaths = explode(',', $this->getQueryParameter('include'));
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useNestedIncludePaths'] === false) {
 			return $includePaths;
 		}
@@ -154,31 +154,23 @@ class RequestParser {
 		return $restructured;
 	}
 	
-	/**
-	 * @param  string $type
-	 * @return boolean
-	 */
-	public function hasSparseFieldset($type) {
-		return isset($this->queryParameters['fields'][$type]);
+	public function hasSparseFieldset(string $type): bool {
+		return isset($this->getQueryParameter('fields')[$type]);
 	}
 	
 	/**
-	 * @param  string $type
 	 * @return string[]
 	 */
-	public function getSparseFieldset($type) {
-		if ($this->queryParameters['fields'][$type] === '') {
+	public function getSparseFieldset(string $type): array {
+		if ($this->getQueryParameter('fields')[$type] === '') {
 			return [];
 		}
 		
-		return explode(',', $this->queryParameters['fields'][$type]);
+		return explode(',', $this->getQueryParameter('fields')[$type]);
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasSortFields() {
-		return isset($this->queryParameters['sort']);
+	public function hasSortFields(): bool {
+		return $this->hasQueryParameter('sort');
 	}
 	
 	/**
@@ -189,31 +181,31 @@ class RequestParser {
 	 * 
 	 * @todo return some kind of SortFieldObject
 	 * 
-	 * @param  array $options optional {@see RequestParser::$defaults}
+	 * @param  PHPStanTypeAlias_Options_RequestParser $options {@see RequestParser::$requestParserDefaults}
 	 * @return string[]|array<array{
 	 *         field: string, // the sort field, without any minus sign for descending sort order
-	 *         order: string, // one of the RequestParser::SORT_* constants
+	 *         order: SortOrderEnum,
 	 * }>
 	 */
-	public function getSortFields(array $options=[]) {
-		if ($this->queryParameters['sort'] === '') {
+	public function getSortFields(array $options=[]): array {
+		if ($this->getQueryParameter('sort') === '') {
 			return [];
 		}
 		
-		$fields = explode(',', $this->queryParameters['sort']);
+		$fields = explode(',', $this->getQueryParameter('sort'));
 		
-		$options = array_merge(self::$defaults, $options);
+		$options = [...self::$requestParserDefaults, ...$options];
 		if ($options['useAnnotatedSortFields'] === false) {
 			return $fields;
 		}
 		
 		$sort = [];
 		foreach ($fields as $field) {
-			$order = RequestParser::SORT_ASCENDING;
+			$order = SortOrderEnum::Ascending;
 			
-			if (strpos($field, '-') === 0) {
+			if (str_starts_with($field, '-')) {
 				$field = substr($field, 1);
-				$order = RequestParser::SORT_DESCENDING;
+				$order = SortOrderEnum::Descending;
 			}
 			
 			$sort[] = [
@@ -225,56 +217,40 @@ class RequestParser {
 		return $sort;
 	}
 	
-	/**
-	 * @return boolean
-	 */
-	public function hasPagination() {
-		return isset($this->queryParameters['page']);
+	public function hasPagination(): bool {
+		return $this->hasQueryParameter('page');
 	}
 	
 	/**
 	 * @todo return some kind of PaginatorObject which recognizes the strategy of pagination used
 	 *       e.g. page-based, offset-based, cursor-based, or unknown
 	 * 
-	 * @return array
+	 * @return array<string, string>
 	 */
-	public function getPagination() {
-		return $this->queryParameters['page'];
+	public function getPagination(): array {
+		return $this->getQueryParameter('page');
+	}
+	
+	public function hasFilter(): bool {
+		return $this->hasQueryParameter('filter');
 	}
 	
 	/**
-	 * @return boolean
+	 * @return string|array<array-key, string>
 	 */
-	public function hasFilter() {
-		return isset($this->queryParameters['filter']);
+	public function getFilter(): string|array {
+		return $this->getQueryParameter('filter');
 	}
 	
-	/**
-	 * @return array
-	 */
-	public function getFilter() {
-		return $this->queryParameters['filter'];
-	}
-	
-	/**
-	 * @return boolean
-	 */
-	public function hasLocalId() {
+	public function hasLocalId(): bool {
 		return (isset($this->document['data']['lid']));
 	}
 	
-	/**
-	 * @return string
-	 */
-	public function getLocalId() {
-		return $this->document['data']['lid'];
+	public function getLocalId(): string {
+		return $this->document['data']['lid']; // @phpstan-ignore return.type (implementation returns mixed)
 	}
 	
-	/**
-	 * @param  string $attributeName
-	 * @return boolean
-	 */
-	public function hasAttribute($attributeName) {
+	public function hasAttribute(string $attributeName): bool {
 		if (isset($this->document['data']['attributes']) === false) {
 			return false;
 		}
@@ -285,19 +261,11 @@ class RequestParser {
 		return true;
 	}
 	
-	/**
-	 * @param  string $attributeName
-	 * @return mixed
-	 */
-	public function getAttribute($attributeName) {
+	public function getAttribute(string $attributeName): mixed {
 		return $this->document['data']['attributes'][$attributeName];
 	}
 	
-	/**
-	 * @param  string $relationshipName
-	 * @return boolean
-	 */
-	public function hasRelationship($relationshipName) {
+	public function hasRelationship(string $relationshipName): bool {
 		if (isset($this->document['data']['relationships']) === false) {
 			return false;
 		}
@@ -311,18 +279,13 @@ class RequestParser {
 	/**
 	 * @todo return some kind of read-only ResourceIdentifierObject
 	 * 
-	 * @param  string $relationshipName
-	 * @return array
+	 * @return ?array<string, mixed>
 	 */
-	public function getRelationship($relationshipName) {
-		return $this->document['data']['relationships'][$relationshipName];
+	public function getRelationship(string $relationshipName): ?array {
+		return $this->document['data']['relationships'][$relationshipName]; // @phpstan-ignore return.type (implementation returns mixed)
 	}
 	
-	/**
-	 * @param  string $metaKey
-	 * @return boolean
-	 */
-	public function hasMeta($metaKey) {
+	public function hasMeta(string $metaKey): bool {
 		if (isset($this->document['meta']) === false) {
 			return false;
 		}
@@ -333,18 +296,38 @@ class RequestParser {
 		return true;
 	}
 	
-	/**
-	 * @param  string $metaKey
-	 * @return mixed
-	 */
-	public function getMeta($metaKey) {
+	public function getMeta(string $metaKey): mixed {
 		return $this->document['meta'][$metaKey];
 	}
 	
 	/**
-	 * @return array
+	 * @return array<string, mixed>
 	 */
-	public function getDocument() {
+	public function getDocument(): array {
 		return $this->document;
+	}
+	
+	/**
+	 * @internal
+	 */
+	protected function hasQueryParameter(string $key): bool {
+		return isset($this->queryParameters[$key]);
+	}
+	
+	/**
+	 * @internal
+	 * 
+	 * @return ($key is 'fields'|'page' ? array<array-key, string> : string)
+	 */
+	protected function getQueryParameter(string $key): string|array {
+		return match ($key) {
+			// array shape
+			'fields', 'page'  => $this->queryParameters[$key] ?? [],
+			// string shape
+			'include', 'sort' => $this->queryParameters[$key] ?? '',
+			// mixed shape
+			'filter'          => $this->queryParameters[$key] ?? '',
+			default           => $this->queryParameters[$key] ?? '',
+		};
 	}
 }

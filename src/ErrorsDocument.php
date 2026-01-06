@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi;
 
 use alsvanzelf\jsonapi\Document;
-use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
 /**
@@ -11,11 +12,11 @@ use alsvanzelf\jsonapi\objects\ErrorObject;
  */
 class ErrorsDocument extends Document {
 	/** @var ErrorObject[] */
-	protected $errors = [];
-	/** @var array */
-	protected $httpStatusCodes;
-	/** @var array */
-	protected static $defaults = [
+	protected array $errors = [];
+	/** @var array<string, array<int, true>> */
+	protected array $httpStatusCodes = [];
+	/** @var PHPStanTypeAlias_DefaultOptions_ErrorsDocument */
+	protected static array $errorsDocumentDefaults = [
 		/**
 		 * add the trace of exceptions when adding exceptions
 		 * in some cases it might be handy to disable if traces are too big
@@ -28,9 +29,6 @@ class ErrorsDocument extends Document {
 		'includeExceptionPrevious' => true,
 	];
 	
-	/**
-	 * @param ?ErrorObject $errorObject optional
-	 */
 	public function __construct(?ErrorObject $errorObject=null) {
 		parent::__construct();
 		
@@ -44,20 +42,12 @@ class ErrorsDocument extends Document {
 	 */
 	
 	/**
-	 * @param  \Exception|\Throwable $exception
-	 * @param  array                 $options   optional {@see ErrorsDocument::$defaults}
-	 * @return ErrorsDocument
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
+	 * @param PHPStanTypeAlias_Options_ErrorsDocument $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
-	public static function fromException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
+	public static function fromException(\Throwable $exception, array $options=[]): static {
+		$options = [...self::$errorsDocumentDefaults, ...$options];
 		
-		$options = array_merge(self::$defaults, $options);
-		
-		$errorsDocument = new self();
+		$errorsDocument = new static();
 		$errorsDocument->addException($exception, $options);
 		
 		return $errorsDocument;
@@ -68,17 +58,10 @@ class ErrorsDocument extends Document {
 	 * 
 	 * recursively adds multiple ErrorObjects if $exception carries a ->getPrevious()
 	 * 
-	 * @param \Exception|\Throwable $exception
-	 * @param array                 $options   optional {@see ErrorsDocument::$defaults}
-	 * 
-	 * @throws InputException if $exception is not \Exception or \Throwable
+	 * @param PHPStanTypeAlias_Options_ErrorsDocumentAndErrorObject $options {@see ErrorsDocument::$errorsDocumentDefaults}
 	 */
-	public function addException($exception, array $options=[]) {
-		if ($exception instanceof \Exception === false && $exception instanceof \Throwable === false) {
-			throw new InputException('input is not a real exception in php5 or php7');
-		}
-		
-		$options = array_merge(self::$defaults, $options);
+	public function addException(\Throwable $exception, array $options=[]): void {
+		$options = [...self::$errorsDocumentDefaults, ...$options];
 		
 		$this->addErrorObject(ErrorObject::fromException($exception, $options));
 		
@@ -94,11 +77,17 @@ class ErrorsDocument extends Document {
 	/**
 	 * @param string|int $genericCode       developer-friendly code of the generic type of error
 	 * @param string     $genericTitle      human-friendly title of the generic type of error
-	 * @param string     $specificDetails   optional, human-friendly explanation of the specific error
-	 * @param string     $specificAboutLink optional, human-friendly explanation of the specific error
-	 * @param string     $genericTypeLink   optional, human-friendly explanation of the generic type of error
+	 * @param string     $specificDetails   human-friendly explanation of the specific error
+	 * @param string     $specificAboutLink human-friendly explanation of the specific error
+	 * @param string     $genericTypeLink   human-friendly explanation of the generic type of error
 	 */
-	public function add($genericCode, $genericTitle, $specificDetails=null, $specificAboutLink=null, $genericTypeLink=null) {
+	public function add(
+		string|int $genericCode,
+		string $genericTitle,
+		?string $specificDetails=null,
+		?string $specificAboutLink=null,
+		?string $genericTypeLink=null,
+	): void {
 		$errorObject = new ErrorObject($genericCode, $genericTitle, $specificDetails, $specificAboutLink, $genericTypeLink);
 		
 		$this->addErrorObject($errorObject);
@@ -110,10 +99,8 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @note also defines the http status code of the document if the ErrorObject has it defined
-	 * 
-	 * @param ErrorObject $errorObject
 	 */
-	public function addErrorObject(ErrorObject $errorObject) {
+	public function addErrorObject(ErrorObject $errorObject): void {
 		$this->errors[] = $errorObject;
 		
 		if ($errorObject->hasHttpStatusCode()) {
@@ -125,7 +112,7 @@ class ErrorsDocument extends Document {
 	 * DocumentInterface
 	 */
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
 		$array['errors'] = [];
@@ -146,34 +133,32 @@ class ErrorsDocument extends Document {
 	
 	/**
 	 * @internal
-	 * 
-	 * @param  string|int $httpStatusCode
-	 * @return int
 	 */
-	protected function determineHttpStatusCode($httpStatusCode) {
+	protected function determineHttpStatusCode(string|int $httpStatusCode): int {
 		// add the new code
-		$category = substr($httpStatusCode, 0, 1);
-		$this->httpStatusCodes[$category][$httpStatusCode] = true;
+		$category = substr((string) $httpStatusCode, 0, 1);
+		$category .= 'xx'; // help phpstan understand the array-key is a string not an int
+		$this->httpStatusCodes[$category][(int) $httpStatusCode] = true;
 		
-		$advisedStatusCode = $httpStatusCode;
+		$advisedStatusCode = (int) $httpStatusCode;
 		
 		// when there's multiple, give preference to 5xx errors
-		if (isset($this->httpStatusCodes['5']) && isset($this->httpStatusCodes['4'])) {
+		if (isset($this->httpStatusCodes['5xx']) && isset($this->httpStatusCodes['4xx'])) {
 			// use a generic one
 			$advisedStatusCode = 500;
 		}
-		elseif (isset($this->httpStatusCodes['5'])) {
-			if (count($this->httpStatusCodes['5']) === 1) {
-				$advisedStatusCode = key($this->httpStatusCodes['5']);
+		elseif (isset($this->httpStatusCodes['5xx'])) {
+			if (count($this->httpStatusCodes['5xx']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['5xx']);
 			}
 			else {
 				// use a generic one
 				$advisedStatusCode = 500;
 			}
 		}
-		elseif (isset($this->httpStatusCodes['4'])) {
-			if (count($this->httpStatusCodes['4']) === 1) {
-				$advisedStatusCode = key($this->httpStatusCodes['4']);
+		elseif (isset($this->httpStatusCodes['4xx'])) {
+			if (count($this->httpStatusCodes['4xx']) === 1) {
+				$advisedStatusCode = key($this->httpStatusCodes['4xx']);
 			}
 			else {
 				// use a generic one
@@ -181,6 +166,6 @@ class ErrorsDocument extends Document {
 			}
 		}
 		
-		return (int) $advisedStatusCode;
+		return $advisedStatusCode;
 	}
 }

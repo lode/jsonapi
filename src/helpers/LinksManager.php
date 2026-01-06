@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 trait LinksManager {
-	/** @var LinksObject */
-	protected $links;
+	protected LinksObject $links;
 	
 	/**
 	 * human api
@@ -17,27 +17,13 @@ trait LinksManager {
 	/**
 	 * set a key containing a link
 	 * 
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * if $meta is given, a LinkObject is added, otherwise a link string is added
+	 * 
+	 * @param array<string, mixed> $meta
 	 */
-	public function addLink($key, $href, array $meta=[]) {
+	public function addLink(string $key, ?string $href, array $meta=[]): void {
 		$this->ensureLinksObject();
 		$this->links->add($key, $href, $meta);
-	}
-	
-	/**
-	 * append a link to a key with an array of links
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLink()}
-	 * 
-	 * @param string $key
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
-	 */
-	public function appendLink($key, $href, array $meta=[]) {
-		$this->ensureLinksObject();
-		$this->links->append($key, $href, $meta);
 	}
 	
 	/**
@@ -46,47 +32,16 @@ trait LinksManager {
 	
 	/**
 	 * set a key containing a LinkObject
-	 * 
-	 * @param string     $key
-	 * @param LinkObject $linkObject
 	 */
-	public function addLinkObject($key, LinkObject $linkObject) {
+	public function addLinkObject(string $key, LinkObject $linkObject): void {
 		$this->ensureLinksObject();
 		$this->links->addLinkObject($key, $linkObject);
 	}
 	
 	/**
-	 * set a key containing a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinksArray $linksArray
-	 */
-	public function addLinksArray($key, LinksArray $linksArray) {
-		$this->ensureLinksObject();
-		$this->links->addLinksArray($key, $linksArray);
-	}
-	
-	/**
-	 * append a LinkObject to a key with a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string     $key
-	 * @param LinkObject $linkObject
-	 */
-	public function appendLinkObject($key, LinkObject $linkObject) {
-		$this->ensureLinksObject();
-		$this->links->appendLinkObject($key, $linkObject);
-	}
-	
-	/**
 	 * set a LinksObject containing all links
-	 * 
-	 * @param LinksObject $linksObject
 	 */
-	public function setLinksObject(LinksObject $linksObject) {
+	public function setLinksObject(LinksObject $linksObject): void {
 		$this->links = $linksObject;
 	}
 	
@@ -97,8 +52,23 @@ trait LinksManager {
 	/**
 	 * @internal
 	 */
-	private function ensureLinksObject() {
-		if ($this->links === null) {
+	protected function hasLinks(): bool {
+		if (isset($this->links) === false) {
+			return false;
+		}
+		
+		if ($this->links->isEmpty()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * @internal
+	 */
+	private function ensureLinksObject(): void {
+		if (isset($this->links) === false) {
 			$this->setLinksObject(new LinksObject());
 		}
 	}

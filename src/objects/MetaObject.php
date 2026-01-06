@@ -1,25 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class MetaObject extends AbstractObject {
-	/** @var array */
-	protected $meta = [];
+	/** @var array<string, mixed> */
+	protected array $meta = [];
 	
 	/**
 	 * human api
 	 */
 	
 	/**
-	 * @param  array $meta
-	 * @return MetaObject
+	 * @param array<string, mixed> $meta
 	 */
-	public static function fromArray(array $meta) {
-		$metaObject = new self();
+	public static function fromArray(array $meta): static {
+		$metaObject = new static();
 		
 		foreach ($meta as $key => $value) {
 			$metaObject->add($key, $value);
@@ -28,25 +34,17 @@ class MetaObject extends AbstractObject {
 		return $metaObject;
 	}
 	
-	/**
-	 * @param  object $meta
-	 * @return MetaObject
-	 */
-	public static function fromObject($meta) {
+	public static function fromObject(object $meta): static {
 		$array = Converter::objectToArray($meta);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function add($key, $value) {
+	public function add(string $key, mixed $value): void {
 		Validator::checkMemberName($key);
 		
 		if (is_object($value)) {
@@ -60,7 +58,7 @@ class MetaObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->meta !== []) {
 			return false;
 		}
@@ -74,16 +72,16 @@ class MetaObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
-		return array_merge($array, $this->meta);
+		return [...$array, ...$this->meta];
 	}
 }

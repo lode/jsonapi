@@ -1,45 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ErrorsDocument;
 use alsvanzelf\jsonapi\objects\ErrorObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 /**
  * setting all options
  */
 
-$errorHumanApi = new ErrorObject($genericCode='Invalid input', $genericTitle='Too much options', $specificDetails='Please, choose a bit less. Consult your ...', $specificAboutLink='https://www.example.com/explanation.html', $genericTypeLink='https://www.example.com/documentation.html');
+$errorHumanApi = new ErrorObject(genericCode: 'Invalid input', genericTitle: 'Too much options', specificDetails: 'Please, choose a bit less. Consult your ...', specificAboutLink: 'https://www.example.com/explanation.html', genericTypeLink: 'https://www.example.com/documentation.html');
 
 $errorSpecApi = new ErrorObject();
 
 // mark the cause of the error
-$errorSpecApi->blameJsonPointer($pointer='/data/attributes/title');
-$errorSpecApi->blameQueryParameter($parameter='filter');
-$errorSpecApi->blameHeader($headerName='X-Foo');
+$errorSpecApi->blameJsonPointer(pointer: '/data/attributes/title');
+$errorSpecApi->blameQueryParameter(parameter: 'filter');
+$errorSpecApi->blameHeader(headerName: 'X-Foo');
 
 // an identifier useful for helpdesk purposes
-$errorSpecApi->setUniqueIdentifier($id=42);
+$errorSpecApi->setUniqueIdentifier(id: 42);
 
 // add meta data as you would on a normal json response
-$errorSpecApi->addMeta($key='foo', $value='bar');
+$errorSpecApi->addMeta(key: 'foo', value: 'bar');
 
 // or as object
 $metaObject = new \stdClass();
 $metaObject->property = 'value';
-$errorSpecApi->addMeta($key='object', $metaObject);
+$errorSpecApi->addMeta(key: 'object', value: $metaObject);
 
 // the http status code
 // @note it is better to set this on the jsonapi\errors object ..
 //       .. as only a single one can be consumed by the browser
-$errorSpecApi->setHttpStatusCode($httpStatusCode=404);
+$errorSpecApi->setHttpStatusCode(httpStatusCode: 404);
 
 // if not set during construction, set them here
-$errorSpecApi->setApplicationCode($genericCode='Invalid input');
-$errorSpecApi->setHumanTitle($genericTitle='Too much options');
-$errorSpecApi->setHumanDetails($specificDetails='Please, choose a bit less. Consult your ...');
-$errorSpecApi->setAboutLink($specificAboutLink='https://www.example.com/explanation.html', ['foo'=>'bar']);
-$errorSpecApi->setTypeLink($genericTypeLink='https://www.example.com/documentation.html', ['foo'=>'bar']);
+$errorSpecApi->setApplicationCode(genericCode: 'Invalid input');
+$errorSpecApi->setHumanTitle(genericTitle: 'Too much options');
+$errorSpecApi->setHumanDetails(specificDetails: 'Please, choose a bit less. Consult your ...');
+$errorSpecApi->setAboutLink(href: 'https://www.example.com/explanation.html', meta: ['foo'=>'bar']);
+$errorSpecApi->setTypeLink(href: 'https://www.example.com/documentation.html', meta: ['foo'=>'bar']);
 
 /**
  * prepare multiple error objects for the errors response
@@ -66,7 +68,7 @@ $document = new ErrorsDocument($errorHumanApi);
 $document->addErrorObject($errorSpecApi);
 $document->addErrorObject($anotherError);
 $document->addException($someException);
-$document->add($genericCode='Authentication error', $genericTitle='Not logged in');
+$document->add(genericCode: 'Authentication error', genericTitle: 'Not logged in');
 $document->addLink('redirect', '/login', ['label'=>'Log in']);
 
 $document->setHttpStatusCode(400);

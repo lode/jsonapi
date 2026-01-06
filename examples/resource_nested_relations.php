@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $userEntity = ExampleDataset::getEntity('user', 42);
 
@@ -26,7 +28,7 @@ $ship->addRelationship('wing', $wing);
  * building up the json response
  */
 
-$document = ResourceDocument::fromObject($userEntity, $type='user', $userEntity->id);
+$document = ResourceDocument::fromObject($userEntity, type: 'user', id: $userEntity->id);
 $document->addRelationship('ship', $ship);
 
 /**

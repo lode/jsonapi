@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\resource_nested_relations;
 
 use alsvanzelf\jsonapi\ResourceDocument;
@@ -7,7 +9,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapiTests\example_output\ExampleUser;
 
 class resource_nested_relations {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$user42        = new ExampleUser(42);
 		$user42->name  = 'Zaphod Beeblebrox';
 		$user42->heads = 2;
@@ -27,7 +29,7 @@ class resource_nested_relations {
 		 * building up the json response
 		 */
 		
-		$document = ResourceDocument::fromObject($user42, $type='user', $user42->id);
+		$document = ResourceDocument::fromObject($user42, 'user', $user42->id);
 		$document->addRelationship('ship', $ship);
 		
 		return $document;

@@ -1,168 +1,169 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\objects;
 
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class LinkObjectTest extends TestCase {
-	public function testSetDescribedBy_HappyPath() {
+final class LinkObjectTest extends TestCase {
+	public function testSetDescribedBy_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->setDescribedBy('https://jsonapi.org');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('describedby', $array);
-		$this->assertArrayHasKey('href', $array['describedby']);
-		$this->assertSame('https://jsonapi.org', $array['describedby']['href']);
+		parent::assertArrayHasKey('describedby', $array);
+		parent::assertArrayHasKey('href', $array['describedby']);
+		parent::assertSame('https://jsonapi.org', $array['describedby']['href']);
 	}
 	
-	public function testAddLanguage_HappyPath() {
+	public function testAddLanguage_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->addLanguage('nl-NL');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('hreflang', $array);
-		$this->assertSame('nl-NL', $array['hreflang']);
+		parent::assertArrayHasKey('hreflang', $array);
+		parent::assertSame('nl-NL', $array['hreflang']);
 	}
 	
-	public function testAddLanguage_Multiple() {
+	public function testAddLanguage_Multiple(): void {
 		$linkObject = new LinkObject();
 		
 		$linkObject->addLanguage('nl-NL');
 		$array = $linkObject->toArray();
-		$this->assertSame('nl-NL', $array['hreflang']);
+		parent::assertSame('nl-NL', $array['hreflang']);
 		
 		$linkObject->addLanguage('en-US');
 		$array = $linkObject->toArray();
-		$this->assertSame(['nl-NL', 'en-US'], $array['hreflang']);
+		parent::assertSame(['nl-NL', 'en-US'], $array['hreflang']);
 	}
 	
-	public function testAddMeta_HappyPath() {
+	public function testAddMeta_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->addMeta('foo', 'bar');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testSetRelationType_HappyPath() {
+	public function testSetRelationType_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->setRelationType('external');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('rel', $array);
-		$this->assertSame('external', $array['rel']);
+		parent::assertArrayHasKey('rel', $array);
+		parent::assertSame('external', $array['rel']);
 	}
 	
-	public function testSetDescribedByLinkObject_HappyPath() {
+	public function testSetDescribedByLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$describedBy = new LinkObject('https://jsonapi.org');
 		$linkObject->setDescribedByLinkObject($describedBy);
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('describedby', $array);
-		$this->assertArrayHasKey('href', $array['describedby']);
-		$this->assertSame('https://jsonapi.org', $array['describedby']['href']);
+		parent::assertArrayHasKey('describedby', $array);
+		parent::assertArrayHasKey('href', $array['describedby']);
+		parent::assertSame('https://jsonapi.org', $array['describedby']['href']);
 	}
 	
-	public function testSetHumanTitle_HappyPath() {
+	public function testSetHumanTitle_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->setHumanTitle('A link');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('title', $array);
-		$this->assertSame('A link', $array['title']);
+		parent::assertArrayHasKey('title', $array);
+		parent::assertSame('A link', $array['title']);
 	}
 	
-	public function testSetMediaType_HappyPath() {
+	public function testSetMediaType_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->setMediaType('text/html');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('type', $array);
-		$this->assertSame('text/html', $array['type']);
+		parent::assertArrayHasKey('type', $array);
+		parent::assertSame('text/html', $array['type']);
 	}
 	
-	public function testSetHreflang_HappyPath() {
+	public function testSetHreflang_HappyPath(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->setHreflang('nl-NL', 'en-US');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 		
 		$array = $linkObject->toArray();
 		
-		$this->assertArrayHasKey('hreflang', $array);
-		$this->assertSame(['nl-NL', 'en-US'], $array['hreflang']);
+		parent::assertArrayHasKey('hreflang', $array);
+		parent::assertSame(['nl-NL', 'en-US'], $array['hreflang']);
 	}
 	
-	public function testIsEmpty_WithAtMembers() {
+	public function testIsEmpty_WithAtMembers(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
 		$linkObject->addAtMember('context', 'test');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testIsEmpty_WithExtensionMembers() {
+	#[Group('Extensions')]
+	public function testIsEmpty_WithExtensionMembers(): void {
 		$linkObject = new LinkObject();
 		
-		$this->assertTrue($linkObject->isEmpty());
+		parent::assertTrue($linkObject->isEmpty());
 		
-		$linkObject->addExtensionMember(new TestExtension(), 'foo', 'bar');
+		$linkObject->addExtensionMember(parent::createStub(ExtensionInterface::class), 'foo', 'bar');
 		
-		$this->assertFalse($linkObject->isEmpty());
+		parent::assertFalse($linkObject->isEmpty());
 	}
 }

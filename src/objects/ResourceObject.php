@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\CollectionDocument;
+use alsvanzelf\jsonapi\enums\ObjectContainerEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\LinksManager;
-use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\HasLinksInterface;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
@@ -19,12 +21,10 @@ use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 class ResourceObject extends ResourceIdentifierObject implements HasAttributesInterface, HasLinksInterface, RecursiveResourceContainerInterface {
 	use LinksManager;
 	
-	/** @var AttributesObject */
-	protected $attributes;
-	/** @var RelationshipsObject */
-	protected $relationships;
-	/** @var array */
-	protected static $defaults = [
+	protected AttributesObject $attributes;
+	protected RelationshipsObject $relationships;
+	/** @var PHPStanTypeAlias_DefaultOptions_Validator */
+	protected static array $resourceObjectDefaults = [
 		/**
 		 * blocks 'type' as a keyword inside attributes or relationships
 		 * the specification doesn't allow this as 'type' is already set at the root of a resource
@@ -42,13 +42,10 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 *       and if $id is null, it is filled with that value
 	 *       it is common to find it inside, and not doing so will cause an exception
 	 * 
-	 * @param  array      $attributes
-	 * @param  string     $type       optional
-	 * @param  string|int $id         optional
-	 * @param  array      $options    optional {@see ResourceObject::$defaults}
-	 * @return ResourceObject
+	 * @param array<string, mixed>              $attributes
+	 * @param PHPStanTypeAlias_Options_Validator $options    {@see ResourceObject::$resourceObjectDefaults}
 	 */
-	public static function fromArray(array $attributes, $type=null, $id=null, array $options=[]) {
+	public static function fromArray(array $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		if (isset($attributes['id'])) {
 			if ($id === null) {
 				$id = $attributes['id'];
@@ -57,53 +54,51 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 			unset($attributes['id']);
 		}
 		
-		$resourceObject = new self($type, $id);
+		$resourceObject = new static($type, $id);
 		$resourceObject->setAttributesObject(AttributesObject::fromArray($attributes), $options);
 		
 		return $resourceObject;
 	}
 	
 	/**
-	 * @param  object     $attributes
-	 * @param  string     $type       optional
-	 * @param  string|int $id         optional
-	 * @param  array      $options    optional {@see ResourceObject::$defaults}
-	 * @return ResourceObject
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
-	public static function fromObject($attributes, $type=null, $id=null, array $options=[]) {
+	public static function fromObject(object $attributes, ?string $type=null, string|int|null $id=null, array $options=[]): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array, $type, $id, $options);
+		return static::fromArray($array, $type, $id, $options);
 	}
 	
 	/**
 	 * add key-value pairs to attributes
 	 * 
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param array  $options optional {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
-	public function add($key, $value, array $options=[]) {
-		$options = array_merge(self::$defaults, $options);
+	public function add(string $key, mixed $value, array $options=[]): void {
+		$options = [...self::$resourceObjectDefaults, ...$options];
 		
-		if ($this->attributes === null) {
+		if (isset($this->attributes) === false) {
 			$this->attributes = new AttributesObject();
 		}
 		
-		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->claimUsedFields([$key], ObjectContainerEnum::Attributes, $options);
 		
 		$this->attributes->add($key, $value);
 	}
 	
 	/**
-	 * @param  string $key
-	 * @param  mixed  $relation ResourceInterface | ResourceInterface[] | CollectionDocument
-	 * @param  array  $links    optional
-	 * @param  array  $meta     optional
-	 * @param  array  $options  optional {@see ResourceObject::$defaults}
-	 * @return RelationshipObject
+	 * @param CollectionDocument|ResourceInterface|ResourceInterface[]|null $relation 
+	 * @param array<string, ?string>                                        $links
+	 * @param array<string, mixed>                                          $meta
+	 * @param PHPStanTypeAlias_Options_Validator                            $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
-	public function addRelationship($key, $relation, array $links=[], array $meta=[], array $options=[]) {
+	public function addRelationship(
+		string $key,
+		array|CollectionDocument|ResourceInterface|null $relation,
+		array $links=[],
+		array $meta=[],
+		array $options=[],
+	): RelationshipObject {
 		$relationshipObject = RelationshipObject::fromAnything($relation, $links, $meta);
 		
 		$this->addRelationshipObject($key, $relationshipObject, $options);
@@ -112,10 +107,9 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	}
 	
 	/**
-	 * @param string $href
-	 * @param array  $meta optional, if given a LinkObject is added, otherwise a link string is added
+	 * @param array<string, mixed> $meta if given a LinkObject is added, otherwise a link string is added
 	 */
-	public function setSelfLink($href, array $meta=[]) {
+	public function setSelfLink(string $href, array $meta=[]): void {
 		$this->addLink('self', $href, $meta);
 	}
 	
@@ -124,45 +118,39 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 */
 	
 	/**
-	 * @param AttributesObject $attributesObject
-	 * @param array            $options          optional {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceObject::$resourceObjectDefaults}
 	 */
-	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]) {
+	public function setAttributesObject(AttributesObject $attributesObject, array $options=[]): void {
 		$newKeys = $attributesObject->getKeys();
-		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_ATTRIBUTES);
-		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_ATTRIBUTES, $options);
+		$this->validator->clearUsedFields(ObjectContainerEnum::Attributes);
+		$this->validator->claimUsedFields($newKeys, ObjectContainerEnum::Attributes, $options);
 		
 		$this->attributes = $attributesObject;
 	}
 	
 	/**
-	 * @param string             $key
-	 * @param RelationshipObject $relationshipObject
-	 * @param array              $options            optional {@see ResourceObject::$defaults}
+	 * @param PHPStanTypeAlias_Options_Validator $options {@see ResourceObject::$resourceObjectDefaults}
 	 * 
 	 * @throws DuplicateException if the resource is contained as a resource in the relationship
 	 */
-	public function addRelationshipObject($key, RelationshipObject $relationshipObject, array $options=[]) {
+	public function addRelationshipObject(string $key, RelationshipObject $relationshipObject, array $options=[]): void {
 		if ($relationshipObject->hasResource($this)) {
 			throw new DuplicateException('can not add relation to self');
 		}
 		
-		if ($this->relationships === null) {
+		if (isset($this->relationships) === false) {
 			$this->setRelationshipsObject(new RelationshipsObject());
 		}
 		
-		$this->validator->claimUsedFields([$key], Validator::OBJECT_CONTAINER_RELATIONSHIPS, $options);
+		$this->validator->claimUsedFields([$key], ObjectContainerEnum::Relationships, $options);
 		
 		$this->relationships->addRelationshipObject($key, $relationshipObject);
 	}
 	
-	/**
-	 * @param RelationshipsObject $relationshipsObject
-	 */
-	public function setRelationshipsObject(RelationshipsObject $relationshipsObject) {
+	public function setRelationshipsObject(RelationshipsObject $relationshipsObject): void {
 		$newKeys = $relationshipsObject->getKeys();
-		$this->validator->clearUsedFields(Validator::OBJECT_CONTAINER_RELATIONSHIPS);
-		$this->validator->claimUsedFields($newKeys, Validator::OBJECT_CONTAINER_RELATIONSHIPS);
+		$this->validator->clearUsedFields(ObjectContainerEnum::Relationships);
+		$this->validator->claimUsedFields($newKeys, ObjectContainerEnum::Relationships);
 		
 		$this->relationships = $relationshipsObject;
 	}
@@ -177,17 +165,15 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * this can be used to determine if a Relationship's resource could be added as included resource
 	 * 
 	 * @internal
-	 * 
-	 * @return boolean
 	 */
-	public function hasIdentifierPropertiesOnly() {
-		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+	public function hasIdentifierPropertiesOnly(): bool {
+		if (isset($this->attributes) && $this->attributes->isEmpty() === false) {
 			return false;
 		}
-		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
+		if (isset($this->relationships) && $this->relationships->isEmpty() === false) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		
@@ -198,15 +184,15 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * HasAttributesInterface
 	 */
 	
-	public function addAttribute($key, $value, array $options=[]) {
-		return $this->add($key, $value);
+	public function addAttribute(string $key, mixed $value, array $options=[]): void {
+		$this->add($key, $value, $options);
 	}
 	
 	/**
 	 * ResourceInterface
 	 */
 	
-	public function getResource($identifierOnly=false) {
+	public function getResource(bool $identifierOnly=false): ResourceIdentifierObject|ResourceObject {
 		if ($identifierOnly) {
 			return ResourceIdentifierObject::fromResourceObject($this);
 		}
@@ -218,33 +204,33 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if (parent::isEmpty() === false) {
 			return false;
 		}
-		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+		if (isset($this->attributes) && $this->attributes->isEmpty() === false) {
 			return false;
 		}
-		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
+		if (isset($this->relationships) && $this->relationships->isEmpty() === false) {
 			return false;
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			return false;
 		}
 		
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = parent::toArray();
 		
-		if ($this->attributes !== null && $this->attributes->isEmpty() === false) {
+		if (isset($this->attributes) && $this->attributes->isEmpty() === false) {
 			$array['attributes'] = $this->attributes->toArray();
 		}
-		if ($this->relationships !== null && $this->relationships->isEmpty() === false) {
+		if (isset($this->relationships) && $this->relationships->isEmpty() === false) {
 			$array['relationships'] = $this->relationships->toArray();
 		}
-		if ($this->links !== null && $this->links->isEmpty() === false) {
+		if ($this->hasLinks()) {
 			$array['links'] = $this->links->toArray();
 		}
 		
@@ -255,8 +241,8 @@ class ResourceObject extends ResourceIdentifierObject implements HasAttributesIn
 	 * RecursiveResourceContainerInterface
 	 */
 	
-	public function getNestedContainedResourceObjects() {
-		if ($this->relationships === null) {
+	public function getNestedContainedResourceObjects(): array {
+		if (isset($this->relationships) === false) {
 			return [];
 		}
 		

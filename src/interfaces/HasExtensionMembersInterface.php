@@ -7,24 +7,17 @@ namespace alsvanzelf\jsonapi\interfaces;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 
 interface HasExtensionMembersInterface {
+	public function addExtensionMember(ExtensionInterface $extension, string $key, mixed $value): void;
+	
 	/**
-	 * @param ExtensionInterface $extension
-	 * @param string             $key
-	 * @param mixed              $value
+	 * @internal
 	 */
-	public function addExtensionMember(ExtensionInterface $extension, $key, $value);
+	public function hasExtensionMembers(): bool;
 	
 	/**
 	 * @internal
 	 * 
-	 * @return boolean
+	 * @return array<string, mixed>
 	 */
-	public function hasExtensionMembers();
-	
-	/**
-	 * @internal
-	 * 
-	 * @return array
-	 */
-	public function getExtensionMembers();
+	public function getExtensionMembers(): array;
 }

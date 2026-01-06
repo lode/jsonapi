@@ -1,25 +1,118 @@
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
 parameters:
 	# slowly increase
-	level: 4
+	level: 9
 	paths:
 		- src/
 		- tests/
 		- examples/
-	excludePaths:
-		- src/base.php
-		- src/collection.php
-		- src/error.php
-		- src/errors.php
-		- src/exception.php
-		- src/resource.php
-		- src/response.php
-
-	treatPhpDocTypesAsCertain: false
+	
+	typeAliases:
+		PHPStanTypeAlias_Options_CollectionDocument: 'array{includeContainedResources?: bool}'
+		PHPStanTypeAlias_Options_Document: 'array{encodeOptions?: int, prettyPrint?: bool, contentType?: \alsvanzelf\jsonapi\enums\ContentTypeEnum, array?: ?PHPStanTypeAlias_DocumentArray, json?: ?string, jsonpCallback?: ?string}'
+		PHPStanTypeAlias_Options_ErrorsDocument: 'array{includeExceptionTrace?: bool, includeExceptionPrevious?: bool}'
+		PHPStanTypeAlias_Options_ResourceDocument: 'array{includeContainedResources?: bool}'
+		PHPStanTypeAlias_Options_ResourceDocumentAndValidator: 'array{includeContainedResources?: bool, enforceTypeFieldNamespace?: bool}'
+		PHPStanTypeAlias_Options_Validator: 'array{enforceTypeFieldNamespace?: bool}'
+		PHPStanTypeAlias_Options_RequestParser: 'array{useNestedIncludePaths?: bool, useAnnotatedSortFields?: bool}'
+		PHPStanTypeAlias_Options_ErrorObject: 'array{includeExceptionTrace?: bool, stripExceptionBasePath?: ?string}'
+		PHPStanTypeAlias_Options_ErrorsDocumentAndErrorObject: 'array{includeExceptionTrace?: bool, includeExceptionPrevious?: bool, stripExceptionBasePath?: ?string}'
+		
+		PHPStanTypeAlias_DefaultOptions_CollectionDocument: 'array{includeContainedResources: bool}'
+		PHPStanTypeAlias_DefaultOptions_Document: 'array{encodeOptions: int, prettyPrint: bool, contentType: \alsvanzelf\jsonapi\enums\ContentTypeEnum, array: ?PHPStanTypeAlias_DocumentArray, json: ?string, jsonpCallback: ?string}'
+		PHPStanTypeAlias_DefaultOptions_ErrorsDocument: 'array{includeExceptionTrace: bool, includeExceptionPrevious: bool}'
+		PHPStanTypeAlias_DefaultOptions_ResourceDocument: 'array{includeContainedResources: bool}'
+		PHPStanTypeAlias_DefaultOptions_ResourceDocumentAndValidator: 'array{includeContainedResources: bool, enforceTypeFieldNamespace: bool}'
+		PHPStanTypeAlias_DefaultOptions_Validator: 'array{enforceTypeFieldNamespace: bool}'
+		PHPStanTypeAlias_DefaultOptions_RequestParser: 'array{useNestedIncludePaths: bool, useAnnotatedSortFields: bool}'
+		PHPStanTypeAlias_DefaultOptions_ErrorObject: 'array{includeExceptionTrace: bool, stripExceptionBasePath: ?string}'
+		PHPStanTypeAlias_DefaultOptions_ErrorsDocumentAndErrorObject: 'array{includeExceptionTrace: bool, includeExceptionPrevious: bool, stripExceptionBasePath: ?string}'
+		
+		PHPStanTypeAlias_DocumentArray: 'array<string, mixed>'
+		PHPStanTypeAlias_QueryParameters: 'array{fields?: array<array-key, string>, filter?: string|array<array-key, string>, include?: string, page?: array<array-key, string>, sort?: string}'
+	
+	treatPhpDocTypesAsCertain: true
 	
 	strictRules:
-		allRules: false
+		allRules: true
 	
 	reportUnmatchedIgnoredErrors: true
 	ignoreErrors:
 		# add cases to ignore because they are too much work for now
 		# @see https://phpstan.org/user-guide/ignoring-errors#ignoring-in-configuration-file
+		
+		# testing AtMemberManager trait
+		-
+			messages:
+				- '#Call to an undefined method object::hasAtMembers\(\)#'
+				- '#Call to an undefined method object::getAtMembers\(\)#'
+				- '#Call to an undefined method object::addAtMember\(\)#'
+			identifier: method.notFound
+			path: tests/helpers/AtMemberManagerTest.php
+		
+		# testing ExtensionMemberManager trait
+		-
+			messages:
+				- '#Call to an undefined method object::addExtensionMember\(\)#'
+				- '#Call to an undefined method object::hasExtensionMembers\(\)#'
+				- '#Call to an undefined method object::getExtensionMembers\(\)#'
+			identifier: method.notFound
+			path: tests/helpers/ExtensionMemberManagerTest.php
+		
+		# testing HttpStatusCodeManager trait
+		-
+			messages:
+				- '#Call to an undefined method object::setHttpStatusCode\(\)#'
+				- '#Call to an undefined method object::hasHttpStatusCode\(\)#'
+				- '#Call to an undefined method object::getHttpStatusCode\(\)#'
+			identifier: method.notFound
+			path: tests/helpers/HttpStatusCodeManagerTest.php
+		
+		# testing LinksManager trait
+		-
+			messages:
+				- '#Call to an undefined method object::addLink\(\)#'
+				- '#Call to an undefined method object::addLinkObject\(\)#'
+				- '#Call to an undefined method object::setLinksObject\(\)#'
+				- '#Call to an undefined method object::toArray\(\)#'
+			identifier: method.notFound
+			path: tests/helpers/LinksManagerTest.php
+
+		# mixed is only used for input from library implementations
+		-
+			identifier: argument.type
+			message: '#Parameter \#\d \$.+ of function .+ expects .+, mixed given#'
+			path: src/helpers/RequestParser.php
+
+		# mixed is only used for input from library implementations
+		-
+			identifier: argument.type
+			message: '#Parameter \#\d \$.+ of class .+ constructor expects .+, mixed given#'
+			paths:
+				- src/helpers/RequestParser.php
+				- src/objects/ResourceObject.php
+
+		# mixed is only used for input from library implementations
+		-
+			identifier: argument.type
+			message: '#Parameter \#\d \$.+ of static method .+ expects .+, mixed given#'
+			path: tests/*
+
+		# mixed is only used for input from library implementations
+		-
+			identifier: offsetAccess.nonOffsetAccessible
+			message: '#Cannot access offset .+ on mixed#'
+			paths:
+				- src/helpers/RequestParser.php
+				- tests/*
+
+		# allow internal methods in examples and tests
+		-
+			identifiers:
+				- method.internal
+				- staticMethod.internalClass
+			paths:
+				- examples/*
+				- tests/*

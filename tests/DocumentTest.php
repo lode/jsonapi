@@ -1,368 +1,324 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests;
 
+use alsvanzelf\jsonapi\Document;
+use alsvanzelf\jsonapi\enums\DocumentLevelEnum;
 use alsvanzelf\jsonapi\exceptions\DuplicateException;
 use alsvanzelf\jsonapi\exceptions\Exception;
 use alsvanzelf\jsonapi\exceptions\InputException;
+use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
+use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapiTests\TestableNonAbstractDocument as Document;
-use alsvanzelf\jsonapiTests\extensions\TestExtension;
-use alsvanzelf\jsonapiTests\profiles\TestProfile;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
-class DocumentTest extends TestCase {
-	public function testConstructor_NoContent() {
-		$document = new Document();
-		
-		$array = $document->toArray();
-		
-		$this->assertCount(1, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
+final class DocumentTest extends TestCase {
+	private Document $document;
+	
+	protected function setUp(): void {
+		/**
+		 * extending Document to make it non-abstract to test against it
+		 * 
+		 * the abstract declaration is to make sure to create valid jsonapi output
+		 * as it needs at least one of `data`, `meta` or `errors`
+		 */
+		$this->document = new class extends Document {};
 	}
 	
-	public function testSetHttpStatusCode_HappyPath() {
-		$document = new Document();
+	public function testConstructor_NoContent(): void {
+		$array = $this->document->toArray();
 		
-		$this->assertTrue($document->hasHttpStatusCode());
-		$this->assertSame(200, $document->getHttpStatusCode());
+		parent::assertCount(1, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
 	}
 	
-	public function testAddLink_HappyPath() {
-		$document = new Document();
-		
-		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
-		
-		$document->addLink('foo', 'https://jsonapi.org');
-		
-		$array = $document->toArray();
-		
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertIsString($array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']);
+	public function testSetHttpStatusCode_HappyPath(): void {
+		parent::assertTrue($this->document->hasHttpStatusCode());
+		parent::assertSame(200, $this->document->getHttpStatusCode());
 	}
 	
-	public function testAddLink_WithMeta() {
-		$document = new Document();
-		$document->addLink('foo', 'https://jsonapi.org', $meta=['bar' => 'baz']);
+	public function testAddLink_HappyPath(): void {
+		$array = $this->document->toArray();
+		parent::assertArrayNotHasKey('links', $array);
 		
-		$array = $document->toArray();
+		$this->document->addLink('foo', 'https://jsonapi.org');
 		
-		$this->assertCount(1, $array['links']);
-		$this->assertIsArray($array['links']['foo']);
-		$this->assertCount(2, $array['links']['foo']);
-		$this->assertArrayHasKey('href', $array['links']['foo']);
-		$this->assertArrayHasKey('meta', $array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
-		$this->assertCount(1, $array['links']['foo']['meta']);
-		$this->assertArrayHasKey('bar', $array['links']['foo']['meta']);
-		$this->assertSame('baz', $array['links']['foo']['meta']['bar']);
+		$array = $this->document->toArray();
+		
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('foo', $array['links']);
+		parent::assertIsString($array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']);
 	}
 	
-	public function testAddLink_BlocksJsonapiLevel() {
-		$document = new Document();
+	public function testAddLink_WithMeta(): void {
+		$this->document->addLink('foo', 'https://jsonapi.org', ['bar' => 'baz']);
 		
+		$array = $this->document->toArray();
+		
+		parent::assertCount(1, $array['links']);
+		parent::assertIsArray($array['links']['foo']);
+		parent::assertCount(2, $array['links']['foo']);
+		parent::assertArrayHasKey('href', $array['links']['foo']);
+		parent::assertArrayHasKey('meta', $array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+		parent::assertCount(1, $array['links']['foo']['meta']);
+		parent::assertArrayHasKey('bar', $array['links']['foo']['meta']);
+		parent::assertSame('baz', $array['links']['foo']['meta']['bar']);
+	}
+	
+	public function testAddLink_BlocksJsonapiLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
 		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=Document::LEVEL_JSONAPI);
+		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Jsonapi);
 	}
 	
-	public function testAddLink_BlocksResourceLevel() {
-		$document = new Document();
-		
+	public function testAddLink_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level=Document::LEVEL_RESOURCE);
+		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Resource);
 	}
 	
-	public function testAddLink_BlocksUnknownLevel() {
-		$document = new Document();
+	public function testSetSelfLink_HappyPath(): void {
+		$array = $this->document->toArray();
+		parent::assertArrayNotHasKey('links', $array);
 		
-		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('unknown level "foo"');
+		$this->document->setSelfLink('https://jsonapi.org/foo');
 		
-		$document->addLink('foo', 'https://jsonapi.org', $meta=[], $level='foo');
+		$array = $this->document->toArray();
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']);
 	}
 	
-	public function testSetSelfLink_HappyPath() {
-		$document = new Document();
+	public function testSetDescribedByLink_HappyPath(): void {
+		$this->document->setDescribedByLink('https://jsonapi.org/format', ['version' => '1.1']);
 		
-		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
+		$array = $this->document->toArray();
 		
-		$document->setSelfLink('https://jsonapi.org/foo');
-		
-		$array = $document->toArray();
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']);
+		parent::assertCount(1, $array['links']);
+		parent::assertIsArray($array['links']['describedby']);
+		parent::assertCount(2, $array['links']['describedby']);
+		parent::assertArrayHasKey('href', $array['links']['describedby']);
+		parent::assertArrayHasKey('meta', $array['links']['describedby']);
+		parent::assertSame('https://jsonapi.org/format', $array['links']['describedby']['href']);
+		parent::assertCount(1, $array['links']['describedby']['meta']);
+		parent::assertArrayHasKey('version', $array['links']['describedby']['meta']);
+		parent::assertSame('1.1', $array['links']['describedby']['meta']['version']);
 	}
 	
-	public function testSetDescribedByLink_HappyPath() {
-		$document = new Document();
-		$document->setDescribedByLink('https://jsonapi.org/format', ['version' => '1.1']);
+	public function testSetDescribedByLink_WithMeta(): void {
+		$array = $this->document->toArray();
+		parent::assertArrayNotHasKey('links', $array);
 		
-		$array = $document->toArray();
+		$this->document->setDescribedByLink('https://jsonapi.org/format');
 		
-		$this->assertCount(1, $array['links']);
-		$this->assertIsArray($array['links']['describedby']);
-		$this->assertCount(2, $array['links']['describedby']);
-		$this->assertArrayHasKey('href', $array['links']['describedby']);
-		$this->assertArrayHasKey('meta', $array['links']['describedby']);
-		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']['href']);
-		$this->assertCount(1, $array['links']['describedby']['meta']);
-		$this->assertArrayHasKey('version', $array['links']['describedby']['meta']);
-		$this->assertSame('1.1', $array['links']['describedby']['meta']['version']);
+		$array = $this->document->toArray();
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('describedby', $array['links']);
+		parent::assertSame('https://jsonapi.org/format', $array['links']['describedby']);
 	}
 	
-	public function testSetDescribedByLink_WithMeta() {
-		$document = new Document();
+	public function testAddMeta_HappyPath(): void {
+		$array = $this->document->toArray();
+		parent::assertArrayNotHasKey('meta', $array);
 		
-		$array = $document->toArray();
-		$this->assertArrayNotHasKey('links', $array);
+		$this->document->addMeta('foo', 'bar');
 		
-		$document->setDescribedByLink('https://jsonapi.org/format');
+		$array = $this->document->toArray();
 		
-		$array = $document->toArray();
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('describedby', $array['links']);
-		$this->assertSame('https://jsonapi.org/format', $array['links']['describedby']);
+		parent::assertArrayHasKey('meta', $array);
+		parent::assertCount(1, $array['meta']);
+		parent::assertArrayHasKey('foo', $array['meta']);
+		parent::assertIsString($array['meta']['foo']);
+		parent::assertSame('bar', $array['meta']['foo']);
 	}
 	
-	public function testAddMeta_HappyPath() {
-		$document = new Document();
+	public function testAddMeta_AtJsonapiLevel(): void {
+		$array = $this->document->toArray();
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayNotHasKey('meta', $array['jsonapi']);
 		
-		$array = $document->toArray();
-		$this->assertArrayNotHasKey('meta', $array);
+		$this->document->addMeta('foo', 'bar', DocumentLevelEnum::Jsonapi);
 		
-		$document->addMeta('foo', 'bar');
+		$array = $this->document->toArray();
 		
-		$array = $document->toArray();
-		
-		$this->assertArrayHasKey('meta', $array);
-		$this->assertCount(1, $array['meta']);
-		$this->assertArrayHasKey('foo', $array['meta']);
-		$this->assertIsString($array['meta']['foo']);
-		$this->assertSame('bar', $array['meta']['foo']);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('meta', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['meta']);
+		parent::assertArrayHasKey('foo', $array['jsonapi']['meta']);
+		parent::assertIsString($array['jsonapi']['meta']['foo']);
+		parent::assertSame('bar', $array['jsonapi']['meta']['foo']);
 	}
 	
-	public function testAddMeta_AtJsonapiLevel() {
-		$document = new Document();
-		
-		$array = $document->toArray();
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayNotHasKey('meta', $array['jsonapi']);
-		
-		$document->addMeta('foo', 'bar', $level=Document::LEVEL_JSONAPI);
-		
-		$array = $document->toArray();
-		
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('meta', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['meta']);
-		$this->assertArrayHasKey('foo', $array['jsonapi']['meta']);
-		$this->assertIsString($array['jsonapi']['meta']['foo']);
-		$this->assertSame('bar', $array['jsonapi']['meta']['foo']);
-	}
-	
-	public function testAddMeta_BlocksResourceLevel() {
-		$document = new Document();
-		
+	public function testAddMeta_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
 		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
 		
-		$document->addMeta('foo', 'bar', $level=Document::LEVEL_RESOURCE);
+		$this->document->addMeta('foo', 'bar', DocumentLevelEnum::Resource);
 	}
 	
-	public function testAddMeta_BlocksUnknownLevel() {
-		$document = new Document();
-		
-		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('unknown level "foo"');
-		
-		$document->addMeta('foo', 'bar', $level='foo');
-	}
-	
-	public function testAddLinkObject_HappyPath() {
+	public function testAddLinkObject_HappyPath(): void {
 		$linkObject = new LinkObject('https://jsonapi.org');
 		
-		$document = new Document();
-		$document->addLinkObject($key='foo', $linkObject);
+		$this->document->addLinkObject('foo', $linkObject);
 		
-		$array = $document->toArray();
+		$array = $this->document->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertArrayHasKey('foo', $array['links']);
-		$this->assertArrayHasKey('href', $array['links']['foo']);
-		$this->assertSame('https://jsonapi.org', $array['links']['foo']['href']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertArrayHasKey('foo', $array['links']);
+		parent::assertArrayHasKey('href', $array['links']['foo']);
+		parent::assertSame('https://jsonapi.org', $array['links']['foo']['href']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testApplyExtension_HappyPath() {
-		$extension = new TestExtension();
-		$extension->setNamespace('test');
-		$extension->setOfficialLink('https://jsonapi.org/extension');
+	#[Group('Extensions')]
+	public function testApplyExtension_HappyPath(): void {
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, [
+			'getNamespace'    => 'test',
+			'getOfficialLink' => 'https://jsonapi.org/extension',
+		]);
 		
-		$document = new Document();
-		$document->applyExtension($extension);
-		$document->addExtensionMember($extension, 'foo', 'bar');
-		$document->setSelfLink('https://jsonapi.org/foo');
+		$this->document->applyExtension($extension);
+		$this->document->addExtensionMember($extension, 'foo', 'bar');
+		$this->document->setSelfLink('https://jsonapi.org/foo');
 		
-		$array = $document->toArray();
+		$array = $this->document->toArray();
 		
-		$this->assertCount(3, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertCount(2, $array['jsonapi']);
-		$this->assertSame('1.1', $array['jsonapi']['version']);
-		$this->assertArrayHasKey('ext', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['ext']);
-		$this->assertArrayHasKey(0, $array['jsonapi']['ext']);
-		$this->assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
-		$this->assertArrayHasKey('test:foo', $array);
-		$this->assertSame('bar', $array['test:foo']);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertCount(2, $array['links']['self']);
-		$this->assertArrayHasKey('href', $array['links']['self']);
-		$this->assertArrayHasKey('type', $array['links']['self']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
-		$this->assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
+		parent::assertCount(3, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(2, $array['jsonapi']);
+		parent::assertSame('1.1', $array['jsonapi']['version']);
+		parent::assertArrayHasKey('ext', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['ext']);
+		parent::assertArrayHasKey(0, $array['jsonapi']['ext']);
+		parent::assertSame('https://jsonapi.org/extension', $array['jsonapi']['ext'][0]);
+		parent::assertArrayHasKey('test:foo', $array);
+		parent::assertSame('bar', $array['test:foo']);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertCount(2, $array['links']['self']);
+		parent::assertArrayHasKey('href', $array['links']['self']);
+		parent::assertArrayHasKey('type', $array['links']['self']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		parent::assertSame('application/vnd.api+json; ext="https://jsonapi.org/extension"', $array['links']['self']['type']);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testApplyExtension_InvalidNamespace() {
-		$document  = new Document();
-		$extension = new TestExtension();
-		$extension->setNamespace('foo-bar');
+	#[Group('Extensions')]
+	public function testApplyExtension_InvalidNamespace(): void {
+		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo-bar']);
 		
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('invalid namespace "foo-bar"');
 		
-		$document->applyExtension($extension);
+		$this->document->applyExtension($extension);
 	}
 	
-	/**
-	 * @group Extensions
-	 */
-	public function testApplyExtension_ConflictingNamespace() {
-		$document  = new Document();
+	#[Group('Extensions')]
+	public function testApplyExtension_ConflictingNamespace(): void {
+		$extension1 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
+		$this->document->applyExtension($extension1);
 		
-		$extension1 = new TestExtension();
-		$extension1->setNamespace('foo');
-		$document->applyExtension($extension1);
+		$extension2 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'bar']);
+		$this->document->applyExtension($extension2);
 		
-		$extension2 = new TestExtension();
-		$extension2->setNamespace('bar');
-		$document->applyExtension($extension2);
-		
-		$extension3 = new TestExtension();
-		$extension3->setNamespace('foo');
+		$extension3 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
 		
 		$this->expectException(DuplicateException::class);
 		$this->expectExceptionMessage('an extension with namespace "foo" is already applied');
 		
-		$document->applyExtension($extension3);
+		$this->document->applyExtension($extension3);
 	}
 	
-	/**
-	 * @group Profiles
-	 */
-	public function testApplyProfile_HappyPath() {
-		$profile = new TestProfile();
-		$profile->setOfficialLink('https://jsonapi.org/profile');
+	#[Group('Profiles')]
+	public function testApplyProfile_HappyPath(): void {
+		$profile = parent::createConfiguredStub(ProfileInterface::class, ['getOfficialLink' => 'https://jsonapi.org/profile']);
 		
-		$document = new Document();
-		$document->applyProfile($profile);
-		$document->setSelfLink('https://jsonapi.org/foo');
+		$this->document->applyProfile($profile);
+		$this->document->setSelfLink('https://jsonapi.org/foo');
 		
-		$array = $document->toArray();
+		$array = $this->document->toArray();
 		
-		$this->assertCount(2, $array);
-		$this->assertArrayHasKey('jsonapi', $array);
-		$this->assertCount(2, $array['jsonapi']);
-		$this->assertSame('1.1', $array['jsonapi']['version']);
-		$this->assertArrayHasKey('profile', $array['jsonapi']);
-		$this->assertCount(1, $array['jsonapi']['profile']);
-		$this->assertArrayHasKey(0, $array['jsonapi']['profile']);
-		$this->assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
-		$this->assertArrayHasKey('links', $array);
-		$this->assertCount(1, $array['links']);
-		$this->assertArrayHasKey('self', $array['links']);
-		$this->assertCount(2, $array['links']['self']);
-		$this->assertArrayHasKey('href', $array['links']['self']);
-		$this->assertArrayHasKey('type', $array['links']['self']);
-		$this->assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
-		$this->assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
+		parent::assertCount(2, $array);
+		parent::assertArrayHasKey('jsonapi', $array);
+		parent::assertCount(2, $array['jsonapi']);
+		parent::assertSame('1.1', $array['jsonapi']['version']);
+		parent::assertArrayHasKey('profile', $array['jsonapi']);
+		parent::assertCount(1, $array['jsonapi']['profile']);
+		parent::assertArrayHasKey(0, $array['jsonapi']['profile']);
+		parent::assertSame('https://jsonapi.org/profile', $array['jsonapi']['profile'][0]);
+		parent::assertArrayHasKey('links', $array);
+		parent::assertCount(1, $array['links']);
+		parent::assertArrayHasKey('self', $array['links']);
+		parent::assertCount(2, $array['links']['self']);
+		parent::assertArrayHasKey('href', $array['links']['self']);
+		parent::assertArrayHasKey('type', $array['links']['self']);
+		parent::assertSame('https://jsonapi.org/foo', $array['links']['self']['href']);
+		parent::assertSame('application/vnd.api+json; profile="https://jsonapi.org/profile"', $array['links']['self']['type']);
 	}
 	
-	public function testToJson_HappyPath() {
-		$document = new Document();
-		
-		$this->assertSame('{"jsonapi":{"version":"1.1"}}', $document->toJson());
+	public function testToJson_HappyPath(): void {
+		parent::assertSame('{"jsonapi":{"version":"1.1"}}', $this->document->toJson());
 	}
 	
-	public function testToJson_CustomArray() {
-		$document = new Document();
-		
+	public function testToJson_CustomArray(): void {
 		$options = ['array' => ['foo' => 42]];
-		$this->assertSame('{"foo":42}', $document->toJson($options));
+		parent::assertSame('{"foo":42}', $this->document->toJson($options));
 	}
 	
-	public function testToJson_PrettyPrint() {
-		$document = new Document();
-		
+	public function testToJson_PrettyPrint(): void {
 		$options = ['prettyPrint' => true];
 		$expectedJson = '{'.PHP_EOL.'    "jsonapi": {'.PHP_EOL.'        "version": "1.1"'.PHP_EOL.'    }'.PHP_EOL.'}';
-		$this->assertSame($expectedJson, $document->toJson($options));
+		parent::assertSame($expectedJson, $this->document->toJson($options));
 	}
 	
-	public function testToJson_JsonEncodeOptions() {
-		$document = new Document();
-		
+	public function testToJson_JsonEncodeOptions(): void {
 		$options = ['encodeOptions' => JSON_FORCE_OBJECT, 'array' => ['foo' => [4,2]]];
-		$this->assertSame('{"foo":{"0":4,"1":2}}', $document->toJson($options));
+		parent::assertSame('{"foo":{"0":4,"1":2}}', $this->document->toJson($options));
 	}
 	
-	public function testToJson_JsonpCallback() {
-		$document = new Document();
-		$document->addMeta('foo', 'bar');
+	public function testToJson_JsonpCallback(): void {
+		$this->document->addMeta('foo', 'bar');
 		
 		$options = ['jsonpCallback' => 'baz'];
-		$json    = $document->toJson($options);
-		$this->assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
+		$json    = $this->document->toJson($options);
+		parent::assertSame('baz({"jsonapi":{"version":"1.1"},"meta":{"foo":"bar"}})', $json);
 	}
 	
-	public function testToJson_InvalidUtf8() {
-		$document = new Document();
-		
+	public function testToJson_InvalidUtf8(): void {
 		$options = ['array' => ['foo' => "\xB1\x31"]];
+		
+		$this->expectException(\JsonException::class);
+		$this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectExceptionCode(JSON_ERROR_UTF8);
+		
+		$this->document->toJson($options);
+	}
+	
+	public function testToJson_InvalidUtf8CustomException(): void {
+		$options = ['array' => ['foo' => "\xB1\x31"], 'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE];
 		
 		$this->expectException(Exception::class);
 		$this->expectExceptionMessage('failed to generate json: Malformed UTF-8 characters, possibly incorrectly encoded');
 		
-		$document->toJson($options);
+		$this->document->toJson($options);
 	}
 	
-	public function testJsonSerialize_HappyPath() {
-		$document = new Document();
-		$document->addMeta('foo', 'bar');
+	public function testJsonSerialize_HappyPath(): void {
+		$this->document->addMeta('foo', 'bar');
 		
-		$json = $document->toJson();
+		$json = $this->document->toJson();
 		
-		$this->assertSame($json, json_encode($document));
+		parent::assertSame($json, json_encode($this->document, flags: JSON_THROW_ON_ERROR));
 	}
 }

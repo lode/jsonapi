@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\resource_spec_api;
 
 use alsvanzelf\jsonapi\ResourceDocument;
+use alsvanzelf\jsonapi\enums\RelationshipTypeEnum;
 use alsvanzelf\jsonapi\objects\AttributesObject;
 use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
@@ -12,7 +15,7 @@ use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapiTests\example_output\ExampleUser;
 
 class resource_spec_api {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		$user1        = new ExampleUser(1);
 		$user1->name  = 'Ford Prefect';
 		$user1->heads = 1;
@@ -43,7 +46,7 @@ class resource_spec_api {
 		$resource->setType('user');
 		$resource->setAttributesObject($attributes42);
 		
-		$relationship = new RelationshipObject(RelationshipObject::TO_ONE);
+		$relationship = new RelationshipObject(RelationshipTypeEnum::ToOne);
 		$relationship->setResource($resource);
 		$relationships = new RelationshipsObject();
 		$relationships->addRelationshipObject('friend', $relationship);

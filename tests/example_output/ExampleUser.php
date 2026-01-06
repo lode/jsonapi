@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output;
 
 class ExampleUser {
-	public $id;
-	public $name;
-	public $heads;
-	public $unknown;
+	public ?string $name = null;
+	public null|int|string $heads = null;
+	public mixed $unknown = null;
 	
-	public function __construct($id) {
-		$this->id = $id;
-	}
+	public function __construct(
+		public int $id,
+	) {}
 	
-	function getCurrentLocation() {
+	public function getCurrentLocation(): string {
 		return 'Earth';
 	}
 }

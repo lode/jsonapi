@@ -16,13 +16,6 @@
 		</include>
 		<exclude>
 			<directory suffix=".php">src/interfaces</directory>
-			<file>src/base.php</file>
-			<file>src/collection.php</file>
-			<file>src/error.php</file>
-			<file>src/errors.php</file>
-			<file>src/exception.php</file>
-			<file>src/resource.php</file>
-			<file>src/response.php</file>
 		</exclude>
 	</source>
 </phpunit>

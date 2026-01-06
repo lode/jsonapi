@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\helpers;
 
 use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\helpers\Validator;
 
 trait HttpStatusCodeManager {
-	/** @var int */
-	protected $httpStatusCode;
+	protected int $httpStatusCode;
 	
 	/**
 	 * spec api
 	 */
 	
 	/**
-	 * @param int $httpStatusCode
-	 * 
 	 * @throws InputException if an invalid code is used
 	 */
-	public function setHttpStatusCode($httpStatusCode) {
+	public function setHttpStatusCode(int $httpStatusCode): void {
 		if (Validator::checkHttpStatusCode($httpStatusCode) === false) {
 			throw new InputException('can not use an invalid http status code');
 		}
@@ -32,19 +31,15 @@ trait HttpStatusCodeManager {
 	
 	/**
 	 * @internal
-	 * 
-	 * @return boolean
 	 */
-	public function hasHttpStatusCode() {
-		return ($this->httpStatusCode !== null);
+	public function hasHttpStatusCode(): bool {
+		return isset($this->httpStatusCode);
 	}
 	
 	/**
 	 * @internal
-	 * 
-	 * @return int
 	 */
-	public function getHttpStatusCode() {
+	public function getHttpStatusCode(): int {
 		return $this->httpStatusCode;
 	}
 }

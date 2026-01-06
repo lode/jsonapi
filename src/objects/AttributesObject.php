@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapi\objects;
 
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\objects\AbstractObject;
 
+/**
+ * @phpstan-consistent-constructor
+ * warn when an extending constructor changes the arguments
+ * that might break the class since we use `new static()`
+ */
 class AttributesObject extends AbstractObject {
-	/** @var array */
-	protected $attributes = [];
+	/** @var array<string, mixed> */
+	protected array $attributes = [];
 	
 	/**
 	 * human api
@@ -18,13 +25,12 @@ class AttributesObject extends AbstractObject {
 	 * @note if an `id` is set inside $attributes, it is removed from there
 	 *       it is common to find it inside, and not doing so will cause an exception
 	 * 
-	 * @param  array $attributes
-	 * @return AttributesObject
+	 * @param array<string, mixed> $attributes
 	 */
-	public static function fromArray(array $attributes) {
+	public static function fromArray(array $attributes): static {
 		unset($attributes['id']);
 		
-		$attributesObject = new self();
+		$attributesObject = new static();
 		
 		foreach ($attributes as $key => $value) {
 			$attributesObject->add($key, $value);
@@ -33,25 +39,17 @@ class AttributesObject extends AbstractObject {
 		return $attributesObject;
 	}
 	
-	/**
-	 * @param  object $attributes
-	 * @return AttributesObject
-	 */
-	public static function fromObject($attributes) {
+	public static function fromObject(object $attributes): static {
 		$array = Converter::objectToArray($attributes);
 		
-		return self::fromArray($array);
+		return static::fromArray($array);
 	}
 	
 	/**
 	 * spec api
 	 */
 	
-	/**
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function add($key, $value) {
+	public function add(string $key, mixed $value): void {
 		Validator::checkMemberName($key);
 		
 		if (is_object($value)) {
@@ -70,7 +68,7 @@ class AttributesObject extends AbstractObject {
 	 * 
 	 * @return string[]
 	 */
-	public function getKeys() {
+	public function getKeys(): array {
 		return array_keys($this->attributes);
 	}
 	
@@ -78,7 +76,7 @@ class AttributesObject extends AbstractObject {
 	 * ObjectInterface
 	 */
 	
-	public function isEmpty() {
+	public function isEmpty(): bool {
 		if ($this->attributes !== []) {
 			return false;
 		}
@@ -92,16 +90,16 @@ class AttributesObject extends AbstractObject {
 		return true;
 	}
 	
-	public function toArray() {
+	public function toArray(): array {
 		$array = [];
 		
 		if ($this->hasAtMembers()) {
-			$array = array_merge($array, $this->getAtMembers());
+			$array = [...$array, ...$this->getAtMembers()];
 		}
 		if ($this->hasExtensionMembers()) {
-			$array = array_merge($array, $this->getExtensionMembers());
+			$array = [...$array, ...$this->getExtensionMembers()];
 		}
 		
-		return array_merge($array, $this->attributes);
+		return [...$array, ...$this->attributes];
 	}
 }

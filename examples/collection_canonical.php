@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use alsvanzelf\jsonapi\CollectionDocument;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
-require 'bootstrap_examples.php';
+require __DIR__.'/bootstrap_examples.php';
 
 $articleRecords = ExampleDataset::findRecords('articles');
 $commentRecords = ExampleDataset::findRecords('comments');
@@ -52,7 +54,7 @@ foreach ($articleRecords as $articleId => $articleRecord) {
 }
 
 $document->setSelfLink('http://example.com/articles');
-$document->setPaginationLinks($previous=null, $next='http://example.com/articles?page[offset]=2', $first=null, $last='http://example.com/articles?page[offset]=10');
+$document->setPaginationLinks(previousHref: null, nextHref: 'http://example.com/articles?page[offset]=2', firstHref: null, lastHref: 'http://example.com/articles?page[offset]=10');
 $document->unsetJsonapiObject();
 
 /**

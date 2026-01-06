@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace alsvanzelf\jsonapi\interfaces;
 
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksArray;
 use alsvanzelf\jsonapi\objects\LinksObject;
 
 interface HasLinksInterface {
@@ -14,50 +13,17 @@ interface HasLinksInterface {
 	 * 
 	 * if $meta is given, a LinkObject is added, otherwise a link string is added
 	 * 
-	 * @param string $key
-	 * @param string $href
+	 * @param array<string, mixed> $meta
 	 */
-	public function addLink($key, $href, array $meta=[]);
-	
-	/**
-	 * append a link to a key with an array of links
-	 * 
-	 * if $meta is given, a LinkObject is added, otherwise a link string is added
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLink()}
-	 * 
-	 * @param string $key
-	 * @param string $href
-	 */
-	public function appendLink($key, $href, array $meta=[]);
+	public function addLink(string $key, ?string $href, array $meta=[]): void;
 	
 	/**
 	 * set a key containing a LinkObject
-	 * 
-	 * @param string $key
 	 */
-	public function addLinkObject($key, LinkObject $linkObject);
-	
-	/**
-	 * set a key containing a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string $key
-	 */
-	public function addLinksArray($key, LinksArray $linksArray);
-	
-	/**
-	 * append a LinkObject to a key with a LinksArray
-	 * 
-	 * @deprecated array links are not supported anymore {@see ->addLinkObject()}
-	 * 
-	 * @param string $key
-	 */
-	public function appendLinkObject($key, LinkObject $linkObject);
+	public function addLinkObject(string $key, LinkObject $linkObject): void;
 	
 	/**
 	 * set a LinksObject containing all links
 	 */
-	public function setLinksObject(LinksObject $linksObject);
+	public function setLinksObject(LinksObject $linksObject): void;
 }

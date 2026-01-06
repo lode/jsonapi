@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace alsvanzelf\jsonapiTests\example_output\resource_document_identifier_only;
 
 use alsvanzelf\jsonapi\ResourceDocument;
 
 class resource_document_identifier_only {
-	public static function createJsonapiDocument() {
+	public static function createJsonapiDocument(): ResourceDocument {
 		return new ResourceDocument('user', 42);
 	}
 }
