@@ -223,7 +223,7 @@ class ErrorObject extends AbstractObject implements HasLinksInterface, HasMetaIn
 	 * @see ->blameJsonPointer()
 	 * @see ->blameQueryParameter()
 	 */
-	public function addSource(string $key, string $value): void {
+	public function addSource(string $key, mixed $value): void {
 		Validator::checkMemberName($key);
 		
 		$this->source[$key] = $value;
