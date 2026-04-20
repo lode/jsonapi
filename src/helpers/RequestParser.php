@@ -225,7 +225,7 @@ class RequestParser {
 	 * @todo return some kind of PaginatorObject which recognizes the strategy of pagination used
 	 *       e.g. page-based, offset-based, cursor-based, or unknown
 	 * 
-	 * @return array<string, string>
+	 * @return array<array-key, string>
 	 */
 	public function getPagination(): array {
 		return $this->getQueryParameter('page');

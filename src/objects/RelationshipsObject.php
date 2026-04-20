@@ -15,7 +15,7 @@ use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject extends AbstractObject implements RecursiveResourceContainerInterface {
-	/** @var RelationshipObject[] */
+	/** @var array<string, RelationshipObject> */
 	protected array $relationships = [];
 	
 	/**

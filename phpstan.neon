@@ -75,7 +75,6 @@ parameters:
 			messages:
 				- '#Call to an undefined method object::addLink\(\)#'
 				- '#Call to an undefined method object::addLinkObject\(\)#'
-				- '#Call to an undefined method object::setLinksObject\(\)#'
 				- '#Call to an undefined method object::toArray\(\)#'
 			identifier: method.notFound
 			path: tests/helpers/LinksManagerTest.php
@@ -110,9 +109,11 @@ parameters:
 
 		# allow internal methods in examples and tests
 		-
-			identifiers:
-				- method.internal
-				- staticMethod.internalClass
+			identifier: method.internal
 			paths:
 				- examples/*
 				- tests/*
+		
+		-
+			identifier: staticMethod.internalClass
+			path: examples/*
