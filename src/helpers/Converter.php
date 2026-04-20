@@ -22,7 +22,10 @@ class Converter {
 			return $object->toArray();
 		}
 		
-		return get_object_vars($object);
+		/** @var array<string, mixed> $properties */
+		$properties = get_object_vars($object);
+		
+		return $properties;
 	}
 	
 	/**

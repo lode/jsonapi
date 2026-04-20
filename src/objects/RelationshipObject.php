@@ -316,7 +316,6 @@ class RelationshipObject extends AbstractObject implements PaginableInterface, R
 				continue;
 			}
 			
-			/** @var ResourceObject */
 			$resourceObject = $resource->getResource();
 			
 			if ($resourceObject->hasIdentifierPropertiesOnly()) {
