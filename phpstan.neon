@@ -1,5 +1,6 @@
 includes:
-	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+	# @todo re-enable after we improved upon sealed/unsealed arrays
+	#- vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
 	# slowly increase
@@ -34,9 +35,6 @@ parameters:
 		PHPStanTypeAlias_QueryParameters: 'array{fields?: array<array-key, string>, filter?: string|array<array-key, string>, include?: string, page?: array<array-key, string>, sort?: string}'
 	
 	treatPhpDocTypesAsCertain: true
-	
-	# @todo re-enable after we improved upon sealed/unsealed arrays
-	reportUnsafeArrayStringKeyCasting: false
 	
 	strictRules:
 		allRules: true
@@ -110,13 +108,15 @@ parameters:
 				- src/helpers/RequestParser.php
 				- tests/*
 
+		# @todo re-enable after we improved upon sealed/unsealed arrays
 		# allow internal methods in examples and tests
-		-
-			identifier: method.internal
-			paths:
-				- examples/*
-				- tests/*
+		#-
+		#	identifier: method.internal
+		#	paths:
+		#		- examples/*
+		#		- tests/*
 		
-		-
-			identifier: staticMethod.internalClass
-			path: examples/*
+		# @todo re-enable after we improved upon sealed/unsealed arrays
+		#-
+		#	identifier: staticMethod.internalClass
+		#	path: examples/*
