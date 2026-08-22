@@ -8,15 +8,15 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: 8.5
 
       - name: Setup Composer
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@v4
         with:
             composer-options: "--no-scripts"
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Collect changed files
         id: changed-files
-        uses: tj-actions/changed-files@v46
+        uses: tj-actions/changed-files@v47
         with:
           files: |
             **.php
