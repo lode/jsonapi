@@ -78,7 +78,7 @@ fi
 
 if test "$HAS_TYPE" = 1; then
 	if test "$TYPE" = "phpcbf" || test "$TYPE" = "phpcs"; then
-		$CONSOLE_PREFIX ./vendor/bin/phpcbf $EXTRA_ARGUMENTS $FILE_FILTER
+		$CONSOLE_PREFIX ./vendor/bin/phpcbf --runtime-set ignore_non_auto_fixable_on_exit 1 $EXTRA_ARGUMENTS $FILE_FILTER
 
 	elif test "$TYPE" = "rector"; then
 		$CONSOLE_PREFIX ./vendor/bin/rector process $EXTRA_ARGUMENTS $FILE_FILTER
@@ -95,5 +95,5 @@ else
 	$CONSOLE_PREFIX ./vendor/bin/rector process $FILE_FILTER || true
 
 	echo "${T_INFO}Fixing coding standards (phpcs)${T_RESET}"
-	$CONSOLE_PREFIX ./vendor/bin/phpcbf $FILE_FILTER || true
+	$CONSOLE_PREFIX ./vendor/bin/phpcbf --runtime-set ignore_non_auto_fixable_on_exit 1 $FILE_FILTER || true
 fi
