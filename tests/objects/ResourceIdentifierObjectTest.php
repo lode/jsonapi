@@ -82,7 +82,7 @@ final class ResourceIdentifierObjectTest extends TestCase {
 		$resource->toArray();
 		
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('resource has no identification yet');
+		$this->expectExceptionMessageIs('resource has no identification yet');
 		
 		ResourceIdentifierObject::fromResourceObject($resource);
 	}
@@ -233,7 +233,7 @@ final class ResourceIdentifierObjectTest extends TestCase {
 		$primaryIdMethod = new \ReflectionMethod($resourceIdentifierObject, 'primaryId');
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('resource has no identification yet');
+		$this->expectExceptionMessageIs('resource has no identification yet');
 		
 		$primaryIdMethod->invoke($resourceIdentifierObject);
 	}

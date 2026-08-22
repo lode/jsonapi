@@ -69,7 +69,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->applyExtension(parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'test']));
 		
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('invalid member name "test:foo"');
+		$this->expectExceptionMessageIs('invalid member name "test:foo"');
 		
 		$document->add('test:foo', 'bar');
 	}
@@ -105,7 +105,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->addRelationship('foo', null);
 	}
@@ -115,7 +115,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->addLink('foo', null);
 	}
@@ -125,7 +125,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->setSelfLink('https://jsonapi.org');
 	}
@@ -135,7 +135,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->setAttributesObject(new AttributesObject());
 	}
@@ -145,7 +145,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->addRelationshipObject('foo', new RelationshipObject(RelationshipTypeEnum::ToOne));
 	}
@@ -155,7 +155,7 @@ final class ResourceDocumentTest extends TestCase {
 		$document->setPrimaryResource(new ResourceIdentifierObject('user', 42));
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('the resource is an identifier-only object');
+		$this->expectExceptionMessageIs('the resource is an identifier-only object');
 		
 		$document->setRelationshipsObject(new RelationshipsObject());
 	}

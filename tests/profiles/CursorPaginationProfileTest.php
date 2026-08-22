@@ -362,7 +362,7 @@ final class CursorPaginationProfileTest extends TestCase {
 		$value = 'bar';
 		
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('missing or broken query parameters in url');
+		$this->expectExceptionMessageIs('missing or broken query parameters in url');
 		
 		$method->invoke($profile, $url, $key, $value);
 	}

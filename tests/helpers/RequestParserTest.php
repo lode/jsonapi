@@ -229,7 +229,7 @@ final class RequestParserTest extends TestCase {
 		]);
 		
 		$this->expectException(\JsonException::class);
-		$this->expectExceptionMessage('Maximum stack depth exceeded');
+		$this->expectExceptionMessageIs('Maximum stack depth exceeded');
 		$this->expectExceptionCode(JSON_ERROR_DEPTH);
 		
 		RequestParser::fromPsrRequest($request);

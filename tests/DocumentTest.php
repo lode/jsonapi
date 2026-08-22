@@ -73,14 +73,14 @@ final class DocumentTest extends TestCase {
 	
 	public function testAddLink_BlocksJsonapiLevel(): void {
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('level "jsonapi" can not be used for links');
+		$this->expectExceptionMessageIs('level "jsonapi" can not be used for links');
 		
 		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Jsonapi);
 	}
 	
 	public function testAddLink_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
+		$this->expectExceptionMessageIs('level "resource" can only be set on a ResourceDocument');
 		
 		$this->document->addLink('foo', 'https://jsonapi.org', level: DocumentLevelEnum::Resource);
 	}
@@ -161,7 +161,7 @@ final class DocumentTest extends TestCase {
 	
 	public function testAddMeta_BlocksResourceLevel(): void {
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessage('level "resource" can only be set on a ResourceDocument');
+		$this->expectExceptionMessageIs('level "resource" can only be set on a ResourceDocument');
 		
 		$this->document->addMeta('foo', 'bar', DocumentLevelEnum::Resource);
 	}
@@ -219,7 +219,7 @@ final class DocumentTest extends TestCase {
 		$extension = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo-bar']);
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('invalid namespace "foo-bar"');
+		$this->expectExceptionMessageIs('invalid namespace "foo-bar"');
 		
 		$this->document->applyExtension($extension);
 	}
@@ -235,7 +235,7 @@ final class DocumentTest extends TestCase {
 		$extension3 = parent::createConfiguredStub(ExtensionInterface::class, ['getNamespace' => 'foo']);
 		
 		$this->expectException(DuplicateException::class);
-		$this->expectExceptionMessage('an extension with namespace "foo" is already applied');
+		$this->expectExceptionMessageIs('an extension with namespace "foo" is already applied');
 		
 		$this->document->applyExtension($extension3);
 	}
@@ -299,7 +299,7 @@ final class DocumentTest extends TestCase {
 		$options = ['array' => ['foo' => "\xB1\x31"]];
 		
 		$this->expectException(\JsonException::class);
-		$this->expectExceptionMessage('Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectExceptionMessageIs('Malformed UTF-8 characters, possibly incorrectly encoded');
 		$this->expectExceptionCode(JSON_ERROR_UTF8);
 		
 		$this->document->toJson($options);
@@ -309,7 +309,7 @@ final class DocumentTest extends TestCase {
 		$options = ['array' => ['foo' => "\xB1\x31"], 'encodeOptions' => JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE];
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessage('failed to generate json: Malformed UTF-8 characters, possibly incorrectly encoded');
+		$this->expectExceptionMessageIs('failed to generate json: Malformed UTF-8 characters, possibly incorrectly encoded');
 		
 		$this->document->toJson($options);
 	}
