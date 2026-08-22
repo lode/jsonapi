@@ -18,7 +18,7 @@ jobs:
       - name: Setup Composer
         uses: ramsey/composer-install@v4
         with:
-            composer-options: "--no-scripts"
+          composer-options: "--no-scripts"
 
       - name: Setup Reviewdog
         uses: reviewdog/action-setup@v1

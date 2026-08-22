@@ -20,12 +20,12 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          dependency-versions: ${{ matrix.dependency-versions }}
 
       - name: Setup Composer
         uses: ramsey/composer-install@v4
         with:
-            composer-options: "--no-scripts"
+          composer-options: "--no-scripts"
+          dependency-versions: ${{ matrix.dependency-versions }}
 
       - name: Run phpunit
         run: ./vendor/bin/phpunit
