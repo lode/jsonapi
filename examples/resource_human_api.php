@@ -3,12 +3,6 @@
 declare(strict_types=1);
 
 use alsvanzelf\jsonapi\ResourceDocument;
-use alsvanzelf\jsonapi\objects\AttributesObject;
-use alsvanzelf\jsonapi\objects\LinksObject;
-use alsvanzelf\jsonapi\objects\MetaObject;
-use alsvanzelf\jsonapi\objects\RelationshipObject;
-use alsvanzelf\jsonapi\objects\RelationshipsObject;
-use alsvanzelf\jsonapi\objects\ResourceObject;
 
 require __DIR__.'/bootstrap_examples.php';
 

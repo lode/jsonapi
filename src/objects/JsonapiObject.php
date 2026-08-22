@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\enums\JsonapiVersionEnum;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasMetaInterface;

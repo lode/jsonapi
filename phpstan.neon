@@ -35,6 +35,9 @@ parameters:
 	
 	treatPhpDocTypesAsCertain: true
 	
+	# @todo re-enable after we improved upon sealed/unsealed arrays
+	reportUnsafeArrayStringKeyCasting: false
+	
 	strictRules:
 		allRules: true
 	

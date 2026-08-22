@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\interfaces;
 
-use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
-use alsvanzelf\jsonapi\objects\ResourceObject;
-
 interface ResourceContainerInterface {
 	/**
 	 * gets resources from inside the object, from first level only
