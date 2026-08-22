@@ -10,6 +10,10 @@ parameters:
 		- tests/
 		- examples/
 	
+	phpVersion:
+		min: 80200
+		max: 80500
+	
 	typeAliases:
 		PHPStanTypeAlias_Options_CollectionDocument: 'array{includeContainedResources?: bool}'
 		PHPStanTypeAlias_Options_Document: 'array{encodeOptions?: int, prettyPrint?: bool, contentType?: \alsvanzelf\jsonapi\enums\ContentTypeEnum, array?: ?PHPStanTypeAlias_DocumentArray, json?: ?string, jsonpCallback?: ?string}'

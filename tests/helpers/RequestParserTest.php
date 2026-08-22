@@ -7,7 +7,7 @@ namespace alsvanzelf\jsonapiTests\helpers;
 use alsvanzelf\jsonapi\enums\ContentTypeEnum;
 use alsvanzelf\jsonapi\enums\SortOrderEnum;
 use alsvanzelf\jsonapi\helpers\RequestParser;
-use PHPUnit\Framework\TestCase;
+use alsvanzelf\jsonapiTests\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
@@ -229,7 +229,7 @@ final class RequestParserTest extends TestCase {
 		]);
 		
 		$this->expectException(\JsonException::class);
-		$this->expectExceptionMessageIs('Maximum stack depth exceeded');
+		$this->expectExceptionMessageIs_('Maximum stack depth exceeded');
 		$this->expectExceptionCode(JSON_ERROR_DEPTH);
 		
 		RequestParser::fromPsrRequest($request);

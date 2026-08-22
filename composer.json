@@ -31,7 +31,7 @@
 		"phpstan/phpstan-phpunit": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"rector/rector": "^2.2",
-		"rector/swiss-knife": "^2",
+		"rector/swiss-knife": "^2.4",
 		"squizlabs/php_codesniffer": "^4.0"
 	},
 	"suggest": {

@@ -10,8 +10,8 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
 use alsvanzelf\jsonapi\profiles\CursorPaginationProfile;
+use alsvanzelf\jsonapiTests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
 
 #[Group('Profiles')]
 final class CursorPaginationProfileTest extends TestCase {
@@ -362,7 +362,7 @@ final class CursorPaginationProfileTest extends TestCase {
 		$value = 'bar';
 		
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessageIs('missing or broken query parameters in url');
+		$this->expectExceptionMessageIs_('missing or broken query parameters in url');
 		
 		$method->invoke($profile, $url, $key, $value);
 	}

@@ -10,8 +10,8 @@ use alsvanzelf\jsonapi\exceptions\InputException;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 use alsvanzelf\jsonapi\objects\ResourceObject;
+use alsvanzelf\jsonapiTests\TestCase;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
 
 final class ResourceIdentifierObjectTest extends TestCase {
 	public function testSetId_HappyPath(): void {
@@ -82,7 +82,7 @@ final class ResourceIdentifierObjectTest extends TestCase {
 		$resource->toArray();
 		
 		$this->expectException(InputException::class);
-		$this->expectExceptionMessageIs('resource has no identification yet');
+		$this->expectExceptionMessageIs_('resource has no identification yet');
 		
 		ResourceIdentifierObject::fromResourceObject($resource);
 	}
@@ -233,7 +233,7 @@ final class ResourceIdentifierObjectTest extends TestCase {
 		$primaryIdMethod = new \ReflectionMethod($resourceIdentifierObject, 'primaryId');
 		
 		$this->expectException(Exception::class);
-		$this->expectExceptionMessageIs('resource has no identification yet');
+		$this->expectExceptionMessageIs_('resource has no identification yet');
 		
 		$primaryIdMethod->invoke($resourceIdentifierObject);
 	}
