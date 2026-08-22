@@ -55,7 +55,7 @@ fi
 
 # check arguments
 (test "$1" = "--list-files") && HAS_LIST_FILES=1 || HAS_LIST_FILES=0
-(test "$2" = "--everything" || test "$3" = "--everything") && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
+(test "$1" = "--everything" || test "$2" = "--everything" || test "$3" = "--everything") && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
 (test "$1" = "--bonus" || test "$2" = "--bonus" || test "$3" = "--bonus") && BONUS_REQUESTED=1 || BONUS_REQUESTED=0
 (test "$1" = "--no-bonus" || test "$2" = "--no-bonus" || test "$3" = "--no-bonus") && BONUS_REJECTED=1 || BONUS_REJECTED=0
 (test "$#" -gt 0 && test "$1" != "--bonus" && test "$1" != "--no-bonus" && test "$1" != "--list-files" && test "$1" != "--everything") && HAS_TYPE=1 || HAS_TYPE=0
@@ -130,11 +130,18 @@ else
 	echo -e "${T_BOLD}Running checks on the git changed lines between the base and the head branch${T_RESET}\n"
 
 	echo "${T_INFO}Checking syntax errors (php -l)${T_RESET}"
-	$CONSOLE_PREFIX php -l $FILE_FILTER 1> /dev/null \
-		|| exit 1 \
-		&& echo "${T_SUCCESS}Success${T_RESET}"
+	if test -z "$FILE_FILTER"; then
+		$CONSOLE_PREFIX "find . -type f -name '*.php' -not -path './vendor/*' -not -path './.ddev/*' -exec php -l {} +" \
+			> /dev/null \
+			|| exit 1 \
+			&& echo "${T_SUCCESS}Success${T_RESET}"
+	else
+		$CONSOLE_PREFIX php -l $FILE_FILTER 1> /dev/null \
+			|| exit 1 \
+			&& echo "${T_SUCCESS}Success${T_RESET}"
+	fi
 	echo -e '\n'
-
+	
 	echo -e "${T_BOLD}Running checks on the git-diff between the base and the head branch${T_RESET}\n"
 
 	if test ! -f ./vendor/bin/reviewdog; then
