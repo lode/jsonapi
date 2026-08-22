@@ -1,5 +1,20 @@
 includes:
 	- phpstan.neon
+	# @todo move out of bonus after we improved upon sealed/unsealed arrays
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
 
 parameters:
 	level: max
+
+	# @todo move out of bonus after we improved upon sealed/unsealed arrays
+	ignoreErrors:
+		# allow internal methods in examples and tests
+		-
+			identifier: method.internal
+			paths:
+				- examples/*
+				- tests/*
+		
+		-
+			identifier: staticMethod.internalClass
+			path: examples/*
