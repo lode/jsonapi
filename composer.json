@@ -23,7 +23,7 @@
 		}
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^13.3",
+		"phpunit/phpunit": "^11 || ^12 || ^13",
 		"psr/http-message": "^2.0",
 		"phpstan/phpstan": "^2.1",
 		"phpstan/extension-installer": "^1.4",
@@ -31,7 +31,7 @@
 		"phpstan/phpstan-phpunit": "^2.0",
 		"phpstan/phpstan-strict-rules": "^2.0",
 		"rector/rector": "^2.2",
-		"rector/swiss-knife": "^2.3",
+		"rector/swiss-knife": "^2",
 		"squizlabs/php_codesniffer": "^4.0"
 	},
 	"suggest": {
