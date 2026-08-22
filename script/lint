@@ -40,7 +40,7 @@ if test "$1" = "--help"; then
 	echo 'Default behavior can be changed with `BONUS_DEFAULT` variable in `script/lint` file'
 	echo ''
 	echo "${T_BOLD}--everything${T_RESET}"
-	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files (ignored when no type is given)'
+	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files'
 	echo ''
 	echo "${T_BOLD}extra arguments${T_RESET}"
 	echo 'Optional, passed to the linter of the specified type (ignored when no type is given)'
