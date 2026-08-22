@@ -30,7 +30,7 @@ if test "$1" = "--help"; then
 	echo '- rector'
 	echo ''
 	echo "${T_BOLD}--everything${T_RESET}"
-	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files (ignored when no type is given)'
+	echo 'Optional, if set it runs on the *whole codebase* instead of the diff/changed-files'
 	echo ''
 	echo "${T_BOLD}extra arguments${T_RESET}"
 	echo 'Optional, passed to the linter of the specified type (ignored when no type is given)'
@@ -41,8 +41,8 @@ if test "$1" = "--help"; then
 fi
 
 # check arguments
-test "$2" = "--everything" && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
-test "$#" -gt 0 && HAS_TYPE=1 || HAS_TYPE=0
+(test "$1" = "--everything" || test "$2" = "--everything") && HAS_EVERYTHING=1 || HAS_EVERYTHING=0
+(test "$#" -gt 0 && test "$1" != "--everything") && HAS_TYPE=1 || HAS_TYPE=0
 
 # store type and its extra arguments
 TYPE=""
@@ -78,7 +78,7 @@ fi
 
 if test "$HAS_TYPE" = 1; then
 	if test "$TYPE" = "phpcbf" || test "$TYPE" = "phpcs"; then
-		$CONSOLE_PREFIX ./vendor/bin/phpcbf $EXTRA_ARGUMENTS $FILE_FILTER
+		$CONSOLE_PREFIX ./vendor/bin/phpcbf --runtime-set ignore_non_auto_fixable_on_exit 1 $EXTRA_ARGUMENTS $FILE_FILTER
 
 	elif test "$TYPE" = "rector"; then
 		$CONSOLE_PREFIX ./vendor/bin/rector process $EXTRA_ARGUMENTS $FILE_FILTER
@@ -95,5 +95,5 @@ else
 	$CONSOLE_PREFIX ./vendor/bin/rector process $FILE_FILTER || true
 
 	echo "${T_INFO}Fixing coding standards (phpcs)${T_RESET}"
-	$CONSOLE_PREFIX ./vendor/bin/phpcbf $FILE_FILTER || true
+	$CONSOLE_PREFIX ./vendor/bin/phpcbf --runtime-set ignore_non_auto_fixable_on_exit 1 $FILE_FILTER || true
 fi

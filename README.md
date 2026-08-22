@@ -19,7 +19,7 @@ The library's code uses strict typing and is checked against a high standard in 
 composer require alsvanzelf/jsonapi
 ```
 
-The library requires php 8.2. Use the latest [v2.x release](/releases/tag/v2.5.0) for lower php versions.
+The library requires php 8.2 or higher, supporting 8.2-8.5. Use the latest [v2.x release](/releases/tag/v2.5.0) for lower php versions.
 
 #### Upgrading from v1 or v2
 
