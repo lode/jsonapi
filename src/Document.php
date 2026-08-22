@@ -14,7 +14,6 @@ use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\ExtensionMemberManager;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;
-use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
@@ -23,7 +22,6 @@ use alsvanzelf\jsonapi\interfaces\HasMetaInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\objects\JsonapiObject;
 use alsvanzelf\jsonapi\objects\LinkObject;
-use alsvanzelf\jsonapi\objects\LinksObject;
 use alsvanzelf\jsonapi\objects\MetaObject;
 
 /**
@@ -278,7 +276,7 @@ abstract class Document implements DocumentInterface, \JsonSerializable, HasLink
 		}
 		
 		if ($options['jsonpCallback'] !== null) {
-			$json = $options['jsonpCallback'].'('.$json.')';
+			return $options['jsonpCallback'].'('.$json.')';
 		}
 		
 		return $json;

@@ -6,7 +6,6 @@ namespace alsvanzelf\jsonapi\extensions;
 
 use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\extensions\AtomicOperationsExtension;
-use alsvanzelf\jsonapi\interfaces\DocumentInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 
 /**

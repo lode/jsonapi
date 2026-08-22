@@ -1,15 +1,12 @@
 <?php
 
 declare(strict_types=1);
-
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\ResourceDocument;
 use alsvanzelf\jsonapi\interfaces\ExtensionInterface;
 use alsvanzelf\jsonapi\interfaces\HasAttributesInterface;
 use alsvanzelf\jsonapi\interfaces\HasExtensionMembersInterface;
 use alsvanzelf\jsonapi\interfaces\ProfileInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
-use alsvanzelf\jsonapi\objects\ResourceIdentifierObject;
 
 ini_set('display_errors', 1);
 error_reporting(-1);

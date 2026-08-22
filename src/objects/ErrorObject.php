@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace alsvanzelf\jsonapi\objects;
 
-use alsvanzelf\jsonapi\Document;
 use alsvanzelf\jsonapi\helpers\Converter;
 use alsvanzelf\jsonapi\helpers\HttpStatusCodeManager;
 use alsvanzelf\jsonapi\helpers\LinksManager;

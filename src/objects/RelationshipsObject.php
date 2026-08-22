@@ -10,9 +10,7 @@ use alsvanzelf\jsonapi\helpers\Validator;
 use alsvanzelf\jsonapi\interfaces\RecursiveResourceContainerInterface;
 use alsvanzelf\jsonapi\interfaces\ResourceInterface;
 use alsvanzelf\jsonapi\objects\AbstractObject;
-use alsvanzelf\jsonapi\objects\LinkObject;
 use alsvanzelf\jsonapi\objects\RelationshipObject;
-use alsvanzelf\jsonapi\objects\ResourceObject;
 
 class RelationshipsObject extends AbstractObject implements RecursiveResourceContainerInterface {
 	/** @var array<string, RelationshipObject> */
